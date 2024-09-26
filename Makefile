@@ -7,6 +7,8 @@ help:
 build-contracts: ## Build contracts
 	./utils/build-contracts.sh
 
-deploy-contracts: ## Deploy contracts
+deploy-contracts-on-holesky: ## Deploy contracts on Holesky
 	./utils/deploy-contracts-on-holesky.sh
 
+deploy-contracts-on-shasta: ## Deploy contracts on Shasta
+	./utils/deploy-contracts-on-shasta.sh

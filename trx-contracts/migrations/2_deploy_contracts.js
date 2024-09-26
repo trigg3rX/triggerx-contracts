@@ -1,5 +1,13 @@
-// var MyContract = artifacts.require("./MyContract.sol");
+var txJobCreator = artifacts.require("txJobCreator");
 
 module.exports = function(deployer) {
-  // deployer.deploy(MyContract);
+  deployer.then(async () => {
+    await deployer.deploy(txJobCreator);
+
+    const receipt = await txJobCreator.deployed();
+
+    console.log("TronLzApp deployed at:", receipt.address);
+
+  });
+
 };
