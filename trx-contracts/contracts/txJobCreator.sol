@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
 contract txJobCreator {
@@ -10,27 +10,28 @@ contract txJobCreator {
     struct Job {
         uint256 jobId;
         string jobType;
-        string jobDescription;
+        //string jobDescription;
         string status;
         bytes quorumNumbers;
         uint32 quorumThresholdPercentage;
         uint32 timeframe;
         uint256 blockNumber;
         address contractAddress;
-        string targetFunction;
+        string targetFunction; 
         uint256 timeInterval;
         ArgType argType;
         bytes[] arguments;
+        string apiEndpoint;  
     }
 
     event JobCreated(uint32 indexed jobId, string jobType, address contractAddress);
     event JobDeleted(uint32 indexed jobId);
     event JobUpdated(uint32 indexed jobId);
 
-    // Function to create a job with direct inputs instead of using a tuple/struct
+    // Function to create a job with dynamic arguments using API
     function createJob(
         string memory jobType,
-        string memory jobDescription,
+        //string memory jobDescription,
         bytes memory quorumNumbers,
         uint32 quorumThresholdPercentage,
         uint32 timeframe,
@@ -38,7 +39,8 @@ contract txJobCreator {
         string memory targetFunction,
         uint256 timeInterval,
         ArgType argType,
-        bytes[] memory arguments
+        bytes[] memory arguments,
+        string memory apiEndpoint 
     ) public returns (uint32) {
         jobIdCounter++;
         uint32 newJobId = jobIdCounter;
@@ -46,7 +48,7 @@ contract txJobCreator {
         jobs[newJobId] = Job({
             jobId: newJobId,
             jobType: jobType,
-            jobDescription: jobDescription,
+            //jobDescription: jobDescription,
             status: "Created",
             quorumNumbers: quorumNumbers,
             quorumThresholdPercentage: quorumThresholdPercentage,
@@ -56,7 +58,8 @@ contract txJobCreator {
             targetFunction: targetFunction,
             timeInterval: timeInterval,
             argType: argType,
-            arguments: arguments
+            arguments: arguments,
+            apiEndpoint: apiEndpoint 
         });
 
         emit JobCreated(newJobId, jobType, contractAddress);
@@ -67,7 +70,7 @@ contract txJobCreator {
     function updateJob(
         uint32 jobId,
         string memory jobType,
-        string memory jobDescription,
+        //string memory jobDescription,
         bytes memory quorumNumbers,
         uint32 quorumThresholdPercentage,
         uint32 timeframe,
@@ -75,13 +78,14 @@ contract txJobCreator {
         string memory targetFunction,
         uint256 timeInterval,
         ArgType argType,
-        bytes[] memory arguments
+        bytes[] memory arguments,
+        string memory apiEndpoint 
     ) public {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         Job storage job = jobs[jobId];
 
         job.jobType = jobType;
-        job.jobDescription = jobDescription;
+        //job.jobDescription = jobDescription;
         job.quorumNumbers = quorumNumbers;
         job.quorumThresholdPercentage = quorumThresholdPercentage;
         job.timeframe = timeframe;
@@ -90,16 +94,12 @@ contract txJobCreator {
         job.timeInterval = timeInterval;
         job.argType = argType;
         job.arguments = arguments;
+        job.apiEndpoint = apiEndpoint; 
 
         emit JobUpdated(jobId);
     }
 
-    function deleteJob(uint32 jobId) public {
-        require(jobs[jobId].jobId != 0, "Job does not exist");
-        delete jobs[jobId];
-        emit JobDeleted(jobId);
-    }
-
+    // Additional helper functions remain the same
     function getJob(uint32 jobId) public view returns (Job memory) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         return jobs[jobId];

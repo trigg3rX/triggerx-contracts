@@ -1,4 +1,4 @@
-const port = process.env.HOST_PORT || 9090
+require('dotenv').config();
 
 module.exports = {
   networks: {

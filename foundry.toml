@@ -1,17 +1,17 @@
 [profile.default]
-src = "src"
-out = "out"
-libs = ["lib"]
+src = "contracts/src"
+out = "contracts/out"
+libs = ["contracts/lib"]
 fs_permissions = [{ access = "read-write", path = "./" }]
 solc = "0.8.20"
 via-ir = true
 
 remappings = [
-    "@eigenlayer-middleware/=lib/eigenlayer-middleware/",
-    "@eigenlayer-contracts/=lib/eigenlayer-middleware/lib/eigenlayer-contracts/src/",
-    "@openzeppelin-contracts/=lib/eigenlayer-middleware/lib/openzeppelin-contracts/",
-    "@openzeppelin-upgrades/=lib/eigenlayer-middleware/lib/openzeppelin-contracts-upgradeable/",
-    "forge-std/=lib/eigenlayer-middleware/lib/forge-std/"
+    "@eigenlayer-middleware/=contracts/lib/eigenlayer-middleware/",
+    "@eigenlayer-contracts/=contracts/lib/eigenlayer-middleware/lib/eigenlayer-contracts/",
+    "@openzeppelin-contracts/=contracts/lib/eigenlayer-middleware/lib/openzeppelin-contracts/",
+    "@openzeppelin-contracts-upgradeable/=contracts/lib/eigenlayer-middleware/lib/openzeppelin-contracts-upgradeable/",
+    "forge-std/=contracts/lib/eigenlayer-middleware/lib/forge-std/"
 ]
 
 [rpc_endpoints]
