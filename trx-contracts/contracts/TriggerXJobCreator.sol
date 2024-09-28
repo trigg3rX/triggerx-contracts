@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract txJobCreator {
-    uint32 private jobIdCounter;
+contract TriggerXJobCreator {
+    uint32 private _job_id_counter;
     mapping(uint32 => Job) public jobs;
 
     enum ArgType { None, Static, Dynamic }
@@ -42,8 +42,8 @@ contract txJobCreator {
         bytes[] memory arguments,
         string memory apiEndpoint 
     ) public returns (uint32) {
-        jobIdCounter++;
-        uint32 newJobId = jobIdCounter;
+        _job_id_counter++;
+        uint32 newJobId = _job_id_counter;
 
         jobs[newJobId] = Job({
             jobId: newJobId,

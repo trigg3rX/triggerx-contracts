@@ -28,10 +28,5 @@ build-contracts: ## Build contracts
 deploy-contracts-on-holesky: ## Deploy contracts on Holesky
 	./utils/deploy-contracts-on-holesky.sh
 
-deploy-contracts-on-shasta: ## Deploy contracts on Shasta
-	./utils/deploy-contracts-on-shasta.sh
-
-############################# KEEPER #############################
-
-register-keeper-on-el-and-avs: ## Register keeper on EL and AVS
-	./utils/register-keeper-on-el-and-avs.sh
+deploy-contracts-on-nile: ## Deploy contracts on Nile
+	./utils/deploy-contracts-on-nile.sh

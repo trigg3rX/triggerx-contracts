@@ -14,7 +14,7 @@ library UpgradeableProxyLib {
     bytes32 internal constant ADMIN_SLOT =
         0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
 
-    Vm internal constant VM = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+    Vm internal constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     function deployProxyAdmin() internal returns (address) {
         return address(new ProxyAdmin());
