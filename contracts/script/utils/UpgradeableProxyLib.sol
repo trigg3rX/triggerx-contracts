@@ -10,11 +10,11 @@ import {EmptyContract} from "@eigenlayer-contracts/test/mocks/EmptyContract.sol"
 library UpgradeableProxyLib {
     // Storage slot constants for proxy contracts
     bytes32 internal constant IMPLEMENTATION_SLOT =
-        bytes32(uint256(keccak256("keeperX.contracts.implementation")) - 1);
+        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
     bytes32 internal constant ADMIN_SLOT =
-        bytes32(uint256(keccak256("keeperX.contracts.admin")) - 1);
+        0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
 
-    Vm internal constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+    Vm internal constant VM = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     function deployProxyAdmin() internal returns (address) {
         return address(new ProxyAdmin());

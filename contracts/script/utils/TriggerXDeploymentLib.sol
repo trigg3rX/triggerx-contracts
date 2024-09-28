@@ -73,6 +73,8 @@ library TriggerXDeploymentLib {
             ECDSAStakeRegistry.initialize, (result.triggerXServiceManager, 1, quorum)
         );
 
+        console2.log("Reaching here.....");
+
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
         console2.log("StakeRegistry proxy upgraded at:", result.stakeRegistry);
 
