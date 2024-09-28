@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import "@eigenlayer-middleware/src/libraries/BN254.sol";
+import "@eigenlayer-middleware/libraries/BN254.sol";
 
-interface ItxTaskManager {
+interface ITriggerXTaskManager {
     // EVENTS
     event TaskCreated(uint32 indexed taskId, string taskType);
     event TaskDeleted(uint32 indexed taskId);
@@ -43,18 +43,18 @@ interface ItxTaskManager {
         string calldata status
     ) external;
 
-    // function deleteTask(uint32 taskId) external;
+    function deleteTask(uint32 taskId) external;
 
-    // function updateTaskStatus(uint32 taskId, string calldata status) external;
+    function updateTaskStatus(uint32 taskId, string calldata status) external;
 
-    // function assignTask(uint32 taskId, address operator) external;
+    function assignTask(uint32 taskId, address operator) external;
 
-    // function respondToTask(
-    //     uint32 taskId,
-    //     TaskResponse calldata taskResponse,
-    //     TaskResponseMetadata calldata taskResponseMetadata,
-    //     BN254.G1Point[] memory pubkeysOfNonSigningOperators
-    // ) external;
+    function respondToTask(
+        uint32 taskId,
+        TaskResponse calldata taskResponse,
+        TaskResponseMetadata calldata taskResponseMetadata,
+        BN254.G1Point[] memory pubkeysOfNonSigningOperators
+    ) external;
 
     // function raiseAndResolveChallenge(
     //     Task calldata task,

@@ -13,8 +13,12 @@ install:
 init-submodules:
 	git submodule update --init --recursive
 
+.PHONY: setup-env
+setup-env:
+	/bin/bash -c 'source .env'
+
 .PHONY: setup
-setup: install init-submodules ## Setup the project
+setup: install init-submodules setup-env ## Setup the project
 
 ############################# CONTRACTS #############################
 
@@ -26,3 +30,8 @@ deploy-contracts-on-holesky: ## Deploy contracts on Holesky
 
 deploy-contracts-on-shasta: ## Deploy contracts on Shasta
 	./utils/deploy-contracts-on-shasta.sh
+
+############################# KEEPER #############################
+
+register-keeper-on-el-and-avs: ## Register keeper on EL and AVS
+	./utils/register-keeper-on-el-and-avs.sh
