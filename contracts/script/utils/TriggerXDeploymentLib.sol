@@ -9,6 +9,7 @@ import {Vm} from "forge-std/Vm.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {ECDSAStakeRegistry} from "@eigenlayer-middleware/unaudited/ECDSAStakeRegistry.sol";
 import {TriggerXServiceManager} from "../../src/TriggerXServiceManager.sol";
+import {TriggerXTaskManager} from "../../src/TriggerXTaskManager.sol";
 import {IDelegationManager} from "@eigenlayer-contracts/contracts/interfaces/IDelegationManager.sol";
 import {IAVSDirectory} from "@eigenlayer-contracts/contracts/interfaces/IAVSDirectory.sol";
 import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
@@ -41,15 +42,17 @@ library TriggerXDeploymentLib {
         result.triggerXServiceManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
         result.triggerXTaskManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
         result.stakeRegistry = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
-        // Deploy the implementation contracts, using the proxy contracts as inputs
-        
+
         // Read core contract addresses from JSON file
-        string memory json = vm.readFile("../../utils/deployments/eigenDeployments.json");
-        address delegationManager = abi.decode(vm.parseJson(json, ".delegationManager"), (address));
-        address avsDirectory = abi.decode(vm.parseJson(json, ".avsDirectory"), (address));
-        address registryCoordinator = abi.decode(vm.parseJson(json, ".registryCoordinator"), (address));
+        string memory eigenJson = vm.readFile("script/utils/deployments/eigenDeployments.json");
+        address delegationManager = eigenJson.readAddress(".delegationManager");
+        address avsDirectory = eigenJson.readAddress(".avsDirectory");
+        address registryCoordinator = eigenJson.readAddress(".registryCoordinator");
+        
+        // Deploy the implementation contracts, using the proxy contracts as inputs
         address stakeRegistryImpl =
             address(new ECDSAStakeRegistry(IDelegationManager(delegationManager)));
+
         address triggerXServiceManagerImpl = address(
             new TriggerXServiceManager(
                 IAVSDirectory(avsDirectory),
@@ -58,97 +61,35 @@ library TriggerXDeploymentLib {
                 ITriggerXTaskManager(result.triggerXTaskManager)
             )
         );
-        // Upgrade contracts
+
+        address triggerXTaskManagerImpl = address(
+            new TriggerXTaskManager(
+                IRegistryCoordinator(registryCoordinator),
+                uint32(uint160(address(result.triggerXTaskManager)))
+            )
+        );
+
         bytes memory upgradeCall = abi.encodeCall(
             ECDSAStakeRegistry.initialize, (result.triggerXServiceManager, 1, quorum)
         );
+
         UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
+        console2.log("StakeRegistry proxy upgraded at:", result.stakeRegistry);
+
         UpgradeableProxyLib.upgrade(result.triggerXServiceManager, triggerXServiceManagerImpl);
+        console2.log("TriggerXServiceManager proxy upgraded at:", result.triggerXServiceManager);
+
+        UpgradeableProxyLib.upgrade(result.triggerXTaskManager, triggerXTaskManagerImpl);
+        console2.log("TriggerXTaskManager proxy upgraded at:", result.triggerXTaskManager);
+
+        string memory holeskyJson = vm.readFile("script/utils/deployments/holeskyDeployments.json");
+        holeskyJson = holeskyJson.serialize("triggerXServiceManager", result.triggerXServiceManager);
+        holeskyJson = holeskyJson.serialize("triggerXTaskManager", result.triggerXTaskManager);
+        holeskyJson = holeskyJson.serialize("stakeRegistry", result.stakeRegistry);
+        vm.writeFile("script/utils/holeskyDeployments.json", holeskyJson);
+        console2.log("Deployment addresses written to holeskyDeployments.json");
+        console2.log("---------------------------------------------------------------------------------\n");
 
         return result;
-    }
-
-    function readDeploymentJson(
-        uint256 chainId
-    ) internal returns (DeploymentData memory) {
-        return readDeploymentJson("../utils/deployments/", chainId);
-    }
-
-    function readDeploymentJson(
-        string memory directoryPath,
-        uint256 chainId
-    ) internal returns (DeploymentData memory) {
-        string memory fileName = string.concat(directoryPath, vm.toString(chainId), ".json");
-
-        require(vm.exists(fileName), "Deployment file does not exist");
-
-        string memory json = vm.readFile(fileName);
-
-        DeploymentData memory data;
-        /// TODO: 2 Step for reading deployment json.  Read to the core and the AVS data
-        data.triggerXServiceManager = json.readAddress(".contracts.triggerXServiceManager");
-        data.stakeRegistry = json.readAddress(".contracts.stakeRegistry");
-
-        return data;
-    }
-
-    /// write to default output path
-    function writeDeploymentJson(
-        DeploymentData memory data
-    ) internal {
-        writeDeploymentJson("../utils/deployments/", block.chainid, data);
-    }
-
-    function writeDeploymentJson(
-        string memory outputPath,
-        uint256 chainId,
-        DeploymentData memory data
-    ) internal {
-        address proxyAdmin =
-            address(UpgradeableProxyLib.getProxyAdmin(data.triggerXServiceManager));
-
-        string memory deploymentData = _generateDeploymentJson(data, proxyAdmin);
-
-        string memory fileName = string.concat(outputPath, vm.toString(chainId), ".json");
-        if (!vm.exists(outputPath)) {
-            vm.createDir(outputPath, true);
-        }
-
-        vm.writeFile(fileName, deploymentData);
-        console2.log("Deployment artifacts written to:", fileName);
-    }
-
-    function _generateDeploymentJson(
-        DeploymentData memory data,
-        address proxyAdmin
-    ) private view returns (string memory) {
-        return string.concat(
-            '{"lastUpdate":{"timestamp":"',
-            vm.toString(block.timestamp),
-            '","block_number":"',
-            vm.toString(block.number),
-            '"},"addresses":',
-            _generateContractsJson(data, proxyAdmin),
-            "}"
-        );
-    }
-
-    function _generateContractsJson(
-        DeploymentData memory data,
-        address proxyAdmin
-    ) private view returns (string memory) {
-        return string.concat(
-            '{"proxyAdmin":"',
-            proxyAdmin.toHexString(),
-            '","triggerXServiceManager":"',
-            data.triggerXServiceManager.toHexString(),
-            '","triggerXServiceManagerImpl":"',
-            data.triggerXServiceManager.getImplementation().toHexString(),
-            '","stakeRegistry":"',
-            data.stakeRegistry.toHexString(),
-            '","stakeRegistryImpl":"',
-            data.stakeRegistry.getImplementation().toHexString(),
-            '"}'
-        );
     }
 }

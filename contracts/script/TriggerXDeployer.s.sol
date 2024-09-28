@@ -17,12 +17,14 @@ contract TriggerXDeployer is Script {
 
     address private deployer;
     address proxyAdmin;
+
     TriggerXDeploymentLib.DeploymentData triggerXDeployment;
     Quorum internal quorum;
 
     function setUp() public virtual {
         deployer = vm.rememberKey(vm.envUint("AVS_OWNER_PRIVATE_KEY"));
         vm.label(deployer, "Deployer");
+        
         quorum.strategies.push(
             StrategyParams({strategy: IStrategy(address(420)), multiplier: 10_000})
         );
@@ -35,24 +37,21 @@ contract TriggerXDeployer is Script {
         triggerXDeployment =
             TriggerXDeploymentLib.deployContracts(proxyAdmin, quorum);
 
+        console2.log("TriggerX contracts deployed:");
+        console2.log("- StakeRegistry:", triggerXDeployment.stakeRegistry);
+        console2.log("- TriggerXServiceManager:", triggerXDeployment.triggerXServiceManager);
+        console2.log("- TriggerXTaskManager:", triggerXDeployment.triggerXTaskManager);
+
         vm.stopBroadcast();
+        console2.log("Broadcast stopped. Deployment completed.");
 
         verifyDeployment();
-        TriggerXDeploymentLib.writeDeploymentJson(triggerXDeployment);
     }
 
     function verifyDeployment() internal view {
-        require(
-            triggerXDeployment.stakeRegistry != address(0), "StakeRegistry address cannot be zero"
-        );
-        require(
-            triggerXDeployment.triggerXServiceManager != address(0),
-            "TriggerXServiceManager address cannot be zero"
-        );
         require(proxyAdmin != address(0), "ProxyAdmin address cannot be zero");
-        require(
-            triggerXDeployment.triggerXTaskManager != address(0),
-            "TriggerXTaskManager address cannot be zero"
-        );
+        require(triggerXDeployment.stakeRegistry != address(0), "StakeRegistry address cannot be zero");
+        require(triggerXDeployment.triggerXServiceManager != address(0), "TriggerXServiceManager address cannot be zero");
+        require(triggerXDeployment.triggerXTaskManager != address(0), "TriggerXTaskManager address cannot be zero");
     }
 }
