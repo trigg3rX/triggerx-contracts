@@ -1,19 +1,22 @@
+/*
+    This contract is used to create, update, and delete jobs.
+    TODO: Add modifiers, so that the one who created the job can only update or delete it.
+    TODO: Fetch function, which shall get Keeper list working on the job
+*/
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
 contract TriggerXJobCreator {
-    uint32 private _job_id_counter;
-    mapping(uint32 => Job) public jobs;
+    uint256 private _job_id_counter;
+    mapping(uint256 => Job) public jobs;
 
     enum ArgType { None, Static, Dynamic }
 
     struct Job {
-        uint256 jobId;
+        uint256 jobId;  // Changed from uint32 to uint256
         string jobType;
-        //string jobDescription;
         string status;
-        bytes quorumNumbers;
-        uint32 quorumThresholdPercentage;
         uint32 timeframe;
         uint256 blockNumber;
         address contractAddress;
@@ -24,16 +27,12 @@ contract TriggerXJobCreator {
         string apiEndpoint;  
     }
 
-    event JobCreated(uint32 indexed jobId, string jobType, address contractAddress);
-    event JobDeleted(uint32 indexed jobId);
-    event JobUpdated(uint32 indexed jobId);
+    event JobCreated(uint256 indexed jobId);
+    event JobDeleted(uint256 indexed jobId);
+    event JobUpdated(uint256 indexed jobId);
 
-    // Function to create a job with dynamic arguments using API
     function createJob(
         string memory jobType,
-        //string memory jobDescription,
-        bytes memory quorumNumbers,
-        uint32 quorumThresholdPercentage,
         uint32 timeframe,
         address contractAddress,
         string memory targetFunction,
@@ -41,17 +40,14 @@ contract TriggerXJobCreator {
         ArgType argType,
         bytes[] memory arguments,
         string memory apiEndpoint 
-    ) public returns (uint32) {
+    ) public returns (uint256) {
         _job_id_counter++;
-        uint32 newJobId = _job_id_counter;
+        uint256 newJobId = _job_id_counter;
 
         jobs[newJobId] = Job({
             jobId: newJobId,
             jobType: jobType,
-            //jobDescription: jobDescription,
             status: "Created",
-            quorumNumbers: quorumNumbers,
-            quorumThresholdPercentage: quorumThresholdPercentage,
             timeframe: timeframe,
             blockNumber: block.number,
             contractAddress: contractAddress,
@@ -62,17 +58,14 @@ contract TriggerXJobCreator {
             apiEndpoint: apiEndpoint 
         });
 
-        emit JobCreated(newJobId, jobType, contractAddress);
+        emit JobCreated(newJobId);
         return newJobId;
     }
 
     // Function to update a job
     function updateJob(
-        uint32 jobId,
+        uint256 jobId,
         string memory jobType,
-        //string memory jobDescription,
-        bytes memory quorumNumbers,
-        uint32 quorumThresholdPercentage,
         uint32 timeframe,
         address contractAddress,
         string memory targetFunction,
@@ -85,9 +78,6 @@ contract TriggerXJobCreator {
         Job storage job = jobs[jobId];
 
         job.jobType = jobType;
-        //job.jobDescription = jobDescription;
-        job.quorumNumbers = quorumNumbers;
-        job.quorumThresholdPercentage = quorumThresholdPercentage;
         job.timeframe = timeframe;
         job.contractAddress = contractAddress;
         job.targetFunction = targetFunction;
@@ -99,18 +89,43 @@ contract TriggerXJobCreator {
         emit JobUpdated(jobId);
     }
 
-    // Additional helper functions remain the same
-    function getJob(uint32 jobId) public view returns (Job memory) {
+    // Function to delete a job
+    function deleteJob(uint256 jobId) public {
         require(jobs[jobId].jobId != 0, "Job does not exist");
-        return jobs[jobId];
+        delete jobs[jobId];
+        emit JobDeleted(jobId);
     }
 
-    function getJobArgumentCount(uint32 jobId) public view returns (uint256) {
+    // Additional helper functions
+    function getJob(uint256 jobId) public view returns (bytes memory) {
+        require(jobs[jobId].jobId != 0, "Job does not exist");
+        Job storage job = jobs[jobId];
+        return abi.encode(
+            job.jobId,
+            job.jobType,
+            job.status,
+            job.timeframe,
+            job.blockNumber,
+            job.contractAddress,
+            job.targetFunction,
+            job.timeInterval,
+            job.argType,
+            job.arguments,
+            job.apiEndpoint
+        );
+    }
+
+    function getJobStatus(uint256 jobId) public view returns (string memory) {
+        require(jobs[jobId].jobId != 0, "Job does not exist");
+        return jobs[jobId].status;
+    }
+
+    function getJobArgumentCount(uint256 jobId) public view returns (uint256) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         return jobs[jobId].arguments.length;
     }
 
-    function getJobArgument(uint32 jobId, uint256 argIndex) public view returns (bytes memory) {
+    function getJobArgument(uint256 jobId, uint256 argIndex) public view returns (bytes memory) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         require(argIndex < jobs[jobId].arguments.length, "Argument index out of bounds");
         return jobs[jobId].arguments[argIndex];

@@ -7,7 +7,11 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@noble/secp256k1": "1.7.1",
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "node-cron": "^3.0.3",
     "tronweb": "5.3.2"
   }
 }

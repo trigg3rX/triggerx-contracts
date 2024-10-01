@@ -5,20 +5,9 @@ help:
 
 ############################# ENVIRONMENT #############################
 
-.PHONY: install
-install:
-	yarn install
-
-.PHONY: init-submodules
-init-submodules:
-	git submodule update --init --recursive
-
-.PHONY: setup-env
-setup-env:
-	/bin/bash -c 'source .env'
-
 .PHONY: setup
-setup: install init-submodules setup-env ## Setup the project
+setup:  ## Setup the project
+	./utils/setup.sh
 
 ############################# CONTRACTS #############################
 

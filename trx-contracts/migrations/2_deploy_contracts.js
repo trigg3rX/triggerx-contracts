@@ -1,5 +1,5 @@
-var txJobCreator = artifacts.require("txJobCreator");
+var TriggerXJobCreator = artifacts.require("TriggerXJobCreator");
 
 module.exports = function(deployer) {
-  deployer.deploy(txJobCreator);
+  deployer.deploy(TriggerXJobCreator);
 };

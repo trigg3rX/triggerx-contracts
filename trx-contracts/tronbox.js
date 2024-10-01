@@ -30,10 +30,11 @@ module.exports = {
   },
   // solc compiler optimize
   solc: {
-  //   optimizer: {
-  //     enabled: true,
-  //     runs: 200
-  //   },
-  //   evmVersion: 'istanbul'
+    optimizer: {
+      enabled: true,
+      runs: 200
+    },
+    viaIR: true,
+    irOptimizer: true
   }
 }

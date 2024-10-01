@@ -29,7 +29,7 @@ interface ITriggerXTaskManager {
 
     struct TaskResponse {
         uint32 referenceTaskId;
-        // var for response
+        address completionTransactionHash;
     }
 
     struct TaskResponseMetadata {
