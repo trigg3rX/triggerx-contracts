@@ -5,12 +5,14 @@ import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import "@eigenlayer-middleware/libraries/BN254.sol";
+import {OperatorStateRetriever} from "@eigenlayer-middleware/OperatorStateRetriever.sol";
 import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
 import {ITriggerXTaskManager} from "./ITriggerXTaskManager.sol";
 
 contract TriggerXTaskManager is Initializable,
     OwnableUpgradeable,
     Pausable,
+    OperatorStateRetriever,
     ITriggerXTaskManager
 {
     // STATE VARIABLES
@@ -22,7 +24,7 @@ contract TriggerXTaskManager is Initializable,
     address public aggregator;
 
     mapping(uint32 => Task) public tasks;
-    uint32 public taskCount;
+    uint32 public latestTaskNum;
 
     constructor(IRegistryCoordinator _registryCoordinator, uint32 _taskResponseWindowBlock) 
     {
@@ -41,37 +43,32 @@ contract TriggerXTaskManager is Initializable,
     }
 
     function createTask(
-        string calldata taskType,
-        string calldata status
-    ) external {
-        taskCount++;
-        tasks[taskCount] = Task({
-            taskId: taskCount,
-            taskType: taskType,
-            status: status,
+        uint256 jobId
+    ) external override {
+        latestTaskNum++;
+        uint32 taskId = latestTaskNum;
+        tasks[taskId] = Task({
+            jobId: jobId,
+            taskId: taskId,
+            status: "Created",
             blockNumber: block.number
         });
 
-        emit TaskCreated(taskCount, taskType);
+        emit TaskCreated(jobId, taskId);
     }
 
-    function deleteTask(uint32 taskId) external {
-        require(keccak256(abi.encodePacked(tasks[taskId].status)) == keccak256(abi.encodePacked("Completed")), "Task not completed");
+    function deleteTask(uint32 taskId) external override {
         delete tasks[taskId];
-        emit TaskDeleted(taskId);
+        emit TaskDeleted(tasks[taskId].jobId, taskId);
     }
 
-    function updateTaskStatus(uint32 taskId, string calldata status) external {
-        require(keccak256(abi.encodePacked(tasks[taskId].status)) == keccak256(abi.encodePacked("Assigned")), "Task not assigned");
+    function updateTaskStatus(uint32 taskId, string calldata status) external override {
         tasks[taskId].status = status;
-        emit TaskStatusUpdated(taskId, status);
+        emit TaskStatusUpdated(tasks[taskId].jobId, taskId, status);
     }
 
-    function assignTask(uint32 taskId, address operator) external {
-        require(keccak256(abi.encodePacked(tasks[taskId].status)) == keccak256(abi.encodePacked("Created")), "Task not created");
-        tasks[taskId].status = "Assigned";
-        tasks[taskId].blockNumber = block.number;
-        emit TaskAssigned(taskId, operator);
+    function assignTask(uint32 taskId, address operator) external override {
+        emit TaskAssigned(tasks[taskId].jobId, taskId, operator);
     }
 
     function respondToTask(
@@ -79,13 +76,7 @@ contract TriggerXTaskManager is Initializable,
         TaskResponse calldata taskResponse,
         TaskResponseMetadata calldata taskResponseMetadata,
         BN254.G1Point[] memory pubkeysOfNonSigningOperators
-    ) external {
-        require(keccak256(abi.encodePacked(tasks[taskId].status)) == keccak256(abi.encodePacked("Assigned")), "Task not assigned");
-        require(tasks[taskId].blockNumber + TASK_RESPONSE_WINDOW_BLOCK < block.number, "Task response window not expired");
-        require(taskResponse.referenceTaskId == taskId, "Reference task id does not match");
-        // require(verifyNonSigner(taskResponseMetadata.hashOfNonSigners, pubkeysOfNonSigningOperators), "Non signers not verified");
-
-        tasks[taskId].status = "Completed";
-        emit TaskCompleted(taskId);
+    ) external override {
+        emit TaskResponded(tasks[taskId].jobId, taskId, taskResponse, taskResponseMetadata);
     }
 }

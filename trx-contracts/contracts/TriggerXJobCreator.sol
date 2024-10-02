@@ -25,6 +25,7 @@ contract TriggerXJobCreator {
         ArgType argType;
         bytes[] arguments;
         string apiEndpoint;  
+        uint32[] taskIds;  // Array of task IDs working on this Job
     }
 
     event JobCreated(uint256 indexed jobId);
@@ -55,7 +56,8 @@ contract TriggerXJobCreator {
             timeInterval: timeInterval,
             argType: argType,
             arguments: arguments,
-            apiEndpoint: apiEndpoint 
+            apiEndpoint: apiEndpoint,
+            taskIds: new uint32[](0)
         });
 
         emit JobCreated(newJobId);
@@ -85,8 +87,13 @@ contract TriggerXJobCreator {
         job.argType = argType;
         job.arguments = arguments;
         job.apiEndpoint = apiEndpoint; 
-
+        job.taskIds = new uint32[](0);
         emit JobUpdated(jobId);
+    }
+
+    function addTaskId(uint256 jobId, uint32 taskId) public {
+        require(jobs[jobId].jobId != 0, "Job does not exist");
+        jobs[jobId].taskIds.push(taskId);
     }
 
     // Function to delete a job
@@ -111,7 +118,8 @@ contract TriggerXJobCreator {
             job.timeInterval,
             job.argType,
             job.arguments,
-            job.apiEndpoint
+            job.apiEndpoint,
+            job.taskIds
         );
     }
 
