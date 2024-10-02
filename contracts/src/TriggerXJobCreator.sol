@@ -1,9 +1,3 @@
-/*
-    This contract is used to create, update, and delete jobs.
-    TODO: Add modifiers, so that the one who created the job can only update or delete it.
-    TODO: Fetch function, which shall get Keeper list working on the job
-*/
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
@@ -25,12 +19,18 @@ contract TriggerXJobCreator {
         ArgType argType;
         bytes[] arguments;
         string apiEndpoint;  
-        uint32[] taskIds;  // Array of task IDs working on this Job
+        uint32[] taskIds; 
+        address jobCreator;
     }
 
     event JobCreated(uint256 indexed jobId);
     event JobDeleted(uint256 indexed jobId);
     event JobUpdated(uint256 indexed jobId);
+
+    modifier onlyJobCreator(uint256 jobId) {
+        require(jobs[jobId].jobCreator == msg.sender, "Only the job creator can call this function");
+        _;
+    }
 
     function createJob(
         string memory jobType,
@@ -57,7 +57,8 @@ contract TriggerXJobCreator {
             argType: argType,
             arguments: arguments,
             apiEndpoint: apiEndpoint,
-            taskIds: new uint32[](0)
+            taskIds: new uint32[](0),
+            jobCreator: msg.sender
         });
 
         emit JobCreated(newJobId);
@@ -75,7 +76,7 @@ contract TriggerXJobCreator {
         ArgType argType,
         bytes[] memory arguments,
         string memory apiEndpoint 
-    ) public {
+    ) public onlyJobCreator(jobId) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         Job storage job = jobs[jobId];
 
@@ -88,6 +89,7 @@ contract TriggerXJobCreator {
         job.arguments = arguments;
         job.apiEndpoint = apiEndpoint; 
         job.taskIds = new uint32[](0);
+        job.jobCreator = msg.sender;
         emit JobUpdated(jobId);
     }
 
@@ -97,7 +99,7 @@ contract TriggerXJobCreator {
     }
 
     // Function to delete a job
-    function deleteJob(uint256 jobId) public {
+    function deleteJob(uint256 jobId) public onlyJobCreator(jobId) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         delete jobs[jobId];
         emit JobDeleted(jobId);
@@ -119,8 +121,26 @@ contract TriggerXJobCreator {
             job.argType,
             job.arguments,
             job.apiEndpoint,
-            job.taskIds
+            job.taskIds,
+            job.jobCreator
         );
+    }
+
+    function getJobsByCreator(address jobCreator) public view returns (Job[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 1; i <= _job_id_counter; i++) {
+            if (jobs[i].jobCreator == jobCreator) {
+                count++;
+            }
+        }
+        Job[] memory result = new Job[](count);
+        uint256 index = 0;
+        for (uint256 i = 1; i <= _job_id_counter; i++) {
+            if (jobs[i].jobCreator == jobCreator) {
+                result[index++] = jobs[i];
+            }
+        }
+        return result;
     }
 
     function getJobStatus(uint256 jobId) public view returns (string memory) {
