@@ -2,13 +2,18 @@
 pragma solidity ^0.8.9;
 
 contract TriggerXJobManager {
-    uint256 private _job_id_counter;
-    mapping(uint256 => Job) public jobs;
+    uint32 private _job_id_counter;
+
+    mapping(uint32 => Job) public jobs;
+
+    mapping(address => uint32) public userJobsCount;
+    mapping(address => uint32[]) public userJobs;
+    mapping(address => uint256) public userTotalStake;
 
     enum ArgType { None, Static, Dynamic }
 
     struct Job {
-        uint256 jobId;  // Changed from uint32 to uint256
+        uint32 jobId;
         string jobType;
         string status;
         uint32 timeframe;
@@ -21,17 +26,18 @@ contract TriggerXJobManager {
         string apiEndpoint;  
         uint32[] taskIds; 
         address jobCreator;
+        uint256 stakeAmount;
     }
-
-    event JobCreated(uint256 indexed jobId);
-    event JobDeleted(uint256 indexed jobId);
-    event JobUpdated(uint256 indexed jobId);
-
-    modifier onlyJobCreator(uint256 jobId) {
-        require(jobs[jobId].jobCreator == msg.sender, "Only the job creator can call this function");
+    
+    event JobCreated(uint32 indexed jobId, address indexed creator, uint256 stakeAmount);
+    event JobDeleted(uint32 indexed jobId, address indexed creator, uint256 stakeRefunded);
+    event JobUpdated(uint32 indexed jobId);
+    
+    modifier onlyJobCreator(uint32 jobId) {
+        require(jobs[jobId].jobCreator == msg.sender, "Only job creator can call this");
         _;
     }
-
+    
     function createJob(
         string memory jobType,
         uint32 timeframe,
@@ -40,11 +46,13 @@ contract TriggerXJobManager {
         uint256 timeInterval,
         ArgType argType,
         bytes[] memory arguments,
-        string memory apiEndpoint 
-    ) public returns (uint256) {
+        string memory apiEndpoint
+    ) public payable returns (uint32) {
+        require(msg.value > 0, "Must stake some TRX to create a job");
+        
         _job_id_counter++;
-        uint256 newJobId = _job_id_counter;
-
+        uint32 newJobId = _job_id_counter;
+        
         jobs[newJobId] = Job({
             jobId: newJobId,
             jobType: jobType,
@@ -58,16 +66,23 @@ contract TriggerXJobManager {
             arguments: arguments,
             apiEndpoint: apiEndpoint,
             taskIds: new uint32[](0),
-            jobCreator: msg.sender
+            jobCreator: msg.sender,
+            stakeAmount: msg.value
         });
+        
+        userJobsCount[msg.sender]++;
 
-        emit JobCreated(newJobId);
+        userJobs[msg.sender].push(newJobId);
+
+        userTotalStake[msg.sender] += msg.value;
+        
+        emit JobCreated(newJobId, msg.sender, msg.value);
         return newJobId;
     }
 
     // Function to update a job
     function updateJob(
-        uint256 jobId,
+        uint32 jobId,
         string memory jobType,
         uint32 timeframe,
         address contractAddress,
@@ -75,7 +90,8 @@ contract TriggerXJobManager {
         uint256 timeInterval,
         ArgType argType,
         bytes[] memory arguments,
-        string memory apiEndpoint 
+        string memory apiEndpoint,
+        uint256 stakeAmount
     ) public onlyJobCreator(jobId) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         Job storage job = jobs[jobId];
@@ -90,70 +106,69 @@ contract TriggerXJobManager {
         job.apiEndpoint = apiEndpoint; 
         job.taskIds = new uint32[](0);
         job.jobCreator = msg.sender;
+        job.stakeAmount = stakeAmount;
+
         emit JobUpdated(jobId);
     }
+    
+    function deleteJob(uint32 jobId, uint256 stakeConsumed) public onlyJobCreator(jobId) {
+        require(jobs[jobId].jobId != 0, "Job does not exist");
+        
+        uint256 stakeToRefund = jobs[jobId].stakeAmount - stakeConsumed;
+        
+        // Remove job from userJobs array
+        uint32[] storage creatorJobs = userJobs[msg.sender];
+        for (uint i = 0; i < creatorJobs.length; i++) {
+            if (creatorJobs[i] == jobId) {
+                creatorJobs[i] = creatorJobs[creatorJobs.length - 1];
+                creatorJobs.pop();
+                break;
+            }
+        }
+        
+        delete jobs[jobId];
+        userJobsCount[msg.sender]--;
+        
+        // Refund stake
+        (bool sent, ) = msg.sender.call{value: stakeToRefund}("");
+        require(sent, "Failed to refund stake");
+        
+        emit JobDeleted(jobId, msg.sender, stakeToRefund);
+    }
 
-    function addTaskId(uint256 jobId, uint32 taskId) public {
+    function addTaskId(uint32 jobId, uint32 taskId) public {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         jobs[jobId].taskIds.push(taskId);
     }
 
-    // Function to delete a job
-    function deleteJob(uint256 jobId) public onlyJobCreator(jobId) {
-        require(jobs[jobId].jobId != 0, "Job does not exist");
-        delete jobs[jobId];
-        emit JobDeleted(jobId);
-    }
-
-    // Additional helper functions
-    function getJob(uint256 jobId) public view returns (bytes memory) {
-        require(jobs[jobId].jobId != 0, "Job does not exist");
-        Job storage job = jobs[jobId];
-        return abi.encode(
-            job.jobId,
-            job.jobType,
-            job.status,
-            job.timeframe,
-            job.blockNumber,
-            job.contractAddress,
-            job.targetFunction,
-            job.timeInterval,
-            job.argType,
-            job.arguments,
-            job.apiEndpoint,
-            job.taskIds,
-            job.jobCreator
-        );
-    }
-
-    function getJobsByCreator(address jobCreator) public view returns (Job[] memory) {
-        uint256 count = 0;
-        for (uint256 i = 1; i <= _job_id_counter; i++) {
-            if (jobs[i].jobCreator == jobCreator) {
-                count++;
-            }
+    function getUserJobs(address user) public view returns (Job[] memory) {
+        uint32[] memory jobIds = userJobs[user];
+        Job[] memory userJobsList = new Job[](jobIds.length);
+        
+        for (uint i = 0; i < jobIds.length; i++) {
+            userJobsList[i] = jobs[jobIds[i]];
         }
-        Job[] memory result = new Job[](count);
-        uint256 index = 0;
-        for (uint256 i = 1; i <= _job_id_counter; i++) {
-            if (jobs[i].jobCreator == jobCreator) {
-                result[index++] = jobs[i];
-            }
+        
+        return userJobsList;
+    }
+    
+    function getTotalUserStake(address user) public view returns (uint256) {
+        uint32[] memory jobIds = userJobs[user];
+        uint256 totalStake = 0;
+        
+        for (uint i = 0; i < jobIds.length; i++) {
+            totalStake += jobs[jobIds[i]].stakeAmount;
         }
-        return result;
+        
+        return totalStake;
     }
 
-    function getJobStatus(uint256 jobId) public view returns (string memory) {
-        require(jobs[jobId].jobId != 0, "Job does not exist");
-        return jobs[jobId].status;
-    }
-
-    function getJobArgumentCount(uint256 jobId) public view returns (uint256) {
+    function getJobArgumentCount(uint32 jobId) public view returns (uint256) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         return jobs[jobId].arguments.length;
     }
 
-    function getJobArgument(uint256 jobId, uint256 argIndex) public view returns (bytes memory) {
+    function getJobArgument(uint32 jobId, uint256 argIndex) public view returns (bytes memory) {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         require(argIndex < jobs[jobId].arguments.length, "Argument index out of bounds");
         return jobs[jobId].arguments[argIndex];
