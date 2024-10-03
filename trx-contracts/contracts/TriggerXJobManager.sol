@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract TriggerXJobCreator {
+contract TriggerXJobManager {
     uint256 private _job_id_counter;
     mapping(uint256 => Job) public jobs;
 
