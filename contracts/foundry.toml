@@ -5,6 +5,8 @@ libs = ["lib"]
 fs_permissions = [{ access = "read-write", path = "./" }]
 solc = "0.8.20"
 via-ir = true
+optimizer = true
+optimizer_runs = 200
 
 remappings = [
     "@eigenlayer-middleware/=lib/eigenlayer-middleware/src/",

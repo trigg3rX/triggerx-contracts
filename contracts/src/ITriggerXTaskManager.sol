@@ -5,61 +5,56 @@ import "@eigenlayer-middleware/libraries/BN254.sol";
 
 interface ITriggerXTaskManager {
     // EVENTS
-    event TaskCreated(uint256 jobId, uint32 indexed taskId);
-    event TaskDeleted(uint256 jobId, uint32 indexed taskId);
-    event TaskStatusUpdated(uint256 jobId, uint32 indexed taskId, string status);
-    event TaskAssigned(uint256 jobId, uint32 indexed taskId, address operator);
-    event TaskCompleted(uint256 jobId, uint32 indexed taskId);
+    event TaskCreated(uint32 jobId, uint32 taskId);
+
+    event TaskAssigned(Task task, address operator);
+    
     event TaskResponded(
-        uint256 jobId,
-        uint32 indexed taskId,
+        uint32 jobId,
         TaskResponse taskResponse,
         TaskResponseMetadata taskResponseMetadata
     );
+    
+    event TaskCompleted(Task task);
+    
     event TaskChallengedSuccessfully(
-        uint256 jobId,
-        uint32 indexed taskId,
+        Task task,
+        address indexed challenger
+    );
+
+    event TaskChallengedUnsuccessfully(
+        Task task,
         address indexed challenger
     );
 
     // STRUCTS
     struct Task {
-        uint256 jobId;
-        uint32 taskId;
-        string status;
-        uint256 blockNumber;
+        uint32 jobId;
+        uint32 blockNumber;
+        bytes quorumNumbers;
+        uint8 quorumThresholdPercentage;
     }
 
     struct TaskResponse {
-        uint256 referenceJobId;
         uint32 referenceTaskId;
-        address completionTransactionHash;
+        bytes32 responseDataHash;
     }
 
     struct TaskResponseMetadata {
-        uint256 referenceJobId;
-        uint32 referenceTaskId;
-        uint256 taskResponsedBlock;
+        uint32 taskResponsedBlock;
         bytes32 hashOfNonSigners;
     }
 
     // FUNCTIONS
+    function taskNumber() external view returns (uint32);
+
     function createTask(
-        uint256 jobId
-    ) external;
+        uint32 jobId,
+        bytes calldata quorumNumbers,
+        uint8 quorumThresholdPercentage
+    ) external returns (uint32);
 
-    function deleteTask(uint32 taskId) external;
-
-    function updateTaskStatus(uint32 taskId, string calldata status) external;
-
-    function assignTask(uint32 taskId, address operator) external;
-
-    function respondToTask(
-        uint32 taskId,
-        TaskResponse calldata taskResponse,
-        TaskResponseMetadata calldata taskResponseMetadata,
-        BN254.G1Point[] memory pubkeysOfNonSigningOperators
-    ) external;
+    function getTaskResponseWindowBlock() external view returns (uint32);
 
     // function raiseAndResolveChallenge(
     //     uint32 taskId,
