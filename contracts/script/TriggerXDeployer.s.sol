@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/Test.sol";
 import {TriggerXDeploymentLib} from "./utils/TriggerXDeploymentLib.sol";
-import {UpgradeableProxyLib} from "./utils/UpgradeableProxyLib.sol";
+// import {UpgradeableProxyLib} from "./utils/UpgradeableProxyLib.sol";
 
 import {
     Quorum,
@@ -13,10 +13,10 @@ import {
 } from "@eigenlayer-middleware/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
 
 contract TriggerXDeployer is Script {
-    using UpgradeableProxyLib for address;
+    // using UpgradeableProxyLib for address;
 
     address private deployer;
-    address proxyAdmin;
+    // address proxyAdmin;
 
     TriggerXDeploymentLib.DeploymentData triggerXDeployment;
     Quorum internal quorum;
@@ -32,15 +32,13 @@ contract TriggerXDeployer is Script {
 
     function run() external {
         vm.startBroadcast(deployer);
-        proxyAdmin = UpgradeableProxyLib.deployProxyAdmin();
+        // proxyAdmin = UpgradeableProxyLib.deployProxyAdmin();
 
         triggerXDeployment =
-            TriggerXDeploymentLib.deployContracts(proxyAdmin, quorum);
-
-        console2.log("TriggerX contracts deployed:");
-        console2.log("- StakeRegistry:", triggerXDeployment.stakeRegistry);
-        console2.log("- TriggerXServiceManager:", triggerXDeployment.triggerXServiceManager);
-        console2.log("- TriggerXTaskManager:", triggerXDeployment.triggerXTaskManager);
+            TriggerXDeploymentLib.deployContracts(
+                // proxyAdmin,
+                quorum
+            );
 
         vm.stopBroadcast();
         console2.log("Broadcast stopped. Deployment completed.");
@@ -49,7 +47,7 @@ contract TriggerXDeployer is Script {
     }
 
     function verifyDeployment() internal view {
-        require(proxyAdmin != address(0), "ProxyAdmin address cannot be zero");
+        // require(proxyAdmin != address(0), "ProxyAdmin address cannot be zero"); 
         require(triggerXDeployment.stakeRegistry != address(0), "StakeRegistry address cannot be zero");
         require(triggerXDeployment.triggerXServiceManager != address(0), "TriggerXServiceManager address cannot be zero");
         require(triggerXDeployment.triggerXTaskManager != address(0), "TriggerXTaskManager address cannot be zero");

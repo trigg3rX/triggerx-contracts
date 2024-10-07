@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {ProxyAdmin} from "@openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol";
-import {TransparentUpgradeableProxy} from "@openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+// import {ProxyAdmin} from "@openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol";
+// import {TransparentUpgradeableProxy} from "@openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
@@ -16,15 +16,13 @@ import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryC
 import {IStakeRegistry} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
 import {ITriggerXTaskManager} from "../../src/ITriggerXTaskManager.sol";
 import {Quorum} from "@eigenlayer-middleware/interfaces/IECDSAStakeRegistryEventsAndErrors.sol";
-import {UpgradeableProxyLib} from "./UpgradeableProxyLib.sol";
 import {Strings} from "@openzeppelin-contracts/contracts/utils/Strings.sol";
 
 library TriggerXDeploymentLib {
     using stdJson for *;
     using Strings for *;
-    using UpgradeableProxyLib for address;
 
-    Vm internal constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+    Vm internal constant VM = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     struct DeploymentData {
         address triggerXServiceManager;
@@ -33,27 +31,27 @@ library TriggerXDeploymentLib {
     }
 
     function deployContracts(
-        address proxyAdmin,
+        // address proxyAdmin,
         Quorum memory quorum
     ) internal returns (DeploymentData memory) {
         DeploymentData memory result;
 
-        // First, deploy upgradeable proxy contracts that will point to the implementations.
-        result.triggerXServiceManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
-        result.triggerXTaskManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
-        result.stakeRegistry = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
-
+        // result.triggerXServiceManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
+        // result.triggerXTaskManager = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
+        // result.stakeRegistry = UpgradeableProxyLib.setUpEmptyProxy(proxyAdmin);
+        
         // Read core contract addresses from JSON file
-        string memory eigenJson = vm.readFile("script/utils/deployments/eigenDeployments.json");
+        string memory eigenJson = VM.readFile("script/utils/deployments/eigenDeployments.json");
         address delegationManager = eigenJson.readAddress(".delegationManager");
         address avsDirectory = eigenJson.readAddress(".avsDirectory");
         address registryCoordinator = eigenJson.readAddress(".registryCoordinator");
         
-        // Deploy the implementation contracts, using the proxy contracts as inputs
-        address stakeRegistryImpl =
-            address(new ECDSAStakeRegistry(IDelegationManager(delegationManager)));
+        // Deploy contracts directly
+        result.stakeRegistry = address(
+            new ECDSAStakeRegistry(IDelegationManager(delegationManager))
+        );
 
-        address triggerXServiceManagerImpl = address(
+        result.triggerXServiceManager = address(
             new TriggerXServiceManager(
                 IAVSDirectory(avsDirectory),
                 IRegistryCoordinator(registryCoordinator),
@@ -62,33 +60,36 @@ library TriggerXDeploymentLib {
             )
         );
 
-        address triggerXTaskManagerImpl = address(
+        // We need to deploy TaskManager before ServiceManager due to dependency
+        result.triggerXTaskManager = address(
             new TriggerXTaskManager(
                 IRegistryCoordinator(registryCoordinator),
-                uint32(uint160(address(result.triggerXTaskManager)))
+                uint32(uint160(address(result.triggerXTaskManager))),
+                TriggerXServiceManager(result.triggerXServiceManager)
             )
         );
 
-        bytes memory upgradeCall = abi.encodeCall(
-            ECDSAStakeRegistry.initialize, (result.triggerXServiceManager, 1, quorum)
+
+
+        // Initialize the stake registry
+        ECDSAStakeRegistry(result.stakeRegistry).initialize(
+            result.triggerXServiceManager,
+            1,
+            quorum
         );
 
-        console2.log("Reaching here.....");
+        // Log deployments
+        console2.log("Direct contract deployments:");
+        console2.log("StakeRegistry deployed at:", result.stakeRegistry);
+        console2.log("TriggerXTaskManager deployed at:", result.triggerXTaskManager);
+        console2.log("TriggerXServiceManager deployed at:", result.triggerXServiceManager);
 
-        UpgradeableProxyLib.upgradeAndCall(result.stakeRegistry, stakeRegistryImpl, upgradeCall);
-        console2.log("StakeRegistry proxy upgraded at:", result.stakeRegistry);
-
-        UpgradeableProxyLib.upgrade(result.triggerXServiceManager, triggerXServiceManagerImpl);
-        console2.log("TriggerXServiceManager proxy upgraded at:", result.triggerXServiceManager);
-
-        UpgradeableProxyLib.upgrade(result.triggerXTaskManager, triggerXTaskManagerImpl);
-        console2.log("TriggerXTaskManager proxy upgraded at:", result.triggerXTaskManager);
-
-        string memory holeskyJson = vm.readFile("script/utils/deployments/holeskyDeployments.json");
+        // Write deployment addresses to JSON
+        string memory holeskyJson = VM.readFile("script/utils/deployments/holeskyDeployments.json");
         holeskyJson = holeskyJson.serialize("triggerXServiceManager", result.triggerXServiceManager);
         holeskyJson = holeskyJson.serialize("triggerXTaskManager", result.triggerXTaskManager);
         holeskyJson = holeskyJson.serialize("stakeRegistry", result.stakeRegistry);
-        vm.writeFile("script/utils/holeskyDeployments.json", holeskyJson);
+        VM.writeFile("script/utils/deployments/holeskyDeployments.json", holeskyJson);
         console2.log("Deployment addresses written to holeskyDeployments.json");
         console2.log("---------------------------------------------------------------------------------\n");
 

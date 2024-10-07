@@ -2,3 +2,4 @@ node_modules
 demo
 .env
 yarn.lock
+contracts/script/utils/keepers/keepers.json
