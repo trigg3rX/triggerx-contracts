@@ -30,12 +30,12 @@ interface ITriggerXTaskManager {
     struct Task {
         uint32 jobId;
         uint32 taskCreatedBlock;
-        uint32 quorumThresholdPercentage;
         bytes quorumNumbers;
     }
 
     struct TaskResponse {
         uint32 referenceTaskIndex;
+        address operator;
         bytes32 transactionHash;
     }
 
@@ -47,7 +47,6 @@ interface ITriggerXTaskManager {
     // FUNCTIONS
     function createNewTask(
         uint32 jobId,
-        uint32 quorumThresholdPercentage,
         bytes calldata quorumNumbers
     ) external;
 

@@ -6,6 +6,7 @@ import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import "./ITriggerXTaskManager.sol";
+import "./TriggerXServiceManager.sol";
 
 contract TriggerXTaskManager is
     Initializable,
@@ -27,16 +28,25 @@ contract TriggerXTaskManager is
 
     address public aggregator;
 
+    TriggerXServiceManager public serviceManager;
+
     modifier onlyAggregator() {
         require(msg.sender == aggregator, "Aggregator must be the caller");
         _;
     }
 
+    modifier operatorNotBlacklisted(address operator) {
+        require(!serviceManager.operatorBlacklist(operator), "Operator is blacklisted");
+        _;
+    }
+
     constructor(
         IRegistryCoordinator _registryCoordinator,
-        uint32 _taskResponseWindowBlock
+        uint32 _taskResponseWindowBlock,
+        TriggerXServiceManager _serviceManager
     ) BLSSignatureChecker(_registryCoordinator) {
         TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
+        serviceManager = _serviceManager;
     }
 
     function initialize(
@@ -51,13 +61,11 @@ contract TriggerXTaskManager is
 
     function createNewTask(
         uint32 jobId,
-        uint32 quorumThresholdPercentage,
         bytes calldata quorumNumbers
     ) external {
         Task memory newTask;
         newTask.jobId = jobId;
         newTask.taskCreatedBlock = uint32(block.number);
-        newTask.quorumThresholdPercentage = quorumThresholdPercentage;
         newTask.quorumNumbers = quorumNumbers;
 
         allTaskHashes[latestTaskNum] = keccak256(abi.encode(newTask));
@@ -97,7 +105,7 @@ contract TriggerXTaskManager is
         Task calldata task,
         TaskResponse calldata taskResponse,
         NonSignerStakesAndSignature memory nonSignerStakesAndSignature
-    ) external onlyAggregator {
+    ) external onlyAggregator operatorNotBlacklisted(taskResponse.operator) {
         _validateTask(task, taskResponse);
 
         bytes32 message = keccak256(abi.encode(taskResponse));
@@ -117,7 +125,7 @@ contract TriggerXTaskManager is
                 quorumStakeTotals.signedStakeForQuorum[i] *
                     _THRESHOLD_DENOMINATOR >=
                     quorumStakeTotals.totalStakeForQuorum[i] *
-                        uint8(task.quorumThresholdPercentage),
+                        uint8(serviceManager.quorumThresholdPercentage()),
                 "Threshold not met"
             );
         }
