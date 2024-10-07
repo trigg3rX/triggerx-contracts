@@ -1,50 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
-import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
-import "@eigenlayer-middleware/libraries/BN254.sol";
-import {OperatorStateRetriever} from "@eigenlayer-middleware/OperatorStateRetriever.sol";
-import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
-import "@eigenlayer-middleware/libraries/BN254.sol";
+import "./TriggerXTaskManagerStorage.sol";
 import {ITriggerXTaskManager} from "./ITriggerXTaskManager.sol";
 
-contract TriggerXTaskManager is Initializable,
-    OwnableUpgradeable,
-    Pausable,
-    BLSSignatureChecker,
-    OperatorStateRetriever,
-    ITriggerXTaskManager
-{
-    using BN254 for BN254.G1Point;
-
-    // STATE VARIABLES
-    uint32 public immutable TASK_RESPONSE_WINDOW_BLOCK;
-    uint32 public constant TASK_CHALLENGE_WINDOW_BLOCK = 100;
-    uint256 internal constant _THRESHOLD_DENOMINATOR = 100;
-
-    address public aggregator;
-
-    mapping(uint32 => Task) public tasks;
-
-    mapping(uint32 => bytes32) public allTaskHashes;
-
-    mapping(uint32 => bytes32) public allTaskResponses;
-
-    uint32 public latestTaskNum;
-
-    modifier onlyAggregator() {
-        require(msg.sender == aggregator, "Aggregator must be the caller");
-        _;
-    }
+contract TriggerXTaskManager is TriggerXTaskManagerStorage, ITriggerXTaskManager {
 
     constructor(
         IRegistryCoordinator _registryCoordinator, 
         uint32 _taskResponseWindowBlock
-    ) BLSSignatureChecker (_registryCoordinator) {
-        TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
-    }
+    ) TriggerXTaskManagerStorage(_taskResponseWindowBlock, _registryCoordinator) {}
 
     function initialize(
         IPauserRegistry _pauserRegistry,
@@ -52,8 +17,7 @@ contract TriggerXTaskManager is Initializable,
         address _aggregator
     ) public initializer {
         _initializePauser(_pauserRegistry, UNPAUSE_ALL);
-        _transferOwnership(initialOwner);
-        aggregator = _aggregator;
+        initializeStorage(initialOwner, _aggregator);
     }
 
     function createTask(
@@ -61,19 +25,19 @@ contract TriggerXTaskManager is Initializable,
         bytes calldata quorumNumbers,
         uint8 quorumThresholdPercentage 
     ) external override returns (uint32) {
-        latestTaskNum++;
+        incrementTaskNum();
         uint32 taskId = latestTaskNum;
 
-        tasks[taskId] = Task({
+        Task memory newTask = Task({
             jobId: jobId,
             blockNumber: uint32(block.number),
             quorumNumbers: quorumNumbers,
             quorumThresholdPercentage: quorumThresholdPercentage
         });
 
-        allTaskHashes[taskId] = keccak256(abi.encode(tasks[taskId]));
+        updateTask(taskId, newTask);
 
-        emit TaskCreated(tasks[taskId].jobId, taskId);
+        emit TaskCreated(newTask.jobId, taskId);
 
         return taskId;
     }
@@ -91,7 +55,7 @@ contract TriggerXTaskManager is Initializable,
                 allTaskHashes[taskResponse.referenceTaskId],
             "supplied task does not match the one recorded in the contract"
         );
-        // some logical checks
+
         require(
             allTaskResponses[taskResponse.referenceTaskId] == bytes32(0),
             "Aggregator has already responded to the task"
@@ -114,7 +78,7 @@ contract TriggerXTaskManager is Initializable,
             quorumNumbers, 
             taskCreatedBlock, 
             nonSignerStakesAndSignature
-            );
+        );
 
         for( uint i = 0; i < quorumNumbers.length; i++) {
             require(
@@ -127,10 +91,10 @@ contract TriggerXTaskManager is Initializable,
             uint32(block.number),
             hashOfNonSigners
         );
-        
-        allTaskResponses[taskResponse.referenceTaskId] = keccak256(
+
+        recordTaskResponse(taskResponse.referenceTaskId, keccak256(
             abi.encode(taskResponse, taskResponseMetadata)
-        );
+        ));
 
         emit TaskResponded(task.jobId, taskResponse, taskResponseMetadata);
     }
