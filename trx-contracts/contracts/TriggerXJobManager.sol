@@ -7,7 +7,9 @@ contract TriggerXJobManager {
     mapping(uint32 => Job) public jobs;
 
     mapping(address => uint32) public userJobsCount;
+
     mapping(address => uint32[]) public userJobs;
+    
     mapping(address => uint256) public userTotalStake;
 
     enum ArgType { None, Static, Dynamic }
@@ -104,7 +106,6 @@ contract TriggerXJobManager {
         job.argType = argType;
         job.arguments = arguments;
         job.apiEndpoint = apiEndpoint; 
-        job.taskIds = new uint32[](0);
         job.jobCreator = msg.sender;
         job.stakeAmount = stakeAmount;
 
@@ -139,28 +140,6 @@ contract TriggerXJobManager {
     function addTaskId(uint32 jobId, uint32 taskId) public {
         require(jobs[jobId].jobId != 0, "Job does not exist");
         jobs[jobId].taskIds.push(taskId);
-    }
-
-    function getUserJobs(address user) public view returns (Job[] memory) {
-        uint32[] memory jobIds = userJobs[user];
-        Job[] memory userJobsList = new Job[](jobIds.length);
-        
-        for (uint i = 0; i < jobIds.length; i++) {
-            userJobsList[i] = jobs[jobIds[i]];
-        }
-        
-        return userJobsList;
-    }
-    
-    function getTotalUserStake(address user) public view returns (uint256) {
-        uint32[] memory jobIds = userJobs[user];
-        uint256 totalStake = 0;
-        
-        for (uint i = 0; i < jobIds.length; i++) {
-            totalStake += jobs[jobIds[i]].stakeAmount;
-        }
-        
-        return totalStake;
     }
 
     function getJobArgumentCount(uint32 jobId) public view returns (uint256) {
