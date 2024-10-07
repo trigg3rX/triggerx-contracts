@@ -5,39 +5,38 @@ import "@eigenlayer-middleware/libraries/BN254.sol";
 
 interface ITriggerXTaskManager {
     // EVENTS
-    event TaskCreated(uint32 jobId, uint32 taskId);
+    event NewTaskCreated(uint32 indexed taskIndex, Task task);
 
-    event TaskAssigned(Task task, address operator);
-    
     event TaskResponded(
-        uint32 jobId,
         TaskResponse taskResponse,
         TaskResponseMetadata taskResponseMetadata
     );
-    
-    event TaskCompleted(Task task);
-    
+
+    event TaskCompleted(uint32 indexed taskIndex);
+
     event TaskChallengedSuccessfully(
-        Task task,
+        uint32 indexed taskIndex,
         address indexed challenger
     );
 
     event TaskChallengedUnsuccessfully(
-        Task task,
+        uint32 indexed taskIndex,
         address indexed challenger
     );
+
+    event AggregatorUpdated(address indexed oldAggregator, address indexed newAggregator);
 
     // STRUCTS
     struct Task {
         uint32 jobId;
-        uint32 blockNumber;
+        uint32 taskCreatedBlock;
+        uint32 quorumThresholdPercentage;
         bytes quorumNumbers;
-        uint8 quorumThresholdPercentage;
     }
 
     struct TaskResponse {
-        uint32 referenceTaskId;
-        bytes32 responseDataHash;
+        uint32 referenceTaskIndex;
+        bytes32 transactionHash;
     }
 
     struct TaskResponseMetadata {
@@ -46,20 +45,13 @@ interface ITriggerXTaskManager {
     }
 
     // FUNCTIONS
+    function createNewTask(
+        uint32 jobId,
+        uint32 quorumThresholdPercentage,
+        bytes calldata quorumNumbers
+    ) external;
+
     function taskNumber() external view returns (uint32);
 
-    function createTask(
-        uint32 jobId,
-        bytes calldata quorumNumbers,
-        uint8 quorumThresholdPercentage
-    ) external returns (uint32);
-
     function getTaskResponseWindowBlock() external view returns (uint32);
-
-    // function raiseAndResolveChallenge(
-    //     uint32 taskId,
-    //     TaskResponse calldata taskResponse,
-    //     TaskResponseMetadata calldata taskResponseMetadata,
-    //     BN254.G1Point[] memory pubkeysOfNonSigningOperators
-    // ) external;
 }
