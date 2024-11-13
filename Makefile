@@ -16,6 +16,3 @@ build-contracts: ## Build contracts
 
 deploy-contracts-on-holesky: ## Deploy contracts on Holesky
 	./utils/deploy-contracts-on-holesky.sh
-
-deploy-contracts-on-nile: ## Deploy contracts on Nile
-	./utils/deploy-contracts-on-nile.sh

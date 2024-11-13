@@ -1,6 +1,6 @@
 # triggerx-contracts
 
-Contracts on Tron and Ethereum for TriggerX
+Contracts on Ethereum for TriggerX
 
 ## Commands
 
