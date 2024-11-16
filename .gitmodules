@@ -1,4 +1,4 @@
 [submodule "contracts/lib/eigenlayer-middleware"]
 	path = contracts/lib/eigenlayer-middleware
 	url = https://github.com/Layr-Labs/eigenlayer-middleware
-	branch = v0.2.1-mainnet-rewards
+	branch = dev
