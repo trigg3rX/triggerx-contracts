@@ -1,74 +1,76 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import "@eigenlayer-middleware/ServiceManagerBase.sol";
-import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import "./ITriggerXTaskManager.sol";
+import "@eigenlayer-middleware/ServiceManagerBase.sol";
+import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 
-contract TriggerXServiceManager is ServiceManagerBase {
-    using EnumerableSet for EnumerableSet.AddressSet;
+contract TriggerXServiceManager is 
+    Initializable,
+    ServiceManagerBase,
+    UUPSUpgradeable 
+{
+    address public taskManager;
+    address public taskValidator;
+    address public quorumManager;
 
-    ITriggerXTaskManager public immutable triggerXTaskManager;
-    EnumerableSet.AddressSet internal _operators;
-    mapping(address => bool) public operatorBlacklist;
-    uint8 public quorumThresholdPercentage;
+    ITriggerXTaskManager public immutable taskManagerContract;
 
-    event OperatorAdded(address indexed operator);
-    event OperatorBlacklistStatusChanged(address indexed operator, bool blacklisted);
-    event QuorumThresholdPercentageChanged(uint8 newThresholdPercentage);
-
-    modifier onlyValidOperator() {
-        if (!_operators.contains(msg.sender)) {
-            "not onlyValidOperator: Only valid operator can call this function";
-        }
+    modifier onlyTaskManagerContract() {
+        require(
+            msg.sender == address(taskManagerContract), 
+            "TriggerXServiceManager: Only TriggerXTaskManagerContract can call this function");
         _;
     }
 
     constructor(
-        IAVSDirectory __avsDirectory,
-        IRegistryCoordinator __registryCoordinator,
-        IStakeRegistry __stakeRegistry,
-        ITriggerXTaskManager __triggerXTaskManager
-    ) ServiceManagerBase(
-        __avsDirectory, 
-        __registryCoordinator, 
-        __stakeRegistry
-    ) 
-    {
-        triggerXTaskManager = __triggerXTaskManager;
+        IAVSDirectory _avsDirectory,
+        IRewardsCoordinator _rewardsCoordinator,
+        IRegistryCoordinator _registryCoordinator,
+        IStakeRegistry _stakeRegistry,
+        ITriggerXTaskManager _taskManagerContract
+    ) ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry) {
+        _disableInitializers();
+        taskManagerContract = _taskManagerContract;
     }
 
-    function registerOperatorToAVS(
-        address operator,
-        ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
-    ) public override onlyRegistryCoordinator {
-        _avsDirectory.registerOperatorToAVS(operator, operatorSignature);
-        _operators.add(operator);
-        emit OperatorAdded(operator);
+    function initialize(
+        address initialOwner,
+        address rewardsInitiator,
+        address _taskManager,
+        address _taskValidator,
+        address _quorumManager
+    ) external initializer {
+        __ServiceManagerBase_init(initialOwner, rewardsInitiator);
+        __Ownable_init();
+        __UUPSUpgradeable_init();
+
+        taskManager = _taskManager;
+        taskValidator = _taskValidator;
+        quorumManager = _quorumManager;
     }
 
-    function whitelistOperator(address operator) external onlyOwner {
-        if (operator == address(0))
-            "whitelistOperator: Operator address cannot be zero";
-        operatorBlacklist[operator] = false;
-        emit OperatorBlacklistStatusChanged(operator, false);
+    function setTaskManager(address _taskManager) external onlyOwner {
+        taskManager = _taskManager;
     }
 
-    function blacklistOperator(address operator) external onlyOwner {
-        if (operator == address(0))
-            "blacklistOperator: Operator address cannot be zero";
-        operatorBlacklist[operator] = true;    
-        emit OperatorBlacklistStatusChanged(operator, true);
+    function setTaskValidator(address _taskValidator) external onlyOwner {
+        taskValidator = _taskValidator;
     }
 
-    function isOperatorBlacklisted(address operator) external view returns (bool) {
-        return operatorBlacklist[operator];
+    function setQuorumManager(address _quorumManager) external onlyOwner {
+        quorumManager = _quorumManager;
     }
 
-    function updateQuorumThresholdPercentage(uint8 thresholdPercentage) external onlyOwner {
-        if (thresholdPercentage > 100)
-            "updateQuorumThresholdPercentage: Threshold percentage cannot be greater than 100";
-        quorumThresholdPercentage = thresholdPercentage;
-        emit QuorumThresholdPercentageChanged(thresholdPercentage);
-    }
+    /// @notice Function that authorizes an upgrade to a new implementation
+    /// @dev Required by UUPSUpgradeable
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+     */
+    uint256[50] private __gap;
 }

@@ -5,6 +5,7 @@ import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
+import {BN254} from "@eigenlayer-middleware/libraries/BN254.sol";
 import "./ITriggerXTaskManager.sol";
 import "./TriggerXServiceManager.sol";
 
@@ -12,101 +13,90 @@ contract TriggerXTaskManager is
     Initializable,
     OwnableUpgradeable,
     Pausable,
-    BLSSignatureChecker,
+    BLSSignatureChecker(IRegistryCoordinator(address(0))),
     ITriggerXTaskManager
 {
     using BN254 for BN254.G1Point;
 
-    uint32 public immutable TASK_RESPONSE_WINDOW_BLOCK;
-    uint32 public constant TASK_CHALLENGE_WINDOW_BLOCK = 100;
+    uint32 public TASK_RESPONSE_WINDOW_BLOCK;
     uint256 internal constant _THRESHOLD_DENOMINATOR = 100;
 
-    uint32 public latestTaskNum;
-    mapping(uint32 => bytes32) public allTaskHashes;
-    mapping(uint32 => bytes32) public allTaskResponses;
-    mapping(uint32 => bool) public taskSuccesfullyChallenged;
+    mapping(uint32 => uint32) public jobToTaskCounter;
+    mapping(bytes8 => bytes32) public taskHashes;
+    mapping(bytes8 => bytes32) public taskResponseHashes;
 
-    address public aggregator;
+    modifier onlyTaskManager() {
+        require(msg.sender == serviceManager.taskManager(), "Only the task manager can call this function");
+        _;
+    }
+
+    modifier onlyTaskValidator() {
+        require(msg.sender == serviceManager.taskValidator(), "Only the task validator can call this function");
+        _;
+    }
 
     TriggerXServiceManager public serviceManager;
-
-    modifier onlyAggregator() {
-        require(msg.sender == aggregator, "Aggregator must be the caller");
-        _;
-    }
-
-    modifier operatorNotBlacklisted(address operator) {
-        require(!serviceManager.operatorBlacklist(operator), "Operator is blacklisted");
-        _;
-    }
-
-    constructor(
-        IRegistryCoordinator _registryCoordinator,
-        uint32 _taskResponseWindowBlock,
-        TriggerXServiceManager _serviceManager
-    ) BLSSignatureChecker(_registryCoordinator) {
-        TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
-        serviceManager = _serviceManager;
-    }
 
     function initialize(
         IPauserRegistry _pauserRegistry,
         address initialOwner,
-        address _aggregator
+        // IRegistryCoordinator _registryCoordinator,
+        uint32 _taskResponseWindowBlock,
+        TriggerXServiceManager _serviceManager
     ) public initializer {
+        // BLSSignatureChecker(_registryCoordinator);   
         _initializePauser(_pauserRegistry, UNPAUSE_ALL);
         _transferOwnership(initialOwner);
-        _setAggregator(_aggregator);
+
+        TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
+        serviceManager = _serviceManager;
+    }
+
+    function generateTaskId(uint32 jobId, uint32 taskNum) public pure returns (bytes8) {
+        return bytes8(abi.encodePacked(jobId, taskNum));
     }
 
     function createNewTask(
         uint32 jobId,
-        bytes calldata quorumNumbers
-    ) external {
+        bytes calldata quorumNumbers,
+        uint8 quorumThreshold
+    ) external onlyTaskManager {
         Task memory newTask;
         newTask.jobId = jobId;
+        newTask.taskNum = jobToTaskCounter[jobId];
         newTask.taskCreatedBlock = uint32(block.number);
         newTask.quorumNumbers = quorumNumbers;
+        newTask.quorumThreshold = quorumThreshold;
 
-        allTaskHashes[latestTaskNum] = keccak256(abi.encode(newTask));
-        emit NewTaskCreated(latestTaskNum, newTask);
-        latestTaskNum = latestTaskNum + 1;
-    }
+        bytes8 taskId = generateTaskId(jobId, jobToTaskCounter[jobId]);
 
-    function _validateTask(
-        Task calldata task,
-        TaskResponse calldata taskResponse
-    ) internal view {
-        require(
-            keccak256(abi.encode(task)) ==
-                allTaskHashes[taskResponse.referenceTaskIndex],
-            "Task mismatch"
-        );
-        require(
-            allTaskResponses[taskResponse.referenceTaskIndex] == bytes32(0),
-            "Already responded"
-        );
-        require(
-            uint32(block.number) <=
-                task.taskCreatedBlock + TASK_RESPONSE_WINDOW_BLOCK,
-            "Response too late"
-        );
-    }
-
-    function _checkQuorumThresholds(
-        QuorumStakeTotals memory quorumStakeTotals,
-        bytes calldata quorumNumbers,
-        uint32 quorumThresholdPercentage
-    ) internal pure {
-        
+        taskHashes[taskId] = keccak256(abi.encode(newTask));
+        emit TaskCreated(taskId, taskHashes[taskId]);
+        jobToTaskCounter[jobId] = jobToTaskCounter[jobId] + 1;
     }
 
     function respondToTask(
         Task calldata task,
         TaskResponse calldata taskResponse,
         NonSignerStakesAndSignature memory nonSignerStakesAndSignature
-    ) external onlyAggregator operatorNotBlacklisted(taskResponse.operator) {
-        _validateTask(task, taskResponse);
+    ) external onlyTaskValidator {
+        // uint32 taskCreatedBlock = task.taskCreatedBlock;
+        // bytes calldata quorumNumbers = task.quorumNumbers;
+        // uint8 quorumThreshold = task.quorumThreshold;
+
+        // check that the task is valid, hasn't been responded to yet, and is being responded to in time
+        // require(
+        //     keccak256(abi.encode(task)) == allTaskHashes[taskResponse.referenceTaskIndex],
+        //     "supplied task does not match the one recorded in the contract"
+        // );
+        // require(
+        //     taskResponseHashes[taskResponse.taskId] == bytes32(0),
+        //     "Aggregator has already responded to the task"
+        // );
+        // require(
+        //     uint32(block.number) <= taskCreatedBlock + TASK_RESPONSE_WINDOW_BLOCK,
+        //     "Aggregator has responded to the task too late"
+        // );
 
         bytes32 message = keccak256(abi.encode(taskResponse));
         
@@ -125,8 +115,8 @@ contract TriggerXTaskManager is
                 quorumStakeTotals.signedStakeForQuorum[i] *
                     _THRESHOLD_DENOMINATOR >=
                     quorumStakeTotals.totalStakeForQuorum[i] *
-                        uint8(serviceManager.quorumThresholdPercentage()),
-                "Threshold not met"
+                        task.quorumThreshold,
+                "Signatories do not own at least threshold percentage of a quorum"
             );
         }
 
@@ -135,28 +125,10 @@ contract TriggerXTaskManager is
             hashOfNonSigners
         );
         
-        allTaskResponses[taskResponse.referenceTaskIndex] = keccak256(
+        taskResponseHashes[taskResponse.taskId] = keccak256(
             abi.encode(taskResponse, taskResponseMetadata)
         );
 
-        emit TaskResponded(taskResponse, taskResponseMetadata);
-    }
-
-    function taskNumber() external view returns (uint32) {
-        return latestTaskNum;
-    }
-
-    function getTaskResponseWindowBlock() external view returns (uint32) {
-        return TASK_RESPONSE_WINDOW_BLOCK;
-    }
-
-    function _setAggregator(address newAggregator) internal {
-        address oldAggregator = aggregator;
-        aggregator = newAggregator;
-        emit AggregatorUpdated(oldAggregator, newAggregator);
-    }
-
-    function setAggregator(address newAggregator) external onlyOwner {
-        _setAggregator(newAggregator);
+        emit TaskResponded(taskResponse.taskId, taskResponseHashes[taskResponse.taskId]);
     }
 }

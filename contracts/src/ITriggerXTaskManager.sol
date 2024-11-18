@@ -1,42 +1,30 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import "@eigenlayer-middleware/libraries/BN254.sol";
-
 interface ITriggerXTaskManager {
     // EVENTS
-    event NewTaskCreated(uint32 indexed taskIndex, Task task);
+    event TaskCreated(
+        bytes8 taskId,
+        bytes32 taskHash
+    );
 
     event TaskResponded(
-        TaskResponse taskResponse,
-        TaskResponseMetadata taskResponseMetadata
+        bytes8 taskId,
+        bytes32 taskResponseHash
     );
-
-    event TaskCompleted(uint32 indexed taskIndex);
-
-    event TaskChallengedSuccessfully(
-        uint32 indexed taskIndex,
-        address indexed challenger
-    );
-
-    event TaskChallengedUnsuccessfully(
-        uint32 indexed taskIndex,
-        address indexed challenger
-    );
-
-    event AggregatorUpdated(address indexed oldAggregator, address indexed newAggregator);
 
     // STRUCTS
     struct Task {
         uint32 jobId;
+        uint32 taskNum;
         uint32 taskCreatedBlock;
         bytes quorumNumbers;
+        uint8 quorumThreshold;
     }
 
     struct TaskResponse {
-        uint32 referenceTaskIndex;
-        address operator;
-        bytes32 transactionHash;
+        bytes8 taskId;
+        bytes32 taskResponseHash;
     }
 
     struct TaskResponseMetadata {
@@ -47,10 +35,7 @@ interface ITriggerXTaskManager {
     // FUNCTIONS
     function createNewTask(
         uint32 jobId,
-        bytes calldata quorumNumbers
+        bytes calldata quorumNumbers,
+        uint8 quorumThreshold
     ) external;
-
-    function taskNumber() external view returns (uint32);
-
-    function getTaskResponseWindowBlock() external view returns (uint32);
 }
