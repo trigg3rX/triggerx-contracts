@@ -115,11 +115,11 @@ contract TriggerXDeployerHolesky is Script {
             '"socketRegistryImplementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '",',
             '"registryCoordinator": "', vm.toString(address(triggerXContracts.registryCoordinator)), '",',
             '"registryCoordinatorImplementation": "', vm.toString(address(triggerXContracts.registryCoordinatorImplementation)), '",',
-            '"operatorStateRetriever": "', vm.toString(address(triggerXContracts.operatorStateRetriever)), '"',
+            '"operatorStateRetriever": "', vm.toString(address(triggerXContracts.operatorStateRetriever)), '",',
             '"triggerXServiceManager": "', vm.toString(address(triggerXContracts.triggerXServiceManager)), '",',
             '"triggerXServiceManagerImplementation": "', vm.toString(address(triggerXContracts.triggerXServiceManagerImplementation)), '",',
             '"triggerXTaskManager": "', vm.toString(address(triggerXContracts.triggerXTaskManager)), '",',
-            '"triggerXTaskManagerImplementation": "', vm.toString(address(triggerXContracts.triggerXTaskManagerImplementation)), '",',
+            '"triggerXTaskManagerImplementation": "', vm.toString(address(triggerXContracts.triggerXTaskManagerImplementation)), '"',
             "}"
         );
 
