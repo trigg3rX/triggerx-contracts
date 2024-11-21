@@ -1,0 +1,50 @@
+{
+  "delegationManager": "0xA44151489861Fe9e3055d95adC98FbD462B948e7",
+  "delegationManagerImpl": "0x83f8F8f0BB125F7870F6bfCf76853f874C330D76",
+  "strategyManager": "0xdfB5f6CE42aAA7830E94ECFCcAd411beF4d4D5b6",
+  "strategyManagerImpl": "0x59f766A603C53f3AC8Be43bBe158c1519b193a18",
+  "eigenPodManager": "0x30770d7E3e71112d7A6b7259542D1f680a70e315",
+  "eigenPodManagerImpl": "0x91A6525a4a843F5a5B633905300c33F79413CCc5",
+  "avsDirectory": "0x055733000064333CaDDbC92763c58BF0192fFeBf",
+  "avsDirectoryImpl": "0xEF5BA995Bc7722fd1e163edF8Dc09375de3d3e3a",
+  "slasher": "0xcAe751b75833ef09627549868A04E32679386e7C",
+  "slasherImpl": "0x99715D255E34a39bE9943b82F281CA734bcF345A",
+  "rewardsCoordinator": "0xAcc1fb458a1317E886dB376Fc8141540537E68fE",
+  "rewardsCoordinatorImpl": "0x1A17df4170099577b79038Fd310f3ff62F79752E",
+
+  "triggerXOwner": "0xc073A5E091DC60021058346b10cD5A9b3F0619fE",
+  "rewardsInitiator": "0x6c275fDff8008fCe66C779CB56BdACACbB9F6436",
+  "taskManager": "0xEbe4f49161eb9002eD19E06F943DCe73D24B596E",
+  "taskValidator": "0xBaE997eFC6E496d8A34181C2443d97b491A3f057",
+  "quorumManager": "0x8a51c19C4B3ed916769B56DbC039f8DF876029bE",
+
+  "numQuorum": 5,
+  "maxOperatorCount": 50,
+  "minimumStake": 1000000,
+  "numStrategies": 7,
+  "initalPausedStatus": 0,
+  "taskResponseWindow": 200,
+
+  "strategies": {
+    "wethStrategy": "0x80528D6e9A2BAbFc766965E0E26d5aB08D9CFaF9",
+    "wethMultiplier": 1000000000000000000,
+    
+    "stETHStrategy": "0x7D704507b76571a51d9caE8AdDAbBFd0ba0e63d3",
+    "stETHMultiplier": 997992210000000000,
+    
+    "rETHStrategy": "0x3A8fBdf9e77DFc25d09741f51d3E181b25d0c4E0",
+    "rETHMultiplier": 1104234999999999999,
+    
+    "cbETHStrategy": "0x70EB4D3c164a6B4A5f908D4FBb5a9cAfFb66bAB6",
+    "cbETHMultiplier": 1000000000000000000,
+    
+    "reALTStrategy": "0xAD76D205564f955A9c18103C4422D1Cd94016899",
+    "reALTMultiplier": 1000000000000000000,
+    
+    "eigenStrategy": "0x43252609bff8a13dFe5e057097f2f45A24387a84",
+    "eigenMultiplier": 1000000000000000000,
+    
+    "beaconChainETHStrategy": "0xbeaC0eeEeeeeEEeEeEEEEeeEEeEeeeEeeEEBEaC0",
+    "beaconChainETHMultiplier": 1000000000000000000
+  }
+}
