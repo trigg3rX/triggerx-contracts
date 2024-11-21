@@ -2,20 +2,35 @@
 pragma solidity ^0.8.9;
 
 import "./ITriggerXTaskManager.sol";
-import "@eigenlayer-middleware/ServiceManagerBase.sol";
-import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
+import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
+import {Pausable} from "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
+import {IPauserRegistry} from "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";
 
-contract TriggerXServiceManager is 
-    Initializable,
+import {ServiceManagerBase, IAVSDirectory, IRewardsCoordinator, IServiceManager, ISignatureUtils} from "@eigenlayer-middleware/ServiceManagerBase.sol";
+import {BLSSignatureChecker} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
+import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
+import {IStakeRegistry} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
+
+
+contract TriggerXServiceManager is
     ServiceManagerBase,
-    UUPSUpgradeable 
+    BLSSignatureChecker, 
+    Pausable
 {
+    using EnumerableSet for EnumerableSet.AddressSet;
+
+    event KeeperAdded(address indexed operator);
+    event KeeperRemoved(address indexed operator);
+
+    EnumerableSet.AddressSet private _registeredOperators;
+
+    mapping(address => bool) public isBlackListed;
+
     address public taskManager;
     address public taskValidator;
     address public quorumManager;
 
-    ITriggerXTaskManager public immutable taskManagerContract;
+    ITriggerXTaskManager public taskManagerContract;
 
     modifier onlyTaskManagerContract() {
         require(
@@ -28,24 +43,29 @@ contract TriggerXServiceManager is
         IAVSDirectory _avsDirectory,
         IRewardsCoordinator _rewardsCoordinator,
         IRegistryCoordinator _registryCoordinator,
-        IStakeRegistry _stakeRegistry,
-        ITriggerXTaskManager _taskManagerContract
-    ) ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry) {
+        IStakeRegistry _stakeRegistry       
+    ) 
+        BLSSignatureChecker(_registryCoordinator)
+        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry) 
+    {
         _disableInitializers();
-        taskManagerContract = _taskManagerContract;
     }
 
     function initialize(
+        ITriggerXTaskManager _taskManagerContract,
+        IPauserRegistry _pauserRegistry,
+        uint256 _initialPausedStatus,
         address initialOwner,
         address rewardsInitiator,
         address _taskManager,
         address _taskValidator,
         address _quorumManager
-    ) external initializer {
+    ) public initializer {
+        _initializePauser(_pauserRegistry, _initialPausedStatus);
+        _transferOwnership(initialOwner);
         __ServiceManagerBase_init(initialOwner, rewardsInitiator);
-        __Ownable_init();
-        __UUPSUpgradeable_init();
 
+        taskManagerContract = _taskManagerContract;
         taskManager = _taskManager;
         taskValidator = _taskValidator;
         quorumManager = _quorumManager;
@@ -63,14 +83,32 @@ contract TriggerXServiceManager is
         quorumManager = _quorumManager;
     }
 
-    /// @notice Function that authorizes an upgrade to a new implementation
-    /// @dev Required by UUPSUpgradeable
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function updateTaskManager(address _taskManager) external onlyOwner {
+        taskManagerContract = ITriggerXTaskManager(_taskManager);
+    }
 
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[50] private __gap;
+    function registerKeeperToTriggerX(
+        address operator,
+        ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
+    ) public onlyRegistryCoordinator {
+        _avsDirectory.registerOperatorToAVS(operator, operatorSignature);
+        _registeredOperators.add(operator);
+        isBlackListed[operator] = false;
+        emit KeeperAdded(operator);
+    }
+
+    function deregisterKeeperFromTriggerX(address operator) external onlyOwner {
+        _avsDirectory.deregisterOperatorFromAVS(operator);
+        _registeredOperators.remove(operator);
+        isBlackListed[operator] = false;
+        emit KeeperRemoved(operator);
+    }
+
+    function blacklistKeeper(address _operator) external onlyOwner {
+        isBlackListed[_operator] = true;
+    }
+
+    function unblacklistKeeper(address _operator) external onlyOwner {
+        isBlackListed[_operator] = false;
+    }
 }

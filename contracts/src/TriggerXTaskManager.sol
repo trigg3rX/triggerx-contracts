@@ -13,7 +13,7 @@ contract TriggerXTaskManager is
     Initializable,
     OwnableUpgradeable,
     Pausable,
-    BLSSignatureChecker(IRegistryCoordinator(address(0))),
+    BLSSignatureChecker,
     ITriggerXTaskManager
 {
     using BN254 for BN254.G1Point;
@@ -37,14 +37,18 @@ contract TriggerXTaskManager is
 
     TriggerXServiceManager public serviceManager;
 
+    constructor(IRegistryCoordinator _registryCoordinator) 
+        BLSSignatureChecker(_registryCoordinator)
+    {
+        _disableInitializers();
+    }
+
     function initialize(
         IPauserRegistry _pauserRegistry,
         address initialOwner,
-        // IRegistryCoordinator _registryCoordinator,
         uint32 _taskResponseWindowBlock,
         TriggerXServiceManager _serviceManager
     ) public initializer {
-        // BLSSignatureChecker(_registryCoordinator);   
         _initializePauser(_pauserRegistry, UNPAUSE_ALL);
         _transferOwnership(initialOwner);
 
@@ -91,11 +95,11 @@ contract TriggerXTaskManager is
         // );
         // require(
         //     taskResponseHashes[taskResponse.taskId] == bytes32(0),
-        //     "Aggregator has already responded to the task"
+        //     "Validator has already responded to the task"
         // );
         // require(
         //     uint32(block.number) <= taskCreatedBlock + TASK_RESPONSE_WINDOW_BLOCK,
-        //     "Aggregator has responded to the task too late"
+        //     "Validator has responded to the task too late"
         // );
 
         bytes32 message = keccak256(abi.encode(taskResponse));
@@ -110,7 +114,7 @@ contract TriggerXTaskManager is
                 nonSignerStakesAndSignature
             );
 
-        for (uint i = 0; i < task.quorumNumbers.length; i++) {
+        for (uint256 i = 0; i < task.quorumNumbers.length; i++) {
             require(
                 quorumStakeTotals.signedStakeForQuorum[i] *
                     _THRESHOLD_DENOMINATOR >=
@@ -130,5 +134,9 @@ contract TriggerXTaskManager is
         );
 
         emit TaskResponded(taskResponse.taskId, taskResponseHashes[taskResponse.taskId]);
+    }
+
+    function updateServiceManager(address _serviceManager) external onlyOwner {
+        serviceManager = TriggerXServiceManager(_serviceManager);
     }
 }
