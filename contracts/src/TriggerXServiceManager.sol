@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
 
 import "./ITriggerXTaskManager.sol";
 import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
@@ -21,6 +21,12 @@ contract TriggerXServiceManager is
 
     event KeeperAdded(address indexed operator);
     event KeeperRemoved(address indexed operator);
+    event TaskManagerSet(address indexed oldTaskManager, address indexed newTaskManager);
+    event TaskValidatorSet(address indexed oldTaskValidator, address indexed newTaskValidator);
+    event QuorumManagerSet(address indexed oldQuorumManager, address indexed newQuorumManager);
+    event TaskManagerContractUpdated(address indexed oldTaskManager, address indexed newTaskManager);
+    event KeeperBlacklisted(address indexed operator);
+    event KeeperUnblacklisted(address indexed operator);
 
     EnumerableSet.AddressSet private _registeredOperators;
 
@@ -72,19 +78,27 @@ contract TriggerXServiceManager is
     }
 
     function setTaskManager(address _taskManager) external onlyOwner {
+        address oldTaskManager = taskManager;
         taskManager = _taskManager;
+        emit TaskManagerSet(oldTaskManager, _taskManager);
     }
 
     function setTaskValidator(address _taskValidator) external onlyOwner {
+        address oldTaskValidator = taskValidator;
         taskValidator = _taskValidator;
+        emit TaskValidatorSet(oldTaskValidator, _taskValidator);
     }
 
     function setQuorumManager(address _quorumManager) external onlyOwner {
+        address oldQuorumManager = quorumManager;
         quorumManager = _quorumManager;
+        emit QuorumManagerSet(oldQuorumManager, _quorumManager);
     }
 
     function updateTaskManager(address _taskManager) external onlyOwner {
+        address oldTaskManager = address(taskManagerContract);
         taskManagerContract = ITriggerXTaskManager(_taskManager);
+        emit TaskManagerContractUpdated(oldTaskManager, _taskManager);
     }
 
     function registerKeeperToTriggerX(
@@ -106,9 +120,11 @@ contract TriggerXServiceManager is
 
     function blacklistKeeper(address _operator) external onlyOwner {
         isBlackListed[_operator] = true;
+        emit KeeperBlacklisted(_operator);
     }
 
     function unblacklistKeeper(address _operator) external onlyOwner {
         isBlackListed[_operator] = false;
+        emit KeeperUnblacklisted(_operator);
     }
 }
