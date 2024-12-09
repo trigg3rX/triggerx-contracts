@@ -8,5 +8,8 @@ help:
 build-contracts: ## Build contracts
 	./utils/build-contracts.sh
 
-deploy-contracts-on-holesky: ## Deploy contracts on Holesky
-	./utils/deploy-contracts-on-holesky.sh
+deploy-avs-contracts-on-holesky: ## Deploy contracts on Holesky
+	./utils/deploy-avs-contracts-on-holesky.sh
+
+deploy-stake-registry: ## Deploy stake registry
+	./utils/deploy-stake-registry.sh
