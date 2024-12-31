@@ -104,14 +104,14 @@ contract TriggerXServiceManager is
     function registerKeeperToTriggerX(
         address operator,
         ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
-    ) public onlyRegistryCoordinator {
+    ) public {
         _avsDirectory.registerOperatorToAVS(operator, operatorSignature);
         _registeredOperators.add(operator);
         isBlackListed[operator] = false;
         emit KeeperAdded(operator);
     }
 
-    function deregisterKeeperFromTriggerX(address operator) external onlyOwner {
+    function deregisterKeeperFromTriggerX(address operator) external {
         _avsDirectory.deregisterOperatorFromAVS(operator);
         _registeredOperators.remove(operator);
         isBlackListed[operator] = false;
