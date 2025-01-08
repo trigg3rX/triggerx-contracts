@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "./ITriggerXTaskManager.sol";
+import "./interfaces/ITriggerXTaskManager.sol";
 import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import {Pausable} from "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import {IPauserRegistry} from "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";

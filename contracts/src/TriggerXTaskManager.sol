@@ -6,7 +6,7 @@ import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import {BN254} from "@eigenlayer-middleware/libraries/BN254.sol";
-import "./ITriggerXTaskManager.sol";
+import "./interfaces/ITriggerXTaskManager.sol";
 import "./TriggerXServiceManager.sol";
 
 contract TriggerXTaskManager is

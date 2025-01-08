@@ -28,7 +28,9 @@ import {BLSApkRegistry} from "@eigenlayer-middleware/BLSApkRegistry.sol";
 import {SocketRegistry} from "@eigenlayer-middleware/SocketRegistry.sol";
 import {OperatorStateRetriever} from "@eigenlayer-middleware/OperatorStateRetriever.sol";
 
-import {ITriggerXTaskManager} from "../src/ITriggerXTaskManager.sol";
+import {ITriggerXTaskManager} from "../src/interfaces/ITriggerXTaskManager.sol";
+import {ITriggerXServiceManager} from "../src/interfaces/ITriggerXServiceManager.sol";
+
 import {TriggerXTaskManager} from "../src/TriggerXTaskManager.sol";
 import {TriggerXServiceManager} from "../src/TriggerXServiceManager.sol";
 

@@ -4,6 +4,8 @@ pragma solidity ^0.8.26;
 import {Script} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 import {TriggerXStakeRegistry} from "../src/TriggerXStakeRegistry.sol";
+import {ITriggerXStakeRegistry} from "../src/interfaces/ITriggerXStakeRegistry.sol";
+
 import "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract TriggerXStakeDeployerOPS is Script {

@@ -19,10 +19,20 @@ contract TriggerXStakeRegistry is
 
     mapping(address => Stake) public stakes;
 
+    // Add a mapping to track points for each user
+    mapping(address => uint256) public points;
+
     // Events
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
     event StakeRemoved(address indexed user, uint256 amount, string reason);
+    event TGClaimed(address indexed user, uint256 amount);
+    event TaskFeeClaimed(address indexed user, uint256 amount);
+    event RewardClaimed(address indexed user, uint256 reward);
+
+    // Add new state variables for pool and TG
+    uint256 public pool=10000000000;
+    uint256 public constant TG_AMOUNT = 100; // Fixed amount of TG to claim
 
     constructor() {
         _disableInitializers();
@@ -53,6 +63,8 @@ contract TriggerXStakeRegistry is
                 exists: true
             });
         }
+
+        pool += amount; // Add staked amount to the pool
 
         emit Staked(msg.sender, amount);
     }
@@ -110,5 +122,31 @@ contract TriggerXStakeRegistry is
         require(success, "ETH transfer failed");
 
         emit StakeRemoved(user, amount, reason);
+    }
+
+    // New function to claim TG
+    function claimTG() external {
+        require(pool >= TG_AMOUNT, "Insufficient pool balance");
+        
+        pool -= TG_AMOUNT; // Deduct from pool
+        
+        emit TGClaimed(msg.sender, TG_AMOUNT); // Emit event for claiming TG
+    }
+
+
+    // New function to get task fee
+    function getTaskFee(uint256 amount) external {
+        require(pool >= amount, "Insufficient pool balance");
+        pool -= amount; // Deduct from pool
+
+        emit TaskFeeClaimed(msg.sender, amount); // Emit event for claiming task fee
+    }
+
+    // New function to get reward
+    function getReward(uint256 claimedTG) external {
+        uint256 reward = (claimedTG * 7) / 40000; // Calculate reward with precision
+        points[msg.sender] += claimedTG; // Allocate points based on claimed TG
+
+        emit RewardClaimed(msg.sender, reward); // Emit event for claiming reward
     }
 }

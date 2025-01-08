@@ -1,6 +1,1 @@
-{
-  "triggerXStakeRegistry": {
-    "proxy": "0xb21F282d7Ed242210e6E35AD323C5F6a467Cb34b",
-    "implementation": "0x86B53Eaa358468496914f20EDfe11B7E9328f100"
-  }
-}
+{"triggerXStakeRegistry": {"proxy": "0xee9b878Ab39bcBe3c8a6C2ab01bB93d3eC955838","implementation": "0xEB8358Eed74F4f796Ead98B63324D22E05214914"}}
