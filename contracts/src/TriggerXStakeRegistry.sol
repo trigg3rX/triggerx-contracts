@@ -14,7 +14,7 @@ contract TriggerXStakeRegistry is
 {
     struct Stake {
         uint256 amount;
-        bool exists;
+        uint256 TGbalance;
     }
 
     mapping(address => Stake) public stakes;
@@ -29,10 +29,11 @@ contract TriggerXStakeRegistry is
     event TGClaimed(address indexed user, uint256 amount);
     event TaskFeeClaimed(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 reward);
+    event TGTransferred(address indexed user, address indexed keeper, uint256 amount);
 
     // Add new state variables for pool and TG
-    uint256 public pool=10000000000;
-    uint256 public constant TG_AMOUNT = 100; // Fixed amount of TG to claim
+    // uint256 public pool=10000000000;
+    // uint256 public constant TG_AMOUNT = 100; // Fixed amount of TG to claim
 
     constructor() {
         _disableInitializers();
@@ -55,50 +56,24 @@ contract TriggerXStakeRegistry is
         require(msg.value == amount, "Sent ETH must match amount");
         
         Stake storage userStake = stakes[msg.sender];
-        if (userStake.exists) {
-            userStake.amount += amount;
-        } else {
-            stakes[msg.sender] = Stake({
-                amount: amount,
-                exists: true
-            });
-        }
-
-        pool += amount; // Add staked amount to the pool
+        userStake.amount += amount;
+        
+        // Calculate and add TG rewards (0.001 TG per ETH)
+        uint256 TGReward = (amount * 1) / 1000; // This gives 0.001 ratio
+        userStake.TGbalance += TGReward;
 
         emit Staked(msg.sender, amount);
-    }
-
-    /**
-     * @notice Allows a user to unstake their ETH
-     * @param amount The amount of ETH to unstake
-     */
-    function unstake(uint256 amount) external nonReentrant {
-        Stake storage userStake = stakes[msg.sender];
-        require(userStake.exists, "No stake found");
-        require(amount <= userStake.amount, "Insufficient stake");
-
-        userStake.amount -= amount;
-        
-        if (userStake.amount == 0) {
-            userStake.exists = false;
-        }
-
-        (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "ETH transfer failed");
-
-        emit Unstaked(msg.sender, amount);
     }
 
     /**
      * @notice Returns the stake information for a given user
      * @param user The address of the user
      * @return amount The staked amount
-     * @return exists Whether the stake exists
+     * @return TGbalance The TG balance
      */
-    function getStake(address user) external view returns (uint256 amount, bool exists) {
+    function getStake(address user) external view returns (uint256 amount, uint256 TGbalance) {
         Stake memory userStake = stakes[user];
-        return (userStake.amount, userStake.exists);
+        return (userStake.amount, userStake.TGbalance);
     }
 
     /**
@@ -107,46 +82,60 @@ contract TriggerXStakeRegistry is
      * @param amount The amount of ETH to remove
      * @param reason The reason for removing the stake
      */
-    function removeStake(address user, uint256 amount, string calldata reason) external onlyOwner nonReentrant {
-        Stake storage userStake = stakes[user];
-        require(userStake.exists, "No stake found");
-        require(amount <= userStake.amount, "Insufficient stake");
+    // function removeStake(address user, uint256 amount, string calldata reason) external onlyOwner nonReentrant {
+    //     Stake storage userStake = stakes[user];
+    //     require(userStake.exists, "No stake found");
+    //     require(amount <= userStake.amount, "Insufficient stake");
 
-        userStake.amount -= amount;
+    //     userStake.amount -= amount;
         
-        if (userStake.amount == 0) {
-            userStake.exists = false;
-        }
+    //     if (userStake.amount == 0) {
+    //         userStake.exists = false;
+    //     }
 
-        (bool success, ) = owner().call{value: amount}("");
+    //     (bool success, ) = owner().call{value: amount}("");
+    //     require(success, "ETH transfer failed");
+
+    //     emit StakeRemoved(user, amount, reason);
+    // }
+
+    /**
+     * @notice Allows users to claim ETH based on their TG balance
+     * @param TGAmount The amount of TG to convert to ETH
+     */
+    function claimETHForTG(uint256 TGAmount) external nonReentrant {
+        Stake storage userStake = stakes[msg.sender];
+        require(userStake.TGbalance >= TGAmount, "Insufficient TG balance");
+        // require(pool >= TGAmount * 1000, "Insufficient pool balance");
+
+        uint256 ethToReturn = TGAmount * 1000; // Convert TG to ETH (1 TG = 1000 ETH)
+        userStake.TGbalance -= TGAmount;
+        // pool -= ethToReturn;
+
+        (bool success, ) = msg.sender.call{value: ethToReturn}("");
         require(success, "ETH transfer failed");
 
-        emit StakeRemoved(user, amount, reason);
+        emit TGClaimed(msg.sender, TGAmount);
     }
 
-    // New function to claim TG
-    function claimTG() external {
-        require(pool >= TG_AMOUNT, "Insufficient pool balance");
+    /**
+     * @notice Updates TG balances when a task is completed
+     * @param keeper The address of the keeper who completed the task
+     * @param user The address of the user who created the task
+     * @param TGAmount The amount of TG to transfer
+     */
+    function updateTGBalances(address keeper, address user, uint256 TGAmount) external onlyOwner nonReentrant {
+        Stake storage userStake = stakes[user];
+        Stake storage keeperStake = stakes[keeper];
         
-        pool -= TG_AMOUNT; // Deduct from pool
+        require(userStake.TGbalance >= TGAmount, "Insufficient user TG balance");
         
-        emit TGClaimed(msg.sender, TG_AMOUNT); // Emit event for claiming TG
-    }
-
-
-    // New function to get task fee
-    function getTaskFee(uint256 amount) external {
-        require(pool >= amount, "Insufficient pool balance");
-        pool -= amount; // Deduct from pool
-
-        emit TaskFeeClaimed(msg.sender, amount); // Emit event for claiming task fee
-    }
-
-    // New function to get reward
-    function getReward(uint256 claimedTG) external {
-        uint256 reward = (claimedTG * 7) / 40000; // Calculate reward with precision
-        points[msg.sender] += claimedTG; // Allocate points based on claimed TG
-
-        emit RewardClaimed(msg.sender, reward); // Emit event for claiming reward
+        // Deduct TG from user
+        userStake.TGbalance -= TGAmount;
+        
+        // Add TG to keeper
+        keeperStake.TGbalance += TGAmount;
+        
+        emit TGTransferred(user, keeper, TGAmount);
     }
 }
