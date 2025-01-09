@@ -58,8 +58,8 @@ contract TriggerXStakeRegistry is
         Stake storage userStake = stakes[msg.sender];
         userStake.amount += amount;
         
-        // Calculate and add TG rewards (0.001 TG per ETH)
-        uint256 TGReward = (amount * 1) / 1000; // This gives 0.001 ratio
+        // Calculate and add TG rewards (0.001 ETH per TG)
+        uint256 TGReward = (amount * 1) * 1000; // This gives 0.001 ratio
         userStake.TGbalance += TGReward;
 
         emit Staked(msg.sender, amount);
@@ -108,7 +108,7 @@ contract TriggerXStakeRegistry is
         require(userStake.TGbalance >= TGAmount, "Insufficient TG balance");
         // require(pool >= TGAmount * 1000, "Insufficient pool balance");
 
-        uint256 ethToReturn = TGAmount * 1000; // Convert TG to ETH (1 TG = 1000 ETH)
+        uint256 ethToReturn = TGAmount / 1000; // Convert TG to ETH (1 ETH = 1000 TG)
         userStake.TGbalance -= TGAmount;
         // pool -= ethToReturn;
 
