@@ -13,3 +13,8 @@ deploy-avs-contracts-on-holesky: ## Deploy contracts on Holesky
 
 deploy-stake-registry: ## Deploy stake registry
 	./utils/deploy-stake-registry.sh
+
+############################# GENERATE BINDINGS #############################
+
+generate-bindings: ## Generate bindings
+	./bindings/generate-bindings.sh
