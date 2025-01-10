@@ -31,8 +31,8 @@ var (
 
 // ContractTriggerXStakeRegistryMetaData contains all meta data concerning the ContractTriggerXStakeRegistry contract.
 var ContractTriggerXStakeRegistryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"RewardClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"StakeRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Staked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TaskFeeClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Unstaked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"TG_AMOUNT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimTG\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"claimedTG\",\"type\":\"uint256\"}],\"name\":\"getReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"getTaskFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"points\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pool\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"removeStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"stake\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"stakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"unstake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
-	Bin: "0x6080604052600436101561001257600080fd5b60003560e01c80631238bf4e14610ec357806316934fc414610e6b57806316f0115b14610e4d5780631c4b774b14610dd9578063206a1ee614610d645780632e17de7814610ca5578063358b816614610c6b5780633659cfe6146109905780633c1aa7e914610974578063488b4f4c146109175780634f1ef286146105e057806352d1902d1461051c578063715018a6146104bf5780637a766460146104585780638129fc1c146102fc5780638da5cb5b146102d3578063a694fc3a146101765763f2fde38b146100e257600080fd5b34610171576020366003190112610171576100fb611009565b6101036112f3565b6001600160a01b0381161561011d5761011b9061134b565b005b60405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608490fd5b600080fd5b6020366003190112610171576004356101946002600154141561108f565b6002600155801561029957803403610254573360005260fb602052604060002060ff600182015416600014610212576101ce8282546111d8565b90555b6101dd8160fd546111d8565b60fd556040519081527f9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d60203392a260018055005b5060405161021f8161101f565b818152600160208201918183523360005260fb602052604060002090518155019051151560ff801983541691161790556101d1565b60405162461bcd60e51b815260206004820152601a60248201527f53656e7420455448206d757374206d6174636820616d6f756e740000000000006044820152606490fd5b60405162461bcd60e51b8152602060048201526012602482015271086c2dcdcdee840e6e8c2d6ca4060408aa8960731b6044820152606490fd5b346101715760003660031901126101715760c9546040516001600160a01b039091168152602090f35b346101715760003660031901126101715760005460ff8160081c16159081809261044b575b8015610434575b156103d85760ff198116600117600055816103c6575b5061036f60ff60005460081c1661035481611394565b61035d81611394565b6001805561036a81611394565b611394565b6103783361134b565b6000549061038b60ff8360081c16611394565b61039157005b61ff0019166000557f7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498602060405160018152a1005b61ffff1916610101176000558161033e565b60405162461bcd60e51b815260206004820152602e60248201527f496e697469616c697a61626c653a20636f6e747261637420697320616c72656160448201526d191e481a5b9a5d1a585b1a5e995960921b6064820152608490fd5b50303b1580156103285750600160ff821614610328565b50600160ff821610610321565b34610171576020366003190112610171576001600160a01b03610479611009565b1660005260fb602052602060406000206040516104958161101f565b815480825260019092015460ff1615159201829052604080519182526020820192909252f35b0390f35b34610171576000366003190112610171576104d86112f3565b60c980546001600160a01b031981169091556000906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a3005b34610171576000366003190112610171577f000000000000000000000000eb8358eed74f4f796ead98b63324d22e052149146001600160a01b0316300361057557602060405160008051602061150a8339815191528152f35b60405162461bcd60e51b815260206004820152603860248201527f555550535570677261646561626c653a206d757374206e6f742062652063616c60448201527f6c6564207468726f7567682064656c656761746563616c6c00000000000000006064820152608490fd5b6040366003190112610171576105f4611009565b60243567ffffffffffffffff8111610171573660238201121561017157806004013561061f81611073565b9061062d6040519283611051565b8082526020820192366024838301011161017157816000926024602093018637830101526106a97f000000000000000000000000eb8358eed74f4f796ead98b63324d22e052149146001600160a01b031661068a30821415611231565b60008051602061150a833981519152546001600160a01b031614611292565b6106b16112f3565b7f4910fdfa16fed3260ed0e7147f7cc6da11a60208b5b9406d12a635614ffd91435460ff16156106e657505061011b906113f4565b6040516352d1902d60e01b81526001600160a01b03841690602081600481855afa600091816108e3575b506107715760405162461bcd60e51b815260206004820152602e60248201527f45524331393637557067726164653a206e657720696d706c656d656e7461746960448201526d6f6e206973206e6f74205555505360901b6064820152608490fd5b60008051602061150a8339815191520361088c5761078e846113f4565b604051907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2815115801590610884575b6107c857005b833b15610833575061011b92600092839251915af46107e5611166565b604051916107f4606084611051565b602783527f416464726573733a206c6f772d6c6576656c2064656c65676174652063616c6c6020840152660819985a5b195960ca1b6040840152611492565b62461bcd60e51b815260206004820152602660248201527f416464726573733a2064656c65676174652063616c6c20746f206e6f6e2d636f6044820152651b9d1c9858dd60d21b6064820152608490fd5b5060016107c2565b60405162461bcd60e51b815260206004820152602960248201527f45524331393637557067726164653a20756e737570706f727465642070726f786044820152681a58589b195555525160ba1b6064820152608490fd5b9091506020813d60201161090f575b816108ff60209383611051565b8101031261017157519086610710565b3d91506108f2565b34610171576020366003190112610171576004356109438160fd5461093e828210156111e5565b611159565b60fd556040519081527fae8ecfb3533b83d346a9f325b0e61ccdd5a8d8aaa0fa2dbfcbea06121120da4060203392a2005b3461017157600036600319011261017157602060405160648152f35b34610171576020366003190112610171576109a9611009565b6109e27f000000000000000000000000eb8358eed74f4f796ead98b63324d22e052149146001600160a01b031661068a30821415611231565b6109ea6112f3565b6020906040516109fa8382611051565b6000815282810190601f1984013683377f4910fdfa16fed3260ed0e7147f7cc6da11a60208b5b9406d12a635614ffd91435460ff1615610a4057505061011b91506113f4565b6040516352d1902d60e01b81526001600160a01b038416908581600481855afa60009181610c3c575b50610aca5760405162461bcd60e51b815260048101879052602e60248201527f45524331393637557067726164653a206e657720696d706c656d656e7461746960448201526d6f6e206973206e6f74205555505360901b6064820152608490fd5b60008051602061150a83398151915203610be557610ae7846113f4565b604051907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2815115801590610bdd575b610b2157005b833b15610b8c575061011b9392600092839251915af4610b3f611166565b907f416464726573733a206c6f772d6c6576656c2064656c65676174652063616c6c60405193610b70606086611051565b60278552840152660819985a5b195960ca1b6040840152611492565b62461bcd60e51b815260048101859052602660248201527f416464726573733a2064656c65676174652063616c6c20746f206e6f6e2d636f6044820152651b9d1c9858dd60d21b6064820152608490fd5b506000610b1b565b60405162461bcd60e51b815260048101869052602960248201527f45524331393637557067726164653a20756e737570706f727465642070726f786044820152681a58589b195555525160ba1b6064820152608490fd5b9091508681813d8311610c64575b610c548183611051565b8101031261017157519087610a69565b503d610c4a565b34610171576020366003190112610171576001600160a01b03610c8c611009565b1660005260fc6020526020604060002054604051908152f35b3461017157602036600319011261017157600435610cc86002600154141561108f565b60026001553360005260fb60205260406000206001810190815490610cef60ff83166110db565b610d0184825461093e81831115611118565b80915515610d57575b82610d25600080808085335af1610d1f611166565b50611196565b6040519081527f0f5bb82176feb1b5e747e28471aa92156a04d9f3ab9f45f28e2d704232b93f7560203392a260018055005b60ff191690558180610d0a565b346101715760003660031901126101715760fd54610d8560648210156111e5565b6063198101908111610dc35760fd55604051606481527fbddee7230372ecc0cb1780b66efe6d1461ee2a8e5b70239f3ec20a7d85f0e92860203392a2005b634e487b7160e01b600052601160045260246000fd5b3461017157602036600319011261017157600435600781029080820460071481151715610dc3573360005260fc602052610e1960406000209182546111d8565b9055619c40604051910481527f106f923f993c2149d49b4255ff723acafa1f2d94393f561d3eda32ae348f724160203392a2005b3461017157600036600319011261017157602060fd54604051908152f35b34610171576020366003190112610171576001600160a01b03610e8c611009565b1660005260fb602052604060002060ff6001825492015416906104bb60405192839283909291602090604083019483521515910152565b3461017157606036600319011261017157610edc611009565b60243560443567ffffffffffffffff811161017157366023820112156101715780600401359267ffffffffffffffff8411610171573660248584010111610171577f10a70fabb79e2f945edb05c430e4487214db653fb7b327784d4095b6befc9ce692606091610f4a6112f3565b610f596002600154141561108f565b600260015560018060a01b0316948560005260fb60205260406000206001810190815490610f8960ff83166110db565b610f9b85825461093e81831115611118565b80915515610ffc575b5050610fc460008080808660018060a01b0360c954165af1610d1f611166565b80602460405195869485526040602086015282604086015201848401376000828201840152601f01601f19168101030190a260018055005b60ff191690558680610fa4565b600435906001600160a01b038216820361017157565b6040810190811067ffffffffffffffff82111761103b57604052565b634e487b7160e01b600052604160045260246000fd5b90601f8019910116810190811067ffffffffffffffff82111761103b57604052565b67ffffffffffffffff811161103b57601f01601f191660200190565b1561109657565b60405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c006044820152606490fd5b156110e257565b60405162461bcd60e51b815260206004820152600e60248201526d139bc81cdd185ad948199bdd5b9960921b6044820152606490fd5b1561111f57565b60405162461bcd60e51b8152602060048201526012602482015271496e73756666696369656e74207374616b6560701b6044820152606490fd5b91908203918211610dc357565b3d15611191573d9061117782611073565b916111856040519384611051565b82523d6000602084013e565b606090565b1561119d57565b60405162461bcd60e51b8152602060048201526013602482015272115512081d1c985b9cd9995c8819985a5b1959606a1b6044820152606490fd5b91908201809211610dc357565b156111ec57565b60405162461bcd60e51b815260206004820152601960248201527f496e73756666696369656e7420706f6f6c2062616c616e6365000000000000006044820152606490fd5b1561123857565b60405162461bcd60e51b815260206004820152602c60248201527f46756e6374696f6e206d7573742062652063616c6c6564207468726f7567682060448201526b19195b1959d85d1958d85b1b60a21b6064820152608490fd5b1561129957565b60405162461bcd60e51b815260206004820152602c60248201527f46756e6374696f6e206d7573742062652063616c6c6564207468726f7567682060448201526b6163746976652070726f787960a01b6064820152608490fd5b60c9546001600160a01b0316330361130757565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b60c980546001600160a01b039283166001600160a01b0319821681179092559091167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0600080a3565b1561139b57565b60405162461bcd60e51b815260206004820152602b60248201527f496e697469616c697a61626c653a20636f6e7472616374206973206e6f74206960448201526a6e697469616c697a696e6760a81b6064820152608490fd5b803b156114375760018060a01b03166bffffffffffffffffffffffff60a01b60008051602061150a83398151915254161760008051602061150a83398151915255565b60405162461bcd60e51b815260206004820152602d60248201527f455243313936373a206e657720696d706c656d656e746174696f6e206973206e60448201526c1bdd08184818dbdb9d1c9858dd609a1b6064820152608490fd5b9091901561149e575090565b8151156114ae5750805190602001fd5b6040519062461bcd60e51b8252602060048301528181519182602483015260005b8381106114f15750508160006044809484010152601f80199101168101030190fd5b602082820181015160448784010152859350016114cf56fe360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbca264697066735822122029610beffaf22d21b0bc28df4392e45f0a9c7678b5280958391af9ef5891193364736f6c634300081a0033",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"RewardClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"StakeRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Staked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"keeper\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TaskFeeClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"Unstaked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"TGAmount\",\"type\":\"uint256\"}],\"name\":\"claimETHForTG\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"TGbalance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"points\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"stake\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"stakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"TGbalance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"keeper\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"TGAmount\",\"type\":\"uint256\"}],\"name\":\"updateTGBalances\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
+	Bin: "0x6080604052600436101561001257600080fd5b60003560e01c8063168d6c5014610d3c57806316934fc414610cf9578063358b816614610cbf5780633659cfe6146109e45780634f1ef286146106ad57806352d1902d146105e9578063715018a61461058c5780637a766460146105095780637da49f3a146103f45780638129fc1c146102985780638da5cb5b1461026f578063a694fc3a1461013f5763f2fde38b146100ab57600080fd5b3461013a57602036600319011261013a576100c4610e6b565b6100cc611017565b6001600160a01b038116156100e6576100e49061106f565b005b60405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608490fd5b600080fd5b602036600319011261013a5760043561015d60026001541415610ebf565b60026001558015610235578034036101f0573360005260fb602052604060002061018882825461100a565b81558180046001036101da576001016101a66103e88304825461100a565b90556040519081527f9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d60203392a260018055005b634e487b7160e01b600052601160045260246000fd5b60405162461bcd60e51b815260206004820152601a60248201527f53656e7420455448206d757374206d6174636820616d6f756e740000000000006044820152606490fd5b60405162461bcd60e51b8152602060048201526012602482015271086c2dcdcdee840e6e8c2d6ca4060408aa8960731b6044820152606490fd5b3461013a57600036600319011261013a5760c9546040516001600160a01b039091168152602090f35b3461013a57600036600319011261013a5760005460ff8160081c1615908180926103e7575b80156103d0575b156103745760ff19811660011760005581610362575b5061030b60ff60005460081c166102f0816110b8565b6102f9816110b8565b60018055610306816110b8565b6110b8565b6103143361106f565b6000549061032760ff8360081c166110b8565b61032d57005b61ff0019166000557f7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498602060405160018152a1005b61ffff191661010117600055816102da565b60405162461bcd60e51b815260206004820152602e60248201527f496e697469616c697a61626c653a20636f6e747261637420697320616c72656160448201526d191e481a5b9a5d1a585b1a5e995960921b6064820152608490fd5b50303b1580156102c45750600160ff8216146102c4565b50600160ff8216106102bd565b3461013a57606036600319011261013a5761040d610e6b565b6024356001600160a01b0381169081900361013a576044359161042e611017565b61043d60026001541415610ebf565b60026001558160005260fb60205260406000209060018060a01b0316928360005260fb6020526001604060002092019081548181106104c4577fa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670936020936104a784600194610f0b565b9055016104b582825461100a565b9055604051908152a360018055005b60405162461bcd60e51b815260206004820152601c60248201527f496e73756666696369656e7420757365722054472062616c616e6365000000006044820152606490fd5b3461013a57602036600319011261013a576001600160a01b0361052a610e6b565b1660005260fb6020526040600020604051906040820182811067ffffffffffffffff82111761057657604092602091845260018354938483520154918291015282519182526020820152f35b634e487b7160e01b600052604160045260246000fd5b3461013a57600036600319011261013a576105a5611017565b60c980546001600160a01b031981169091556000906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a3005b3461013a57600036600319011261013a577f000000000000000000000000c921e4cbb960166eb457602a811643b1bcccde8a6001600160a01b0316300361064257602060405160008051602061122e8339815191528152f35b60405162461bcd60e51b815260206004820152603860248201527f555550535570677261646561626c653a206d757374206e6f742062652063616c60448201527f6c6564207468726f7567682064656c656761746563616c6c00000000000000006064820152608490fd5b604036600319011261013a576106c1610e6b565b60243567ffffffffffffffff811161013a573660238201121561013a5780600401356106ec81610ea3565b906106fa6040519283610e81565b8082526020820192366024838301011161013a57816000926024602093018637830101526107767f000000000000000000000000c921e4cbb960166eb457602a811643b1bcccde8a6001600160a01b031661075730821415610f48565b60008051602061122e833981519152546001600160a01b031614610fa9565b61077e611017565b7f4910fdfa16fed3260ed0e7147f7cc6da11a60208b5b9406d12a635614ffd91435460ff16156107b35750506100e490611118565b6040516352d1902d60e01b81526001600160a01b03841690602081600481855afa600091816109b0575b5061083e5760405162461bcd60e51b815260206004820152602e60248201527f45524331393637557067726164653a206e657720696d706c656d656e7461746960448201526d6f6e206973206e6f74205555505360901b6064820152608490fd5b60008051602061122e833981519152036109595761085b84611118565b604051907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2815115801590610951575b61089557005b833b1561090057506100e492600092839251915af46108b2610f18565b604051916108c1606084610e81565b602783527f416464726573733a206c6f772d6c6576656c2064656c65676174652063616c6c6020840152660819985a5b195960ca1b60408401526111b6565b62461bcd60e51b815260206004820152602660248201527f416464726573733a2064656c65676174652063616c6c20746f206e6f6e2d636f6044820152651b9d1c9858dd60d21b6064820152608490fd5b50600161088f565b60405162461bcd60e51b815260206004820152602960248201527f45524331393637557067726164653a20756e737570706f727465642070726f786044820152681a58589b195555525160ba1b6064820152608490fd5b9091506020813d6020116109dc575b816109cc60209383610e81565b8101031261013a575190866107dd565b3d91506109bf565b3461013a57602036600319011261013a576109fd610e6b565b610a367f000000000000000000000000c921e4cbb960166eb457602a811643b1bcccde8a6001600160a01b031661075730821415610f48565b610a3e611017565b602090604051610a4e8382610e81565b6000815282810190601f1984013683377f4910fdfa16fed3260ed0e7147f7cc6da11a60208b5b9406d12a635614ffd91435460ff1615610a945750506100e49150611118565b6040516352d1902d60e01b81526001600160a01b038416908581600481855afa60009181610c90575b50610b1e5760405162461bcd60e51b815260048101879052602e60248201527f45524331393637557067726164653a206e657720696d706c656d656e7461746960448201526d6f6e206973206e6f74205555505360901b6064820152608490fd5b60008051602061122e83398151915203610c3957610b3b84611118565b604051907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2815115801590610c31575b610b7557005b833b15610be057506100e49392600092839251915af4610b93610f18565b907f416464726573733a206c6f772d6c6576656c2064656c65676174652063616c6c60405193610bc4606086610e81565b60278552840152660819985a5b195960ca1b60408401526111b6565b62461bcd60e51b815260048101859052602660248201527f416464726573733a2064656c65676174652063616c6c20746f206e6f6e2d636f6044820152651b9d1c9858dd60d21b6064820152608490fd5b506000610b6f565b60405162461bcd60e51b815260048101869052602960248201527f45524331393637557067726164653a20756e737570706f727465642070726f786044820152681a58589b195555525160ba1b6064820152608490fd5b9091508681813d8311610cb8575b610ca88183610e81565b8101031261013a57519087610abd565b503d610c9e565b3461013a57602036600319011261013a576001600160a01b03610ce0610e6b565b1660005260fc6020526020604060002054604051908152f35b3461013a57602036600319011261013a576001600160a01b03610d1a610e6b565b1660005260fb6020526040806000206001815491015482519182526020820152f35b3461013a57602036600319011261013a57600435610d5f60026001541415610ebf565b60026001553360005260fb6020526001604060002001805490828210610e26576103e88302908382046103e814841517156101da5760008080938193610da6888098610f0b565b9055335af1610db3610f18565b5015610deb576040519081527fbddee7230372ecc0cb1780b66efe6d1461ee2a8e5b70239f3ec20a7d85f0e92860203392a260018055005b60405162461bcd60e51b8152602060048201526013602482015272115512081d1c985b9cd9995c8819985a5b1959606a1b6044820152606490fd5b60405162461bcd60e51b815260206004820152601760248201527f496e73756666696369656e742054472062616c616e63650000000000000000006044820152606490fd5b600435906001600160a01b038216820361013a57565b90601f8019910116810190811067ffffffffffffffff82111761057657604052565b67ffffffffffffffff811161057657601f01601f191660200190565b15610ec657565b60405162461bcd60e51b815260206004820152601f60248201527f5265656e7472616e637947756172643a207265656e7472616e742063616c6c006044820152606490fd5b919082039182116101da57565b3d15610f43573d90610f2982610ea3565b91610f376040519384610e81565b82523d6000602084013e565b606090565b15610f4f57565b60405162461bcd60e51b815260206004820152602c60248201527f46756e6374696f6e206d7573742062652063616c6c6564207468726f7567682060448201526b19195b1959d85d1958d85b1b60a21b6064820152608490fd5b15610fb057565b60405162461bcd60e51b815260206004820152602c60248201527f46756e6374696f6e206d7573742062652063616c6c6564207468726f7567682060448201526b6163746976652070726f787960a01b6064820152608490fd5b919082018092116101da57565b60c9546001600160a01b0316330361102b57565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b60c980546001600160a01b039283166001600160a01b0319821681179092559091167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0600080a3565b156110bf57565b60405162461bcd60e51b815260206004820152602b60248201527f496e697469616c697a61626c653a20636f6e7472616374206973206e6f74206960448201526a6e697469616c697a696e6760a81b6064820152608490fd5b803b1561115b5760018060a01b03166bffffffffffffffffffffffff60a01b60008051602061122e83398151915254161760008051602061122e83398151915255565b60405162461bcd60e51b815260206004820152602d60248201527f455243313936373a206e657720696d706c656d656e746174696f6e206973206e60448201526c1bdd08184818dbdb9d1c9858dd609a1b6064820152608490fd5b909190156111c2575090565b8151156111d25750805190602001fd5b6040519062461bcd60e51b8252602060048301528181519182602483015260005b8381106112155750508160006044809484010152601f80199101168101030190fd5b602082820181015160448784010152859350016111f356fe360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbca26469706673582212201b5da847ad3583748298210dfae208e748b5539046a936c842c61d8b73fbf7a464736f6c634300081a0033",
 }
 
 // ContractTriggerXStakeRegistryABI is the input ABI used to generate the binding from.
@@ -69,38 +69,28 @@ type ContractTriggerXStakeRegistryMethods interface {
 
 // ContractTriggerXStakeRegistryCalls is an auto generated interface that defines the call methods available for an Ethereum contract.
 type ContractTriggerXStakeRegistryCalls interface {
-	TGAMOUNT(opts *bind.CallOpts) (*big.Int, error)
-
 	GetStake(opts *bind.CallOpts, user common.Address) (struct {
-		Amount *big.Int
-		Exists bool
+		Amount    *big.Int
+		TGbalance *big.Int
 	}, error)
 
 	Owner(opts *bind.CallOpts) (common.Address, error)
 
 	Points(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error)
 
-	Pool(opts *bind.CallOpts) (*big.Int, error)
-
 	ProxiableUUID(opts *bind.CallOpts) ([32]byte, error)
 
 	Stakes(opts *bind.CallOpts, arg0 common.Address) (struct {
-		Amount *big.Int
-		Exists bool
+		Amount    *big.Int
+		TGbalance *big.Int
 	}, error)
 }
 
 // ContractTriggerXStakeRegistryTransacts is an auto generated interface that defines the transact methods available for an Ethereum contract.
 type ContractTriggerXStakeRegistryTransacts interface {
-	ClaimTG(opts *bind.TransactOpts) (*types.Transaction, error)
-
-	GetReward(opts *bind.TransactOpts, claimedTG *big.Int) (*types.Transaction, error)
-
-	GetTaskFee(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error)
+	ClaimETHForTG(opts *bind.TransactOpts, TGAmount *big.Int) (*types.Transaction, error)
 
 	Initialize(opts *bind.TransactOpts) (*types.Transaction, error)
-
-	RemoveStake(opts *bind.TransactOpts, user common.Address, amount *big.Int, reason string) (*types.Transaction, error)
 
 	RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error)
 
@@ -108,7 +98,7 @@ type ContractTriggerXStakeRegistryTransacts interface {
 
 	TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error)
 
-	Unstake(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error)
+	UpdateTGBalances(opts *bind.TransactOpts, keeper common.Address, user common.Address, TGAmount *big.Int) (*types.Transaction, error)
 
 	UpgradeTo(opts *bind.TransactOpts, newImplementation common.Address) (*types.Transaction, error)
 
@@ -148,6 +138,10 @@ type ContractTriggerXStakeRegistryFilters interface {
 	FilterTGClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerXStakeRegistryTGClaimedIterator, error)
 	WatchTGClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerXStakeRegistryTGClaimed, user []common.Address) (event.Subscription, error)
 	ParseTGClaimed(log types.Log) (*ContractTriggerXStakeRegistryTGClaimed, error)
+
+	FilterTGTransferred(opts *bind.FilterOpts, user []common.Address, keeper []common.Address) (*ContractTriggerXStakeRegistryTGTransferredIterator, error)
+	WatchTGTransferred(opts *bind.WatchOpts, sink chan<- *ContractTriggerXStakeRegistryTGTransferred, user []common.Address, keeper []common.Address) (event.Subscription, error)
+	ParseTGTransferred(log types.Log) (*ContractTriggerXStakeRegistryTGTransferred, error)
 
 	FilterTaskFeeClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerXStakeRegistryTaskFeeClaimedIterator, error)
 	WatchTaskFeeClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerXStakeRegistryTaskFeeClaimed, user []common.Address) (event.Subscription, error)
@@ -316,57 +310,26 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorRaw
 	return _ContractTriggerXStakeRegistry.Contract.contract.Transact(opts, method, params...)
 }
 
-// TGAMOUNT is a free data retrieval call binding the contract method 0x3c1aa7e9.
-//
-// Solidity: function TG_AMOUNT() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) TGAMOUNT(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractTriggerXStakeRegistry.contract.Call(opts, &out, "TG_AMOUNT")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// TGAMOUNT is a free data retrieval call binding the contract method 0x3c1aa7e9.
-//
-// Solidity: function TG_AMOUNT() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) TGAMOUNT() (*big.Int, error) {
-	return _ContractTriggerXStakeRegistry.Contract.TGAMOUNT(&_ContractTriggerXStakeRegistry.CallOpts)
-}
-
-// TGAMOUNT is a free data retrieval call binding the contract method 0x3c1aa7e9.
-//
-// Solidity: function TG_AMOUNT() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession) TGAMOUNT() (*big.Int, error) {
-	return _ContractTriggerXStakeRegistry.Contract.TGAMOUNT(&_ContractTriggerXStakeRegistry.CallOpts)
-}
-
 // GetStake is a free data retrieval call binding the contract method 0x7a766460.
 //
-// Solidity: function getStake(address user) view returns(uint256 amount, bool exists)
+// Solidity: function getStake(address user) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) GetStake(opts *bind.CallOpts, user common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	var out []interface{}
 	err := _ContractTriggerXStakeRegistry.contract.Call(opts, &out, "getStake", user)
 
 	outstruct := new(struct {
-		Amount *big.Int
-		Exists bool
+		Amount    *big.Int
+		TGbalance *big.Int
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
 	outstruct.Amount = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-	outstruct.Exists = *abi.ConvertType(out[1], new(bool)).(*bool)
+	outstruct.TGbalance = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
 
 	return *outstruct, err
 
@@ -374,20 +337,20 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) GetSt
 
 // GetStake is a free data retrieval call binding the contract method 0x7a766460.
 //
-// Solidity: function getStake(address user) view returns(uint256 amount, bool exists)
+// Solidity: function getStake(address user) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) GetStake(user common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	return _ContractTriggerXStakeRegistry.Contract.GetStake(&_ContractTriggerXStakeRegistry.CallOpts, user)
 }
 
 // GetStake is a free data retrieval call binding the contract method 0x7a766460.
 //
-// Solidity: function getStake(address user) view returns(uint256 amount, bool exists)
+// Solidity: function getStake(address user) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession) GetStake(user common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	return _ContractTriggerXStakeRegistry.Contract.GetStake(&_ContractTriggerXStakeRegistry.CallOpts, user)
 }
@@ -454,37 +417,6 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession
 	return _ContractTriggerXStakeRegistry.Contract.Points(&_ContractTriggerXStakeRegistry.CallOpts, arg0)
 }
 
-// Pool is a free data retrieval call binding the contract method 0x16f0115b.
-//
-// Solidity: function pool() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) Pool(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractTriggerXStakeRegistry.contract.Call(opts, &out, "pool")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// Pool is a free data retrieval call binding the contract method 0x16f0115b.
-//
-// Solidity: function pool() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) Pool() (*big.Int, error) {
-	return _ContractTriggerXStakeRegistry.Contract.Pool(&_ContractTriggerXStakeRegistry.CallOpts)
-}
-
-// Pool is a free data retrieval call binding the contract method 0x16f0115b.
-//
-// Solidity: function pool() view returns(uint256)
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession) Pool() (*big.Int, error) {
-	return _ContractTriggerXStakeRegistry.Contract.Pool(&_ContractTriggerXStakeRegistry.CallOpts)
-}
-
 // ProxiableUUID is a free data retrieval call binding the contract method 0x52d1902d.
 //
 // Solidity: function proxiableUUID() view returns(bytes32)
@@ -518,24 +450,24 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession
 
 // Stakes is a free data retrieval call binding the contract method 0x16934fc4.
 //
-// Solidity: function stakes(address ) view returns(uint256 amount, bool exists)
+// Solidity: function stakes(address ) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) Stakes(opts *bind.CallOpts, arg0 common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	var out []interface{}
 	err := _ContractTriggerXStakeRegistry.contract.Call(opts, &out, "stakes", arg0)
 
 	outstruct := new(struct {
-		Amount *big.Int
-		Exists bool
+		Amount    *big.Int
+		TGbalance *big.Int
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
 	outstruct.Amount = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-	outstruct.Exists = *abi.ConvertType(out[1], new(bool)).(*bool)
+	outstruct.TGbalance = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
 
 	return *outstruct, err
 
@@ -543,85 +475,43 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCaller) Stake
 
 // Stakes is a free data retrieval call binding the contract method 0x16934fc4.
 //
-// Solidity: function stakes(address ) view returns(uint256 amount, bool exists)
+// Solidity: function stakes(address ) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) Stakes(arg0 common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	return _ContractTriggerXStakeRegistry.Contract.Stakes(&_ContractTriggerXStakeRegistry.CallOpts, arg0)
 }
 
 // Stakes is a free data retrieval call binding the contract method 0x16934fc4.
 //
-// Solidity: function stakes(address ) view returns(uint256 amount, bool exists)
+// Solidity: function stakes(address ) view returns(uint256 amount, uint256 TGbalance)
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryCallerSession) Stakes(arg0 common.Address) (struct {
-	Amount *big.Int
-	Exists bool
+	Amount    *big.Int
+	TGbalance *big.Int
 }, error) {
 	return _ContractTriggerXStakeRegistry.Contract.Stakes(&_ContractTriggerXStakeRegistry.CallOpts, arg0)
 }
 
-// ClaimTG is a paid mutator transaction binding the contract method 0x206a1ee6.
+// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
 //
-// Solidity: function claimTG() returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) ClaimTG(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "claimTG")
+// Solidity: function claimETHForTG(uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) ClaimETHForTG(opts *bind.TransactOpts, TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "claimETHForTG", TGAmount)
 }
 
-// ClaimTG is a paid mutator transaction binding the contract method 0x206a1ee6.
+// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
 //
-// Solidity: function claimTG() returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) ClaimTG() (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.ClaimTG(&_ContractTriggerXStakeRegistry.TransactOpts)
+// Solidity: function claimETHForTG(uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) ClaimETHForTG(TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.Contract.ClaimETHForTG(&_ContractTriggerXStakeRegistry.TransactOpts, TGAmount)
 }
 
-// ClaimTG is a paid mutator transaction binding the contract method 0x206a1ee6.
+// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
 //
-// Solidity: function claimTG() returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) ClaimTG() (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.ClaimTG(&_ContractTriggerXStakeRegistry.TransactOpts)
-}
-
-// GetReward is a paid mutator transaction binding the contract method 0x1c4b774b.
-//
-// Solidity: function getReward(uint256 claimedTG) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) GetReward(opts *bind.TransactOpts, claimedTG *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "getReward", claimedTG)
-}
-
-// GetReward is a paid mutator transaction binding the contract method 0x1c4b774b.
-//
-// Solidity: function getReward(uint256 claimedTG) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) GetReward(claimedTG *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.GetReward(&_ContractTriggerXStakeRegistry.TransactOpts, claimedTG)
-}
-
-// GetReward is a paid mutator transaction binding the contract method 0x1c4b774b.
-//
-// Solidity: function getReward(uint256 claimedTG) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) GetReward(claimedTG *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.GetReward(&_ContractTriggerXStakeRegistry.TransactOpts, claimedTG)
-}
-
-// GetTaskFee is a paid mutator transaction binding the contract method 0x488b4f4c.
-//
-// Solidity: function getTaskFee(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) GetTaskFee(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "getTaskFee", amount)
-}
-
-// GetTaskFee is a paid mutator transaction binding the contract method 0x488b4f4c.
-//
-// Solidity: function getTaskFee(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) GetTaskFee(amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.GetTaskFee(&_ContractTriggerXStakeRegistry.TransactOpts, amount)
-}
-
-// GetTaskFee is a paid mutator transaction binding the contract method 0x488b4f4c.
-//
-// Solidity: function getTaskFee(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) GetTaskFee(amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.GetTaskFee(&_ContractTriggerXStakeRegistry.TransactOpts, amount)
+// Solidity: function claimETHForTG(uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) ClaimETHForTG(TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.Contract.ClaimETHForTG(&_ContractTriggerXStakeRegistry.TransactOpts, TGAmount)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0x8129fc1c.
@@ -643,27 +533,6 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) Init
 // Solidity: function initialize() returns()
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) Initialize() (*types.Transaction, error) {
 	return _ContractTriggerXStakeRegistry.Contract.Initialize(&_ContractTriggerXStakeRegistry.TransactOpts)
-}
-
-// RemoveStake is a paid mutator transaction binding the contract method 0x1238bf4e.
-//
-// Solidity: function removeStake(address user, uint256 amount, string reason) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) RemoveStake(opts *bind.TransactOpts, user common.Address, amount *big.Int, reason string) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "removeStake", user, amount, reason)
-}
-
-// RemoveStake is a paid mutator transaction binding the contract method 0x1238bf4e.
-//
-// Solidity: function removeStake(address user, uint256 amount, string reason) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) RemoveStake(user common.Address, amount *big.Int, reason string) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.RemoveStake(&_ContractTriggerXStakeRegistry.TransactOpts, user, amount, reason)
-}
-
-// RemoveStake is a paid mutator transaction binding the contract method 0x1238bf4e.
-//
-// Solidity: function removeStake(address user, uint256 amount, string reason) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) RemoveStake(user common.Address, amount *big.Int, reason string) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.RemoveStake(&_ContractTriggerXStakeRegistry.TransactOpts, user, amount, reason)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -729,25 +598,25 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSes
 	return _ContractTriggerXStakeRegistry.Contract.TransferOwnership(&_ContractTriggerXStakeRegistry.TransactOpts, newOwner)
 }
 
-// Unstake is a paid mutator transaction binding the contract method 0x2e17de78.
+// UpdateTGBalances is a paid mutator transaction binding the contract method 0x7da49f3a.
 //
-// Solidity: function unstake(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) Unstake(opts *bind.TransactOpts, amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "unstake", amount)
+// Solidity: function updateTGBalances(address keeper, address user, uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactor) UpdateTGBalances(opts *bind.TransactOpts, keeper common.Address, user common.Address, TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.contract.Transact(opts, "updateTGBalances", keeper, user, TGAmount)
 }
 
-// Unstake is a paid mutator transaction binding the contract method 0x2e17de78.
+// UpdateTGBalances is a paid mutator transaction binding the contract method 0x7da49f3a.
 //
-// Solidity: function unstake(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) Unstake(amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.Unstake(&_ContractTriggerXStakeRegistry.TransactOpts, amount)
+// Solidity: function updateTGBalances(address keeper, address user, uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistrySession) UpdateTGBalances(keeper common.Address, user common.Address, TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.Contract.UpdateTGBalances(&_ContractTriggerXStakeRegistry.TransactOpts, keeper, user, TGAmount)
 }
 
-// Unstake is a paid mutator transaction binding the contract method 0x2e17de78.
+// UpdateTGBalances is a paid mutator transaction binding the contract method 0x7da49f3a.
 //
-// Solidity: function unstake(uint256 amount) returns()
-func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) Unstake(amount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerXStakeRegistry.Contract.Unstake(&_ContractTriggerXStakeRegistry.TransactOpts, amount)
+// Solidity: function updateTGBalances(address keeper, address user, uint256 TGAmount) returns()
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryTransactorSession) UpdateTGBalances(keeper common.Address, user common.Address, TGAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerXStakeRegistry.Contract.UpdateTGBalances(&_ContractTriggerXStakeRegistry.TransactOpts, keeper, user, TGAmount)
 }
 
 // UpgradeTo is a paid mutator transaction binding the contract method 0x3659cfe6.
@@ -1933,6 +1802,160 @@ func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryFilterer) Wat
 func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryFilterer) ParseTGClaimed(log types.Log) (*ContractTriggerXStakeRegistryTGClaimed, error) {
 	event := new(ContractTriggerXStakeRegistryTGClaimed)
 	if err := _ContractTriggerXStakeRegistry.contract.UnpackLog(event, "TGClaimed", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractTriggerXStakeRegistryTGTransferredIterator is returned from FilterTGTransferred and is used to iterate over the raw logs and unpacked data for TGTransferred events raised by the ContractTriggerXStakeRegistry contract.
+type ContractTriggerXStakeRegistryTGTransferredIterator struct {
+	Event *ContractTriggerXStakeRegistryTGTransferred // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractTriggerXStakeRegistryTGTransferredIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractTriggerXStakeRegistryTGTransferred)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractTriggerXStakeRegistryTGTransferred)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractTriggerXStakeRegistryTGTransferredIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractTriggerXStakeRegistryTGTransferredIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractTriggerXStakeRegistryTGTransferred represents a TGTransferred event raised by the ContractTriggerXStakeRegistry contract.
+type ContractTriggerXStakeRegistryTGTransferred struct {
+	User   common.Address
+	Keeper common.Address
+	Amount *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterTGTransferred is a free log retrieval operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
+//
+// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryFilterer) FilterTGTransferred(opts *bind.FilterOpts, user []common.Address, keeper []common.Address) (*ContractTriggerXStakeRegistryTGTransferredIterator, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+	var keeperRule []interface{}
+	for _, keeperItem := range keeper {
+		keeperRule = append(keeperRule, keeperItem)
+	}
+
+	logs, sub, err := _ContractTriggerXStakeRegistry.contract.FilterLogs(opts, "TGTransferred", userRule, keeperRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractTriggerXStakeRegistryTGTransferredIterator{contract: _ContractTriggerXStakeRegistry.contract, event: "TGTransferred", logs: logs, sub: sub}, nil
+}
+
+// WatchTGTransferred is a free log subscription operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
+//
+// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryFilterer) WatchTGTransferred(opts *bind.WatchOpts, sink chan<- *ContractTriggerXStakeRegistryTGTransferred, user []common.Address, keeper []common.Address) (event.Subscription, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+	var keeperRule []interface{}
+	for _, keeperItem := range keeper {
+		keeperRule = append(keeperRule, keeperItem)
+	}
+
+	logs, sub, err := _ContractTriggerXStakeRegistry.contract.WatchLogs(opts, "TGTransferred", userRule, keeperRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractTriggerXStakeRegistryTGTransferred)
+				if err := _ContractTriggerXStakeRegistry.contract.UnpackLog(event, "TGTransferred", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseTGTransferred is a log parse operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
+//
+// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
+func (_ContractTriggerXStakeRegistry *ContractTriggerXStakeRegistryFilterer) ParseTGTransferred(log types.Log) (*ContractTriggerXStakeRegistryTGTransferred, error) {
+	event := new(ContractTriggerXStakeRegistryTGTransferred)
+	if err := _ContractTriggerXStakeRegistry.contract.UnpackLog(event, "TGTransferred", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

@@ -2,9 +2,9 @@
 pragma solidity ^0.8.26;
 
 import "./interfaces/ITriggerXTaskManager.sol";
+import "./interfaces/ITriggerXServiceManager.sol";
 import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import {Pausable} from "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
-import {IPauserRegistry} from "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";
 
 import {ServiceManagerBase, IAVSDirectory, IRewardsCoordinator, IServiceManager, ISignatureUtils} from "@eigenlayer-middleware/ServiceManagerBase.sol";
 import {BLSSignatureChecker} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
@@ -13,30 +13,22 @@ import {IStakeRegistry} from "@eigenlayer-middleware/interfaces/IStakeRegistry.s
 
 
 contract TriggerXServiceManager is
+    Pausable,
+    BLSSignatureChecker,
     ServiceManagerBase,
-    BLSSignatureChecker, 
-    Pausable
+    ITriggerXServiceManager
 {
     using EnumerableSet for EnumerableSet.AddressSet;
 
-    event KeeperAdded(address indexed operator);
-    event KeeperRemoved(address indexed operator);
-    event TaskManagerSet(address indexed oldTaskManager, address indexed newTaskManager);
-    event TaskValidatorSet(address indexed oldTaskValidator, address indexed newTaskValidator);
-    event QuorumManagerSet(address indexed oldQuorumManager, address indexed newQuorumManager);
-    event TaskManagerContractUpdated(address indexed oldTaskManager, address indexed newTaskManager);
-    event KeeperBlacklisted(address indexed operator);
-    event KeeperUnblacklisted(address indexed operator);
-
     EnumerableSet.AddressSet private _registeredOperators;
 
-    mapping(address => bool) public isBlackListed;
+    mapping(address => bool) public override isBlackListed;
 
-    address public taskManager;
-    address public taskValidator;
-    address public quorumManager;
+    address public override taskManager;
+    address public override taskValidator;
+    address public override quorumManager;
 
-    ITriggerXTaskManager public taskManagerContract;
+    ITriggerXTaskManager public override taskManagerContract;
 
     modifier onlyTaskManagerContract() {
         require(
@@ -49,25 +41,26 @@ contract TriggerXServiceManager is
         IAVSDirectory _avsDirectory,
         IRewardsCoordinator _rewardsCoordinator,
         IRegistryCoordinator _registryCoordinator,
-        IStakeRegistry _stakeRegistry       
+        IStakeRegistry _stakeRegistry
     ) 
         BLSSignatureChecker(_registryCoordinator)
-        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry) 
+        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry)
+        Pausable()
     {
         _disableInitializers();
     }
 
     function initialize(
         ITriggerXTaskManager _taskManagerContract,
-        IPauserRegistry _pauserRegistry,
-        uint256 _initialPausedStatus,
+        // IPauserRegistry _pauserRegistry,
+        // uint256 _initialPausedStatus,
         address initialOwner,
         address rewardsInitiator,
         address _taskManager,
         address _taskValidator,
         address _quorumManager
     ) public initializer {
-        _initializePauser(_pauserRegistry, _initialPausedStatus);
+        // __Pausable_init(_pauserRegistry);
         _transferOwnership(initialOwner);
         __ServiceManagerBase_init(initialOwner, rewardsInitiator);
 
@@ -77,53 +70,53 @@ contract TriggerXServiceManager is
         quorumManager = _quorumManager;
     }
 
-    function setTaskManager(address _taskManager) external onlyOwner {
+    function setTaskManager(address _taskManager) external override onlyOwner {
         address oldTaskManager = taskManager;
         taskManager = _taskManager;
         emit TaskManagerSet(oldTaskManager, _taskManager);
     }
 
-    function setTaskValidator(address _taskValidator) external onlyOwner {
+    function setTaskValidator(address _taskValidator) external override onlyOwner {
         address oldTaskValidator = taskValidator;
         taskValidator = _taskValidator;
         emit TaskValidatorSet(oldTaskValidator, _taskValidator);
     }
 
-    function setQuorumManager(address _quorumManager) external onlyOwner {
+    function setQuorumManager(address _quorumManager) external override onlyOwner {
         address oldQuorumManager = quorumManager;
         quorumManager = _quorumManager;
         emit QuorumManagerSet(oldQuorumManager, _quorumManager);
     }
 
-    function updateTaskManager(address _taskManager) external onlyOwner {
+    function updateTaskManager(address _taskManager) external override onlyOwner {
         address oldTaskManager = address(taskManagerContract);
         taskManagerContract = ITriggerXTaskManager(_taskManager);
         emit TaskManagerContractUpdated(oldTaskManager, _taskManager);
     }
 
-    function registerKeeperToTriggerX(
+    function registerOperatorToAVS(
         address operator,
         ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
-    ) public {
+    ) public override(ServiceManagerBase, ITriggerXServiceManager) onlyOwner {
         _avsDirectory.registerOperatorToAVS(operator, operatorSignature);
         _registeredOperators.add(operator);
         isBlackListed[operator] = false;
         emit KeeperAdded(operator);
     }
 
-    function deregisterKeeperFromTriggerX(address operator) external {
+    function deregisterOperatorFromAVS(address operator) public override(ServiceManagerBase, ITriggerXServiceManager) onlyOwner {
         _avsDirectory.deregisterOperatorFromAVS(operator);
         _registeredOperators.remove(operator);
         isBlackListed[operator] = false;
         emit KeeperRemoved(operator);
     }
 
-    function blacklistKeeper(address _operator) external onlyOwner {
+    function blacklistKeeper(address _operator) external override onlyOwner {
         isBlackListed[_operator] = true;
         emit KeeperBlacklisted(_operator);
     }
 
-    function unblacklistKeeper(address _operator) external onlyOwner {
+    function unblacklistKeeper(address _operator) external override onlyOwner {
         isBlackListed[_operator] = false;
         emit KeeperUnblacklisted(_operator);
     }

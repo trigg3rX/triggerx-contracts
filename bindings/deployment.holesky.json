@@ -1,33 +1,33 @@
 {
-  "proxyAdmin": "0xf1F9cAE69448d74F1c4E6C4d369f9dDBB7bd77cE",
-  "pauserRegistry": "0xd2c1DEd9ea391CB6f893B96EF1f5592eBe34Dd54",
+  "proxyAdmin": "0x705327658C850F7456aE52c5788ca982885b6aB3",
+  "pauserRegistry": "0xaa8666dED470DEbBBE19C77C7A81Be6FE5DF5050",
   "indexRegistry": {
-    "proxy": "0xfAc81c0F27F077058A8528105993Ebb569e69890",
-    "implementation": "0x28c4514668406697862e362c5029CBc25FBC7E75"
+    "proxy": "0xBc2fC30aA2C43eAeF628Cd522755887752f58112",
+    "implementation": "0x00C90180d73e22F31253571F8Be6F9e28E45Be67"
   },
   "stakeRegistry": {
-    "proxy": "0x4743Cde806fCC36381BeDf5F7Faa960cB9ee832d",
-    "implementation": "0xA52B5BBf6d892e026c01ACFC39D6B09F93Dfc003"
+    "proxy": "0xff6De6eA349E8b59Aca720EB3fbb2c6552E266e0",
+    "implementation": "0x47d31bc1384b6bbC3e7aAd733e525d3597fa6396"
   },
   "apkRegistry": {
-    "proxy": "0x7DD7482340b9212566A3d676687f261142f42603",
-    "implementation": "0xa9bbd0e295E556B80A5a6dEA33e55B15557E19aE"
+    "proxy": "0x855b96FBf39b92ACeA95a5f2a9fA5B016f53e4A8",
+    "implementation": "0xe80d3c15DcD6eEF7c33AeC395b5973C5FF3Ce330"
   },
   "socketRegistry": {
-    "proxy": "0x580446a5adE9D06d7b1d177e73267157Dc131326",
-    "implementation": "0xdB1281ecc171CcF20A1B928D10224640c395Ec1d"
+    "proxy": "0xcbD465a5A8eA8d5FD1599646200c1432e77ab113",
+    "implementation": "0xDBd62baf33021e0d8DDaA90BC8377f76588A0ACD"
   },
   "registryCoordinator": {
-    "proxy": "0xA55425aA41E77C2752126de812C4307c71B779F5",
-    "implementation": "0xd04939583eEA52EDC8794fc7cF3AD33c535eDB17"
+    "proxy": "0xAb42fAe90D4aC5DF10bC069b132203ef566ACC59",
+    "implementation": "0xc63a483d689b489DD0c19a51052475f56BC699d1"
   },
-  "operatorStateRetriever": "0xbACC54eF8C49974E2d3D69e2e1bf32d7F233f2a4",
+  "operatorStateRetriever": "0x08048e9Cf1EdA2EABC61629776bFa48EcaBc1a34",
   "triggerXServiceManager": {
-    "proxy": "0x943129eD1abF024Bf6696EFf780a6fE55Fffc70E",
-    "implementation": "0xd86791881F08854A5602289232a29F4A2FD38d87"
+    "proxy": "0x748d83E263D5202906e95708f8d9e07bd601DbF8",
+    "implementation": "0x886187EC8E2a7aC3ac6411F443342982BEf63732"
   },
   "triggerXTaskManager": {
-    "proxy": "0x3Eda66b143295F5Fc9AeCC3B86255AAa2B1626D5",
-    "implementation": "0x17944E5820fd2d6EB818FC4cdde84faC836AE46C"
+    "proxy": "0xbc9E241f0C52f4637662FB73Fe2F593b900bcD85",
+    "implementation": "0xaCE640C941D3D2f17F74ca3d2376743f50936131"
   }
 }

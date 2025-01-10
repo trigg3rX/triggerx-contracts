@@ -7,7 +7,7 @@ import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
 import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import {BN254} from "@eigenlayer-middleware/libraries/BN254.sol";
 import "./interfaces/ITriggerXTaskManager.sol";
-import "./TriggerXServiceManager.sol";
+import "./interfaces/ITriggerXServiceManager.sol";
 
 contract TriggerXTaskManager is
     Initializable,
@@ -35,21 +35,22 @@ contract TriggerXTaskManager is
         _;
     }
 
-    TriggerXServiceManager public serviceManager;
+    ITriggerXServiceManager public serviceManager;
 
     constructor(IRegistryCoordinator _registryCoordinator) 
         BLSSignatureChecker(_registryCoordinator)
+        Pausable()
     {
         _disableInitializers();
     }
 
     function initialize(
-        IPauserRegistry _pauserRegistry,
+        // IPauserRegistry _pauserRegistry,
         address initialOwner,
         uint32 _taskResponseWindowBlock,
-        TriggerXServiceManager _serviceManager
+        ITriggerXServiceManager _serviceManager
     ) public initializer {
-        _initializePauser(_pauserRegistry, UNPAUSE_ALL);
+        // __Pausable_init(_pauserRegistry);
         _transferOwnership(initialOwner);
 
         TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
@@ -64,7 +65,7 @@ contract TriggerXTaskManager is
         uint32 jobId,
         bytes calldata quorumNumbers,
         uint8 quorumThreshold
-    ) external onlyTaskManager {
+    ) external override onlyTaskManager {
         Task memory newTask;
         newTask.jobId = jobId;
         newTask.taskNum = jobToTaskCounter[jobId];
@@ -83,7 +84,7 @@ contract TriggerXTaskManager is
         Task calldata task,
         TaskResponse calldata taskResponse,
         NonSignerStakesAndSignature memory nonSignerStakesAndSignature
-    ) external onlyTaskValidator {
+    ) external override onlyTaskValidator {
         // uint32 taskCreatedBlock = task.taskCreatedBlock;
         // bytes calldata quorumNumbers = task.quorumNumbers;
         // uint8 quorumThreshold = task.quorumThreshold;
@@ -137,6 +138,6 @@ contract TriggerXTaskManager is
     }
 
     function updateServiceManager(address _serviceManager) external onlyOwner {
-        serviceManager = TriggerXServiceManager(_serviceManager);
+        serviceManager = ITriggerXServiceManager(_serviceManager);
     }
 }

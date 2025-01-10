@@ -1,23 +1,27 @@
 {
     "delegationManager": {
         "proxy": "0xA44151489861Fe9e3055d95adC98FbD462B948e7",
-        "implementation": "0xDa6F662777aDB5209644cF5cf1A61A2F8a99BF48"
+        "implementation": "0x83f8F8f0BB125F7870F6bfCf76853f874C330D76"
     },
     "strategyManager": {
         "proxy": "0xdfB5f6CE42aAA7830E94ECFCcAd411beF4d4D5b6",
-        "implementation": "0x7798625888ECf3EB2c3c74Dc2746e09d72747679"
+        "implementation": "0x59f766A603C53f3AC8Be43bBe158c1519b193a18"
     },
     "eigenPodManager": {
         "proxy": "0x30770d7E3e71112d7A6b7259542D1f680a70e315",
-        "implementation": "0x35b7743633AcdaEB18a4894469fcdBF23E13f304"
+        "implementation": "0x91A6525a4a843F5a5B633905300c33F79413CCc5"
     },
     "avsDirectory": {
         "proxy": "0x055733000064333CaDDbC92763c58BF0192fFeBf",
-        "implementation": "0x69660e721e4013dd8FEf83dCE731E915d74b8a0b"
+        "implementation": "0xEF5BA995Bc7722fd1e163edF8Dc09375de3d3e3a"
+    },
+    "slasher": {
+        "proxy": "0xcAe751b75833ef09627549868A04E32679386e7C",
+        "implementation": "0x99715D255E34a39bE9943b82F281CA734bcF345A"
     },
     "rewardsCoordinator": {
         "proxy": "0xAcc1fb458a1317E886dB376Fc8141540537E68fE",
-        "implementation": "0xA3c31d2FBAD3d924baA64f8789E03E9FA7d70d69"
+        "implementation": "0x1A17df4170099577b79038Fd310f3ff62F79752E"
     },
     "allocationManager": {
         "proxy": "0x78469728304326CBc65f8f95FA756B0B73164462",

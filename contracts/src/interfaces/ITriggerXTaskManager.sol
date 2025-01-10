@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import {IBLSSignatureChecker} from "@eigenlayer-middleware/interfaces/IBLSSignatureChecker.sol";
+
 interface ITriggerXTaskManager {
     // EVENTS
     event TaskCreated(
@@ -37,5 +39,11 @@ interface ITriggerXTaskManager {
         uint32 jobId,
         bytes calldata quorumNumbers,
         uint8 quorumThreshold
+    ) external;
+
+    function respondToTask(
+        Task calldata task,
+        TaskResponse calldata taskResponse,
+        IBLSSignatureChecker.NonSignerStakesAndSignature memory nonSignerStakesAndSignature
     ) external;
 }

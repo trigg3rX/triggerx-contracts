@@ -37,9 +37,9 @@ import {TriggerXServiceManager} from "../src/TriggerXServiceManager.sol";
 contract TriggerXDeployerHolesky is Script {
 
     struct TriggerXContracts {
-        TriggerXTaskManager triggerXTaskManager;
+        ITriggerXTaskManager triggerXTaskManager;
         TriggerXTaskManager triggerXTaskManagerImplementation;
-        TriggerXServiceManager triggerXServiceManager;
+        ITriggerXServiceManager triggerXServiceManager;
         TriggerXServiceManager triggerXServiceManagerImplementation;
         RegistryCoordinator registryCoordinator;
         IRegistryCoordinator registryCoordinatorImplementation;
@@ -104,45 +104,38 @@ contract TriggerXDeployerHolesky is Script {
 
     function writeDeploymentToJson(TriggerXContracts memory triggerXContracts) internal {
         string memory jsonString = string.concat(
-            "{",
-            '"proxyAdmin": "', vm.toString(address(triggerXContracts.proxyAdmin)), '",',
-            '"pauserRegistry": "', vm.toString(address(triggerXContracts.pauserRegistry)), '",',
-            '"indexRegistry": ',
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.indexRegistry)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.indexRegistryImplementation)), '"',
-            '},',
-            '"stakeRegistry": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.stakeRegistry)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.stakeRegistryImplementation)), '"',
-            '},',
-            '"apkRegistry": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.apkRegistry)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.apkRegistryImplementation)), '"',
-            '},',
-            '"socketRegistry": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '"',
-            '},',
-            '"registryCoordinator": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.registryCoordinator)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.registryCoordinatorImplementation)), '"',
-            '},',
-            '"operatorStateRetriever": "', vm.toString(address(triggerXContracts.operatorStateRetriever)), '",',
-            '"triggerXServiceManager": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.triggerXServiceManager)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.triggerXServiceManagerImplementation)), '"',
-            '},',
-            '"triggerXTaskManager": ', 
-            '{',
-                '"proxy": "', vm.toString(address(triggerXContracts.triggerXTaskManager)), '",',
-                '"implementation": "', vm.toString(address(triggerXContracts.triggerXTaskManagerImplementation)), '"',
-            '}',
+            "{\n",
+            '  "proxyAdmin": "', vm.toString(address(triggerXContracts.proxyAdmin)), '",\n',
+            '  "pauserRegistry": "', vm.toString(address(triggerXContracts.pauserRegistry)), '",\n',
+            '  "indexRegistry": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.indexRegistry)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.indexRegistryImplementation)), '"\n',
+            '  },\n',
+            '  "stakeRegistry": {\n', 
+            '    "proxy": "', vm.toString(address(triggerXContracts.stakeRegistry)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.stakeRegistryImplementation)), '"\n',
+            '  },\n',
+            '  "apkRegistry": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.apkRegistry)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.apkRegistryImplementation)), '"\n',
+            '  },\n',
+            '  "socketRegistry": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '"\n',
+            '  },\n',
+            '  "registryCoordinator": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.registryCoordinator)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.registryCoordinatorImplementation)), '"\n',
+            '  },\n',
+            '  "operatorStateRetriever": "', vm.toString(address(triggerXContracts.operatorStateRetriever)), '",\n',
+            '  "triggerXServiceManager": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.triggerXServiceManager)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.triggerXServiceManagerImplementation)), '"\n',
+            '  },\n',
+            '  "triggerXTaskManager": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.triggerXTaskManager)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.triggerXTaskManagerImplementation)), '"\n',
+            '  }\n',
             "}"
         );
 
@@ -230,6 +223,8 @@ contract TriggerXDeployerHolesky is Script {
             });
         }
 
+        console.log((deployedStrategyArray[6].token));
+
         vm.startBroadcast();
         
         TriggerXContracts memory triggerXContracts;
@@ -257,10 +252,10 @@ contract TriggerXDeployerHolesky is Script {
         triggerXContracts.registryCoordinator = RegistryCoordinator(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
-        triggerXContracts.triggerXServiceManager = TriggerXServiceManager(
+        triggerXContracts.triggerXServiceManager = ITriggerXServiceManager(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
-        triggerXContracts.triggerXTaskManager = TriggerXTaskManager(
+        triggerXContracts.triggerXTaskManager = ITriggerXTaskManager(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
 
@@ -292,7 +287,7 @@ contract TriggerXDeployerHolesky is Script {
         );
 
         triggerXContracts.registryCoordinatorImplementation = new RegistryCoordinator(
-            TriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)),
+            ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)),
             triggerXContracts.stakeRegistry,
             triggerXContracts.apkRegistry,
             triggerXContracts.indexRegistry,
@@ -322,8 +317,8 @@ contract TriggerXDeployerHolesky is Script {
             for (uint256 i = 0; i < deploymentConfig.numQuorum; i++) {
                 IStakeRegistry.StrategyParams[] memory params = new IStakeRegistry.StrategyParams[](1);
                 params[0] = IStakeRegistry.StrategyParams({
-                    strategy: IStrategy(deployedStrategyArray[0].token),
-                    multiplier: deployedStrategyArray[0].weight
+                    strategy: IStrategy(deployedStrategyArray[i].token),
+                    multiplier: deployedStrategyArray[i].weight
                 });
                 strategyParams[i] = params;
             }
@@ -356,8 +351,8 @@ contract TriggerXDeployerHolesky is Script {
                 initcode = abi.encodeWithSelector(
                     TriggerXServiceManager.initialize.selector,
                     ITriggerXTaskManager(deploymentConfig.taskManager),
-                    IPauserRegistry(triggerXContracts.pauserRegistry),
-                    deploymentConfig.initalPausedStatus,
+                    // IPauserRegistry(triggerXContracts.pauserRegistry),
+                    // deploymentConfig.initalPausedStatus,
                     deploymentConfig.triggerXOwner,
                     deploymentConfig.rewardsInitiator,
                     deploymentConfig.taskManager,
@@ -379,10 +374,10 @@ contract TriggerXDeployerHolesky is Script {
 
         bytes memory taskManagerInitCode = abi.encodeWithSelector(
             TriggerXTaskManager.initialize.selector,
-            IPauserRegistry(triggerXContracts.pauserRegistry),
+            // IPauserRegistry(triggerXContracts.pauserRegistry),
             deploymentConfig.triggerXOwner,
             deploymentConfig.taskResponseWindow,
-            TriggerXServiceManager(address(triggerXContracts.triggerXServiceManager))
+            ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager))
         );
 
         triggerXContracts.proxyAdmin.upgradeAndCall(
@@ -391,7 +386,7 @@ contract TriggerXDeployerHolesky is Script {
             taskManagerInitCode
         );
 
-        TriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)).updateTaskManager(
+        ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)).updateTaskManager(
             address(triggerXContracts.triggerXTaskManager)
         );
 
