@@ -5,7 +5,8 @@ import "./interfaces/ITriggerXTaskManager.sol";
 import "./interfaces/ITriggerXServiceManager.sol";
 import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import {Pausable} from "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
-
+import {IAllocationManager} from "@eigenlayer-contracts/contracts/interfaces/IAllocationManager.sol";
+import {IPauserRegistry} from "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";
 import {ServiceManagerBase, IAVSDirectory, IRewardsCoordinator, IServiceManager, ISignatureUtils} from "@eigenlayer-middleware/ServiceManagerBase.sol";
 import {BLSSignatureChecker} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
@@ -41,28 +42,28 @@ contract TriggerXServiceManager is
         IAVSDirectory _avsDirectory,
         IRewardsCoordinator _rewardsCoordinator,
         IRegistryCoordinator _registryCoordinator,
-        IStakeRegistry _stakeRegistry
+        IStakeRegistry _stakeRegistry,
+        IAllocationManager _allocationManager,
+        IPauserRegistry _pauserRegistry
     ) 
+        Pausable(_pauserRegistry)
         BLSSignatureChecker(_registryCoordinator)
-        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry)
-        Pausable()
+        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry, _allocationManager)
     {
         _disableInitializers();
     }
 
     function initialize(
         ITriggerXTaskManager _taskManagerContract,
-        // IPauserRegistry _pauserRegistry,
-        // uint256 _initialPausedStatus,
         address initialOwner,
         address rewardsInitiator,
+        address slasher,
         address _taskManager,
         address _taskValidator,
         address _quorumManager
     ) public initializer {
-        // __Pausable_init(_pauserRegistry);
         _transferOwnership(initialOwner);
-        __ServiceManagerBase_init(initialOwner, rewardsInitiator);
+        __ServiceManagerBase_init(initialOwner, rewardsInitiator, slasher);
 
         taskManagerContract = _taskManagerContract;
         taskManager = _taskManager;

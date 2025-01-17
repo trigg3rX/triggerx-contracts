@@ -4,6 +4,7 @@ pragma solidity ^0.8.26;
 import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
+import "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";
 import {BLSSignatureChecker, IRegistryCoordinator} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import {BN254} from "@eigenlayer-middleware/libraries/BN254.sol";
 import "./interfaces/ITriggerXTaskManager.sol";
@@ -37,20 +38,18 @@ contract TriggerXTaskManager is
 
     ITriggerXServiceManager public serviceManager;
 
-    constructor(IRegistryCoordinator _registryCoordinator) 
+    constructor(IRegistryCoordinator _registryCoordinator, IPauserRegistry _pauserRegistry) 
         BLSSignatureChecker(_registryCoordinator)
-        Pausable()
+        Pausable(_pauserRegistry)
     {
         _disableInitializers();
     }
 
     function initialize(
-        // IPauserRegistry _pauserRegistry,
         address initialOwner,
         uint32 _taskResponseWindowBlock,
         ITriggerXServiceManager _serviceManager
     ) public initializer {
-        // __Pausable_init(_pauserRegistry);
         _transferOwnership(initialOwner);
 
         TASK_RESPONSE_WINDOW_BLOCK = _taskResponseWindowBlock;
