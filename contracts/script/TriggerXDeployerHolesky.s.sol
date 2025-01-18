@@ -20,6 +20,7 @@ import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryC
 import {IStakeRegistry, IDelegationManager, StakeType} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
 import {IIndexRegistry} from "@eigenlayer-middleware/interfaces/IIndexRegistry.sol";
 import {IBLSApkRegistry} from "@eigenlayer-middleware/interfaces/IBLSApkRegistry.sol";
+import {ISlasher} from "@eigenlayer-middleware/interfaces/ISlasher.sol";
 // import {ISocketRegistry} from "@eigenlayer-middleware/interfaces/ISocketRegistry.sol";
 import {RegistryCoordinator} from "@eigenlayer-middleware/RegistryCoordinator.sol";
 import {IndexRegistry} from "@eigenlayer-middleware/IndexRegistry.sol";
@@ -27,12 +28,15 @@ import {StakeRegistry, IStrategy} from "@eigenlayer-middleware/StakeRegistry.sol
 import {BLSApkRegistry} from "@eigenlayer-middleware/BLSApkRegistry.sol";
 // import {SocketRegistry} from "@eigenlayer-middleware/SocketRegistry.sol";
 import {OperatorStateRetriever} from "@eigenlayer-middleware/OperatorStateRetriever.sol";
+import {VetoableSlasher} from "@eigenlayer-middleware/slashers/VetoableSlasher.sol";
 
 import {ITriggerXTaskManager} from "../src/interfaces/ITriggerXTaskManager.sol";
 import {ITriggerXServiceManager} from "../src/interfaces/ITriggerXServiceManager.sol";
 
 import {TriggerXTaskManager} from "../src/TriggerXTaskManager.sol";
 import {TriggerXServiceManager} from "../src/TriggerXServiceManager.sol";
+
+import {IServiceManager} from "@eigenlayer-middleware/interfaces/IServiceManager.sol";
 
 contract TriggerXDeployerHolesky is Script {
 
@@ -49,6 +53,8 @@ contract TriggerXDeployerHolesky is Script {
         IStakeRegistry stakeRegistryImplementation;
         BLSApkRegistry apkRegistry;
         BLSApkRegistry apkRegistryImplementation;
+        VetoableSlasher vetoableSlasher;
+        VetoableSlasher vetoableSlasherImplementation;
         // ISocketRegistry socketRegistry;
         // ISocketRegistry socketRegistryImplementation;
         OperatorStateRetriever operatorStateRetriever;
@@ -90,6 +96,7 @@ contract TriggerXDeployerHolesky is Script {
         address triggerXOwner;
         address rewardsInitiator;
         address slasher;
+        address vetoCommittee;
         address taskManager;
         address taskValidator;
         address quorumManager;
@@ -124,6 +131,10 @@ contract TriggerXDeployerHolesky is Script {
             '  "apkRegistry": {\n',
             '    "proxy": "', vm.toString(address(triggerXContracts.apkRegistry)), '",\n',
             '    "implementation": "', vm.toString(address(triggerXContracts.apkRegistryImplementation)), '"\n',
+            '  },\n',
+            '  "vetoableSlasher": {\n',
+            '    "proxy": "', vm.toString(address(triggerXContracts.vetoableSlasher)), '",\n',
+            '    "implementation": "', vm.toString(address(triggerXContracts.vetoableSlasherImplementation)), '"\n',
             '  },\n',
             // '  "socketRegistry": {\n',
             // '    "proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",\n',
@@ -197,6 +208,7 @@ contract TriggerXDeployerHolesky is Script {
             deploymentConfig.triggerXOwner = abi.decode(vm.parseJson(config, ".triggerXOwner"), (address));
             deploymentConfig.rewardsInitiator = abi.decode(vm.parseJson(config, ".rewardsInitiator"), (address));
             deploymentConfig.slasher = abi.decode(vm.parseJson(config, ".slasher"), (address));
+            deploymentConfig.vetoCommittee = abi.decode(vm.parseJson(config, ".vetoCommittee"), (address));
             deploymentConfig.taskManager = abi.decode(vm.parseJson(config, ".taskManager"), (address));
             deploymentConfig.taskValidator = abi.decode(vm.parseJson(config, ".taskValidator"), (address));
             deploymentConfig.quorumManager = abi.decode(vm.parseJson(config, ".quorumManager"), (address));
@@ -260,9 +272,6 @@ contract TriggerXDeployerHolesky is Script {
         triggerXContracts.apkRegistry = BLSApkRegistry(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
-        // triggerXContracts.socketRegistry = ISocketRegistry(
-        //     address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
-        // );
         triggerXContracts.registryCoordinator = RegistryCoordinator(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
@@ -272,7 +281,9 @@ contract TriggerXDeployerHolesky is Script {
         triggerXContracts.triggerXTaskManager = ITriggerXTaskManager(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
-
+        triggerXContracts.vetoableSlasher = VetoableSlasher(
+            address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
+        );
 
         triggerXContracts.indexRegistryImplementation = new IndexRegistry(triggerXContracts.registryCoordinator);
         triggerXContracts.proxyAdmin.upgrade(
@@ -298,11 +309,23 @@ contract TriggerXDeployerHolesky is Script {
             address(triggerXContracts.apkRegistryImplementation)
         );
 
-        // triggerXContracts.socketRegistryImplementation = new SocketRegistry(triggerXContracts.registryCoordinator);
-        // triggerXContracts.proxyAdmin.upgrade(
-        //     TransparentUpgradeableProxy(payable(address(triggerXContracts.socketRegistry))),
-        //     address(triggerXContracts.socketRegistryImplementation)
-        // );
+        triggerXContracts.vetoableSlasherImplementation = new VetoableSlasher(
+            IAllocationManager(eigenLayerContracts.allocationManager),
+            IServiceManager(address(triggerXContracts.triggerXServiceManager)),
+            deploymentConfig.slasher
+        );
+
+        bytes memory vetoableSlasherInitCode = abi.encodeWithSelector(
+            VetoableSlasher.initialize.selector,
+            deploymentConfig.vetoCommittee,
+            deploymentConfig.slasher
+        );
+
+        triggerXContracts.proxyAdmin.upgradeAndCall(
+            TransparentUpgradeableProxy(payable(address(triggerXContracts.vetoableSlasher))),
+            address(triggerXContracts.vetoableSlasherImplementation),
+            vetoableSlasherInitCode
+        );
 
         triggerXContracts.registryCoordinatorImplementation = new RegistryCoordinator(
             ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)),
@@ -379,7 +402,8 @@ contract TriggerXDeployerHolesky is Script {
                 triggerXContracts.registryCoordinator,
                 triggerXContracts.stakeRegistry,
                 eigenLayerContracts.permissionController,
-                triggerXContracts.pauserRegistry
+                triggerXContracts.pauserRegistry,
+                triggerXContracts.vetoableSlasher
             );
 
             bytes memory initcode;
@@ -390,6 +414,7 @@ contract TriggerXDeployerHolesky is Script {
                     deploymentConfig.triggerXOwner,
                     deploymentConfig.rewardsInitiator,
                     deploymentConfig.slasher,
+                    deploymentConfig.vetoCommittee,
                     deploymentConfig.taskManager,
                     deploymentConfig.taskValidator,
                     deploymentConfig.quorumManager

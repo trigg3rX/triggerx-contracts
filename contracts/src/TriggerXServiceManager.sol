@@ -12,6 +12,7 @@ import {ServiceManagerBase, IAVSDirectory, IRewardsCoordinator, IServiceManager,
 import {BLSSignatureChecker} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
 import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
 import {IStakeRegistry} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
+import {VetoableSlasher} from "@eigenlayer-middleware/slashers/VetoableSlasher.sol";
 
 
 contract TriggerXServiceManager is
@@ -29,8 +30,12 @@ contract TriggerXServiceManager is
     address public override taskManager;
     address public override taskValidator;
     address public override quorumManager;
+    address public vetoCommittee;
 
     ITriggerXTaskManager public override taskManagerContract;
+
+    VetoableSlasher public immutable vetoableSlasher;
+
 
     modifier onlyTaskManagerContract() {
         require(
@@ -46,12 +51,14 @@ contract TriggerXServiceManager is
         IStakeRegistry _stakeRegistry,
         // IAllocationManager _allocationManager,
         IPermissionController _permissionController,
-        IPauserRegistry _pauserRegistry
+        IPauserRegistry _pauserRegistry,
+        VetoableSlasher _vetoableSlasher
     ) 
         Pausable(_pauserRegistry)
         BLSSignatureChecker(_registryCoordinator)
         ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry, _permissionController)
     {
+        vetoableSlasher = _vetoableSlasher;
         _disableInitializers();
     }
 
@@ -60,6 +67,7 @@ contract TriggerXServiceManager is
         address initialOwner,
         address rewardsInitiator,
         address _slasher,
+        address _vetoCommittee,
         address _taskManager,
         address _taskValidator,
         address _quorumManager
@@ -72,6 +80,7 @@ contract TriggerXServiceManager is
         taskValidator = _taskValidator;
         quorumManager = _quorumManager;
         slasher = _slasher;
+        vetoCommittee = _vetoCommittee;
     }
 
     function setTaskManager(address _taskManager) external override onlyOwner {

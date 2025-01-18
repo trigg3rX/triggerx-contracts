@@ -29,6 +29,9 @@ type TriggerXDeploymentConfig struct {
 type EigenlayerDeploymentConfig struct {
     DelegationManager ContractAddresses `json:"delegationManager"`
     AvsDirectory ContractAddresses `json:"avsDirectory"`
+    AllocationManager ContractAddresses `json:"allocationManager"`
+    PermissionController ContractAddresses `json:"permissionController"`
+    StrategyManager ContractAddresses `json:"strategyManager"`
 }
 
 type StakeDeploymentConfig struct {

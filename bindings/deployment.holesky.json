@@ -1,33 +1,29 @@
 {
-  "proxyAdmin": "0x705327658C850F7456aE52c5788ca982885b6aB3",
-  "pauserRegistry": "0xaa8666dED470DEbBBE19C77C7A81Be6FE5DF5050",
+  "proxyAdmin": "0x9fB0e9B0994a4Aa488d5CBE787bA3F2Ea40B6979",
+  "pauserRegistry": "0xB36b572558736893986BF3696DCbe292d5Be61bf",
   "indexRegistry": {
-    "proxy": "0xBc2fC30aA2C43eAeF628Cd522755887752f58112",
-    "implementation": "0x00C90180d73e22F31253571F8Be6F9e28E45Be67"
+    "proxy": "0xAa1075B80Ad60388F8580e12a09045D8DCd275F4",
+    "implementation": "0x6b93d14768701361701ec8Cc8Ed6Bb466609F9FF"
   },
   "stakeRegistry": {
-    "proxy": "0xff6De6eA349E8b59Aca720EB3fbb2c6552E266e0",
-    "implementation": "0x47d31bc1384b6bbC3e7aAd733e525d3597fa6396"
+    "proxy": "0x525F8f436f66f0E5146437E15e64cb027758dcC3",
+    "implementation": "0x58324A71576CFE9C4678E4011bFAA2d717722B1A"
   },
   "apkRegistry": {
-    "proxy": "0x855b96FBf39b92ACeA95a5f2a9fA5B016f53e4A8",
-    "implementation": "0xe80d3c15DcD6eEF7c33AeC395b5973C5FF3Ce330"
-  },
-  "socketRegistry": {
-    "proxy": "0xcbD465a5A8eA8d5FD1599646200c1432e77ab113",
-    "implementation": "0xDBd62baf33021e0d8DDaA90BC8377f76588A0ACD"
+    "proxy": "0x9c764bf11DD96a8c8BCF26374b390a4fa769bb9A",
+    "implementation": "0xEc17f4aE901b41bC59F7E5698B509635FbC94499"
   },
   "registryCoordinator": {
-    "proxy": "0xAb42fAe90D4aC5DF10bC069b132203ef566ACC59",
-    "implementation": "0xc63a483d689b489DD0c19a51052475f56BC699d1"
+    "proxy": "0xd07e4F93aAae4e4992E323B02304058b5a34246D",
+    "implementation": "0x08a4fDD5F3C987716D17E52dFc2b77573FE12fEA"
   },
-  "operatorStateRetriever": "0x08048e9Cf1EdA2EABC61629776bFa48EcaBc1a34",
+  "operatorStateRetriever": "0xd09B1fd2D3a8Ff457dE720C3AEf0CA72d26A71Fd",
   "triggerXServiceManager": {
-    "proxy": "0x748d83E263D5202906e95708f8d9e07bd601DbF8",
-    "implementation": "0x886187EC8E2a7aC3ac6411F443342982BEf63732"
+    "proxy": "0xdf46010A2047488c1C93C7b64C5600049a03C404",
+    "implementation": "0x2Fa9DA5Ff36Ad611D1e053696694Cbe61dBA9C42"
   },
   "triggerXTaskManager": {
-    "proxy": "0xbc9E241f0C52f4637662FB73Fe2F593b900bcD85",
-    "implementation": "0xaCE640C941D3D2f17F74ca3d2376743f50936131"
+    "proxy": "0x8669A66094c44c19fA114F1baf3c79Fae4386777",
+    "implementation": "0x259Cbf6058D3436D1748123e2ACd659bE0DaCD3A"
   }
 }
