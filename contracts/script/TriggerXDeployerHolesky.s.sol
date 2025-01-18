@@ -17,15 +17,15 @@ import {IAVSDirectory} from "@eigenlayer-contracts/contracts/interfaces/IAVSDire
 import {PauserRegistry} from "@eigenlayer-contracts/contracts/permissions/PauserRegistry.sol";
 
 import {IRegistryCoordinator} from "@eigenlayer-middleware/interfaces/IRegistryCoordinator.sol";
-import {IStakeRegistry, IDelegationManager} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
+import {IStakeRegistry, IDelegationManager, StakeType} from "@eigenlayer-middleware/interfaces/IStakeRegistry.sol";
 import {IIndexRegistry} from "@eigenlayer-middleware/interfaces/IIndexRegistry.sol";
 import {IBLSApkRegistry} from "@eigenlayer-middleware/interfaces/IBLSApkRegistry.sol";
-import {ISocketRegistry} from "@eigenlayer-middleware/interfaces/ISocketRegistry.sol";
+// import {ISocketRegistry} from "@eigenlayer-middleware/interfaces/ISocketRegistry.sol";
 import {RegistryCoordinator} from "@eigenlayer-middleware/RegistryCoordinator.sol";
 import {IndexRegistry} from "@eigenlayer-middleware/IndexRegistry.sol";
 import {StakeRegistry, IStrategy} from "@eigenlayer-middleware/StakeRegistry.sol";
 import {BLSApkRegistry} from "@eigenlayer-middleware/BLSApkRegistry.sol";
-import {SocketRegistry} from "@eigenlayer-middleware/SocketRegistry.sol";
+// import {SocketRegistry} from "@eigenlayer-middleware/SocketRegistry.sol";
 import {OperatorStateRetriever} from "@eigenlayer-middleware/OperatorStateRetriever.sol";
 
 import {ITriggerXTaskManager} from "../src/interfaces/ITriggerXTaskManager.sol";
@@ -49,8 +49,8 @@ contract TriggerXDeployerHolesky is Script {
         IStakeRegistry stakeRegistryImplementation;
         BLSApkRegistry apkRegistry;
         BLSApkRegistry apkRegistryImplementation;
-        ISocketRegistry socketRegistry;
-        ISocketRegistry socketRegistryImplementation;
+        // ISocketRegistry socketRegistry;
+        // ISocketRegistry socketRegistryImplementation;
         OperatorStateRetriever operatorStateRetriever;
         ProxyAdmin proxyAdmin;
         PauserRegistry pauserRegistry;
@@ -61,6 +61,8 @@ contract TriggerXDeployerHolesky is Script {
         DelegationManager delegationManager;
         StrategyManager strategyManager;
         IRewardsCoordinator rewardsCoordinator;
+        IAllocationManager allocationManager;
+        IPermissionController permissionController;
         
         address wethStrategy;
         address stETHStrategy;
@@ -87,6 +89,7 @@ contract TriggerXDeployerHolesky is Script {
     struct DeploymentConfig {
         address triggerXOwner;
         address rewardsInitiator;
+        address slasher;
         address taskManager;
         address taskValidator;
         address quorumManager;
@@ -97,6 +100,9 @@ contract TriggerXDeployerHolesky is Script {
         uint96 minimumStake;
         uint256 initalPausedStatus;
         uint32 taskResponseWindow;
+
+        string stakeType;
+        uint256 lookAheadPeriod;
 
         address avsDirectory;
         address delegationManager;
@@ -119,10 +125,10 @@ contract TriggerXDeployerHolesky is Script {
             '    "proxy": "', vm.toString(address(triggerXContracts.apkRegistry)), '",\n',
             '    "implementation": "', vm.toString(address(triggerXContracts.apkRegistryImplementation)), '"\n',
             '  },\n',
-            '  "socketRegistry": {\n',
-            '    "proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",\n',
-            '    "implementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '"\n',
-            '  },\n',
+            // '  "socketRegistry": {\n',
+            // '    "proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",\n',
+            // '    "implementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '"\n',
+            // '  },\n',
             '  "registryCoordinator": {\n',
             '    "proxy": "', vm.toString(address(triggerXContracts.registryCoordinator)), '",\n',
             '    "implementation": "', vm.toString(address(triggerXContracts.registryCoordinatorImplementation)), '"\n',
@@ -156,15 +162,22 @@ contract TriggerXDeployerHolesky is Script {
             deploymentConfig.initalPausedStatus = abi.decode(vm.parseJson(config, ".initalPausedStatus"), (uint256));
             deploymentConfig.taskResponseWindow = abi.decode(vm.parseJson(config, ".taskResponseWindow"), (uint32));
 
+            deploymentConfig.stakeType = abi.decode(vm.parseJson(config, ".stakeType"), (string));
+            deploymentConfig.lookAheadPeriod = abi.decode(vm.parseJson(config, ".lookAheadPeriod"), (uint256));
+
             address deployedStrategyManager = abi.decode(vm.parseJson(config, ".strategyManager"), (address));
             address deployedAvsDirectory = abi.decode(vm.parseJson(config, ".avsDirectory"), (address));
             address deployedDelegationManager = abi.decode(vm.parseJson(config, ".delegationManager"), (address));
             address deployedRewardsCoordinator = abi.decode(vm.parseJson(config, ".rewardsCoordinator"), (address));
+            address deployedAllocationManager = abi.decode(vm.parseJson(config, ".allocationManager"), (address));
+            address deployedPermissionController = abi.decode(vm.parseJson(config, ".permissionController"), (address));
 
             eigenLayerContracts.strategyManager = StrategyManager(deployedStrategyManager);
             eigenLayerContracts.avsDirectory = AVSDirectory(deployedAvsDirectory);
             eigenLayerContracts.delegationManager = DelegationManager(deployedDelegationManager);
             eigenLayerContracts.rewardsCoordinator = IRewardsCoordinator(deployedRewardsCoordinator);
+            eigenLayerContracts.allocationManager = IAllocationManager(deployedAllocationManager);
+            eigenLayerContracts.permissionController = IPermissionController(deployedPermissionController);
 
             eigenLayerContracts.wethStrategy = abi.decode(vm.parseJson(config, ".strategies.wethStrategy"), (address));
             eigenLayerContracts.wethMultiplier = abi.decode(vm.parseJson(config, ".strategies.wethMultiplier"), (uint96));
@@ -183,6 +196,7 @@ contract TriggerXDeployerHolesky is Script {
 
             deploymentConfig.triggerXOwner = abi.decode(vm.parseJson(config, ".triggerXOwner"), (address));
             deploymentConfig.rewardsInitiator = abi.decode(vm.parseJson(config, ".rewardsInitiator"), (address));
+            deploymentConfig.slasher = abi.decode(vm.parseJson(config, ".slasher"), (address));
             deploymentConfig.taskManager = abi.decode(vm.parseJson(config, ".taskManager"), (address));
             deploymentConfig.taskValidator = abi.decode(vm.parseJson(config, ".taskValidator"), (address));
             deploymentConfig.quorumManager = abi.decode(vm.parseJson(config, ".quorumManager"), (address));
@@ -246,9 +260,9 @@ contract TriggerXDeployerHolesky is Script {
         triggerXContracts.apkRegistry = BLSApkRegistry(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
-        triggerXContracts.socketRegistry = ISocketRegistry(
-            address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
-        );
+        // triggerXContracts.socketRegistry = ISocketRegistry(
+        //     address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
+        // );
         triggerXContracts.registryCoordinator = RegistryCoordinator(
             address(new TransparentUpgradeableProxy(address(emptyContract), address(triggerXContracts.proxyAdmin), ""))
         );
@@ -267,7 +281,11 @@ contract TriggerXDeployerHolesky is Script {
         );
 
         triggerXContracts.stakeRegistryImplementation = new StakeRegistry(
-            triggerXContracts.registryCoordinator, IDelegationManager(deploymentConfig.delegationManager)
+            triggerXContracts.registryCoordinator, 
+            IDelegationManager(eigenLayerContracts.delegationManager),
+            IAVSDirectory(eigenLayerContracts.avsDirectory),
+            IAllocationManager(eigenLayerContracts.allocationManager),
+            ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager))
         );
         triggerXContracts.proxyAdmin.upgrade(
             TransparentUpgradeableProxy(payable(address(triggerXContracts.stakeRegistry))),
@@ -280,18 +298,19 @@ contract TriggerXDeployerHolesky is Script {
             address(triggerXContracts.apkRegistryImplementation)
         );
 
-        triggerXContracts.socketRegistryImplementation = new SocketRegistry(triggerXContracts.registryCoordinator);
-        triggerXContracts.proxyAdmin.upgrade(
-            TransparentUpgradeableProxy(payable(address(triggerXContracts.socketRegistry))),
-            address(triggerXContracts.socketRegistryImplementation)
-        );
+        // triggerXContracts.socketRegistryImplementation = new SocketRegistry(triggerXContracts.registryCoordinator);
+        // triggerXContracts.proxyAdmin.upgrade(
+        //     TransparentUpgradeableProxy(payable(address(triggerXContracts.socketRegistry))),
+        //     address(triggerXContracts.socketRegistryImplementation)
+        // );
 
         triggerXContracts.registryCoordinatorImplementation = new RegistryCoordinator(
             ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager)),
             triggerXContracts.stakeRegistry,
             triggerXContracts.apkRegistry,
             triggerXContracts.indexRegistry,
-            triggerXContracts.socketRegistry
+            IAllocationManager(eigenLayerContracts.allocationManager),
+            triggerXContracts.pauserRegistry
         );
         triggerXContracts.operatorStateRetriever = new OperatorStateRetriever();
 
@@ -323,6 +342,20 @@ contract TriggerXDeployerHolesky is Script {
                 strategyParams[i] = params;
             }
 
+            StakeType[] memory stakeTypes = new StakeType[](deploymentConfig.numQuorum);
+            for (uint256 i = 0; i < deploymentConfig.numQuorum; i++) {
+                if (keccak256(bytes(deploymentConfig.stakeType)) == keccak256(bytes("TOTAL_DELEGATED"))) {
+                    stakeTypes[i] = StakeType.TOTAL_DELEGATED;
+                } else if (keccak256(bytes(deploymentConfig.stakeType)) == keccak256(bytes("TOTAL_SLASHABLE"))) {
+                    stakeTypes[i] = StakeType.TOTAL_SLASHABLE;
+                }
+            }
+
+            uint256[] memory lookAheadPeriods = new uint256[](deploymentConfig.numQuorum);
+            for (uint256 i = 0; i < deploymentConfig.numQuorum; i++) {
+                lookAheadPeriods[i] = deploymentConfig.lookAheadPeriod;
+            }
+
             triggerXContracts.proxyAdmin.upgradeAndCall(
                 TransparentUpgradeableProxy(payable(address(triggerXContracts.registryCoordinator))),
                 address(triggerXContracts.registryCoordinatorImplementation),
@@ -331,19 +364,22 @@ contract TriggerXDeployerHolesky is Script {
                     deploymentConfig.triggerXOwner,
                     deploymentConfig.quorumManager,
                     deploymentConfig.quorumManager,
-                    IPauserRegistry(triggerXContracts.pauserRegistry),
                     deploymentConfig.initalPausedStatus,
                     operatorSetParams,
                     minimumStakeForQuourm,
-                    strategyParams
+                    strategyParams,
+                    stakeTypes,
+                    lookAheadPeriods
                 )
             );
 
             triggerXContracts.triggerXServiceManagerImplementation = new TriggerXServiceManager(
-                IAVSDirectory(deploymentConfig.avsDirectory),
+                IAVSDirectory(eigenLayerContracts.avsDirectory),
                 eigenLayerContracts.rewardsCoordinator,
                 triggerXContracts.registryCoordinator,
-                triggerXContracts.stakeRegistry
+                triggerXContracts.stakeRegistry,
+                eigenLayerContracts.permissionController,
+                triggerXContracts.pauserRegistry
             );
 
             bytes memory initcode;
@@ -351,10 +387,9 @@ contract TriggerXDeployerHolesky is Script {
                 initcode = abi.encodeWithSelector(
                     TriggerXServiceManager.initialize.selector,
                     ITriggerXTaskManager(deploymentConfig.taskManager),
-                    // IPauserRegistry(triggerXContracts.pauserRegistry),
-                    // deploymentConfig.initalPausedStatus,
                     deploymentConfig.triggerXOwner,
                     deploymentConfig.rewardsInitiator,
+                    deploymentConfig.slasher,
                     deploymentConfig.taskManager,
                     deploymentConfig.taskValidator,
                     deploymentConfig.quorumManager
@@ -369,12 +404,12 @@ contract TriggerXDeployerHolesky is Script {
         }
 
         triggerXContracts.triggerXTaskManagerImplementation = new TriggerXTaskManager(
-            triggerXContracts.registryCoordinator
+            triggerXContracts.registryCoordinator,
+            triggerXContracts.pauserRegistry
         );
 
         bytes memory taskManagerInitCode = abi.encodeWithSelector(
             TriggerXTaskManager.initialize.selector,
-            // IPauserRegistry(triggerXContracts.pauserRegistry),
             deploymentConfig.triggerXOwner,
             deploymentConfig.taskResponseWindow,
             ITriggerXServiceManager(address(triggerXContracts.triggerXServiceManager))

@@ -5,7 +5,8 @@ import "./interfaces/ITriggerXTaskManager.sol";
 import "./interfaces/ITriggerXServiceManager.sol";
 import {EnumerableSet} from "@openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 import {Pausable} from "@eigenlayer-contracts/contracts/permissions/Pausable.sol";
-import {IAllocationManager} from "@eigenlayer-contracts/contracts/interfaces/IAllocationManager.sol";
+// import {IAllocationManager} from "@eigenlayer-contracts/contracts/interfaces/IAllocationManager.sol";
+import {IPermissionController} from "@eigenlayer-contracts/contracts/interfaces/IPermissionController.sol";
 import {IPauserRegistry} from "@eigenlayer-contracts/contracts/interfaces/IPauserRegistry.sol";
 import {ServiceManagerBase, IAVSDirectory, IRewardsCoordinator, IServiceManager, ISignatureUtils} from "@eigenlayer-middleware/ServiceManagerBase.sol";
 import {BLSSignatureChecker} from "@eigenlayer-middleware/BLSSignatureChecker.sol";
@@ -43,12 +44,13 @@ contract TriggerXServiceManager is
         IRewardsCoordinator _rewardsCoordinator,
         IRegistryCoordinator _registryCoordinator,
         IStakeRegistry _stakeRegistry,
-        IAllocationManager _allocationManager,
+        // IAllocationManager _allocationManager,
+        IPermissionController _permissionController,
         IPauserRegistry _pauserRegistry
     ) 
         Pausable(_pauserRegistry)
         BLSSignatureChecker(_registryCoordinator)
-        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry, _allocationManager)
+        ServiceManagerBase(_avsDirectory, _rewardsCoordinator, _registryCoordinator, _stakeRegistry, _permissionController)
     {
         _disableInitializers();
     }
@@ -57,18 +59,19 @@ contract TriggerXServiceManager is
         ITriggerXTaskManager _taskManagerContract,
         address initialOwner,
         address rewardsInitiator,
-        address slasher,
+        address _slasher,
         address _taskManager,
         address _taskValidator,
         address _quorumManager
     ) public initializer {
         _transferOwnership(initialOwner);
-        __ServiceManagerBase_init(initialOwner, rewardsInitiator, slasher);
+        __ServiceManagerBase_init(initialOwner, rewardsInitiator);
 
         taskManagerContract = _taskManagerContract;
         taskManager = _taskManager;
         taskValidator = _taskValidator;
         quorumManager = _quorumManager;
+        slasher = _slasher;
     }
 
     function setTaskManager(address _taskManager) external override onlyOwner {
