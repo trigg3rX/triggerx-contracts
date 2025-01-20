@@ -1,7 +1,1 @@
 .env
-
-!/broadcast
-broadcast/*
-
-bindings/abis/*.abi
-bindings/abis/*.bin
