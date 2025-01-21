@@ -7,7 +7,6 @@ import "forge-std/console.sol";
 import "@openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "@openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol";
 
-import "@eigenlayer-contracts/contracts/strategies/StrategyBaseTVLLimits.sol";
 import "@eigenlayer-contracts/contracts/core/AVSDirectory.sol";
 import "@eigenlayer-contracts/contracts/core/DelegationManager.sol";
 import "@eigenlayer-contracts/contracts/core/StrategyManager.sol";
@@ -248,8 +247,6 @@ contract TriggerXDeployerHolesky is Script {
                 weight: eigenLayerContracts.beaconChainETHMultiplier
             });
         }
-
-        console.log((deployedStrategyArray[6].token));
 
         vm.startBroadcast();
         

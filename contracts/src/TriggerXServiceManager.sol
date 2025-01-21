@@ -110,14 +110,14 @@ contract TriggerXServiceManager is
     function registerOperatorToAVS(
         address operator,
         ISignatureUtils.SignatureWithSaltAndExpiry memory operatorSignature
-    ) public override(ServiceManagerBase, ITriggerXServiceManager) onlyOwner {
+    ) public override(ServiceManagerBase, ITriggerXServiceManager) onlyRegistryCoordinator() {
         _avsDirectory.registerOperatorToAVS(operator, operatorSignature);
         _registeredOperators.add(operator);
         isBlackListed[operator] = false;
         emit KeeperAdded(operator);
     }
 
-    function deregisterOperatorFromAVS(address operator) public override(ServiceManagerBase, ITriggerXServiceManager) onlyOwner {
+    function deregisterOperatorFromAVS(address operator) public override(ServiceManagerBase, ITriggerXServiceManager) onlyRegistryCoordinator() {
         _avsDirectory.deregisterOperatorFromAVS(operator);
         _registeredOperators.remove(operator);
         isBlackListed[operator] = false;
