@@ -54,8 +54,6 @@ contract TriggerXDeployerHolesky is Script {
         BLSApkRegistry apkRegistryImplementation;
         VetoableSlasher vetoableSlasher;
         VetoableSlasher vetoableSlasherImplementation;
-        // ISocketRegistry socketRegistry;
-        // ISocketRegistry socketRegistryImplementation;
         OperatorStateRetriever operatorStateRetriever;
         ProxyAdmin proxyAdmin;
         PauserRegistry pauserRegistry;
@@ -71,19 +69,21 @@ contract TriggerXDeployerHolesky is Script {
         
         address wethStrategy;
         address stETHStrategy;
-        address rETHStrategy;
-        address cbETHStrategy;
+        address ETHxStrategy;
+        address ankrETHStrategy;
+        address osETHStrategy;
+        address sfrxETHStrategy;
+        address mETHStrategy;
         address reALTStrategy;
-        address eigenStrategy;
-        address beaconChainETHStrategy;
         
         uint96 wethMultiplier;
         uint96 stETHMultiplier;
-        uint96 rETHMultiplier;
-        uint96 cbETHMultiplier;
+        uint96 ETHxMultiplier;
+        uint96 ankrETHMultiplier;
+        uint96 osETHMultiplier;
+        uint96 sfrxETHMultiplier;
+        uint96 mETHMultiplier;
         uint96 reALTMultiplier;
-        uint96 eigenMultiplier;
-        uint96 beaconChainETHMultiplier;
     }
 
     struct TokenAndWeight {
@@ -135,10 +135,6 @@ contract TriggerXDeployerHolesky is Script {
             '    "proxy": "', vm.toString(address(triggerXContracts.vetoableSlasher)), '",\n',
             '    "implementation": "', vm.toString(address(triggerXContracts.vetoableSlasherImplementation)), '"\n',
             '  },\n',
-            // '  "socketRegistry": {\n',
-            // '    "proxy": "', vm.toString(address(triggerXContracts.socketRegistry)), '",\n',
-            // '    "implementation": "', vm.toString(address(triggerXContracts.socketRegistryImplementation)), '"\n',
-            // '  },\n',
             '  "registryCoordinator": {\n',
             '    "proxy": "', vm.toString(address(triggerXContracts.registryCoordinator)), '",\n',
             '    "implementation": "', vm.toString(address(triggerXContracts.registryCoordinatorImplementation)), '"\n',
@@ -193,17 +189,19 @@ contract TriggerXDeployerHolesky is Script {
             eigenLayerContracts.wethMultiplier = abi.decode(vm.parseJson(config, ".strategies.wethMultiplier"), (uint96));
             eigenLayerContracts.stETHStrategy = abi.decode(vm.parseJson(config, ".strategies.stETHStrategy"), (address));
             eigenLayerContracts.stETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.stETHMultiplier"), (uint96));
-            eigenLayerContracts.rETHStrategy = abi.decode(vm.parseJson(config, ".strategies.rETHStrategy"), (address));
-            eigenLayerContracts.rETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.rETHMultiplier"), (uint96));
-            eigenLayerContracts.cbETHStrategy = abi.decode(vm.parseJson(config, ".strategies.cbETHStrategy"), (address));
-            eigenLayerContracts.cbETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.cbETHMultiplier"), (uint96));
+            eigenLayerContracts.ETHxStrategy = abi.decode(vm.parseJson(config, ".strategies.ETHxStrategy"), (address));
+            eigenLayerContracts.ETHxMultiplier = abi.decode(vm.parseJson(config, ".strategies.ETHxMultiplier"), (uint96));
+            eigenLayerContracts.ankrETHStrategy = abi.decode(vm.parseJson(config, ".strategies.ankrETHStrategy"), (address));
+            eigenLayerContracts.ankrETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.ankrETHMultiplier"), (uint96));
+            eigenLayerContracts.osETHStrategy = abi.decode(vm.parseJson(config, ".strategies.osETHStrategy"), (address));
+            eigenLayerContracts.osETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.osETHMultiplier"), (uint96));
+            eigenLayerContracts.sfrxETHStrategy = abi.decode(vm.parseJson(config, ".strategies.sfrxETHStrategy"), (address));
+            eigenLayerContracts.sfrxETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.sfrxETHMultiplier"), (uint96));
+            eigenLayerContracts.mETHStrategy = abi.decode(vm.parseJson(config, ".strategies.mETHStrategy"), (address));
+            eigenLayerContracts.mETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.mETHMultiplier"), (uint96));
             eigenLayerContracts.reALTStrategy = abi.decode(vm.parseJson(config, ".strategies.reALTStrategy"), (address));
             eigenLayerContracts.reALTMultiplier = abi.decode(vm.parseJson(config, ".strategies.reALTMultiplier"), (uint96));
-            eigenLayerContracts.eigenStrategy = abi.decode(vm.parseJson(config, ".strategies.eigenStrategy"), (address));
-            eigenLayerContracts.eigenMultiplier = abi.decode(vm.parseJson(config, ".strategies.eigenMultiplier"), (uint96));
-            eigenLayerContracts.beaconChainETHStrategy = abi.decode(vm.parseJson(config, ".strategies.beaconChainETHStrategy"), (address));
-            eigenLayerContracts.beaconChainETHMultiplier = abi.decode(vm.parseJson(config, ".strategies.beaconChainETHMultiplier"), (uint96));
-
+            
             deploymentConfig.triggerXOwner = abi.decode(vm.parseJson(config, ".triggerXOwner"), (address));
             deploymentConfig.rewardsInitiator = abi.decode(vm.parseJson(config, ".rewardsInitiator"), (address));
             deploymentConfig.slasher = abi.decode(vm.parseJson(config, ".slasher"), (address));
@@ -227,24 +225,28 @@ contract TriggerXDeployerHolesky is Script {
                 weight: eigenLayerContracts.stETHMultiplier
             });
             deployedStrategyArray[2] = TokenAndWeight({
-                token: eigenLayerContracts.rETHStrategy,
-                weight: eigenLayerContracts.rETHMultiplier
+                token: eigenLayerContracts.ETHxStrategy,
+                weight: eigenLayerContracts.ETHxMultiplier
             });
             deployedStrategyArray[3] = TokenAndWeight({
-                token: eigenLayerContracts.cbETHStrategy,
-                weight: eigenLayerContracts.cbETHMultiplier
+                token: eigenLayerContracts.ankrETHStrategy,
+                weight: eigenLayerContracts.ankrETHMultiplier
             });
             deployedStrategyArray[4] = TokenAndWeight({
-                token: eigenLayerContracts.reALTStrategy,
-                weight: eigenLayerContracts.reALTMultiplier
+                token: eigenLayerContracts.osETHStrategy,
+                weight: eigenLayerContracts.osETHMultiplier
             });
             deployedStrategyArray[5] = TokenAndWeight({
-                token: eigenLayerContracts.eigenStrategy,
-                weight: eigenLayerContracts.eigenMultiplier
+                token: eigenLayerContracts.sfrxETHStrategy,
+                weight: eigenLayerContracts.sfrxETHMultiplier
             });
             deployedStrategyArray[6] = TokenAndWeight({
-                token: eigenLayerContracts.beaconChainETHStrategy,
-                weight: eigenLayerContracts.beaconChainETHMultiplier
+                token: eigenLayerContracts.mETHStrategy,
+                weight: eigenLayerContracts.mETHMultiplier
+            });
+            deployedStrategyArray[7] = TokenAndWeight({
+                token: eigenLayerContracts.reALTStrategy,
+                weight: eigenLayerContracts.reALTMultiplier
             });
         }
 
@@ -354,11 +356,13 @@ contract TriggerXDeployerHolesky is Script {
             IStakeRegistry.StrategyParams[][] memory strategyParams =
                 new IStakeRegistry.StrategyParams[][](deploymentConfig.numQuorum);
             for (uint256 i = 0; i < deploymentConfig.numQuorum; i++) {
-                IStakeRegistry.StrategyParams[] memory params = new IStakeRegistry.StrategyParams[](1);
-                params[0] = IStakeRegistry.StrategyParams({
-                    strategy: IStrategy(deployedStrategyArray[i].token),
-                    multiplier: deployedStrategyArray[i].weight
-                });
+                IStakeRegistry.StrategyParams[] memory params = new IStakeRegistry.StrategyParams[](deployedStrategyArray.length);
+                for (uint256 j = 0; j < deployedStrategyArray.length; j++) {
+                    params[j] = IStakeRegistry.StrategyParams({
+                        strategy: IStrategy(deployedStrategyArray[j].token),
+                        multiplier: deployedStrategyArray[j].weight
+                    });
+                }
                 strategyParams[i] = params;
             }
 
