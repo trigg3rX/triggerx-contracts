@@ -9,11 +9,19 @@ optimizer = true
 optimizer_runs = 200
 
 remappings = [
-    "@eigenlayer-middleware/=lib/eigenlayer-middleware/src/",
-    "@eigenlayer-contracts/=lib/eigenlayer-middleware/lib/eigenlayer-contracts/src/",
-    "@openzeppelin-contracts/=lib/eigenlayer-middleware/lib/openzeppelin-contracts/",
-    "@openzeppelin-upgrades/=lib/eigenlayer-middleware/lib/openzeppelin-contracts-upgradeable/",
-    "forge-std/=lib/eigenlayer-middleware/lib/forge-std/src/"
+    "@createx/=lib/createx/",
+    "@interop/=lib/interop-lib/src/",
+
+    "@othentic-core-contracts/=lib/othentic-core-contracts/src/",
+    "@layer-zero/=lib/othentic-core-contracts/lib/LayerZero-v2/packages/layerzero-v2/evm/",
+
+    "@eigenlayer-middleware/=lib/othentic-core-contracts/lib/eigenlayer-middleware/src/",
+    "@eigenlayer-contracts/=lib/othentic-core-contracts/lib/eigenlayer-contracts/src/contracts/",
+    
+    "@openzeppelin-contracts/=lib/othentic-core-contracts/lib/openzeppelin-contracts/",
+    "@openzeppelin-upgrades/=lib/othentic-core-contracts/lib/openzeppelin-contracts-upgradeable/",
+    
+    "forge-std/=lib/othentic-core-contracts/lib/forge-std/src/"
 ]
 
 [rpc_endpoints]
