@@ -8,14 +8,8 @@ help:
 build-contracts: ## Build contracts
 	./utils/build-contracts.sh
 
-deploy-avs-contracts-on-holesky: ## Deploy contracts on Holesky
-	./utils/deploy-avs-contracts-on-holesky.sh
-
 deploy-stake-registry: ## Deploy stake registry
 	./utils/deploy-stake-registry.sh
-
-update-avs-contracts-on-holesky: ## Update contracts on Holesky
-	./utils/update-avs-contracts-on-holesky.sh
 
 ############################# GENERATE BINDINGS #############################
 
