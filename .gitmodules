@@ -1,0 +1,3 @@
+[submodule "contracts/lib/othentic-core-contracts"]
+	path = contracts/lib/othentic-core-contracts
+	url = https://github.com/Othentic-Labs/core-contracts.git
