@@ -21,7 +21,9 @@ remappings = [
     "@openzeppelin-contracts/=lib/othentic-core-contracts/lib/openzeppelin-contracts/",
     "@openzeppelin-upgrades/=lib/othentic-core-contracts/lib/openzeppelin-contracts-upgradeable/",
     
-    "forge-std/=lib/othentic-core-contracts/lib/forge-std/src/"
+    "forge-std/=lib/othentic-core-contracts/lib/forge-std/src/",
+
+    "@layerzero-v2/=lib/layerzero-v2/packages/layerzero-v2/evm/protocol/"
 ]
 
 [rpc_endpoints]

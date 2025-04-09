@@ -7,3 +7,6 @@
 [submodule "contracts/lib/interop-lib"]
 	path = contracts/lib/interop-lib
 	url = https://github.com/ethereum-optimism/interop-lib.git
+[submodule "contracts/lib/layerzero-v2"]
+	path = contracts/lib/layerzero-v2
+	url = https://github.com/layerzero-labs/layerzero-v2

@@ -11,17 +11,16 @@ interface IAvsGovernance {
 /// @notice Allows authorized keepers to execute functions on a target contract with or without ETH
 /// @dev Uses immutable variables for gas efficiency and security
 contract Proxy {
-    address public immutable target;
     address public immutable avsGovernance;
 
     event FunctionExecuted(
-        address indexed operator, 
+        address indexed keeper,
+        address indexed target,
         bytes callData, 
         uint256 value
     );
 
-    constructor(address _target, address _avsGovernance) {
-        target = _target;
+    constructor(address _avsGovernance) {
         avsGovernance = _avsGovernance;
     }
 
@@ -29,16 +28,17 @@ contract Proxy {
     /// @param callData The encoded function call data to execute
     /// @return result The bytes returned by the function call
     /// @dev Only registered keepers can execute functions
-    function executeFunction(bytes memory callData) external payable returns (bytes memory) {
+    function executeFunction(address target,bytes memory callData) external payable returns (bytes memory) {
         require(
             IAvsGovernance(avsGovernance).isOperatorRegistered(msg.sender),
             "Unauthorized keeper"
         );
+        require(target != address(0), "Invalid target address");
 
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
         require(success, "Function call failed");
         
-        emit FunctionExecuted(msg.sender, callData, msg.value);
+        emit FunctionExecuted(msg.sender, target,callData, msg.value);
         return result;
     }
 
