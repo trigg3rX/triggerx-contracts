@@ -1,146 +1,121 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.22;
 
-import "@layerzero-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
-import "@layerzero-v2/contracts/interfaces/ILayerZeroReceiver.sol";
-import "../interfaces/IAttestationCenter.sol";
-import "forge-std/console.sol";
+import { OApp, MessagingFee, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import { OAppOptionsType3 } from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
+import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
-/**
- * @title ProxyHub
- * @dev Validates keeper registration and authorizes execution requests from spoke chains
- */
-contract ProxyHub is ILayerZeroReceiver {
-    // LayerZero V2 endpoint contract
-    address public immutable endpoint;
+contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
+    enum ActionType { REGISTER, UNREGISTER }
 
-    // Attestation center contract for keeper validation
-    IAttestationCenter public immutable attestationCenter;
-
-    // Keeper registry
     mapping(address => bool) public isKeeper;
+    address public avsGovernance;
 
-    // Events
-    event CrossChainRequestReceived(address indexed keeper, address target, uint32 sourceChainId);
-    event CrossChainExecutionSent(address indexed toSpoke, address target, bytes data, uint32 dstChainId);
-    event FunctionExecuted(address indexed keeper, address target, bytes data, uint256 value);
+    uint32 public immutable thisChainEid;
+    uint32 public srcEid;
 
-    /**
-     * @param _endpoint LayerZero V2 endpoint on Base
-     * @param _attestationCenter Address of the IAttestationCenter contract
-     */
-    constructor(address _endpoint, address _attestationCenter) {
-        endpoint = _endpoint;
-        attestationCenter = IAttestationCenter(_attestationCenter);
+    uint32[] public dstEids;
+
+    event KeeperRegistered(address indexed keeper);
+    event KeeperUnregistered(address indexed keeper);
+    event BroadcastSent(ActionType action, address keeper, uint32 dstEid);
+    event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
+    event AVSGovernanceUpdated(address indexed oldGovernance, address indexed newGovernance);
+
+    modifier onlyKeeper() {
+        require(isKeeper[msg.sender], "Not a keeper");
+        _;
     }
 
-    /**
-     * @dev Handles incoming execution requests from a spoke chain.
-     * Verifies keeper status, then returns the execution command back to the spoke.
-     */
-    function lzReceive(
-        Origin calldata _origin,
-        bytes32,            // _guid (unused)
-        bytes calldata _message,
-        address,            // _executor (unused)
-        bytes calldata      // _extraData (unused)
-    ) external payable override {
-        require(msg.sender == endpoint, "Hub: Unauthorized endpoint");
-
-        (address keeper, address target, bytes memory data) = abi.decode(_message, (address, address, bytes));
-
-        require(_checkKeeper(keeper), "Hub: Keeper not registered");
-
-        emit CrossChainRequestReceived(keeper, target, _origin.srcEid);
-
-        bytes memory message = abi.encode(target, data);
-        bytes memory options = abi.encodePacked(uint16(1), uint256(1000000)); // Lower gas limit
-
-        // Get fee estimate
-        MessagingFee memory fee = ILayerZeroEndpointV2(endpoint).quote(
-           MessagingParams({
-                dstEid: _origin.srcEid,
-                receiver: _origin.sender,
-                message: message,
-                options: options,
-                payInLzToken: false
-            }),
-            address(this)
-        );
-
-        console.log("Native Fee:", fee.nativeFee);
-        console.log("LZ Token Fee:", fee.lzTokenFee);
-        console.log(address(this).balance);
-
-        // Add a buffer
-        uint256 feeWithBuffer = fee.nativeFee * 120 / 100; // 20% buffer
-
-        // Check if we have enough
-        require(msg.value >= feeWithBuffer, "Insufficient fee provided");
-
-
-        // Send with exact fee
-        ILayerZeroEndpointV2(endpoint).send{value: feeWithBuffer}(
-            MessagingParams({
-                dstEid: _origin.srcEid,
-                receiver: _origin.sender,
-                message: message,
-                options: options,
-                payInLzToken: false
-            }),
-            address(this)
-        );
-        
-        emit CrossChainExecutionSent(address(uint160(uint256(_origin.sender))), target, data, _origin.srcEid);
+    constructor(
+        address _endpoint,
+        address _owner,
+        uint32 _srcEid,         // L1 source
+        uint32 _thisChainEid    // This L2
+    )
+        OApp(_endpoint, _owner)
+        Ownable(_owner)
+    {
+        srcEid = _srcEid;
+        thisChainEid = _thisChainEid;
     }
 
-    /**
-     * @notice Executes a function locally if the caller is a registered keeper
-     * @param target Target contract address
-     * @param data Calldata for the function call
-     */
-    function executeFunction(address target, bytes memory data) external payable {
-        require(isKeeper[msg.sender], "Hub: Keeper not registered");
+    function addSpokes(uint32[] calldata _dstEids) external onlyOwner {
+        for (uint i = 0; i < _dstEids.length; i++) {
+            uint32 dstEid = _dstEids[i];
+            if (dstEid != thisChainEid) {
+                dstEids.push(dstEid);
+                _setPeer(dstEid, bytes32(uint256(uint160(address(this)))));
+            }
+        }
+    }
+
+    function executeFunction(address target, bytes calldata data) external payable onlyKeeper {
         _executeFunction(target, data);
     }
 
-    /**
-     * @dev Internal function execution logic
-     */
     function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
-        require(success, "Hub: Function execution failed");
+        require(success, "Execution failed");
 
         emit FunctionExecuted(msg.sender, target, callData, msg.value);
         return result;
     }
 
-    /**
-     * @dev Checks if an address is a registered operator in the AttestationCenter.
-     * @param keeper The address to check.
-     * @return bool True if the call to operatorsIdsByAddress succeeds, false if it reverts.
-     */
-    function _checkKeeper(address keeper) internal view returns (bool) {
-        // Use try/catch to handle potential reverts from the external call
-        try attestationCenter.operatorsIdsByAddress(keeper) returns (uint256 /* operatorId */) {
-            // If the call succeeds (returns uint256), the keeper is considered valid.
-            return true;
-        } catch {
-            // If the call reverts (e.g., keeper not found), it returns false.
-            return false;
+    function _lzReceive(
+        Origin calldata _origin,
+        bytes32,
+        bytes calldata _payload,
+        address,
+        bytes calldata
+    ) internal override {
+        require(_origin.srcEid == srcEid, "Invalid source chain");
+        (ActionType action, address keeper) = abi.decode(_payload, (ActionType, address));
+
+        if (action == ActionType.REGISTER) { 
+            isKeeper[keeper] = true;
+            emit KeeperRegistered(keeper);
+            _batchBroadcast(ActionType.REGISTER, keeper);
+        } else if (action == ActionType.UNREGISTER) {
+            isKeeper[keeper] = false;
+            emit KeeperUnregistered(keeper);
+            _batchBroadcast(ActionType.UNREGISTER, keeper);
+        } else {
+            revert("Unknown action");
         }
     }
 
-    // === Required LayerZero interface stubs ===
+    function _batchBroadcast(ActionType action, address keeper) internal {
+        bytes memory payload = abi.encode(action, keeper);
+        uint256 totalUsed;
 
-    function allowInitializePath(Origin calldata) external pure override returns (bool) {
-        return true;
+        for (uint i = 0; i < dstEids.length; i++) {
+            uint32 dstEid = dstEids[i];
+            if (dstEid == thisChainEid) continue;
+
+            bytes memory options = abi.encodePacked(uint16(0x0001), uint16(uint256(1000000)));
+            MessagingFee memory fee = _quote(dstEid, payload, options, false);
+            require(msg.value >= totalUsed + fee.nativeFee, "Insufficient fee");
+
+            _lzSend(
+                dstEid,
+                payload,
+                options,
+                fee,
+                payable(msg.sender)
+            );
+
+            emit BroadcastSent(action, keeper, dstEid);
+            totalUsed += fee.nativeFee;
+        }
+
     }
 
-    function nextNonce(uint32, bytes32) external pure override returns (uint64) {
-        return 0;
-    }
-    
     receive() external payable {}
-    
+
+    function withdraw(address payable to, uint256 amount) external onlyOwner {
+        require(to != address(0), "Invalid recipient");
+        require(amount <= address(this).balance, "Insufficient balance");
+        to.transfer(amount);
+    }
 }

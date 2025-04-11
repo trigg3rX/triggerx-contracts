@@ -1,106 +1,63 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.22;
 
-import "@layerzero-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
-import "@layerzero-v2/contracts/interfaces/ILayerZeroReceiver.sol";
-import "../interfaces/IAttestationCenter.sol";
+import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
-/**
- * @title ProxySpoke
- * @dev Executes cross-chain function calls validated by a hub (Base Sepolia) via LayerZero V2
- */
-contract ProxySpoke is ILayerZeroReceiver {
-    // LayerZero endpoint contract
-    address public immutable endpoint;
+contract ProxySpoke is Ownable, OApp {
+    enum ActionType { REGISTER, UNREGISTER }
 
-    // Hub (Base Sepolia) endpoint ID
-    uint32 public immutable hubEid;
+    mapping(address => bool) public isKeeper;
 
-    // Events
-    event CrossChainRequestSent(address indexed keeper, address target, bytes data);
-    event FunctionExecuted(address indexed keeper, address target, bytes data, uint256 value);
+    event KeeperUpdated(ActionType action, address keeper);
+    event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
 
-    /**
-     * @param _endpoint LayerZero V2 endpoint
-     * @param _hubEid Hub endpoint ID (Base Sepolia)
-     */
-    constructor(address _endpoint, uint32 _hubEid) {
-        endpoint = _endpoint;
-        hubEid = _hubEid;
+    modifier onlyKeeper() {
+        require(isKeeper[msg.sender], "Spoke: Keeper not registered");
+        _;
     }
 
+    constructor(address _endpoint, address _owner) Ownable(_owner) OApp(_endpoint, _owner) {}
 
     /**
-     * @notice Called by a keeper to execute a cross-chain function.
-     * Sends a message to the hub to verify keeper status and request execution.
-     * @param target The contract to call after verification
-     * @param data The callData to send to the target contract
+     * @notice Executes a function locally if the caller is a registered keeper
+     * @param target Target contract address
+     * @param data Calldata for the function call
      */
-    function executeFunction(address target, bytes memory data) external payable {
-        // Encode the original keeper (msg.sender), target, and call data
-        bytes memory message = abi.encode(msg.sender, target, data);
-
-        // Create standard options with gas limit
-        bytes memory options = abi.encodePacked(
-            uint16(1),          // type: gas limit override (0x0001)
-            uint256(1000000)     // gas limit (200,000)
-        );
-        
-        // Send message to hub with all available ETH
-        ILayerZeroEndpointV2(endpoint).send{value: msg.value}(
-            MessagingParams({
-                dstEid: hubEid,
-                receiver: bytes32(uint256(uint160(address(this)))),
-                message: message,
-                options: options,
-                payInLzToken: false
-            }),
-            address(this)
-        );
-
-        emit CrossChainRequestSent(msg.sender, target, data);
-    }
-
-    /**
-     * @dev Called by LayerZero to deliver a message after hub validation.
-     * Executes the target function if hub confirmed the keeper.
-     */
-    function lzReceive(
-        Origin calldata _origin,
-        bytes32,            // _guid (unused)
-        bytes calldata _message,
-        address,            // _executor (unused)
-        bytes calldata      // _extraData (unused)
-    ) external payable override {
-        require(msg.sender == endpoint, "Spoke: Unauthorized endpoint");
-        require(_origin.srcEid == hubEid, "Spoke: Invalid source endpoint");
-        require(_origin.sender == bytes32(uint256(uint160(address(this)))), "Spoke: Invalid remote sender");
-
-        (address target, bytes memory data) = abi.decode(_message, (address, bytes));
+    function executeFunction(address target, bytes memory data) external payable onlyKeeper {
         _executeFunction(target, data);
     }
 
     /**
-     * @dev Executes the target function with provided calldata and ETH.
+     * @dev Internal function execution logic
      */
     function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
-        require(success, "Spoke: Function execution failed");
+        require(success, "Function execution failed");
 
         emit FunctionExecuted(msg.sender, target, callData, msg.value);
         return result;
     }
 
-    // === Required LayerZero interface stubs ===
+    function _lzReceive(
+        Origin calldata _origin,
+        bytes32,
+        bytes calldata message,
+        address,
+        bytes calldata
+    ) internal override {
+        (ActionType action, address keeper) = abi.decode(message, (ActionType, address));
 
-    function allowInitializePath(Origin calldata) external pure override returns (bool) {
-        return true;
+        if (action == ActionType.REGISTER) {
+            isKeeper[keeper] = true;
+        } else if (action == ActionType.UNREGISTER) {
+            isKeeper[keeper] = false;
+        } else {
+            revert("Invalid action type");
+        }
+
+        emit KeeperUpdated(action, keeper);
     }
 
-    function nextNonce(uint32, bytes32) external pure override returns (uint64) {
-        return 0; // Nonce tracking disabled (can be implemented if needed)
-    }
-    
-    // Add a receive function to accept ETH
     receive() external payable {}
 }
