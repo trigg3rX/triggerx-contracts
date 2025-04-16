@@ -31,13 +31,24 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
         address _endpoint,
         address _owner,
         uint32 _srcEid,         // L1 source
-        uint32 _thisChainEid    // This L2
+        uint32 _thisChainEid,   // This L2
+        address[] memory _initialKeepers
     )
         OApp(_endpoint, _owner)
         Ownable(_owner)
     {
         srcEid = _srcEid;
         thisChainEid = _thisChainEid;
+
+        // Initialize keepers
+        for (uint i = 0; i < _initialKeepers.length; i++) {
+            isKeeper[_initialKeepers[i]] = true;
+            emit KeeperRegistered(_initialKeepers[i]);
+        }
+    }
+
+    function setPeer(uint32 _srcEid, address _avsGovernanceLogic) external onlyOwner {
+        _setPeer(_srcEid, bytes32(uint256(uint160(_avsGovernanceLogic))));
     }
 
     function addSpokes(uint32[] calldata _dstEids) external onlyOwner {
@@ -93,7 +104,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
             uint32 dstEid = dstEids[i];
             if (dstEid == thisChainEid) continue;
 
-            bytes memory options = abi.encodePacked(uint16(0x0001), uint16(uint256(1000000)));
+            bytes memory options = _buildExecutorOptions(1_000_000, 0); // 1M gas, no value
             MessagingFee memory fee = _quote(dstEid, payload, options, false);
             require(msg.value >= totalUsed + fee.nativeFee, "Insufficient fee");
 
@@ -102,13 +113,43 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
                 payload,
                 options,
                 fee,
-                payable(msg.sender)
+                payable(address(this)) // Pay from contract balance
             );
 
             emit BroadcastSent(action, keeper, dstEid);
             totalUsed += fee.nativeFee;
         }
+    }
 
+    function _buildExecutorOptions(uint128 gas, uint128 value) internal pure returns (bytes memory) {
+        uint16 TYPE_3 = 3;
+        uint8 WORKER_ID = 1;
+        uint8 OPTION_TYPE_LZRECEIVE = 1;
+
+        // Encode the option payload: gas + value (16 bytes if both)
+        bytes memory option = value == 0
+            ? abi.encodePacked(gas)
+            : abi.encodePacked(gas, value);
+
+        uint16 optionLength = uint16(option.length + 1); // +1 for optionType
+
+        return abi.encodePacked(
+            TYPE_3,                   // option type 3
+            WORKER_ID,               // executor ID
+            optionLength,            // size of option payload
+            OPTION_TYPE_LZRECEIVE,   // receive option type
+            option                   // the actual payload: gas + optional value
+        );
+    }
+
+    /**
+     * @dev Override _payNative to use contract balance instead of msg.value
+     * @param _nativeFee The native fee to be paid
+     * @return nativeFee The amount of native currency paid
+     */
+    function _payNative(uint256 _nativeFee) internal override returns (uint256 nativeFee) {
+        require(address(this).balance >= _nativeFee, "Insufficient contract balance");
+        return _nativeFee;
     }
 
     receive() external payable {}
@@ -118,4 +159,6 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
         require(amount <= address(this).balance, "Insufficient balance");
         to.transfer(amount);
     }
+
+
 }

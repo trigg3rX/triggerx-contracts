@@ -8,7 +8,9 @@ import {ProxyHub} from "../src/lz/ProxyHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address constant PROXY_HUB = 0x9b34C613AfC61725C4650109b02cCc62518cc159;
+    address payable constant PROXY_HUB = payable(0x96c5F575940DBe98fd9600F74F0c36139A7Be2A2);
+
+    address payable constant AVS_GOVERNANCE = payable(0x2cFADBDd050bB83A45B80C2a045516470A67c991);
      // LayerZero Endpoints
     address constant LZ_ENDPOINT_OP_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
     address constant LZ_ENDPOINT_BASE_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
@@ -30,21 +32,52 @@ contract DeployAvsGovernance is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy AvsGovernanceLogic
-        console.log("\n=== Deploying AvsGovernanceLogic on Holesky ===");
-        AvsGovernanceLogic avsGovernance = new AvsGovernanceLogic(
-            LZ_ENDPOINT_HOLESKY,  // LayerZero endpoint
-            PROXY_HUB,            // ProxyHub address
-            BASE_SEPOLIA_EID,     // Destination chain ID (Base Sepolia)
-            deployerAddress       // Owner address
-        );
-        console.log("AvsGovernanceLogic deployed at:", address(avsGovernance));
-
+        // console.log("\n=== Deploying AvsGovernanceLogic on Holesky ===");
+        // AvsGovernanceLogic avsGovernance = new AvsGovernanceLogic(
+        //     LZ_ENDPOINT_HOLESKY,  // LayerZero endpoint
+        //     PROXY_HUB,            // ProxyHub address
+        //     BASE_SEPOLIA_EID,     // Destination chain ID (Base Sepolia)
+        //     deployerAddress       // Owner address
+        // );
+        // console.log("AvsGovernanceLogic deployed at:", address(avsGovernance));
+        // // use call to send the 0.5 eth to the deployed contract from the deployer address
+        // (bool success, ) = address(avsGovernance).call{value: 0.5 ether}("");
+        // require(success, "Failed to send 0.5 eth to the deployed contract");
+        // console.log("0.5 eth sent to the deployed contract");
 
     
+        // setProxyHub on Holesky
+        AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(AVS_GOVERNANCE);
+        console.log("\n=== Setting proxyHub on Holesky ===");
+        avsGovernance.setProxyHub(PROXY_HUB);
+        console.log("ProxyHub set successfully on Holesky");
+        
         vm.stopBroadcast();
 
-        console.log("\n--- Deployment Complete ---");
-        console.log("AvsGovernanceLogic Address:", address(avsGovernance));
-        console.log("---------------------------");
+        // // Switch to Base Sepolia to set peer on ProxyHub
+        // console.log("\n=== Switching to Base Sepolia to set peer on ProxyHub ===");
+        // vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        // vm.startBroadcast(deployerPrivateKey);
+        
+        // ProxyHub proxyHub = ProxyHub(PROXY_HUB);
+        // proxyHub.setPeer(HOLESKY_EID, address(avsGovernance));
+        // console.log("Peer set successfully on ProxyHub");
+        // vm.stopBroadcast();
+        // // // Call afterOperatorRegistered with the deployer address
+        // console.log("\n=== Calling afterOperatorRegistered ===");
+        // avsGovernance.afterOperatorRegistered(
+        //     deployerAddress,  // operator
+        //     100,             // votingPower (example value)
+        //     [uint256(0), 0, 0, 0],  // blsKey (example value)
+        //     deployerAddress  // rewardsReceiver
+        // );
+        // console.log("afterOperatorRegistered called successfully");
+
+       
+    
+
+        // console.log("\n--- Deployment Complete ---");
+        // console.log("AvsGovernanceLogic Address:", address(avsGovernance));
+        // console.log("---------------------------");
     }
 } 

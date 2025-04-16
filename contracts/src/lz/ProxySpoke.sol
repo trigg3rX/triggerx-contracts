@@ -17,7 +17,20 @@ contract ProxySpoke is Ownable, OApp {
         _;
     }
 
-    constructor(address _endpoint, address _owner) Ownable(_owner) OApp(_endpoint, _owner) {}
+    constructor(
+        address _endpoint, 
+        address _owner, 
+        uint32 _srcEid,
+        address[] memory _initialKeepers
+    ) Ownable(_owner) OApp(_endpoint, _owner) {
+        _setPeer(_srcEid, bytes32(uint256(uint160(address(this)))));
+
+        // Initialize keepers
+        for (uint i = 0; i < _initialKeepers.length; i++) {
+            isKeeper[_initialKeepers[i]] = true;
+            emit KeeperUpdated(ActionType.REGISTER, _initialKeepers[i]);
+        }
+    }
 
     /**
      * @notice Executes a function locally if the caller is a registered keeper
