@@ -171,16 +171,28 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         return _nativeFee;
     }
 
+    function addToWhitelist(address[] calldata _operators) external onlyOwner {
+        for (uint256 i = 0; i < _operators.length; i++) {
+            _addToWhitelist(_operators[i]);
+        }
+    }
+
     // Add operator to whitelist (onlyOwner)
-    function addToWhitelist(address _operator) external onlyOwner {
+    function _addToWhitelist(address _operator) internal {
         require(_operator != address(0), "Invalid address");
         require(!isWhitelisted[_operator], "Already whitelisted");
         isWhitelisted[_operator] = true;
         emit Whitelisted(_operator);
     }
 
+    function removeFromWhitelist(address[] calldata _operators) external onlyOwner {
+        for (uint256 i = 0; i < _operators.length; i++) {
+            _removeFromWhitelist(_operators[i]);
+        }
+    }
+
     // Remove operator from whitelist (onlyOwner)
-    function removeFromWhitelist(address _operator) external onlyOwner {
+    function _removeFromWhitelist(address _operator) internal {
         require(isWhitelisted[_operator], "Not whitelisted");
         isWhitelisted[_operator] = false;
         emit UnWhitelisted(_operator);
