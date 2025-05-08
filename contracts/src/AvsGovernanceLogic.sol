@@ -13,11 +13,15 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     address public proxyHub; // L2 handler
     uint32 public immutable dstEid;    // L2 chain ID
 
+    // Whitelist storage
+    mapping(address => bool) public isWhitelisted;
 
     event OperatorRegistered(address indexed operator);
     event OperatorUnregistered(address indexed operator);
     event MessageSent(uint32 indexed dstEid, bytes32 indexed guid, uint256 fee);
     event MessageFailed(uint32 indexed dstEid, bytes32 indexed guid, bytes reason);
+    event Whitelisted(address indexed operator);
+    event UnWhitelisted(address indexed operator);
 
     constructor(address _endpoint, address _proxyHub, uint32 _dstEid, address _owner)
         OApp(_endpoint, _owner)
@@ -47,11 +51,13 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     }
 
     function beforeOperatorRegistered(
-        address,
+        address _operator,
         uint256,
         uint256[4] calldata,
         address
-    ) external override {}
+    ) external override {
+        require(isWhitelisted[_operator], "Operator is not whitelisted");
+    }
 
     function afterOperatorRegistered(
         address _operator,
@@ -163,5 +169,20 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     function _payNative(uint256 _nativeFee) internal override returns (uint256 nativeFee) {
         require(address(this).balance >= _nativeFee, "Insufficient contract balance");
         return _nativeFee;
+    }
+
+    // Add operator to whitelist (onlyOwner)
+    function addToWhitelist(address _operator) external onlyOwner {
+        require(_operator != address(0), "Invalid address");
+        require(!isWhitelisted[_operator], "Already whitelisted");
+        isWhitelisted[_operator] = true;
+        emit Whitelisted(_operator);
+    }
+
+    // Remove operator from whitelist (onlyOwner)
+    function removeFromWhitelist(address _operator) external onlyOwner {
+        require(isWhitelisted[_operator], "Not whitelisted");
+        isWhitelisted[_operator] = false;
+        emit UnWhitelisted(_operator);
     }
 }
