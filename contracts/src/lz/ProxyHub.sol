@@ -99,7 +99,9 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
     function _batchBroadcast(ActionType action, address keeper) internal {
         bytes memory payload = abi.encode(action, keeper);
         uint256 totalUsed;
-
+function executeFunction(address target, bytes calldata data) external payable onlyKeeper {
+        _executeFunction(target, data);
+    }
         for (uint i = 0; i < dstEids.length; i++) {
             uint32 dstEid = dstEids[i];
             if (dstEid == thisChainEid) continue;

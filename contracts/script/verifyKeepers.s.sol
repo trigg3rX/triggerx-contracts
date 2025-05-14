@@ -7,7 +7,7 @@ import {ProxyHub} from "../src/lz/ProxyHub.sol";
 
 contract VerifyKeepers is Script {
     // ProxyHub addresses for different chains
-    address constant PROXY_ADDRESS = 0x96c5F575940DBe98fd9600F74F0c36139A7Be2A2;
+    address constant PROXY_ADDRESS = 0x68605feB94a8FeBe5e1fBEF0A9D3fE6e80cEC126;
 
     // Operators array
     address[] OPERATORS = [
@@ -19,7 +19,8 @@ contract VerifyKeepers is Script {
         0xEbe4f49161eb9002eD19E06F943DCe73D24B596E,
         0x350ddC16818CDFA1E0c06c26Fd5e76360032faa4,
         0x011FCbAE5f306cd793456ab7d4c0CC86756c693D,
-        0x0a067a261c5F5e8C4c0b9137430b4FE1255EB62e
+        0x0a067a261c5F5e8C4c0b9137430b4FE1255EB62e,
+        0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085
     ];
 
     function run() external {

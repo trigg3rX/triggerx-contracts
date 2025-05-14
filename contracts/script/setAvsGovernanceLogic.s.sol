@@ -15,7 +15,7 @@ contract SetAvsGovernanceLogic is Script {
         address avsGovernance = 0xe6010F17f9ED9B5B9535Aac79a778982Bc45Cb56;
         // AVS Governance Logic address on Holesky
       
-        address avsGovernanceLogic = 0x2cFADBDd050bB83A45B80C2a045516470A67c991;
+        address avsGovernanceLogic = 0x4Ab0f882565dE920b1a5D4BFc20448523bD92612;
 
         // Start broadcasting transactions
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));

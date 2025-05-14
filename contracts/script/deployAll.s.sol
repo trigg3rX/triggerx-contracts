@@ -6,7 +6,6 @@ import "forge-std/console.sol";
 import {CREATE3} from "solady/utils/CREATE3.sol";
 import {ProxyHub} from "../src/lz/ProxyHub.sol";
 import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
-import {Target} from "../src/Target.sol";
 
 contract DeployAll is Script {
     // --- Configuration (Update if needed) ---
@@ -21,7 +20,7 @@ contract DeployAll is Script {
     uint32 constant HOLESKY_EID = 40217; // Holesky Endpoint ID
 
     // Deployment Salt (Must be the same for Hub and Spoke)
-    bytes32 constant SALT = "triggerxKeepers";
+    bytes32 constant SALT = "triggerx-Keepers";
 
     function run() external {
         // Fetch deployer information from environment variables.
