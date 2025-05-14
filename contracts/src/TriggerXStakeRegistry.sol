@@ -39,11 +39,11 @@ contract TriggerXStakeRegistry is
         _disableInitializers();
     }
     
-    // function initialize() public initializer {
-    //     __ReentrancyGuard_init();
-    //     __Ownable_init();
-    //     __UUPSUpgradeable_init();
-    // }
+    function initialize() public initializer {
+        __ReentrancyGuard_init();
+        __Ownable_init(msg.sender);
+        __UUPSUpgradeable_init();
+    }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
