@@ -39,8 +39,6 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
     }
 
-    // Allow the contract to receive Ether for funding fees
-    receive() external payable {}
 
     // Withdraw Ether from the contract
     function withdraw(address payable _to, uint256 _amount) external onlyOwner {
@@ -51,19 +49,19 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     }
 
     function beforeOperatorRegistered(
-        address _operator,
-        uint256,
-        uint256[4] calldata,
-        address
+        address _operator, 
+        uint256 /* _votingPower */,
+        uint256[4] calldata /* _blsKey */,
+        address /* _rewardsReceiver */
     ) external override {
         require(isWhitelisted[_operator], "Operator is not whitelisted");
     }
 
     function afterOperatorRegistered(
-        address _operator,
-        uint256,
-        uint256[4] calldata,
-        address
+        address _operator, 
+        uint256 /* _votingPower */,
+        uint256[4] calldata /* _blsKey */,
+        address /* _rewardsReceiver */
     ) external override {
         bytes memory payload = abi.encode(ActionType.REGISTER, _operator);
         bytes memory options = _buildExecutorOptions(1_000_000, 1e15);
@@ -197,4 +195,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         isWhitelisted[_operator] = false;
         emit UnWhitelisted(_operator);
     }
+    
+    // Allow the contract to receive Ether for funding fees
+    receive() external payable {}
 }

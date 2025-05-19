@@ -9,10 +9,9 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
     enum ActionType { REGISTER, UNREGISTER }
 
     mapping(address => bool) public isKeeper;
-    address public avsGovernance;
 
     uint32 public immutable thisChainEid;
-    uint32 public srcEid;
+    uint32 public immutable srcEid;
 
     uint32[] public dstEids;
 
@@ -20,7 +19,6 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
     event KeeperUnregistered(address indexed keeper);
     event BroadcastSent(ActionType action, address keeper, uint32 dstEid);
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
-    event AVSGovernanceUpdated(address indexed oldGovernance, address indexed newGovernance);
 
     modifier onlyKeeper() {
         require(isKeeper[msg.sender], "Not a keeper");
@@ -75,10 +73,10 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3 {
 
     function _lzReceive(
         Origin calldata _origin,
-        bytes32,
+        bytes32 /* _guid */,
         bytes calldata _payload,
-        address,
-        bytes calldata
+        address /* _executor */,
+        bytes calldata /* _extraData */
     ) internal override {
         require(_origin.srcEid == srcEid, "Invalid source chain");
         (ActionType action, address keeper) = abi.decode(_payload, (ActionType, address));

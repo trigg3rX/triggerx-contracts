@@ -276,4 +276,4 @@ contract AvsGovernanceLogicTest is Test {
     //     // or use other advanced testing techniques
     //     // This is just a placeholder test
     // }
-} 
+}  

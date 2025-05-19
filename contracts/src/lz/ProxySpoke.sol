@@ -19,11 +19,10 @@ contract ProxySpoke is Ownable, OApp {
 
     constructor(
         address _endpoint, 
-        address _owner, 
-        uint32 _srcEid,
+        uint32 _hubEid,
         address[] memory _initialKeepers
-    ) Ownable(_owner) OApp(_endpoint, _owner) {
-        _setPeer(_srcEid, bytes32(uint256(uint160(address(this)))));
+    ) Ownable(msg.sender) OApp(_endpoint, msg.sender) {
+        _setPeer(_hubEid, bytes32(uint256(uint160(address(this)))));
 
         // Initialize keepers
         for (uint i = 0; i < _initialKeepers.length; i++) {
@@ -54,10 +53,10 @@ contract ProxySpoke is Ownable, OApp {
 
     function _lzReceive(
         Origin calldata _origin,
-        bytes32,
+        bytes32 /* _guid */,
         bytes calldata message,
-        address,
-        bytes calldata
+        address /* _executor */,
+        bytes calldata /* _extraData */
     ) internal override {
         (ActionType action, address keeper) = abi.decode(message, (ActionType, address));
 
