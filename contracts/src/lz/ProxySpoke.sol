@@ -4,19 +4,54 @@ pragma solidity ^0.8.22;
 import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
+/**
+ * @title ProxySpoke
+ * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
+ * @dev This contract receives keeper registration updates from the hub and executes functions on the respective L2 chain
+ * @custom:security-contact security@triggerx.com
+ */
 contract ProxySpoke is Ownable, OApp {
+    /**
+     * @notice Enum defining the types of actions that can be performed on keepers
+     */
     enum ActionType { REGISTER, UNREGISTER }
 
+    /**
+     * @notice Mapping to track registered keepers
+     */
     mapping(address => bool) public isKeeper;
 
+    /**
+     * @notice Emitted when a keeper's status is updated
+     * @param action The type of action performed
+     * @param keeper The address of the keeper
+     */
     event KeeperUpdated(ActionType action, address keeper);
+
+    /**
+     * @notice Emitted when a function is executed
+     * @param keeper The address of the keeper who executed the function
+     * @param target The address of the target contract
+     * @param data The calldata used for the function call
+     * @param value The amount of ETH sent with the call
+     */
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
 
+    /**
+     * @notice Modifier to restrict function access to registered keepers
+     */
     modifier onlyKeeper() {
         require(isKeeper[msg.sender], "Spoke: Keeper not registered");
         _;
     }
 
+    /**
+     * @notice Constructor for the ProxySpoke contract
+     * @param _endpoint The LayerZero endpoint address
+     * @param _owner The owner address
+     * @param _hubEid The hub chain endpoint ID
+     * @param _initialKeepers Array of initial keeper addresses
+     */
     constructor(
         address _endpoint,
         address _owner,
@@ -33,16 +68,19 @@ contract ProxySpoke is Ownable, OApp {
     }
 
     /**
-     * @notice Executes a function locally if the caller is a registered keeper
-     * @param target Target contract address
-     * @param data Calldata for the function call
+     * @notice Executes a function on a target contract
+     * @param target The address of the target contract
+     * @param data The calldata for the function call
      */
     function executeFunction(address target, bytes memory data) external payable onlyKeeper {
         _executeFunction(target, data);
     }
 
     /**
-     * @dev Internal function execution logic
+     * @notice Internal function to execute a function call
+     * @param target The address of the target contract
+     * @param callData The calldata for the function call
+     * @return The return data from the function call
      */
     function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
@@ -52,6 +90,11 @@ contract ProxySpoke is Ownable, OApp {
         return result;
     }
 
+    /**
+     * @notice Handles incoming LayerZero messages from the hub
+     * @param _origin The origin information of the message
+     * @param message The message payload containing the action and keeper address
+     */
     function _lzReceive(
         Origin calldata _origin,
         bytes32 /* _guid */,
@@ -71,6 +114,4 @@ contract ProxySpoke is Ownable, OApp {
 
         emit KeeperUpdated(action, keeper);
     }
-
-    receive() external payable {}
 }

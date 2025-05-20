@@ -171,20 +171,4 @@ contract ProxySpokeTest is Test {
         // Verify keeper was unregistered
         assertFalse(proxySpoke.isKeeper(keeper2));
     }
-    
-    function test_ReceiveEther() public {
-        uint256 amount = 5 ether;
-        address sender = address(0x123);
-        
-        // Fund the sender
-        vm.deal(sender, amount);
-        
-        uint256 initialBalance = address(proxySpoke).balance;
-        
-        vm.prank(sender);
-        (bool success,) = address(proxySpoke).call{value: amount}("");
-        
-        assertTrue(success);
-        assertEq(address(proxySpoke).balance, initialBalance + amount);
-    }
 } 
