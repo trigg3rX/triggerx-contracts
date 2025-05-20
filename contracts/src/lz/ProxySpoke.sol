@@ -18,10 +18,11 @@ contract ProxySpoke is Ownable, OApp {
     }
 
     constructor(
-        address _endpoint, 
+        address _endpoint,
+        address _owner,
         uint32 _hubEid,
         address[] memory _initialKeepers
-    ) Ownable(msg.sender) OApp(_endpoint, msg.sender) {
+    ) Ownable(_owner) OApp(_endpoint, _owner) {     
         _setPeer(_hubEid, bytes32(uint256(uint160(address(this)))));
 
         // Initialize keepers
