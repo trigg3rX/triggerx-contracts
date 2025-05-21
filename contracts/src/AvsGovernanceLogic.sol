@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.26;
 
 import {IAvsGovernanceLogic} from "@othentic-core-contracts/NetworkManagement/L1/interfaces/IAvsGovernanceLogic.sol";
 import {OApp, MessagingFee, Origin, MessagingReceipt} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
@@ -91,18 +91,25 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     event UnWhitelisted(address indexed operator);
 
     /**
+     * @notice Emitted when the gas options are updated
+     * @param gasLimit The new gas limit
+     * @param callValue The new call value
+     */
+    event GasOptionsUpdated(uint128 gasLimit, uint128 callValue);
+
+    /**
      * @notice Constructor for the AvsGovernanceLogic contract
      * @param _endpoint The LayerZero endpoint address
      * @param _proxyHub The address of the L2 proxy hub contract
      * @param _dstEid The destination chain endpoint ID
-     * @param _owner The owner address
+     * @param _ownerAddress The owner address
      */
     constructor(
         address _endpoint,
         address _proxyHub,
         uint32 _dstEid,
-        address _owner
-    ) OApp(_endpoint, _owner) Ownable(_owner) {
+        address _ownerAddress
+    ) OApp(_endpoint, _ownerAddress) Ownable(_ownerAddress) {
         require(_proxyHub != address(0), "Invalid proxyHub");
         proxyHub = _proxyHub;
         dstEid = _dstEid;
@@ -115,6 +122,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @param _proxyHub The new proxy hub address
      */
     function setProxyHub(address _proxyHub) external onlyOwner {
+        require(_proxyHub != address(0), "Invalid proxy hub address");
         proxyHub = _proxyHub;
         _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
     }
@@ -295,6 +303,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     ) external onlyOwner {
         gasLimit = _gasLimit;
         callValue = _callValue;
+        emit GasOptionsUpdated(_gasLimit, _callValue);
     }
 
     /**

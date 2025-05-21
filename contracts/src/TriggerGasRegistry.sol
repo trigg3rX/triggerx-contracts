@@ -66,49 +66,49 @@ contract TriggerGasRegistry is
      * @notice Returns the TG balance information for a given user
      * @param user The address of the user
      * @return ethSpent The amount of ETH spent
-     * @return TGbalance The TG balance
+     * @return tgBalance The TG balance
      */
-    function getBalance(address user) external view returns (uint256 ethSpent, uint256 TGbalance) {
+    function getBalance(address user) external view returns (uint256 ethSpent, uint256 tgBalance) {
         TGBalance memory userBalance = balances[user];
         return (userBalance.ethSpent, userBalance.TGbalance);
     }
 
     /**
      * @notice Allows users to claim ETH based on their TG balance
-     * @param TGAmount The amount of TG to convert to ETH
+     * @param tgAmount The amount of TG to convert to ETH
      */
-    function claimETHForTG(uint256 TGAmount) external nonReentrant {
+    function claimETHForTG(uint256 tgAmount) external nonReentrant {
         TGBalance storage userBalance = balances[msg.sender];
-        require(userBalance.TGbalance >= TGAmount, "Insufficient TG balance");
+        require(userBalance.TGbalance >= tgAmount, "Insufficient TG balance");
 
-        uint256 ethToReturn = TGAmount / 1000; // Convert TG to ETH (1 ETH = 1000 TG)
-        userBalance.TGbalance -= TGAmount;
+        uint256 ethToReturn = tgAmount / 1000; // Convert TG to ETH (1 ETH = 1000 TG)
+        userBalance.TGbalance -= tgAmount;
 
         (bool success, ) = msg.sender.call{value: ethToReturn}("");
         require(success, "ETH transfer failed");
 
-        emit TGClaimed(msg.sender, TGAmount);
+        emit TGClaimed(msg.sender, tgAmount);
     }
 
     /**
      * @notice Updates TG balances when a task is completed
      * @param keeper The address of the keeper who completed the task
      * @param user The address of the user who created the task
-     * @param TGAmount The amount of TG to transfer
+     * @param tgAmount The amount of TG to transfer
      */
-    function updateTGBalances(address keeper, address user, uint256 TGAmount) external onlyOwner nonReentrant {
+    function updateTGBalances(address keeper, address user, uint256 tgAmount) external onlyOwner nonReentrant {
         TGBalance storage userBalance = balances[user];
         TGBalance storage keeperBalance = balances[keeper];
         
-        require(userBalance.TGbalance >= TGAmount, "Insufficient user TG balance");
+        require(userBalance.TGbalance >= tgAmount, "Insufficient user TG balance");
         
         // Deduct TG from user
-        userBalance.TGbalance -= TGAmount;
+        userBalance.TGbalance -= tgAmount;
         
         // Add TG to keeper
-        keeperBalance.TGbalance += TGAmount;
+        keeperBalance.TGbalance += tgAmount;
         
-        emit TGTransferred(user, keeper, TGAmount);
+        emit TGTransferred(user, keeper, tgAmount);
     }
 
     /**

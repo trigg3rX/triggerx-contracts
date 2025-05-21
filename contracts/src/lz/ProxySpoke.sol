@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.26;
 
 import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
@@ -48,16 +48,16 @@ contract ProxySpoke is Ownable, OApp {
     /**
      * @notice Constructor for the ProxySpoke contract
      * @param _endpoint The LayerZero endpoint address
-     * @param _owner The owner address
+     * @param _ownerAddress The owner address
      * @param _hubEid The hub chain endpoint ID
      * @param _initialKeepers Array of initial keeper addresses
      */
     constructor(
         address _endpoint,
-        address _owner,
+        address _ownerAddress,
         uint32 _hubEid,
         address[] memory _initialKeepers
-    ) Ownable(_owner) OApp(_endpoint, _owner) {     
+    ) Ownable(_ownerAddress) OApp(_endpoint, _ownerAddress) {     
         _setPeer(_hubEid, bytes32(uint256(uint160(address(this)))));
 
         // Initialize keepers
@@ -92,11 +92,10 @@ contract ProxySpoke is Ownable, OApp {
 
     /**
      * @notice Handles incoming LayerZero messages from the hub
-     * @param _origin The origin information of the message
      * @param message The message payload containing the action and keeper address
      */
     function _lzReceive(
-        Origin calldata _origin,
+        Origin calldata /* _origin */,
         bytes32 /* _guid */,
         bytes calldata message,
         address /* _executor */,

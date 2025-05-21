@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.26;
 
 import { OApp, MessagingFee, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import { OAppOptionsType3 } from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
@@ -102,20 +102,20 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     /**
      * @notice Constructor for the ProxyHub contract
      * @param _endpoint The LayerZero endpoint address
-     * @param _owner The owner address
+     * @param _ownerAddress The owner address
      * @param _srcEid The source chain endpoint ID
      * @param _thisChainEid The current chain endpoint ID
      * @param _initialKeepers Array of initial keeper addresses
      */
     constructor(
         address _endpoint,
-        address _owner,
+        address _ownerAddress,
         uint32 _srcEid,
         uint32 _thisChainEid,
         address[] memory _initialKeepers
     )
-        OApp(_endpoint, _owner)
-        Ownable(_owner)
+        OApp(_endpoint, _ownerAddress)
+        Ownable(_ownerAddress)
     {
         srcEid = _srcEid;
         thisChainEid = _thisChainEid;
@@ -218,7 +218,8 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      */
     function _batchBroadcast(ActionType action, address keeper) internal {
         bytes memory payload = abi.encode(action, keeper);
-        uint256 totalUsed;
+        uint256 totalUsed = 0;
+        uint256 initialValue = msg.value;
 
         for (uint i = 0; i < dstEids.length; i++) {
             uint32 dstEid = dstEids[i];
@@ -227,7 +228,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
             bytes memory options = _buildExecutorOptions(defaultGas, defaultValue);
             MessagingFee memory fee = _quote(dstEid, payload, options, false);
 
-            if (msg.value < totalUsed + fee.nativeFee) {
+            if (initialValue < totalUsed + fee.nativeFee) {
                 continue;
             }
 
