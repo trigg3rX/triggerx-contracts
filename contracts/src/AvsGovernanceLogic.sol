@@ -52,26 +52,6 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     uint128 public callValue = 1e15;
 
     /**
-     * @notice Maximum retry attempts for failed messages
-     */
-    uint8 public maxRetryAttempts = 3;
-
-    /**
-     * @notice Retry delay in seconds
-     */
-    uint256 public retryDelay = 300; // 5 minutes
-
-    /**
-     * @notice Low balance threshold for Ethereum mainnet (0.01 ETH)
-     */
-    uint256 public lowBalanceThreshold = 1e16;
-
-    /**
-     * @notice Array to store failed messages for retry
-     */
-    FailedMessage[] public failedMessages;
-
-    /**
      * @notice Mapping to track whitelisted operators
      */
     mapping(address => bool) public isWhitelisted;
@@ -87,6 +67,13 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @param operator The address of the unregistered operator
      */
     event OperatorUnregistered(address indexed operator);
+
+    /**
+     * @notice Emitted when contract balance is low
+     * @param currentBalance The current contract balance
+     * @param threshold The low balance threshold
+     */
+    event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
 
     /**
      * @notice Emitted when a message is sent to another chain
@@ -128,36 +115,6 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     event GasOptionsUpdated(uint128 gasLimit, uint128 callValue);
 
     /**
-     * @notice Emitted when contract balance is low
-     * @param currentBalance The current contract balance
-     * @param threshold The low balance threshold
-     */
-    event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
-
-    /**
-     * @notice Emitted when a message fails and is queued for retry
-     * @param action The type of action that failed
-     * @param operator The address of the operator
-     * @param retryCount The current retry count
-     */
-    event MessageFailedRetryQueued(ActionType action, address operator, uint8 retryCount);
-
-    /**
-     * @notice Emitted when a retry attempt succeeds
-     * @param action The type of action that was retried
-     * @param operator The address of the operator
-     * @param retryCount The retry count when it succeeded
-     */
-    event RetrySucceeded(ActionType action, address operator, uint8 retryCount);
-
-    /**
-     * @notice Emitted when maximum retry attempts are reached
-     * @param action The type of action that permanently failed
-     * @param operator The address of the operator
-     */
-    event MaxRetriesReached(ActionType action, address operator);
-
-    /**
      * @notice Constructor for the AvsGovernanceLogic contract
      * @param _endpoint The LayerZero endpoint address
      * @param _proxyHub The address of the L2 proxy hub contract
@@ -188,50 +145,6 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     }
 
     /**
-     * @notice Updates the retry configuration
-     * @param _maxRetryAttempts The maximum number of retry attempts
-     * @param _retryDelay The delay between retry attempts in seconds
-     */
-    function setRetryConfig(uint8 _maxRetryAttempts, uint256 _retryDelay) external onlyOwner {
-        maxRetryAttempts = _maxRetryAttempts;
-        retryDelay = _retryDelay;
-    }
-
-    /**
-     * @notice Updates the low balance threshold
-     * @param _threshold The new low balance threshold
-     */
-    function setLowBalanceThreshold(uint256 _threshold) external onlyOwner {
-        lowBalanceThreshold = _threshold;
-    }
-
-    /**
-     * @notice Estimates the fee required for sending a message
-     * @param action The type of action to send
-     * @param operator The address of the operator
-     * @return fee The estimated messaging fee
-     */
-    function estimateFee(ActionType action, address operator) 
-        external 
-        view 
-        returns (MessagingFee memory fee) 
-    {
-        bytes memory payload = abi.encode(action, operator);
-        bytes memory options = _buildExecutorOptions(gasLimit, callValue);
-        
-        return endpoint.quote(
-            MessagingParams({
-                dstEid: dstEid,
-                receiver: bytes32(uint256(uint160(proxyHub))),
-                message: payload,
-                options: options,
-                payInLzToken: false
-            }),
-            address(this)
-        );
-    }
-
-    /**
      * @notice Allows the owner to withdraw ETH from the contract
      * @param _to The address to send the ETH to
      * @param _amount The amount of ETH to withdraw
@@ -253,6 +166,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         uint256[4] calldata /* _blsKey */,
         address /* _rewardsReceiver */
     ) external override {
+        if (address(this).balance < 1e16) emit LowBalanceAlert(address(this).balance, 1e16);
         require(isWhitelisted[_operator], "Operator is not whitelisted");
     }
 
@@ -266,31 +180,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         uint256[4] calldata /* _blsKey */,
         address /* _rewardsReceiver */
     ) external override {
-        _checkLowBalance();
-        _sendMessage(ActionType.REGISTER, _operator);
-    }
-
-    /**
-     * @notice Hook called before an operator is unregistered
-     */
-    function beforeOperatorUnregistered(address) external override {}
-
-    /**
-     * @notice Hook called after an operator is unregistered
-     * @param _operator The address of the unregistered operator
-     */
-    function afterOperatorUnregistered(address _operator) external override {
-        _checkLowBalance();
-        _sendMessage(ActionType.UNREGISTER, _operator);
-    }
-
-    /**
-     * @notice Internal function to send a message
-     * @param action The type of action to send
-     * @param operator The address of the operator
-     */
-    function _sendMessage(ActionType action, address operator) internal {
-        bytes memory payload = abi.encode(action, operator);
+        bytes memory payload = abi.encode(ActionType.REGISTER, _operator);
         bytes memory options = _buildExecutorOptions(gasLimit, callValue);
 
         try
@@ -305,171 +195,79 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
                 address(this)
             )
         returns (MessagingFee memory fee) {
-            if (address(this).balance < fee.nativeFee) {
-                _queueForRetry(action, operator, 0);
-                return;
-            }
+            // Add 10% buffer to account for gas price fluctuations
+            uint256 feeWithBuffer = fee.nativeFee + (fee.nativeFee * 10) / 100;
+            require(
+                address(this).balance >= feeWithBuffer,
+                "Insufficient balance for message fee (with 10% buffer)"
+            );
 
-            try this._safeLzSend(action, operator, payload, options, fee) {
-                if (action == ActionType.REGISTER) {
-                    emit OperatorRegistered(operator);
-                } else {
-                    emit OperatorUnregistered(operator);
-                }
-            } catch (bytes memory reason) {
-                emit MessageFailed(dstEid, bytes32(0), reason);
-                _queueForRetry(action, operator, 0);
-            }
+            MessagingReceipt memory receipt = _lzSend(
+                dstEid,
+                payload,
+                options,
+                fee,
+                payable(address(this))
+            );
+
+            emit MessageSent(dstEid, receipt.guid, fee.nativeFee);
+            emit OperatorRegistered(_operator);
         } catch (bytes memory reason) {
             emit MessageFailed(dstEid, bytes32(0), reason);
-            _queueForRetry(action, operator, 0);
+            revert(
+                string(abi.encodePacked("Register failed: ", string(reason)))
+            );
         }
     }
 
     /**
-     * @notice Safe wrapper for _lzSend that can be used with try/catch
-     * @param action The type of action being sent
-     * @param operator The address of the operator
-     * @param payload The message payload
-     * @param options The message options
-     * @param fee The messaging fee
+     * @notice Hook called before an operator is unregistered
      */
-    function _safeLzSend(
-        ActionType action,
-        address operator,
-        bytes memory payload,
-        bytes memory options,
-        MessagingFee memory fee
-    ) external {
-        require(msg.sender == address(this), "Only self");
-        
-        MessagingReceipt memory receipt = _lzSend(
-            dstEid,
-            payload,
-            options,
-            fee,
-            payable(address(this))
-        );
-
-        emit MessageSent(dstEid, receipt.guid, fee.nativeFee);
-    }
+    function beforeOperatorUnregistered(address) external override {}
 
     /**
-     * @notice Queues a failed message for retry
-     * @param action The type of action that failed
-     * @param operator The address of the operator
-     * @param retryCount The current retry count
+     * @notice Hook called after an operator is unregistered
+     * @param _operator The address of the unregistered operator
      */
-    function _queueForRetry(ActionType action, address operator, uint8 retryCount) internal {
-        if (retryCount >= maxRetryAttempts) {
-            emit MaxRetriesReached(action, operator);
-            return;
+    function afterOperatorUnregistered(address _operator) external override {
+        bytes memory payload = abi.encode(ActionType.UNREGISTER, _operator);
+        bytes memory options = _buildExecutorOptions(gasLimit, callValue);
+
+        try
+            endpoint.quote(
+                MessagingParams({
+                    dstEid: dstEid,
+                    receiver: bytes32(uint256(uint160(proxyHub))),
+                    message: payload,
+                    options: options,
+                    payInLzToken: false
+                }),
+                address(this)
+            )
+        returns (MessagingFee memory fee) {
+            // Add 10% buffer to account for gas price fluctuations
+            uint256 feeWithBuffer = fee.nativeFee + (fee.nativeFee * 10) / 100;
+            require(
+                address(this).balance >= feeWithBuffer,
+                "Insufficient balance for message fee (with 10% buffer)"
+            );
+
+            MessagingReceipt memory receipt = _lzSend(
+                dstEid,
+                payload,
+                options,
+                fee,
+                payable(address(this))
+            );
+
+            emit MessageSent(dstEid, receipt.guid, fee.nativeFee);
+            emit OperatorUnregistered(_operator);
+        } catch (bytes memory reason) {
+            emit MessageFailed(dstEid, bytes32(0), reason);
+            revert(
+                string(abi.encodePacked("Unregister failed: ", string(reason)))
+            );
         }
-
-        failedMessages.push(FailedMessage({
-            action: action,
-            operator: operator,
-            timestamp: block.timestamp,
-            retryCount: retryCount
-        }));
-
-        emit MessageFailedRetryQueued(action, operator, retryCount);
-    }
-
-    /**
-     * @notice Retries failed messages
-     * @param maxRetries The maximum number of failed messages to retry in this call
-     */
-    function retryFailedMessages(uint256 maxRetries) external {
-        uint256 processed = 0;
-        uint256 i = 0;
-        
-        while (i < failedMessages.length && processed < maxRetries) {
-            FailedMessage memory failed = failedMessages[i];
-            
-            if (block.timestamp >= failed.timestamp + retryDelay) {
-                bytes memory payload = abi.encode(failed.action, failed.operator);
-                bytes memory options = _buildExecutorOptions(gasLimit, callValue);
-                
-                try
-                    endpoint.quote(
-                        MessagingParams({
-                            dstEid: dstEid,
-                            receiver: bytes32(uint256(uint160(proxyHub))),
-                            message: payload,
-                            options: options,
-                            payInLzToken: false
-                        }),
-                        address(this)
-                    )
-                returns (MessagingFee memory fee) {
-                    if (address(this).balance >= fee.nativeFee) {
-                        try this._safeLzSend(failed.action, failed.operator, payload, options, fee) {
-                            emit RetrySucceeded(failed.action, failed.operator, failed.retryCount);
-                            
-                            if (failed.action == ActionType.REGISTER) {
-                                emit OperatorRegistered(failed.operator);
-                            } else {
-                                emit OperatorUnregistered(failed.operator);
-                            }
-                            
-                            // Remove the failed message from the array
-                            failedMessages[i] = failedMessages[failedMessages.length - 1];
-                            failedMessages.pop();
-                            continue; // Don't increment i since we moved an element down
-                        } catch {
-                            _queueForRetry(failed.action, failed.operator, failed.retryCount + 1);
-                            
-                            // Remove the old entry
-                            failedMessages[i] = failedMessages[failedMessages.length - 1];
-                            failedMessages.pop();
-                            continue; // Don't increment i since we moved an element down
-                        }
-                    } else {
-                        _queueForRetry(failed.action, failed.operator, failed.retryCount + 1);
-                        
-                        // Remove the old entry
-                        failedMessages[i] = failedMessages[failedMessages.length - 1];
-                        failedMessages.pop();
-                        continue; // Don't increment i since we moved an element down
-                    }
-                } catch {
-                    _queueForRetry(failed.action, failed.operator, failed.retryCount + 1);
-                    
-                    // Remove the old entry
-                    failedMessages[i] = failedMessages[failedMessages.length - 1];
-                    failedMessages.pop();
-                    continue; // Don't increment i since we moved an element down
-                }
-                
-                processed++;
-            }
-            i++;
-        }
-    }
-
-    /**
-     * @notice Gets the count of failed messages waiting for retry
-     * @return The number of failed messages in the queue
-     */
-    function getFailedMessageCount() external view returns (uint256) {
-        return failedMessages.length;
-    }
-
-    /**
-     * @notice Checks if contract balance is low and emits alert if needed
-     */
-    function _checkLowBalance() internal {
-        if (address(this).balance < lowBalanceThreshold) {
-            emit LowBalanceAlert(address(this).balance, lowBalanceThreshold);
-        }
-    }
-
-    /**
-     * @notice Manually trigger low balance check
-     */
-    function checkLowBalance() external {
-        _checkLowBalance();
     }
 
     /**
