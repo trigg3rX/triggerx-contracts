@@ -19,9 +19,25 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     enum ActionType { REGISTER, UNREGISTER }
 
     /**
+     * @notice Structure to store failed broadcast attempts for retry
+     */
+    struct FailedBroadcast {
+        ActionType action;
+        address keeper;
+        uint32 dstEid;
+        uint256 timestamp;
+        uint8 retryCount;
+    }
+
+    /**
      * @notice Mapping to track registered keepers
      */
     mapping(address => bool) public isKeeper;
+
+    /**
+     * @notice Array to store failed broadcasts for retry
+     */
+    FailedBroadcast[] public failedBroadcasts;
 
     /**
      * @notice The LayerZero endpoint ID of this chain
@@ -47,6 +63,21 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @notice Default value to be sent with cross-chain messages
      */
     uint128 public defaultValue = 0;
+
+    /**
+     * @notice Maximum retry attempts for failed broadcasts
+     */
+    uint8 public maxRetryAttempts = 3;
+
+    /**
+     * @notice Retry delay in seconds
+     */
+    uint256 public retryDelay = 300; // 5 minutes
+
+    /**
+     * @notice Low balance threshold for Base mainnet (0.001 ETH)
+     */
+    uint256 public lowBalanceThreshold = 1e15;
 
     /**
      * @notice Emitted when a keeper is registered
@@ -92,6 +123,39 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     event GasConfigUpdated(uint128 gas, uint128 value);
 
     /**
+     * @notice Emitted when contract balance is low
+     * @param currentBalance The current contract balance
+     * @param threshold The low balance threshold
+     */
+    event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
+
+    /**
+     * @notice Emitted when a broadcast fails and is queued for retry
+     * @param action The type of action that failed
+     * @param keeper The address of the keeper
+     * @param dstEid The destination chain endpoint ID
+     * @param retryCount The current retry count
+     */
+    event BroadcastFailedRetryQueued(ActionType action, address keeper, uint32 dstEid, uint8 retryCount);
+
+    /**
+     * @notice Emitted when a retry attempt succeeds
+     * @param action The type of action that was retried
+     * @param keeper The address of the keeper
+     * @param dstEid The destination chain endpoint ID
+     * @param retryCount The retry count when it succeeded
+     */
+    event RetrySucceeded(ActionType action, address keeper, uint32 dstEid, uint8 retryCount);
+
+    /**
+     * @notice Emitted when maximum retry attempts are reached
+     * @param action The type of action that permanently failed
+     * @param keeper The address of the keeper
+     * @param dstEid The destination chain endpoint ID
+     */
+    event MaxRetriesReached(ActionType action, address keeper, uint32 dstEid);
+
+    /**
      * @notice Modifier to restrict function access to registered keepers
      */
     modifier onlyKeeper() {
@@ -125,16 +189,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
             emit KeeperRegistered(_initialKeepers[i]);
         }
     }
-
-    /**
-     * @notice Sets the peer address for a given source chain
-     * @param _srcEid The source chain endpoint ID
-     * @param _avsGovernanceLogic The address of the AVS governance logic contract
-     */
-    function setPeer(uint32 _srcEid, address _avsGovernanceLogic) external onlyOwner {
-        _setPeer(_srcEid, bytes32(uint256(uint160(_avsGovernanceLogic))));
-    }
-
+    
     /**
      * @notice Adds new spoke chains to the network
      * @param _dstEids Array of destination chain endpoint IDs
@@ -158,6 +213,60 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
         defaultGas = gas;
         defaultValue = value;
         emit GasConfigUpdated(gas, value);
+    }
+
+    /**
+     * @notice Updates the retry configuration
+     * @param _maxRetryAttempts The maximum number of retry attempts
+     * @param _retryDelay The delay between retry attempts in seconds
+     */
+    function setRetryConfig(uint8 _maxRetryAttempts, uint256 _retryDelay) external onlyOwner {
+        maxRetryAttempts = _maxRetryAttempts;
+        retryDelay = _retryDelay;
+    }
+
+    /**
+     * @notice Updates the low balance threshold
+     * @param _threshold The new low balance threshold
+     */
+    function setLowBalanceThreshold(uint256 _threshold) external onlyOwner {
+        lowBalanceThreshold = _threshold;
+    }
+
+    /**
+     * @notice Estimates the total fees required for broadcasting to all destination chains
+     * @param action The type of action to broadcast
+     * @param keeper The address of the keeper
+     * @return totalFee The total estimated fee for all destinations
+     * @return fees Array of individual fees for each destination
+     */
+    function estimateTotalFees(ActionType action, address keeper) 
+        external 
+        view 
+        returns (uint256 totalFee, MessagingFee[] memory fees) 
+    {
+        bytes memory payload = abi.encode(action, keeper);
+        bytes memory options = _buildExecutorOptions(defaultGas, defaultValue);
+        
+        uint256 validDestinations = 0;
+        for (uint i = 0; i < dstEids.length; i++) {
+            if (dstEids[i] != thisChainEid) {
+                validDestinations++;
+            }
+        }
+        
+        fees = new MessagingFee[](validDestinations);
+        uint256 feeIndex = 0;
+        
+        for (uint i = 0; i < dstEids.length; i++) {
+            uint32 dstEid = dstEids[i];
+            if (dstEid == thisChainEid) continue;
+            
+            MessagingFee memory fee = _quote(dstEid, payload, options, false);
+            fees[feeIndex] = fee;
+            totalFee += fee.nativeFee;
+            feeIndex++;
+        }
     }
 
     /**
@@ -217,6 +326,8 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @param keeper The address of the keeper
      */
     function _batchBroadcast(ActionType action, address keeper) internal {
+        _checkLowBalance();
+        
         bytes memory payload = abi.encode(action, keeper);
         uint256 totalUsed = 0;
         uint256 initialValue = msg.value;
@@ -229,22 +340,139 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
             MessagingFee memory fee = _quote(dstEid, payload, options, false);
 
             if (initialValue < totalUsed + fee.nativeFee) {
+                _queueForRetry(action, keeper, dstEid, 0);
                 continue;
             }
 
-            _lzSend(
-                dstEid,
-                payload,
-                options,
-                fee,
-                payable(address(this))
-            );
-
-            emit BroadcastSent(action, keeper, dstEid);
-            emit FeeUsed(dstEid, fee.nativeFee);
-
-            totalUsed += fee.nativeFee;
+            try this._safeLzSend(dstEid, payload, options, fee) {
+                emit BroadcastSent(action, keeper, dstEid);
+                emit FeeUsed(dstEid, fee.nativeFee);
+                totalUsed += fee.nativeFee;
+            } catch {
+                _queueForRetry(action, keeper, dstEid, 0);
+            }
         }
+    }
+
+    /**
+     * @notice Safe wrapper for _lzSend that can be used with try/catch
+     * @param dstEid The destination chain endpoint ID
+     * @param payload The message payload
+     * @param options The message options
+     * @param fee The messaging fee
+     */
+    function _safeLzSend(
+        uint32 dstEid,
+        bytes memory payload,
+        bytes memory options,
+        MessagingFee memory fee
+    ) external {
+        require(msg.sender == address(this), "Only self");
+        
+        _lzSend(
+            dstEid,
+            payload,
+            options,
+            fee,
+            payable(address(this))
+        );
+    }
+
+    /**
+     * @notice Queues a failed broadcast for retry
+     * @param action The type of action that failed
+     * @param keeper The address of the keeper
+     * @param dstEid The destination chain endpoint ID
+     * @param retryCount The current retry count
+     */
+    function _queueForRetry(ActionType action, address keeper, uint32 dstEid, uint8 retryCount) internal {
+        if (retryCount >= maxRetryAttempts) {
+            emit MaxRetriesReached(action, keeper, dstEid);
+            return;
+        }
+
+        failedBroadcasts.push(FailedBroadcast({
+            action: action,
+            keeper: keeper,
+            dstEid: dstEid,
+            timestamp: block.timestamp,
+            retryCount: retryCount
+        }));
+
+        emit BroadcastFailedRetryQueued(action, keeper, dstEid, retryCount);
+    }
+
+    /**
+     * @notice Retries failed broadcasts
+     * @param maxRetries The maximum number of failed broadcasts to retry in this call
+     */
+    function retryFailedBroadcasts(uint256 maxRetries) external {
+        uint256 processed = 0;
+        uint256 i = 0;
+        
+        while (i < failedBroadcasts.length && processed < maxRetries) {
+            FailedBroadcast memory failed = failedBroadcasts[i];
+            
+            if (block.timestamp >= failed.timestamp + retryDelay) {
+                bytes memory payload = abi.encode(failed.action, failed.keeper);
+                bytes memory options = _buildExecutorOptions(defaultGas, defaultValue);
+                MessagingFee memory fee = _quote(failed.dstEid, payload, options, false);
+                
+                if (address(this).balance >= fee.nativeFee) {
+                    try this._safeLzSend(failed.dstEid, payload, options, fee) {
+                        emit RetrySucceeded(failed.action, failed.keeper, failed.dstEid, failed.retryCount);
+                        emit BroadcastSent(failed.action, failed.keeper, failed.dstEid);
+                        emit FeeUsed(failed.dstEid, fee.nativeFee);
+                        
+                        // Remove the failed broadcast from the array
+                        failedBroadcasts[i] = failedBroadcasts[failedBroadcasts.length - 1];
+                        failedBroadcasts.pop();
+                        continue; // Don't increment i since we moved an element down
+                    } catch {
+                        _queueForRetry(failed.action, failed.keeper, failed.dstEid, failed.retryCount + 1);
+                        
+                        // Remove the old entry
+                        failedBroadcasts[i] = failedBroadcasts[failedBroadcasts.length - 1];
+                        failedBroadcasts.pop();
+                        continue; // Don't increment i since we moved an element down
+                    }
+                } else {
+                    _queueForRetry(failed.action, failed.keeper, failed.dstEid, failed.retryCount + 1);
+                    
+                    // Remove the old entry
+                    failedBroadcasts[i] = failedBroadcasts[failedBroadcasts.length - 1];
+                    failedBroadcasts.pop();
+                    continue; // Don't increment i since we moved an element down
+                }
+                
+                processed++;
+            }
+            i++;
+        }
+    }
+
+    /**
+     * @notice Gets the count of failed broadcasts waiting for retry
+     * @return The number of failed broadcasts in the queue
+     */
+    function getFailedBroadcastCount() external view returns (uint256) {
+        return failedBroadcasts.length;
+    }
+
+    /**
+     * @notice Checks if contract balance is low and emits alert if needed
+     */
+    function _checkLowBalance() internal {
+        if (address(this).balance < lowBalanceThreshold) {
+            emit LowBalanceAlert(address(this).balance, lowBalanceThreshold);
+        }
+    }
+
+    /**
+     * @notice Manually trigger low balance check
+     */
+    function checkLowBalance() external {
+        _checkLowBalance();
     }
 
     /**

@@ -265,10 +265,10 @@ contract ProxyHubTest is Test {
     
     function test_SetPeer() public {
         uint32 newSrcEid = 10122;
-        address newAvsGovernance = address(0x456);
+        bytes32 newAvsGovernance = bytes32(uint256(uint160(address(0x456))));
         
         vm.prank(owner);
-        proxyHub.setPeer(newSrcEid, newAvsGovernance);
+        proxyHub.setPeer(newSrcEid, newAvsGovernance); 
         
         // We would need a getter function to verify this
         // Instead, we can test that setPeer is called correctly by looking at emitted events
@@ -277,7 +277,7 @@ contract ProxyHubTest is Test {
     
     function test_SetPeer_OnlyOwner() public {
         uint32 newSrcEid = 10122;
-        address newAvsGovernance = address(0x456);
+        bytes32 newAvsGovernance = bytes32(uint256(uint160(address(0x456))));
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, randomUser));
         vm.prank(randomUser);
