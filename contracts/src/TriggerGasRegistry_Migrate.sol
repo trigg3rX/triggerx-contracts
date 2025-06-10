@@ -6,7 +6,7 @@ import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 
-contract TriggerGasRegistry is 
+contract TriggerGasRegistry_Migrate is 
     Initializable,
     ReentrancyGuardUpgradeable,
     UUPSUpgradeable,
@@ -124,5 +124,55 @@ contract TriggerGasRegistry is
         require(success, "ETH transfer failed");
 
         emit ETHWithdrawn(owner(), amount, reason);
+    }
+
+    /**
+     * @notice Migration function to set user balance during migration from TriggerXStakeRegistry
+     * @param user The user address
+     * @param ethSpent The amount of ETH spent (migrated from stake amount)
+     * @param tgBalance The TG balance
+     */
+    function migrateUserBalance(address user, uint256 ethSpent, uint256 tgBalance) external onlyOwner {
+        TGBalance storage userBalance = balances[user];
+        userBalance.ethSpent = ethSpent;
+        userBalance.TGbalance = tgBalance;
+        
+        emit TGPurchased(user, ethSpent, tgBalance);
+    }
+
+    /**
+     * @notice Migration function to set user points during migration from TriggerXStakeRegistry
+     * @param user The user address
+     * @param userPoints The points to set
+     */
+    function migrateUserPoints(address user, uint256 userPoints) external onlyOwner {
+        points[user] = userPoints;
+    }
+
+    /**
+     * @notice Batch migration function for efficient migration of multiple users
+     * @param users Array of user addresses
+     * @param ethSpentAmounts Array of ETH spent amounts
+     * @param tgBalances Array of TG balances
+     * @param userPoints Array of user points
+     */
+    function batchMigrateUsers(
+        address[] calldata users,
+        uint256[] calldata ethSpentAmounts,
+        uint256[] calldata tgBalances,
+        uint256[] calldata userPoints
+    ) external onlyOwner {
+        require(users.length == ethSpentAmounts.length, "Length mismatch");
+        require(users.length == tgBalances.length, "Length mismatch");
+        require(users.length == userPoints.length, "Length mismatch");
+        
+        for (uint i = 0; i < users.length; i++) {
+            TGBalance storage userBalance = balances[users[i]];
+            userBalance.ethSpent = ethSpentAmounts[i];
+            userBalance.TGbalance = tgBalances[i];
+            points[users[i]] = userPoints[i];
+            
+            emit TGPurchased(users[i], ethSpentAmounts[i], tgBalances[i]);
+        }
     }
 } 

@@ -10,3 +10,6 @@
 [submodule "contracts/lib/layerzero-v2"]
 	path = contracts/lib/layerzero-v2
 	url = https://github.com/layerzero-labs/layerzero-v2
+[submodule "contracts/lib/solady"]
+	path = contracts/lib/solady
+	url = https://github.com/Vectorized/solady

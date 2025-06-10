@@ -45,7 +45,6 @@ contract DeployAvsGovernance is Script {
         require(success, "Failed to send 0.5 eth to the deployed contract");
         console.log("0.5 eth sent to the deployed contract");
 
-    
         // setProxyHub on Holesky
         // AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(AVS_GOVERNANCE);
         console.log("\n=== Setting proxyHub on Holesky ===");

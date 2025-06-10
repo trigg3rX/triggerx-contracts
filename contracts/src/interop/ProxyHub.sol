@@ -1,5 +1,5 @@
-// // SPDX-License-Identifier: MIT
-// pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
 
 // import "@interop/interfaces/IL2ToL2CrossDomainMessenger.sol";
 

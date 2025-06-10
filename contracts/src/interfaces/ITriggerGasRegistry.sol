@@ -19,6 +19,8 @@ interface ITriggerGasRegistry {
     event ETHWithdrawn(address indexed owner, uint256 amount, string reason);
     event TGWithdrawn(address indexed owner, uint256 amount, string reason);
 
+
+
     // FUNCTIONS
     function initialize() external;
     function purchaseTG(uint256 ethAmount) external payable;
@@ -27,7 +29,18 @@ interface ITriggerGasRegistry {
     function withdrawETH(uint256 amount, string calldata reason) external;
 
     // VIEW FUNCTIONS
+    function owner() external view returns (address);
     function getBalance(address user) external view returns (uint256 ethSpent, uint256 TGbalance);
     function balances(address) external view returns (uint256 ethSpent, uint256 TGbalance);
     function points(address) external view returns (uint256);
+    
+    // MIGRATION FUNCTIONS
+    function migrateUserBalance(address user, uint256 ethSpent, uint256 tgBalance) external;
+    function migrateUserPoints(address user, uint256 userPoints) external;
+    function batchMigrateUsers(
+        address[] calldata users,
+        uint256[] calldata ethSpentAmounts,
+        uint256[] calldata tgBalances,
+        uint256[] calldata userPoints
+    ) external;
 } 
