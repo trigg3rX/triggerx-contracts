@@ -32,7 +32,7 @@ contract TriggerGasRegistryDeploy is Script {
         console.log("Proxy deployed to:", proxy);
         console.log("Implementation deployed to:", implementation);
         console.log("Deployer:", deployer);
-        console.log("Proxy owner:", TriggerGasRegistry_Migrate(proxy).owner());
+        console.log("Proxy owner:", TriggerGasRegistry_Migrate(payable(proxy)).owner());
 
         vm.stopBroadcast();
     }

@@ -36,7 +36,7 @@ type EigenlayerDeploymentConfig struct {
 }
 
 type StakeDeploymentConfig struct {
-	TriggerXStakeRegistry ContractAddresses `json:"triggerXStakeRegistry"`
+	TriggerGasRegistry ContractAddresses `json:"triggerGasRegistry"`
 }
 
 const (
@@ -128,7 +128,7 @@ func main() {
 	}
 
 	opSepoliaContracts := map[string]string{
-		"TriggerXStakeRegistry": stakeDeployments.TriggerXStakeRegistry.Implementation,
+		"TriggerGasRegistry": stakeDeployments.TriggerGasRegistry.Implementation,
 	}
 
 	for name, addr := range triggerxContracts {
