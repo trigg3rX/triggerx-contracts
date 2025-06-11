@@ -436,4 +436,4 @@ contract RejectingContract {
     receive() external payable {
         revert("Rejecting ETH");
     }
-} 
+}

@@ -161,18 +161,22 @@ contract TriggerGasRegistry_Migrate is
         uint256[] calldata ethSpentAmounts,
         uint256[] calldata tgBalances,
         uint256[] calldata userPoints
-    ) external onlyOwner {
+    ) external payable onlyOwner {
         require(users.length == ethSpentAmounts.length, "Length mismatch");
         require(users.length == tgBalances.length, "Length mismatch");
         require(users.length == userPoints.length, "Length mismatch");
-        
+
+        uint256 totalEthSpent = 0;
         for (uint i = 0; i < users.length; i++) {
             TGBalance storage userBalance = balances[users[i]];
             userBalance.ethSpent = ethSpentAmounts[i];
             userBalance.TGbalance = tgBalances[i];
             points[users[i]] = userPoints[i];
-            
+            totalEthSpent += ethSpentAmounts[i];
             emit TGPurchased(users[i], ethSpentAmounts[i], tgBalances[i]);
         }
+        require(msg.value >= totalEthSpent, "Sent ETH must be greater than or equal to total ETH spent");
     }
-} 
+
+    receive() external payable {}
+}
