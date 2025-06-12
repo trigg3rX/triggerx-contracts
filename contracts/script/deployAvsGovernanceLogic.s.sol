@@ -53,30 +53,30 @@ contract DeployAvsGovernance is Script {
         
         vm.stopBroadcast();
 
-        // // Switch to Base Sepolia to set peer on ProxyHub
-        // console.log("\n=== Switching to Base Sepolia to set peer on ProxyHub ===");
-        // vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
-        // vm.startBroadcast(deployerPrivateKey);
+        // Switch to Base Sepolia to set peer on ProxyHub
+        console.log("\n=== Switching to Base Sepolia to set peer on ProxyHub ===");
+        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        vm.startBroadcast(deployerPrivateKey);
         
-        // ProxyHub proxyHub = ProxyHub(PROXY_HUB);
-        // proxyHub.setPeer(HOLESKY_EID, address(avsGovernance));
-        // console.log("Peer set successfully on ProxyHub");
-        // vm.stopBroadcast();
-        // // // Call afterOperatorRegistered with the deployer address
-        // console.log("\n=== Calling afterOperatorRegistered ===");
-        // avsGovernance.afterOperatorRegistered(
-        //     deployerAddress,  // operator
-        //     100,             // votingPower (example value)
-        //     [uint256(0), 0, 0, 0],  // blsKey (example value)
-        //     deployerAddress  // rewardsReceiver
-        // );
-        // console.log("afterOperatorRegistered called successfully");
+        ProxyHub proxyHub = ProxyHub(PROXY_HUB);
+        proxyHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
+        console.log("Peer set successfully on ProxyHub");
+        vm.stopBroadcast();
+        // // Call afterOperatorRegistered with the deployer address
+        console.log("\n=== Calling afterOperatorRegistered ===");
+        avsGovernance.afterOperatorRegistered(
+            deployerAddress,  // operator
+            100,             // votingPower (example value)
+            [uint256(0), 0, 0, 0],  // blsKey (example value)
+            deployerAddress  // rewardsReceiver
+        );
+        console.log("afterOperatorRegistered called successfully");
 
        
     
 
-        // console.log("\n--- Deployment Complete ---");
-        // console.log("AvsGovernanceLogic Address:", address(avsGovernance));
-        // console.log("---------------------------");
+        console.log("\n--- Deployment Complete ---");
+        console.log("AvsGovernanceLogic Address:", address(avsGovernance));
+        console.log("---------------------------");
     }
 } 

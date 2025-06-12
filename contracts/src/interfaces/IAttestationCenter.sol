@@ -77,7 +77,7 @@ interface IAttestationCenter{
 
     function baseRewardFee() external view returns (uint256);
 
-    function numOfOperators() external view returns (uint256);
+    function numOfTotalOperators() external view returns (uint256);
 
     function votingPower(address _operator) external view returns (uint256);
 
