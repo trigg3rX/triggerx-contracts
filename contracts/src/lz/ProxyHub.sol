@@ -10,7 +10,6 @@ import { ReentrancyGuard } from "solady/utils/ReentrancyGuard.sol";
  * @title ProxyHub
  * @notice A LayerZero-enabled contract that manages keeper registration and function execution across multiple chains
  * @dev This contract acts as a hub for managing keepers and broadcasting their status across different chains
- * @custom:security-contact security@triggerx.com
  */
 contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     /**

@@ -25,7 +25,8 @@ contract DeployAll is Script {
     uint32 constant ARBITRUM_SEPOLIA_EID = 40231; // Arbitrum Sepolia Endpoint ID
 
     // Deployment Salt (Must be the same for Hub and Spoke)
-    bytes32 constant SALT = "triggerXKeepers";
+    // bytes32 constant SALT = "triggerXKeepers"; // Production contract salt
+    bytes32 constant SALT = "test_triggerXKeepers"; 
 
     function fetchOperatorsFromAttestationCenter() internal returns (address[] memory) {
         console.log("Attempting to fetch operators from AttestationCenter...");
@@ -96,77 +97,77 @@ contract DeployAll is Script {
         console.log("Successfully fetched", initialKeepers.length, "operators");
 
         // --- Deploy Hub on Base Sepolia ---
-        // console.log("\n=== Deploying ProxyHub on Base Sepolia ===");
+        console.log("\n=== Deploying ProxyHub on Base Sepolia ===");
 
-        // vm.startBroadcast(deployerPrivateKey);
-
-        // // Prepare the bytecode for ProxyHub.
-        // // ProxyHub's constructor takes: (address _endpoint, address _owner, uint32 _srcEid, uint32 _thisChainEid, address[] memory _initialKeepers)
-        // bytes memory hubBytecode = abi.encodePacked(
-        //     type(ProxyHub).creationCode,
-        //     abi.encode(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress, HOLESKY_EID, BASE_SEPOLIA_EID, initialKeepers)
-        // );
-        
-        // // Deploy using CREATE3 with no ETH value.
-        // address hubAddr = CREATE3.deployDeterministic(hubBytecode, SALT);
-        // ProxyHub hub = ProxyHub(payable(hubAddr));
-        // console.log("ProxyHub deployed at:", hubAddr);
-
-        // // Add spoke endpoints to Hub
-        // uint32[] memory spokeEids = new uint32[](2);
-        // spokeEids[0] = OP_SEPOLIA_EID;
-        // spokeEids[1] = ARBITRUM_SEPOLIA_EID;
-        // hub.addSpokes(spokeEids);
-        // console.log("Added spoke endpoint:", OP_SEPOLIA_EID);
-        // console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID);
-
-        // // Send ETH to Hub contract to cover LayerZero fees
-        // vm.deal(address(hub), 1 ether);
-        // console.log("Sent 1 ETH to Hub contract at:", address(hub));
-
-        // vm.stopBroadcast();
-
-        // // --- Deploy Spoke on OP Sepolia ---
-        // console.log("\n=== Deploying ProxySpoke on OP Sepolia ===");
-
-        // // Create a fork using the OP Sepolia RPC.
-        // vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
-        // vm.startBroadcast(deployerPrivateKey);
-
-        // // Prepare the bytecode for ProxySpoke.
-        // // ProxySpoke's constructor takes: (address _endpoint, address _owner, uint32 _srcEid, address[] memory _initialKeepers)
-        // bytes memory spokeBytecode1 = abi.encodePacked(
-        //     type(ProxySpoke).creationCode,
-        //     abi.encode(LZ_ENDPOINT_OP_SEPOLIA, deployerAddress, BASE_SEPOLIA_EID, initialKeepers)
-        // );
-        
-        // // Deploy using CREATE3 with the same salt.
-        // address spokeAddr1 = CREATE3.deployDeterministic(spokeBytecode1, SALT);
-        // ProxySpoke spoke1 = ProxySpoke(payable(spokeAddr1));
-        // console.log("ProxySpoke1 deployed at:", spokeAddr1);
-
-        // vm.stopBroadcast();
-
-        // // --- Deploy Spoke on Arbitrum Sepolia ---
-        // console.log("\n=== Deploying ProxySpoke on Arbitrum Sepolia ===");
-
-        // Create a fork using the Arbitrum Sepolia RPC.
-        vm.createSelectFork(vm.envString("ARBITRUM_SEPOLIA_RPC"));
         vm.startBroadcast(deployerPrivateKey);
+
+        // Prepare the bytecode for ProxyHub.
+        // ProxyHub's constructor takes: (address _endpoint, address _owner, uint32 _srcEid, uint32 _thisChainEid, address[] memory _initialKeepers)
+        bytes memory hubBytecode = abi.encodePacked(
+            type(ProxyHub).creationCode,
+            abi.encode(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress, HOLESKY_EID, BASE_SEPOLIA_EID, initialKeepers)
+        );
         
+        // Deploy using CREATE3 with no ETH value.
+        address hubAddr = CREATE3.deployDeterministic(hubBytecode, SALT);
+        ProxyHub hub = ProxyHub(payable(hubAddr));
+        console.log("ProxyHub deployed at:", hubAddr);
+
+        // Add spoke endpoints to Hub
+        uint32[] memory spokeEids = new uint32[](2);
+        spokeEids[0] = OP_SEPOLIA_EID;
+        spokeEids[1] = ARBITRUM_SEPOLIA_EID;
+        hub.addSpokes(spokeEids);
+        console.log("Added spoke endpoint:", OP_SEPOLIA_EID);
+        console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID);
+
+        // Send ETH to Hub contract to cover LayerZero fees
+        vm.deal(address(hub), 1 ether);
+        console.log("Sent 1 ETH to Hub contract at:", address(hub));
+
+        vm.stopBroadcast();
+
+        // --- Deploy Spoke on OP Sepolia ---
+        console.log("\n=== Deploying ProxySpoke on OP Sepolia ===");
+
+        // Create a fork using the OP Sepolia RPC.
+        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
+        vm.startBroadcast(deployerPrivateKey);
+
         // Prepare the bytecode for ProxySpoke.
         // ProxySpoke's constructor takes: (address _endpoint, address _owner, uint32 _srcEid, address[] memory _initialKeepers)
-        bytes memory spokeBytecode2 = abi.encodePacked(
+        bytes memory spokeBytecode1 = abi.encodePacked(
             type(ProxySpoke).creationCode,
-            abi.encode(LZ_ENDPOINT_ARBITRUM_SEPOLIA, deployerAddress, BASE_SEPOLIA_EID, initialKeepers)
+            abi.encode(LZ_ENDPOINT_OP_SEPOLIA, deployerAddress, BASE_SEPOLIA_EID, initialKeepers)
         );
         
         // Deploy using CREATE3 with the same salt.
-        address spokeAddr2 = CREATE3.deployDeterministic(spokeBytecode2, SALT);
-        ProxySpoke spoke2 = ProxySpoke(payable(spokeAddr2));
-        console.log("ProxySpoke2 deployed at:", spokeAddr2);
+        address spokeAddr1 = CREATE3.deployDeterministic(spokeBytecode1, SALT);
+        ProxySpoke spoke1 = ProxySpoke(payable(spokeAddr1));
+        console.log("ProxySpoke1 deployed at:", spokeAddr1);
 
         vm.stopBroadcast();
+
+        // --- Deploy Spoke on Arbitrum Sepolia ---
+        console.log("\n=== Deploying ProxySpoke on Arbitrum Sepolia ===");
+
+        // Create a fork using the Arbitrum Sepolia RPC.
+        // vm.createSelectFork(vm.envString("ARBITRUM_SEPOLIA_RPC"));
+        // vm.startBroadcast(deployerPrivateKey);
+        
+        // // Prepare the bytecode for ProxySpoke.
+        // // ProxySpoke's constructor takes: (address _endpoint, address _owner, uint32 _srcEid, address[] memory _initialKeepers)
+        // bytes memory spokeBytecode2 = abi.encodePacked(
+        //     type(ProxySpoke).creationCode,
+        //     abi.encode(LZ_ENDPOINT_ARBITRUM_SEPOLIA, deployerAddress, BASE_SEPOLIA_EID, initialKeepers)
+        // );
+        
+        // // Deploy using CREATE3 with the same salt.
+        // address spokeAddr2 = CREATE3.deployDeterministic(spokeBytecode2, SALT);
+        // ProxySpoke spoke2 = ProxySpoke(payable(spokeAddr2));
+        // console.log("ProxySpoke2 deployed at:", spokeAddr2);
+
+        // vm.stopBroadcast();
 
         // --- Verify final state ---
         console.log("\n--- Deployment Complete ---");
@@ -176,8 +177,8 @@ contract DeployAll is Script {
         // console.log("Hub AVSGovernance:", deployerAddress);
         // console.log("Spoke1 Address:", address(spoke1));
         // console.log("Spoke1 Owner:", spoke1.owner());
-        console.log("Spoke2 Address:", address(spoke2));
-        console.log("Spoke2 Owner:", spoke2.owner());
+        // console.log("Spoke2 Address:", address(spoke2));
+        // console.log("Spoke2 Owner:", spoke2.owner());
         console.log("---------------------------");
     }
 } 

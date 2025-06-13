@@ -8,7 +8,6 @@ import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
  * @title ProxySpoke
  * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
  * @dev This contract receives keeper registration updates from the hub and executes functions on the respective L2 chain
- * @custom:security-contact security@triggerx.com
  */
 contract ProxySpoke is Ownable, OApp {
     /**

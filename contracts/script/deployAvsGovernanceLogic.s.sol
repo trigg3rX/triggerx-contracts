@@ -8,9 +8,11 @@ import {ProxyHub} from "../src/lz/ProxyHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant PROXY_HUB = payable(0x96c5F575940DBe98fd9600F74F0c36139A7Be2A2);
+    address payable constant PROXY_HUB = payable(0x0980C0A631EE43ab58FB73e5F20442832E7CAB07);
 
-    address payable constant AVS_GOVERNANCE = payable(0xBDd47006B79675274959fE8cA13470ed206a836D);
+    address payable constant AVS_GOVERNANCE = payable(0xe6010F17f9ED9B5B9535Aac79a778982Bc45Cb56);
+
+    // address payable constant AVS_GOVERNANCE = payable(0xBDd47006B79675274959fE8cA13470ed206a836D);
      // LayerZero Endpoints
     address constant LZ_ENDPOINT_OP_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
     address constant LZ_ENDPOINT_BASE_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
@@ -28,7 +30,7 @@ contract DeployAvsGovernance is Script {
         console.log("Deploying contracts using deployer:", deployerAddress);
 
         // Create a fork using the Holesky RPC.
-        // vm.createSelectFork(vm.envString("L2_RPC"));
+        uint256 forkId = vm.createSelectFork(vm.envString("HOLESKY_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy AvsGovernanceLogic
@@ -37,7 +39,8 @@ contract DeployAvsGovernance is Script {
             LZ_ENDPOINT_HOLESKY,  // LayerZero endpoint
             PROXY_HUB,            // ProxyHub address
             BASE_SEPOLIA_EID,     // Destination chain ID (Base Sepolia)
-            deployerAddress       // Owner address
+            deployerAddress,      // Owner address
+            AVS_GOVERNANCE       // AVS Governance address
         );
         console.log("AvsGovernanceLogic deployed at:", address(avsGovernance));
         // use call to send the 0.5 eth to the deployed contract from the deployer address
@@ -62,15 +65,20 @@ contract DeployAvsGovernance is Script {
         proxyHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
         console.log("Peer set successfully on ProxyHub");
         vm.stopBroadcast();
-        // // Call afterOperatorRegistered with the deployer address
-        console.log("\n=== Calling afterOperatorRegistered ===");
-        avsGovernance.afterOperatorRegistered(
-            deployerAddress,  // operator
-            100,             // votingPower (example value)
-            [uint256(0), 0, 0, 0],  // blsKey (example value)
-            deployerAddress  // rewardsReceiver
-        );
-        console.log("afterOperatorRegistered called successfully");
+        // Call afterOperatorRegistered with the deployer address
+        
+        // console.log("\n=== Calling afterOperatorRegistered ===");
+        // vm.selectFork(forkId);
+
+        // AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(payable(0xCd40429c3A85550EC75E3153F5fb7c0F06826EE5));
+        // avsGovernance.afterOperatorRegistered(
+        //     0x72461158B7abbd3741773F7F3BA145cE02F5177c,  // operator
+        //     100,             // votingPower (example value)
+        //     [uint256(0), 0, 0, 0],  // blsKey (example value)
+        //     0x72461158B7abbd3741773F7F3BA145cE02F5177c  // rewardsReceiver
+        // );
+        // vm.stopBroadcast();
+        // console.log("afterOperatorRegistered called successfully");
 
        
     

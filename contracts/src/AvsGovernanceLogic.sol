@@ -10,7 +10,6 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
  * @title AvsGovernanceLogic
  * @notice A LayerZero-enabled contract that manages operator registration and cross-chain communication
  * @dev This contract handles operator registration and broadcasts updates to the L2 network
- * @custom:security-contact security@triggerx.com
  */
 contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     /**
@@ -35,6 +34,11 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @notice The address of the L2 proxy hub contract
      */
     address public proxyHub;
+
+    /**
+     * @notice The address of the AVS Governance contract
+     */
+    address public avsGovernance;
 
     /**
      * @notice The LayerZero endpoint ID of the destination chain
@@ -115,22 +119,32 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     event GasOptionsUpdated(uint128 gasLimit, uint128 callValue);
 
     /**
+     * @notice Modifier to check if the caller is AVS Governance
+     */
+    modifier onlyAvsGovernance() {
+        require(msg.sender == avsGovernance, "Only AVS Governance can call this function");
+        _;
+    }
+
+    /**
      * @notice Constructor for the AvsGovernanceLogic contract
      * @param _endpoint The LayerZero endpoint address
      * @param _proxyHub The address of the L2 proxy hub contract
      * @param _dstEid The destination chain endpoint ID
      * @param _ownerAddress The owner address
+     * @param _avsGovernance The address of the AVS Governance contract
      */
     constructor(
         address _endpoint,
         address _proxyHub,
         uint32 _dstEid,
-        address _ownerAddress
+        address _ownerAddress,
+        address _avsGovernance
     ) OApp(_endpoint, _ownerAddress) Ownable(_ownerAddress) {
         require(_proxyHub != address(0), "Invalid proxyHub");
         proxyHub = _proxyHub;
         dstEid = _dstEid;
-
+        avsGovernance = _avsGovernance;
         _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
     }
 
@@ -165,7 +179,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         uint256 /* _votingPower */,
         uint256[4] calldata /* _blsKey */,
         address /* _rewardsReceiver */
-    ) external override {
+    ) external override onlyAvsGovernance {
         if (address(this).balance < 1e16) emit LowBalanceAlert(address(this).balance, 1e16);
         require(isWhitelisted[_operator], "Operator is not whitelisted");
     }
@@ -179,7 +193,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         uint256 /* _votingPower */,
         uint256[4] calldata /* _blsKey */,
         address /* _rewardsReceiver */
-    ) external override {
+    ) external override onlyAvsGovernance {
         bytes memory payload = abi.encode(ActionType.REGISTER, _operator);
         bytes memory options = _buildExecutorOptions(gasLimit, callValue);
 
@@ -223,13 +237,13 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     /**
      * @notice Hook called before an operator is unregistered
      */
-    function beforeOperatorUnregistered(address) external override {}
+    function beforeOperatorUnregistered(address) external override onlyAvsGovernance {}
 
     /**
      * @notice Hook called after an operator is unregistered
      * @param _operator The address of the unregistered operator
      */
-    function afterOperatorUnregistered(address _operator) external override {
+    function afterOperatorUnregistered(address _operator) external override onlyAvsGovernance {
         bytes memory payload = abi.encode(ActionType.UNREGISTER, _operator);
         bytes memory options = _buildExecutorOptions(gasLimit, callValue);
 
