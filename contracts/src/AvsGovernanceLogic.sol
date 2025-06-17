@@ -38,7 +38,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     /**
      * @notice The address of the AVS Governance contract
      */
-    address public avsGovernance;
+    address public immutable avsGovernance;
 
     /**
      * @notice The LayerZero endpoint ID of the destination chain
@@ -104,7 +104,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @param operator The address of the whitelisted operator
      */
     event Whitelisted(address indexed operator);
-
+    
     /**
      * @notice Emitted when an operator is removed from the whitelist
      * @param operator The address of the unwhitelisted operator
@@ -142,6 +142,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         address _avsGovernance
     ) OApp(_endpoint, _ownerAddress) Ownable(_ownerAddress) {
         require(_proxyHub != address(0), "Invalid proxyHub");
+        require(_avsGovernance != address(0), "Invalid avsGovernance");
         proxyHub = _proxyHub;
         dstEid = _dstEid;
         avsGovernance = _avsGovernance;

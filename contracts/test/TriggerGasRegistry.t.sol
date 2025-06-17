@@ -29,7 +29,8 @@ contract TriggerGasRegistryTest is Test {
         
         // Deploy proxy with initialize function
         bytes memory initData = abi.encodeWithSelector(
-            TriggerGasRegistry.initialize.selector
+            TriggerGasRegistry.initialize.selector,
+            owner
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
         

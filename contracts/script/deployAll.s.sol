@@ -25,8 +25,8 @@ contract DeployAll is Script {
     uint32 constant ARBITRUM_SEPOLIA_EID = 40231; // Arbitrum Sepolia Endpoint ID
 
     // Deployment Salt (Must be the same for Hub and Spoke)
-    // bytes32 constant SALT = "triggerXKeepers"; // Production contract salt
-    bytes32 constant SALT = "test_triggerXKeepers"; 
+    // bytes32 constant SALT = "triggerXKeepers";
+    bytes32 constant SALT = "testnetTriggerXKeepers";  // Production contract salt
 
     function fetchOperatorsFromAttestationCenter() internal returns (address[] memory) {
         console.log("Attempting to fetch operators from AttestationCenter...");
@@ -114,12 +114,12 @@ contract DeployAll is Script {
         console.log("ProxyHub deployed at:", hubAddr);
 
         // Add spoke endpoints to Hub
-        uint32[] memory spokeEids = new uint32[](2);
+        uint32[] memory spokeEids = new uint32[](1);
         spokeEids[0] = OP_SEPOLIA_EID;
-        spokeEids[1] = ARBITRUM_SEPOLIA_EID;
+        // spokeEids[1] = ARBITRUM_SEPOLIA_EID;
         hub.addSpokes(spokeEids);
         console.log("Added spoke endpoint:", OP_SEPOLIA_EID);
-        console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID);
+        // console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID);
 
         // Send ETH to Hub contract to cover LayerZero fees
         vm.deal(address(hub), 1 ether);
@@ -172,11 +172,11 @@ contract DeployAll is Script {
         // --- Verify final state ---
         console.log("\n--- Deployment Complete ---");
   
-        // console.log("Hub Address:", address(hub));
-        // console.log("Hub Owner:", hub.owner());
-        // console.log("Hub AVSGovernance:", deployerAddress);
-        // console.log("Spoke1 Address:", address(spoke1));
-        // console.log("Spoke1 Owner:", spoke1.owner());
+        console.log("Hub Address:", address(hub));
+        console.log("Hub Owner:", hub.owner());
+        console.log("Hub AVSGovernance:", deployerAddress);
+        console.log("Spoke1 Address:", address(spoke1));
+        console.log("Spoke1 Owner:", spoke1.owner());
         // console.log("Spoke2 Address:", address(spoke2));
         // console.log("Spoke2 Owner:", spoke2.owner());
         console.log("---------------------------");

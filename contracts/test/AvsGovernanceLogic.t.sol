@@ -13,7 +13,6 @@ contract AvsGovernanceLogicTest is Test {
     AvsGovernanceLogic public avsGovernance;
     MockEndpoint public mockEndpoint;
     MockProxyHub public mockProxyHub;
-    
     address public owner = address(0x1);
     address public operator1 = address(0x100);
     address public operator2 = address(0x101);
@@ -45,7 +44,8 @@ contract AvsGovernanceLogicTest is Test {
             address(mockEndpoint),
             address(mockProxyHub),
             DST_EID,
-            owner
+            owner,
+            address(0x999) // placeholder for avsGovernance address
         ) returns (AvsGovernanceLogic avsGov) {
             avsGovernance = avsGov;
             console2.log("AvsGovernanceLogic deployed at", address(avsGovernance));

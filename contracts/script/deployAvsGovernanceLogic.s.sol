@@ -8,9 +8,9 @@ import {ProxyHub} from "../src/lz/ProxyHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant PROXY_HUB = payable(0x0980C0A631EE43ab58FB73e5F20442832E7CAB07);
+    address payable constant PROXY_HUB = payable(0xd2B4F73FE4c747716F20839c37C451f241226b03);
 
-    address payable constant AVS_GOVERNANCE = payable(0xe6010F17f9ED9B5B9535Aac79a778982Bc45Cb56);
+    address payable constant AVS_GOVERNANCE = payable(0x12f45551f11Df20b3EcBDf329138Bdc65cc58Ec0); // TestnetProduction AVS Governance address
 
     // address payable constant AVS_GOVERNANCE = payable(0xBDd47006B79675274959fE8cA13470ed206a836D);
      // LayerZero Endpoints

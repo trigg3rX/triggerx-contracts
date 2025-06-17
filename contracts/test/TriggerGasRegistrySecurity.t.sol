@@ -65,7 +65,8 @@ contract TriggerGasRegistrySecurityTest is Test {
         implementation = new TriggerGasRegistry();
         
         bytes memory initData = abi.encodeWithSelector(
-            TriggerGasRegistry.initialize.selector
+            TriggerGasRegistry.initialize.selector,
+            owner
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
         gasRegistry = TriggerGasRegistry(address(proxy));

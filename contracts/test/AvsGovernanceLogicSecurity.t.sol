@@ -43,6 +43,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
     address public attacker = address(0x666);
     address public operator1 = address(0x100);
     address public operator2 = address(0x101);
+    address public avsGovernanceAddr = address(0x999); // matches constructor parameter
     uint32 public constant DST_EID = 20201;
     
     function setUp() public {
@@ -55,7 +56,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
             address(mockEndpoint),
             address(mockProxyHub),
             DST_EID,
-            owner
+            owner,
+            avsGovernanceAddr // placeholder for avsGovernance address
         );
         
         vm.deal(address(avsGovernance), 100 ether);
@@ -118,7 +120,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
             address(mockEndpoint),
             address(0),
             DST_EID,
-            owner
+            owner,
+            address(avsGovernance)
         );
     }
     
@@ -160,6 +163,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
     function test_Security_CannotRegisterNonWhitelistedOperator() public {
         // Try to call beforeOperatorRegistered without whitelisting
         vm.expectRevert("Operator is not whitelisted");
+        vm.prank(avsGovernanceAddr);
         avsGovernance.beforeOperatorRegistered(operator1, 0, [uint256(0), 0, 0, 0], address(0));
     }
     
@@ -223,7 +227,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
         mockEndpoint.setQuotedFee(10 ether);
         
         // REAL ISSUE FOUND: Contract reverts instead of handling insufficient balance gracefully
-        vm.expectRevert("Insufficient balance for message fee");
+        vm.expectRevert("Insufficient balance for message fee (with 10% buffer)");
+        vm.prank(avsGovernanceAddr);
         avsGovernance.afterOperatorRegistered(operator1, 0, [uint256(0), 0, 0, 0], address(0));
     }
     
@@ -243,7 +248,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
             address(failingEndpoint),
             address(mockProxyHub),
             DST_EID,
-            owner
+            owner,
+            address(avsGovernance)
         );
         
         vm.deal(address(testContract), 1 ether);
@@ -338,15 +344,19 @@ contract AvsGovernanceLogicSecurityTest is Test {
         avsGovernance.addToWhitelist(operators);
         
         // 2. Register (before hook)
+        vm.prank(avsGovernanceAddr);
         avsGovernance.beforeOperatorRegistered(operator1, 1000, [uint256(1), 2, 3, 4], operator1);
         
         // 3. Register (after hook) - should send message
+        vm.prank(avsGovernanceAddr);
         avsGovernance.afterOperatorRegistered(operator1, 1000, [uint256(1), 2, 3, 4], operator1);
         
         // 4. Unregister (before hook)
+        vm.prank(avsGovernanceAddr);
         avsGovernance.beforeOperatorUnregistered(operator1);
         
         // 5. Unregister (after hook) - should send message
+        vm.prank(avsGovernanceAddr);
         avsGovernance.afterOperatorUnregistered(operator1);
         
         // 6. Remove from whitelist
@@ -355,6 +365,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
         
         // 7. Verify operator cannot register again
         vm.expectRevert("Operator is not whitelisted");
+        vm.prank(avsGovernanceAddr);
         avsGovernance.beforeOperatorRegistered(operator1, 1000, [uint256(1), 2, 3, 4], operator1);
     }
 
@@ -369,7 +380,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
             invalidEndpoint,
             address(mockProxyHub),
             DST_EID,
-            owner
+            owner,
+            address(avsGovernance)
         );
     }
     
