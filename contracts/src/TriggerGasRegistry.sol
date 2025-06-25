@@ -19,8 +19,7 @@ contract TriggerGasRegistry is
 
     mapping(address => TGBalance) public balances;
 
-    // Add a mapping to track points for each user
-    mapping(address => uint256) public points;
+    address public operatorRole;
 
     // Events
     event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount);
@@ -31,15 +30,25 @@ contract TriggerGasRegistry is
     event RewardClaimed(address indexed user, uint256 reward);
     event TGTransferred(address indexed user, address indexed keeper, uint256 amount);
     event ETHWithdrawn(address indexed owner, uint256 amount, string reason);
-    
+    event TGBalanceDeducted(address indexed user, uint256 amount);
+
+    // Modifiers
+    modifier onlyOperator() {
+        require(msg.sender == operatorRole, "Only operator can call this function");
+        _;
+    }
+
     constructor() {
         _disableInitializers();
     }
     
-    function initialize(address initialOwner) public initializer {
+    function initialize(address initialOwner, address _operator) public initializer {
         __ReentrancyGuard_init();
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
+
+        // set the operator role
+        operatorRole = _operator;
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
@@ -88,6 +97,19 @@ contract TriggerGasRegistry is
         require(success, "ETH transfer failed");
 
         emit TGClaimed(msg.sender, tgAmount);
+    }
+
+    /**
+     * @notice Allows the operator to deduct TG balance from a user
+     * @param user The address of the user
+     * @param tgAmount The amount of TG to deduct
+     */
+    function deductTGBalance(address user, uint256 tgAmount) external onlyOperator {
+        require(balances[user].TGbalance >= tgAmount, "Insufficient TG balance");
+        if(tgAmount > 0) {
+            balances[user].TGbalance -= tgAmount;
+            emit TGBalanceDeducted(user, tgAmount);
+        }
     }
 
     /**

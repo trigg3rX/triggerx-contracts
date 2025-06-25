@@ -53,7 +53,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     /**
      * @notice Default value to be sent with cross-chain messages
      */
-    uint128 public callValue = 1e15;
+    uint128 public callValue = 0;
 
     /**
      * @notice Mapping to track whitelisted operators

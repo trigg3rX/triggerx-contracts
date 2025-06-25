@@ -54,6 +54,7 @@ contract TriggerGasRegistrySecurityTest is Test {
     ERC1967Proxy public proxy;
     
     address public owner = address(0x1);
+        
     address public attacker = address(0x666);
     address public user1 = address(0x100);
     address public user2 = address(0x101);
@@ -66,6 +67,7 @@ contract TriggerGasRegistrySecurityTest is Test {
         
         bytes memory initData = abi.encodeWithSelector(
             TriggerGasRegistry.initialize.selector,
+            owner,
             owner
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
@@ -346,7 +348,7 @@ contract TriggerGasRegistrySecurityTest is Test {
     function test_Security_CannotReinitialize() public {
         // Try to reinitialize the already initialized contract
         vm.expectRevert("InvalidInitialization()");
-        gasRegistry.initialize(address(this));
+        gasRegistry.initialize(address(this), address(this));
     }
 
     // ==================== ETH HANDLING SECURITY TESTS ====================
@@ -429,6 +431,104 @@ contract TriggerGasRegistrySecurityTest is Test {
         
         // Should get back 0.001 ETH (1 TG / 1000)
         assertEq(user1.balance, balanceBefore + 0.001 ether);
+    }
+
+    // ==================== DEDUCT TG BALANCE SECURITY TESTS ====================
+    
+    function test_Security_DeductTGBalance_OnlyOperator() public {
+        // Setup user with TG balance
+        vm.prank(user1);
+        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
+        
+        // Non-operator cannot deduct
+        vm.expectRevert("Only operator can call this function");
+        vm.prank(attacker);
+        gasRegistry.deductTGBalance(user1, 100);
+        
+        // Other users cannot deduct
+        vm.expectRevert("Only operator can call this function");
+        vm.prank(user2);
+        gasRegistry.deductTGBalance(user1, 100);
+    }
+    
+    function test_Security_DeductTGBalance_CannotOverdeduct() public {
+        uint256 ethAmount = 1 ether;
+        
+        // Setup user with TG balance
+        vm.prank(user1);
+        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        
+        // Get user's exact balance
+        (, uint256 tgBalance) = gasRegistry.getBalance(user1);
+        
+        // Try to deduct more than available
+        vm.expectRevert("Insufficient TG balance");
+        vm.prank(owner); // owner is operator in security tests
+        gasRegistry.deductTGBalance(user1, tgBalance + 1);
+    }
+    
+    function test_Security_DeductTGBalance_ZeroAmountHandling() public {
+        uint256 ethAmount = 1 ether;
+        
+        // Setup user with TG balance
+        vm.prank(user1);
+        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        
+        // Get initial balance
+        (, uint256 initialBalance) = gasRegistry.getBalance(user1);
+        
+        // Deduct zero amount - should not revert and should not change balance
+        vm.prank(owner); // owner is operator in security tests
+        gasRegistry.deductTGBalance(user1, 0);
+        
+        // Check balance unchanged
+        (, uint256 finalBalance) = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, initialBalance);
+    }
+    
+    function test_Security_DeductTGBalance_FromZeroBalance() public {
+        // Try to deduct from user with zero balance
+        vm.expectRevert("Insufficient TG balance");
+        vm.prank(owner); // owner is operator in security tests
+        gasRegistry.deductTGBalance(user1, 1);
+    }
+    
+    function test_Security_DeductTGBalance_LargeAmount() public {
+        uint256 largeEthAmount = 100 ether;
+        vm.deal(user1, largeEthAmount);
+        
+        // User purchases large amount of TG
+        vm.prank(user1);
+        gasRegistry.purchaseTG{value: largeEthAmount}(largeEthAmount);
+        
+        uint256 largeTGAmount = largeEthAmount * 1000 / 2; // Deduct half
+        
+        // Should work for large amounts
+        vm.prank(owner); // owner is operator in security tests
+        gasRegistry.deductTGBalance(user1, largeTGAmount);
+        
+        // Check balance updated correctly
+        (, uint256 finalBalance) = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, largeEthAmount * 1000 - largeTGAmount);
+    }
+    
+    function test_Security_DeductTGBalance_ExactBalanceDeduction() public {
+        uint256 ethAmount = 1 ether;
+        
+        // User purchases TG
+        vm.prank(user1);
+        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        
+        // Get exact balance
+        (, uint256 exactBalance) = gasRegistry.getBalance(user1);
+        
+        // Deduct exact balance
+        vm.prank(owner); // owner is operator in security tests
+        gasRegistry.deductTGBalance(user1, exactBalance);
+        
+        // Check balance is now zero
+        (, uint256 finalBalance) = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, 0);
     }
 }
 

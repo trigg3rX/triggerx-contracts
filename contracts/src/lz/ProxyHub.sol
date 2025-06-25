@@ -226,7 +226,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     function _batchBroadcast(ActionType action, address keeper) internal {
         bytes memory payload = abi.encode(action, keeper);
         uint256 totalUsed = 0;
-        uint256 initialValue = msg.value;
+        uint256 initialValue = address(this).balance;
 
         for (uint i = 0; i < dstEids.length; i++) {
             uint32 dstEid = dstEids[i];
