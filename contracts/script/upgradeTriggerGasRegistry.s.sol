@@ -27,7 +27,7 @@ contract TriggerGasRegistryDeploy is Script {
         address operator = 0xd2B4F73FE4c747716F20839c37C451f241226b03;
         address triggerGasRegistryAddress = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
 
-        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
         
         // Define users to check
         address[] memory users = new address[](6);

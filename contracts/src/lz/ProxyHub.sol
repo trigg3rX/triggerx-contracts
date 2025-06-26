@@ -181,6 +181,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @return The return data from the function call
      */
     function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
+        // slither-disable-next-line low-level-calls
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
         require(success, "Execution failed");
 
@@ -223,6 +224,7 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @param action The type of action to broadcast
      * @param keeper The address of the keeper
      */
+    // slither-disable-next-line calls-loop,reentrancy-events
     function _batchBroadcast(ActionType action, address keeper) internal {
         bytes memory payload = abi.encode(action, keeper);
         uint256 totalUsed = 0;

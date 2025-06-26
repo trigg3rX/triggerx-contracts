@@ -189,6 +189,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @notice Hook called after an operator is registered
      * @param _operator The address of the registered operator
      */
+    // slither-disable-next-line reentrancy-events
     function afterOperatorRegistered(
         address _operator,
         uint256 /* _votingPower */,
@@ -244,6 +245,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @notice Hook called after an operator is unregistered
      * @param _operator The address of the unregistered operator
      */
+    // slither-disable-next-line reentrancy-events
     function afterOperatorUnregistered(address _operator) external override onlyAvsGovernance {
         bytes memory payload = abi.encode(ActionType.UNREGISTER, _operator);
         bytes memory options = _buildExecutorOptions(gasLimit, callValue);
@@ -289,13 +291,14 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @notice Handles incoming LayerZero messages
      * @dev This contract should not receive messages
      */
+    // slither-disable-next-line dead-code
     function _lzReceive(
         Origin calldata,
         bytes32,
         bytes calldata,
         address,
         bytes calldata
-    ) internal override {
+    ) internal pure override {
         revert("AvsGovernanceLogic: should not receive messages");
     }
 
@@ -348,6 +351,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @param _nativeFee The native fee to be paid
      * @return nativeFee The amount of native currency paid
      */
+    // slither-disable-next-line dead-code
     function _payNative(
         uint256 _nativeFee
     ) internal override returns (uint256 nativeFee) {

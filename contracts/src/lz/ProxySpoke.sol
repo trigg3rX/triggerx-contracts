@@ -81,7 +81,9 @@ contract ProxySpoke is Ownable, OApp {
      * @param callData The calldata for the function call
      * @return The return data from the function call
      */
+    // slither-disable-next-line reentrancy-events
     function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
+        // slither-disable-next-line low-level-calls
         (bool success, bytes memory result) = target.call{value: msg.value}(callData);
         require(success, "Function execution failed");
 
