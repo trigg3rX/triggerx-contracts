@@ -147,4 +147,9 @@ contract TriggerGasRegistry is
 
         emit ETHWithdrawn(owner(), amount, reason);
     }
+
+    function setOperator(address _operatorRole) external onlyOwner {
+        require(_operatorRole != address(0), "Operator cannot be 0 address");
+        operatorRole = _operatorRole;
+    }
 } 
