@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,29 +14,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type ContractAddresses struct {
-	Proxy          string `json:"proxy"`
-	Implementation string `json:"implementation"`
-}
-
-type TriggerXDeploymentConfig struct {
-	VetoableSlasher        ContractAddresses `json:"vetoableSlasher"`
-	RegistryCoordinator    ContractAddresses `json:"registryCoordinator"`
-	OperatorStateRetriever string            `json:"operatorStateRetriever"`
-	TriggerXServiceManager ContractAddresses `json:"triggerXServiceManager"`
-	TriggerXTaskManager    ContractAddresses `json:"triggerXTaskManager"`
-}
-
-type EigenlayerDeploymentConfig struct {
-	DelegationManager    ContractAddresses `json:"delegationManager"`
-	AvsDirectory         ContractAddresses `json:"avsDirectory"`
-	AllocationManager    ContractAddresses `json:"allocationManager"`
-	PermissionController ContractAddresses `json:"permissionController"`
-	StrategyManager      ContractAddresses `json:"strategyManager"`
-}
-
-type StakeDeploymentConfig struct {
-	TriggerGasRegistry ContractAddresses `json:"triggerGasRegistry"`
+type ContractsData struct {
+	Eth  map[string]string `json:"Eth"`
+	Base map[string]string `json:"Base"`
 }
 
 const (
@@ -48,43 +28,23 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	holeskyClient, err := ethclient.Dial(os.Getenv("HOLESKY_RPC_URL"))
+	ethClient, err := ethclient.Dial(os.Getenv("ETH_RPC_URL"))
 	if err != nil {
 		panic(err)
 	}
 
-	opSepoliaClient, err := ethclient.Dial(os.Getenv("OP_SEPOLIA_RPC_URL"))
+	baseClient, err := ethclient.Dial(os.Getenv("BASE_RPC_URL"))
 	if err != nil {
 		panic(err)
 	}
 
-	triggerxHoleskyData, err := ioutil.ReadFile("./bindings/deployment.holesky.json")
+	contractsDataRaw, err := os.ReadFile("./bindings/triggerx.prod.json")
 	if err != nil {
 		panic(err)
 	}
 
-	eigenlayerHoleskyData, err := ioutil.ReadFile("./bindings/eigenlayer.holesky.json")
-	if err != nil {
-		panic(err)
-	}
-
-	stakeOPSData, err := ioutil.ReadFile("./bindings/stake.opsepolia.json")
-	if err != nil {
-		panic(err)
-	}
-
-	var txDeployments TriggerXDeploymentConfig
-	if err := json.Unmarshal(triggerxHoleskyData, &txDeployments); err != nil {
-		panic(err)
-	}
-
-	var eigenlayerDeployments EigenlayerDeploymentConfig
-	if err := json.Unmarshal(eigenlayerHoleskyData, &eigenlayerDeployments); err != nil {
-		panic(err)
-	}
-
-	var stakeDeployments StakeDeploymentConfig
-	if err := json.Unmarshal(stakeOPSData, &stakeDeployments); err != nil {
+	var contractsData ContractsData
+	if err := json.Unmarshal(contractsDataRaw, &contractsData); err != nil {
 		panic(err)
 	}
 
@@ -100,7 +60,7 @@ func main() {
 			panic(err)
 		}
 
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			binPath,
 			[]byte(fmt.Sprintf("%x", bytecode)),
 			0644,
@@ -111,39 +71,19 @@ func main() {
 		fmt.Printf("Fetched bytecode for %s on %s\n", name, network)
 	}
 
-	triggerxContracts := map[string]string{
-		"VetoableSlasher":        txDeployments.VetoableSlasher.Implementation,
-		"RegistryCoordinator":    txDeployments.RegistryCoordinator.Implementation,
-		"OperatorStateRetriever": txDeployments.OperatorStateRetriever,
-		"TriggerXServiceManager": txDeployments.TriggerXServiceManager.Implementation,
-		"TriggerXTaskManager":    txDeployments.TriggerXTaskManager.Implementation,
-	}
-
-	eigenlayerContracts := map[string]string{
-		"DelegationManager":    eigenlayerDeployments.DelegationManager.Implementation,
-		"AvsDirectory":         eigenlayerDeployments.AvsDirectory.Implementation,
-		"AllocationManager":    eigenlayerDeployments.AllocationManager.Implementation,
-		"PermissionController": eigenlayerDeployments.PermissionController.Implementation,
-		"StrategyManager":      eigenlayerDeployments.StrategyManager.Implementation,
-	}
-
-	opSepoliaContracts := map[string]string{
-		"TriggerGasRegistry": stakeDeployments.TriggerGasRegistry.Implementation,
-	}
-
-	for name, addr := range triggerxContracts {
-		fetchBytecode(name, addr, holeskyClient, "holesky")
-		abi, err := fetchABIFromBlockscout(addr, "holesky")
+	for name, addr := range contractsData.Eth {
+		fetchBytecode(name, addr, ethClient, "eth")
+		abi, err := fetchABIFromEtherscan(addr, "17000")
 		if err != nil {
 			panic(err)
 		}
 
-		abiPath := filepath.Join(OUTPUT_DIR, name+".holesky.abi")
+		abiPath := filepath.Join(OUTPUT_DIR, name+".eth.abi")
 		if _, err := os.Stat(abiPath); err == nil {
 			continue
 		}
 
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			abiPath,
 			[]byte(abi),
 			0644,
@@ -154,19 +94,19 @@ func main() {
 		fmt.Printf("Fetched ABI for %s on holesky\n", name)
 	}
 
-	for name, addr := range eigenlayerContracts {
-		fetchBytecode(name, addr, holeskyClient, "holesky")
-		abi, err := fetchABIFromEtherscan(addr, "holesky")
+	for name, addr := range contractsData.Base {
+		fetchBytecode(name, addr, baseClient, "base")
+		abi, err := fetchABIFromEtherscan(addr, "84532")
 		if err != nil {
 			panic(err)
 		}
 
-		abiPath := filepath.Join(OUTPUT_DIR, name+".holesky.abi")
+		abiPath := filepath.Join(OUTPUT_DIR, name+".base.abi")
 		if _, err := os.Stat(abiPath); err == nil {
 			continue
 		}
 
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			abiPath,
 			[]byte(abi),
 			0644,
@@ -175,29 +115,6 @@ func main() {
 			panic(err)
 		}
 		fmt.Printf("Fetched ABI for %s on holesky\n", name)
-	}
-
-	for name, addr := range opSepoliaContracts {
-		fetchBytecode(name, addr, opSepoliaClient, "opsepolia")
-		abi, err := fetchABIFromBlockscout(addr, "opsepolia")
-		if err != nil {
-			panic(err)
-		}
-
-		abiPath := filepath.Join(OUTPUT_DIR, name+".opsepolia.abi")
-		if _, err := os.Stat(abiPath); err == nil {
-			continue
-		}
-
-		err = ioutil.WriteFile(
-			abiPath,
-			[]byte(abi),
-			0644,
-		)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("Fetched ABI for %s on opsepolia\n", name)
 	}
 }
 
@@ -207,17 +124,9 @@ func fetchABIFromEtherscan(address string, network string) (string, error) {
 		return "", fmt.Errorf("ETHERSCAN_API_KEY not set in environment")
 	}
 
-	var baseURL string
-	switch network {
-	case "holesky":
-		baseURL = "https://api-holesky.etherscan.io/api"
-	case "opsepolia":
-		baseURL = "https://api-optimistic.etherscan.io/api"
-	default:
-		return "", fmt.Errorf("unsupported network: %s", network)
-	}
+	baseURL := "https://api.etherscan.io/v2/api"
 
-	url := fmt.Sprintf("%s?module=contract&action=getabi&address=%s&apikey=%s", baseURL, address, apiKey)
+	url := fmt.Sprintf("%s?chainid=%s&module=contract&action=getabi&address=%s&apikey=%s", baseURL, network, address, apiKey)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -225,7 +134,7 @@ func fetchABIFromEtherscan(address string, network string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("failed to read response body: %v", err)
 	}
@@ -242,47 +151,6 @@ func fetchABIFromEtherscan(address string, network string) (string, error) {
 
 	if result.Status != "1" {
 		return "", fmt.Errorf("etherscan API error: %s", result.Message)
-	}
-
-	return result.Result, nil
-}
-
-func fetchABIFromBlockscout(address string, network string) (string, error) {
-	var baseURL string
-	switch network {
-	case "holesky":
-		baseURL = "https://eth-holesky.blockscout.com/api"
-	case "opsepolia":
-		baseURL = "https://optimism-sepolia.blockscout.com/api"
-	default:
-		return "", fmt.Errorf("unsupported network: %s", network)
-	}
-
-	url := fmt.Sprintf("%s?module=contract&action=getabi&address=%s", baseURL, address)
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", fmt.Errorf("failed to fetch ABI: %v", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read response body: %v", err)
-	}
-
-	var result struct {
-		Status  string `json:"status"`
-		Message string `json:"message"`
-		Result  string `json:"result"`
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		return "", fmt.Errorf("failed to parse JSON response: %v", err)
-	}
-
-	if result.Status != "1" {
-		return "", fmt.Errorf("blockscout API error: %s ||| %s", result.Message, address)
 	}
 
 	return result.Result, nil
