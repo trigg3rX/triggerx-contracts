@@ -40,21 +40,21 @@ function create_binding {
 cd $script_path
 
 # Process Holesky contracts
-for abi_file in $script_path/abis/*.holesky.abi; do
+for abi_file in $script_path/abis/*.eth.abi; do
     if [ -f "$abi_file" ]; then
-        contract=$(basename "$abi_file" .holesky.abi)
-        if [ -f "$script_path/abis/$contract.holesky.bin" ]; then
-            create_binding . "$contract" ./contracts "holesky"
+        contract=$(basename "$abi_file" .eth.abi)
+        if [ -f "$script_path/abis/$contract.eth.bin" ]; then
+            create_binding . "$contract" ./contracts "eth"
         fi
     fi
 done
 
 # Process Optimism Sepolia contracts
-for abi_file in $script_path/abis/*.opsepolia.abi; do
+for abi_file in $script_path/abis/*.base.abi; do
     if [ -f "$abi_file" ]; then
-        contract=$(basename "$abi_file" .opsepolia.abi)
-        if [ -f "$script_path/abis/$contract.opsepolia.bin" ]; then
-            create_binding . "$contract" ./contracts "opsepolia"
+        contract=$(basename "$abi_file" .base.abi)
+        if [ -f "$script_path/abis/$contract.base.bin" ]; then
+            create_binding . "$contract" ./contracts "base"
         fi
     fi
 done
