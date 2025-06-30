@@ -22,7 +22,7 @@ contract TriggerGasRegistry is
     address public operatorRole;
 
     // slither-disable-next-line naming-convention
-    uint256 public TG_PER_ETH = 1000;
+    uint256 public TG_PER_ETH;
 
     // Events
     event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount);
@@ -71,7 +71,6 @@ contract TriggerGasRegistry is
         TGBalance storage userBalance = balances[msg.sender];
         userBalance.ethSpent += ethAmount;
         
-        // Calculate TG tokens (0.001 ETH per TG)
         uint256 tgAmount = ethAmount * TG_PER_ETH;
         userBalance.TGbalance += tgAmount;
 

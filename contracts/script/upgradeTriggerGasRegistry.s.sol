@@ -16,7 +16,7 @@ contract TriggerGasRegistryDeploy is Script {
 
     function run() public {
 
-        bytes32 implementation_salt = keccak256(abi.encodePacked("ImplementationV4"));
+        bytes32 implementation_salt = keccak256(abi.encodePacked("ImplementationV5"));
 
         bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
 
@@ -26,8 +26,6 @@ contract TriggerGasRegistryDeploy is Script {
 
         address operator = 0xd2B4F73FE4c747716F20839c37C451f241226b03;
         address triggerGasRegistryAddress = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
-
-        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
         
         // Define users to check
         address[] memory users = new address[](6);
@@ -71,6 +69,7 @@ contract TriggerGasRegistryDeploy is Script {
         console.log("Deploying new implementation to:", implementation);
         TriggerGasRegistry(proxy).upgradeToAndCall(implementation, "");
         TriggerGasRegistry(proxy).setOperator(operator);
+        TriggerGasRegistry(proxy).setTGPerETH(1000);
 
         vm.stopBroadcast();
 
