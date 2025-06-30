@@ -46,7 +46,7 @@ contract TriggerGasRegistry is
         _disableInitializers();
     }
     
-    function initialize(address initialOwner, address _operator) public initializer {
+    function initialize(address initialOwner, address _operator, uint256 _tgPerEth) public initializer {
         require(initialOwner != address(0), "Initial owner cannot be 0 address");
         require(_operator != address(0), "Operator cannot be 0 address");
         
@@ -56,6 +56,7 @@ contract TriggerGasRegistry is
 
         // set the operator role
         operatorRole = _operator;
+        TG_PER_ETH = _tgPerEth;
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
