@@ -45,16 +45,18 @@ for abi_file in $script_path/abis/*.eth.abi; do
         contract=$(basename "$abi_file" .eth.abi)
         if [ -f "$script_path/abis/$contract.eth.bin" ]; then
             create_binding . "$contract" ./contracts "eth"
+            cp $script_path/abis/$contract.eth.abi $script_path/abis/$contract.eth.abi.json
         fi
     fi
 done
 
-# Process Optimism Sepolia contracts
+# Process Base contracts
 for abi_file in $script_path/abis/*.base.abi; do
     if [ -f "$abi_file" ]; then
         contract=$(basename "$abi_file" .base.abi)
         if [ -f "$script_path/abis/$contract.base.bin" ]; then
             create_binding . "$contract" ./contracts "base"
+            cp $script_path/abis/$contract.base.abi $script_path/abis/$contract.base.abi.json
         fi
     fi
 done
