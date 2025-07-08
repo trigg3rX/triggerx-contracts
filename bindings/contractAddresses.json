@@ -1,0 +1,10 @@
+{
+  "networks": {
+    "imua-testnet": {
+      "chainId": 233,
+      "contracts": {
+        "TriggerXAvs": "0x4729BC58ADC71E5386b995f99402176757d75940"
+      }
+    }
+  }
+} 
