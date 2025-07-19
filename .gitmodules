@@ -1,9 +1,6 @@
 [submodule "contracts/lib/othentic-core-contracts"]
 	path = contracts/lib/othentic-core-contracts
 	url = https://github.com/Othentic-Labs/core-contracts.git
-[submodule "contracts/lib/createx"]
-	path = contracts/lib/createx
-	url = https://github.com/pcaversaccio/createx.git
 [submodule "contracts/lib/interop-lib"]
 	path = contracts/lib/interop-lib
 	url = https://github.com/ethereum-optimism/interop-lib.git

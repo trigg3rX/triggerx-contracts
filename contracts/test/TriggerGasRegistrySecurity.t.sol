@@ -348,7 +348,7 @@ contract TriggerGasRegistrySecurityTest is Test {
     function test_Security_CannotReinitialize() public {
         // Try to reinitialize the already initialized contract
         vm.expectRevert("InvalidInitialization()");
-        gasRegistry.initialize(address(this), address(this));
+        gasRegistry.initialize(address(this), address(this), 1000);
     }
 
     // ==================== ETH HANDLING SECURITY TESTS ====================

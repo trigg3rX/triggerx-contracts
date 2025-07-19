@@ -147,7 +147,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         dstEid = _dstEid;
         avsGovernance = _avsGovernance;
         _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
-    }
+    }   
 
     /**
      * @notice Updates the proxy hub address
