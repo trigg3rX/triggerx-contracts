@@ -5,6 +5,8 @@ import {Test} from "forge-std/Test.sol";
 import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OAppReceiver.sol";
+import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
+import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
 
 // Test wrapper to expose internal functions
 contract ProxySpokeForTest is ProxySpoke {
@@ -12,8 +14,10 @@ contract ProxySpokeForTest is ProxySpoke {
         address _endpoint, 
         address _owner, 
         uint32 _srcEid,
-        address[] memory _initialKeepers
-    ) ProxySpoke(_endpoint, _owner, _srcEid, _initialKeepers) {}
+        address[] memory _initialKeepers,
+        address _jobRegistryAddress,
+        address _triggerGasRegistryAddress
+    ) ProxySpoke(_endpoint, _owner, _srcEid, _initialKeepers, _jobRegistryAddress, _triggerGasRegistryAddress) {}
     
     // Expose internal _lzReceive function for testing
     function exposed_lzReceive(
@@ -30,11 +34,14 @@ contract ProxySpokeForTest is ProxySpoke {
 contract ProxySpokeTest is Test {
     ProxySpokeForTest public proxySpoke;
     MockEndpoint public mockEndpoint;
+    MockJobRegistry public mockJobRegistry;
+    MockTriggerGasRegistry public mockTriggerGasRegistry;
     
     address public owner = address(0x1);
     address public keeper1 = address(0x100);
     address public keeper2 = address(0x101);
     address public randomUser = address(0x200);
+    address public jobOwner = address(0x300);
     
     uint32 public constant SRC_EID = 10121; // L1 or Hub chain ID
     
@@ -47,6 +54,10 @@ contract ProxySpokeTest is Test {
         // Deploy mock endpoint
         mockEndpoint = new MockEndpoint();
         
+        // Deploy mock contracts
+        mockJobRegistry = new MockJobRegistry();
+        mockTriggerGasRegistry = new MockTriggerGasRegistry();
+        
         // Setup initial keepers
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
@@ -56,7 +67,9 @@ contract ProxySpokeTest is Test {
             address(mockEndpoint),
             owner,
             SRC_EID,
-            initialKeepers
+            initialKeepers,
+            address(mockJobRegistry),
+            address(mockTriggerGasRegistry)
         );
         
         vm.stopPrank();
@@ -69,9 +82,15 @@ contract ProxySpokeTest is Test {
     }
     
     function test_ExecuteFunction() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         uint256 value = 1 ether;
+        
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
         
         // Fund the keeper
         vm.deal(keeper1, value);
@@ -83,28 +102,40 @@ contract ProxySpokeTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        proxySpoke.executeFunction{value: value}(target, data);
+        proxySpoke.executeFunction{value: value}(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_OnlyKeeper() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(randomUser);
-        proxySpoke.executeFunction(target, data);
+        proxySpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
+        
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
         
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(target, data);
+        proxySpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_LzReceive_Register() public {

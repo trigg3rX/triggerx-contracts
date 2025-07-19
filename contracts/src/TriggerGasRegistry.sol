@@ -121,27 +121,6 @@ contract TriggerGasRegistry is
     }
 
     /**
-     * @notice Updates TG balances when a task is completed
-     * @param keeper The address of the keeper who completed the task
-     * @param user The address of the user who created the task
-     * @param tgAmount The amount of TG to transfer
-     */
-    function updateTGBalances(address keeper, address user, uint256 tgAmount) external onlyOwner nonReentrant {
-        TGBalance storage userBalance = balances[user];
-        TGBalance storage keeperBalance = balances[keeper];
-        
-        require(userBalance.TGbalance >= tgAmount, "Insufficient user TG balance");
-        
-        // Deduct TG from user
-        userBalance.TGbalance -= tgAmount;
-        
-        // Add TG to keeper
-        keeperBalance.TGbalance += tgAmount;
-        
-        emit TGTransferred(user, keeper, tgAmount);
-    }
-
-    /**
      * @notice Allows the owner to withdraw ETH from the contract
      * @param amount The amount of ETH to withdraw
      * @param reason The reason for withdrawal

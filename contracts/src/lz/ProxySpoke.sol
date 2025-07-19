@@ -4,6 +4,14 @@ pragma solidity ^0.8.26;
 import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
+interface IJobRegistry {
+    function getJobOwner(uint256 jobId) external view returns (address);
+}
+
+interface ITriggerGasRegistry {
+    function deductTGBalance(address user, uint256 tgAmount) external;
+}
+
 /**
  * @title ProxySpoke
  * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
@@ -19,6 +27,16 @@ contract ProxySpoke is Ownable, OApp {
      * @notice Mapping to track registered keepers
      */
     mapping(address => bool) public isKeeper;
+
+    /**
+     * @notice The address of the job registry contract
+     */
+    IJobRegistry public jobRegistry;
+
+    /**
+     * @notice The address of the trigger gas registry contract
+     */
+    ITriggerGasRegistry public triggerGasRegistry;
 
     /**
      * @notice Emitted when a keeper's status is updated
@@ -50,12 +68,16 @@ contract ProxySpoke is Ownable, OApp {
      * @param _ownerAddress The owner address
      * @param _hubEid The hub chain endpoint ID
      * @param _initialKeepers Array of initial keeper addresses
+     * @param _jobRegistryAddress The address of the job registry contract
+     * @param _triggerGasRegistryAddress The address of the trigger gas registry contract
      */
     constructor(
         address _endpoint,
         address _ownerAddress,
         uint32 _hubEid,
-        address[] memory _initialKeepers
+        address[] memory _initialKeepers,
+        address _jobRegistryAddress,
+        address _triggerGasRegistryAddress
     ) Ownable(_ownerAddress) OApp(_endpoint, _ownerAddress) {     
         _setPeer(_hubEid, bytes32(uint256(uint160(address(this)))));
 
@@ -64,14 +86,24 @@ contract ProxySpoke is Ownable, OApp {
             isKeeper[_initialKeepers[i]] = true;
             emit KeeperUpdated(ActionType.REGISTER, _initialKeepers[i]);
         }
+
+        jobRegistry = IJobRegistry(_jobRegistryAddress);
+        triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
     }
 
     /**
      * @notice Executes a function on a target contract
+     * @param jobId The ID of the job
+     * @param tgAmount The amount of TG to deduct from the job owner
      * @param target The address of the target contract
      * @param data The calldata for the function call
      */
-    function executeFunction(address target, bytes memory data) external payable onlyKeeper {
+    function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes memory data) external payable onlyKeeper {
+        address jobOwner = jobRegistry.getJobOwner(jobId);
+        require(jobOwner != address(0), "Job not found");
+
+        triggerGasRegistry.deductTGBalance(jobOwner, tgAmount);
+
         _executeFunction(target, data);
     }
 

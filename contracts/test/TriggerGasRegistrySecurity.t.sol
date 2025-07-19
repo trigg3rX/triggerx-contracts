@@ -68,7 +68,8 @@ contract TriggerGasRegistrySecurityTest is Test {
         bytes memory initData = abi.encodeWithSelector(
             TriggerGasRegistry.initialize.selector,
             owner,
-            owner
+            owner,
+            1000 // TG_PER_ETH
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
         gasRegistry = TriggerGasRegistry(address(proxy));
@@ -81,17 +82,6 @@ contract TriggerGasRegistrySecurityTest is Test {
     }
 
     // ==================== ACCESS CONTROL TESTS ====================
-    
-    function test_Security_OnlyOwnerCanUpdateTGBalances() public {
-        // Setup user with TG balance
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
-        
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
-        vm.prank(attacker);
-        gasRegistry.updateTGBalances(keeper, user1, 100);
-    }
-    
     function test_Security_OnlyOwnerCanWithdrawETH() public {
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
         vm.prank(attacker);
@@ -139,19 +129,6 @@ contract TriggerGasRegistrySecurityTest is Test {
         (, uint256 tgBalance) = gasRegistry.getBalance(address(malicious));
         assertEq(tgBalance, 1e21 - 100); // Started with 1000 TG, spent 100, not 200
     }
-    
-    function test_Security_UpdateTGBalancesReentrancyProtection() public {
-        // Setup balances
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
-        
-        // Create a keeper that tries to attack during balance update
-        address maliciousKeeper = address(new MaliciousReentrantRegistry(address(gasRegistry)));
-        
-        // This should work normally due to reentrancy protection
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(maliciousKeeper, user1, 100);
-    }
 
     // ==================== PARAMETER VALIDATION TESTS ====================
     
@@ -162,9 +139,16 @@ contract TriggerGasRegistrySecurityTest is Test {
     }
     
     function test_Security_PurchaseTGRejectsMismatchedValue() public {
-        vm.expectRevert("Sent ETH must match amount");
+        // This test is no longer needed since purchaseTG doesn't take an amount parameter
+        // The function now uses msg.value directly, so there's no mismatch possible
+        uint256 ethAmount = 1 ether;
+        
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: 0.5 ether}(1 ether);
+        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        
+        // Verify the purchase worked correctly
+        (, uint256 tgBalance) = gasRegistry.getBalance(user1);
+        assertEq(tgBalance, ethAmount * 1000);
     }
     
     function test_Security_WithdrawETHRejectsZeroAmount() public {
@@ -192,16 +176,6 @@ contract TriggerGasRegistrySecurityTest is Test {
         gasRegistry.claimETHForTG(1e21 + 1); // Try to claim 1 more than available
     }
     
-    function test_Security_CannotUpdateMoreTGThanUserHas() public {
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
-        
-        // User has 1 ETH * 1000 = 1000 TG (which is 1e21 in contract terms)
-        vm.expectRevert("Insufficient user TG balance");
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(keeper, user1, 1e21 + 1); // Try to transfer 1 more than available
-    }
-    
     function test_Security_BalanceIntegrityAfterOperations() public {
         uint256 ethAmount = 5 ether;
         
@@ -213,19 +187,13 @@ contract TriggerGasRegistrySecurityTest is Test {
         vm.prank(user2);
         gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
         
-        uint256 totalTGBefore = ethAmount * 1000 * 2; // Both users have 5000 TG each
-        
-        // Transfer some TG from user1 to keeper
-        uint256 transferAmount = 1000;
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(keeper, user1, transferAmount);
+        uint256 totalTGBefore = ethAmount * 1000 * 2; // Both users have 5000 TG eac     
         
         // Check total TG is conserved
         (, uint256 user1TG) = gasRegistry.getBalance(user1);
         (, uint256 user2TG) = gasRegistry.getBalance(user2);
-        (, uint256 keeperTG) = gasRegistry.getBalance(keeper);
         
-        assertEq(user1TG + user2TG + keeperTG, totalTGBefore);
+        assertEq(user1TG + user2TG, totalTGBefore);
     }
 
     // ==================== OVERFLOW/UNDERFLOW TESTS ====================
@@ -357,13 +325,12 @@ contract TriggerGasRegistrySecurityTest is Test {
         // Create a contract that rejects ETH
         address rejectingContract = address(new RejectingContract());
         
-        // Purchase TG to fund the contract
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
+        // Fund the rejecting contract with ETH
+        vm.deal(rejectingContract, 1 ether);
         
-        // Transfer TG balance to rejecting contract
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(rejectingContract, user1, 1000);
+        // Purchase TG for the rejecting contract
+        vm.prank(rejectingContract);
+        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
         
         // Try to claim ETH - should fail gracefully
         vm.expectRevert("ETH transfer failed");
@@ -395,24 +362,7 @@ contract TriggerGasRegistrySecurityTest is Test {
         
         assertEq(user1.balance, balanceBefore);
     }
-    
-    function test_Security_MinimumTGTransfer() public {
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: 1 ether}(1 ether);
-        
-        // Initial balance: 1 ETH * 1000 = 1000 TG (with 18 decimals: 1e21)
-        // Transfer 1 TG (minimum amount)
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(keeper, user1, 1);
-        
-        (, uint256 userTG) = gasRegistry.getBalance(user1);
-        (, uint256 keeperTG) = gasRegistry.getBalance(keeper);
-        
-        // 1 ETH gives 1,000,000,000,000,000,000,000 TG (1e21)
-        // After transferring 1 TG: 1e21 - 1 = 999,999,999,999,999,999,999
-        assertEq(userTG, 1e21 - 1);
-        assertEq(keeperTG, 1);
-    }
+
     
     function test_Security_ExactETHConversion() public {
         // Test the exact conversion rate: ethAmount * 1000 = tgAmount (with 18 decimals)

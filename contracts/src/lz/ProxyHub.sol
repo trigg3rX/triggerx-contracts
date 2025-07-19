@@ -6,6 +6,14 @@ import { OAppOptionsType3 } from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOpt
 import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 import { ReentrancyGuard } from "solady/utils/ReentrancyGuard.sol";
 
+interface IJobRegistry {
+    function getJobOwner(uint256 jobId) external view returns (address);
+}
+
+interface ITriggerGasRegistry {
+    function deductTGBalance(address user, uint256 tgAmount) external;
+}
+
 /**
  * @title ProxyHub
  * @notice A LayerZero-enabled contract that manages keeper registration and function execution across multiple chains
@@ -46,6 +54,16 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @notice Default value to be sent with cross-chain messages
      */
     uint128 public defaultValue = 0;
+
+    /**
+     * @notice The address of the job registry contract
+     */
+    IJobRegistry public jobRegistry;
+
+    /**
+     * @notice The address of the trigger gas registry contract
+     */
+    ITriggerGasRegistry public triggerGasRegistry;
 
     /**
      * @notice Emitted when a keeper is registered
@@ -120,13 +138,17 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
      * @param _srcEid The source chain endpoint ID
      * @param _thisChainEid The current chain endpoint ID
      * @param _initialKeepers Array of initial keeper addresses
+     * @param _jobRegistryAddress The address of the job registry contract
+     * @param _triggerGasRegistryAddress The address of the trigger gas registry contract
      */
     constructor(
         address _endpoint,
         address _ownerAddress,
         uint32 _srcEid,
         uint32 _thisChainEid,
-        address[] memory _initialKeepers
+        address[] memory _initialKeepers,
+        address _jobRegistryAddress,
+        address _triggerGasRegistryAddress
     )
         OApp(_endpoint, _ownerAddress)
         Ownable(_ownerAddress)
@@ -138,39 +160,29 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
             isKeeper[_initialKeepers[i]] = true;
             emit KeeperRegistered(_initialKeepers[i]);
         }
+
+        jobRegistry = IJobRegistry(_jobRegistryAddress);
+        triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
     }
+
+    /**
+     * @notice Allows the contract to receive ETH
+     */
+    receive() external payable {}
     
     /**
-     * @notice Adds new spoke chains to the network
-     * @param _dstEids Array of destination chain endpoint IDs
-     */
-    function addSpokes(uint32[] calldata _dstEids) external onlyOwner {
-        for (uint i = 0; i < _dstEids.length; i++) {
-            uint32 dstEid = _dstEids[i];
-            if (dstEid != thisChainEid) {
-                dstEids.push(dstEid);
-                _setPeer(dstEid, bytes32(uint256(uint160(address(this)))));
-            }
-        }
-    }
-
-    /**
-     * @notice Updates the gas configuration for cross-chain messages
-     * @param gas The new gas limit
-     * @param value The new default value
-     */
-    function setGasConfig(uint128 gas, uint128 value) external onlyOwner {
-        defaultGas = gas;
-        defaultValue = value;
-        emit GasConfigUpdated(gas, value);
-    }
-
-    /**
      * @notice Executes a function on a target contract
+     * @param jobId The ID of the job
+     * @param tgAmount The amount of TG to deduct from the job owner
      * @param target The address of the target contract
      * @param data The calldata for the function call
      */
-    function executeFunction(address target, bytes calldata data) external payable onlyKeeper nonReentrant {
+    function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes calldata data) external payable onlyKeeper nonReentrant {
+        address jobOwner = jobRegistry.getJobOwner(jobId);
+        require(jobOwner != address(0), "Job not found");
+
+        triggerGasRegistry.deductTGBalance(jobOwner, tgAmount);
+
         _executeFunction(target, data);
     }
 
@@ -316,9 +328,29 @@ contract ProxyHub is Ownable, OApp, OAppOptionsType3, ReentrancyGuard {
     }
 
     /**
-     * @notice Allows the contract to receive ETH
+     * @notice Adds new spoke chains to the network
+     * @param _dstEids Array of destination chain endpoint IDs
      */
-    receive() external payable {}
+    function addSpokes(uint32[] calldata _dstEids) external onlyOwner {
+        for (uint i = 0; i < _dstEids.length; i++) {
+            uint32 dstEid = _dstEids[i];
+            if (dstEid != thisChainEid) {
+                dstEids.push(dstEid);
+                _setPeer(dstEid, bytes32(uint256(uint160(address(this)))));
+            }
+        }
+    }
+
+    /**
+     * @notice Updates the gas configuration for cross-chain messages
+     * @param gas The new gas limit
+     * @param value The new default value
+     */
+    function setGasConfig(uint128 gas, uint128 value) external onlyOwner {
+        defaultGas = gas;
+        defaultValue = value;
+        emit GasConfigUpdated(gas, value);
+    }
 
     /**
      * @notice Allows the owner to withdraw ETH from the contract

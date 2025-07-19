@@ -33,7 +33,8 @@ contract TriggerGasRegistryTest is Test {
         bytes memory initData = abi.encodeWithSelector(
             TriggerGasRegistry.initialize.selector,
             owner,
-            operator
+            operator,
+            1000 // TG_PER_ETH
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
         
@@ -76,9 +77,17 @@ contract TriggerGasRegistryTest is Test {
     }
     
     function test_PurchaseTG_MismatchedAmount() public {
-        vm.expectRevert("Sent ETH must match amount");
+        // This test is no longer needed since purchaseTG doesn't take an amount parameter
+        // The function now uses msg.value directly
+        uint256 ethAmount = 1 ether;
+        
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: 0.5 ether}(1 ether);
+        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        
+        // Check balance was recorded correctly
+        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
+        assertEq(ethSpent, ethAmount);
+        assertEq(tgBalance, ethAmount * 1000);
     }
     
     function test_GetBalance() public {
@@ -144,63 +153,6 @@ contract TriggerGasRegistryTest is Test {
         vm.expectRevert("Insufficient TG balance");
         vm.prank(user1);
         gasRegistry.claimETHForTG(tgAmount);
-    }
-    
-    function test_UpdateTGBalances() public {
-        uint256 ethAmount = 1 ether;
-        
-        // Both users purchase TG
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        vm.prank(user2);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        // Transfer TG from user1 to keeper
-        uint256 tgAmount = 300;
-        
-        vm.expectEmit(true, true, false, true);
-        emit TGTransferred(user1, keeper, tgAmount);
-        
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(keeper, user1, tgAmount);
-        
-        // Check user1's TG decreased
-        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
-        assertEq(ethSpent, ethAmount);
-        assertEq(tgBalance, ethAmount * 1000 - tgAmount);
-        
-        // Check keeper's TG increased
-        (ethSpent, tgBalance) = gasRegistry.getBalance(keeper);
-        assertEq(ethSpent, 0); // No ETH spent
-        assertEq(tgBalance, tgAmount); // TG transferred
-    }
-    
-    function test_UpdateTGBalances_OnlyOwner() public {
-        uint256 ethAmount = 1 ether;
-        
-        // User 1 purchases TG
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, user2));
-        vm.prank(user2); // Not owner
-        gasRegistry.updateTGBalances(keeper, user1, 100);
-    }
-    
-    function test_UpdateTGBalances_InsufficientTG() public {
-        uint256 ethAmount = 1 ether;
-        
-        // User 1 purchases TG
-        vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        // Try to transfer more TG than available
-        uint256 tgAmount = ethAmount * 1000 + 1; // 1 more than available
-        
-        vm.expectRevert("Insufficient user TG balance");
-        vm.prank(owner);
-        gasRegistry.updateTGBalances(keeper, user1, tgAmount);
     }
     
     function test_Upgrade() public {

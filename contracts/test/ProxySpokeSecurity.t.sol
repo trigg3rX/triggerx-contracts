@@ -6,6 +6,8 @@ import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
+import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
 
 contract MaliciousSpokeTarget {
     bool public shouldRevert;
@@ -47,7 +49,8 @@ contract MaliciousSpokeTarget {
 contract ProxySpokeSecurityTest is Test {
     ProxySpoke public proxySpoke;
     MockEndpoint public mockEndpoint;
-    
+    MockJobRegistry public mockJobRegistry;
+    MockTriggerGasRegistry public mockTriggerGasRegistry;
     address public owner = address(0x1);
     address public attacker = address(0x666);
     address public keeper1 = address(0x100);
@@ -68,7 +71,9 @@ contract ProxySpokeSecurityTest is Test {
             address(mockEndpoint),
             owner,
             HUB_EID,
-            initialKeepers
+            initialKeepers,
+            address(new MockJobRegistry()),
+            address(new MockTriggerGasRegistry())
         );
         
         vm.stopPrank();
@@ -81,12 +86,20 @@ contract ProxySpokeSecurityTest is Test {
     // ==================== ACCESS CONTROL TESTS ====================
     
     function test_Security_OnlyKeeperCanExecuteFunction() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         address target = address(0x999);
         bytes memory data = abi.encodeWithSignature("someFunction()");
         
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
+        
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(attacker);
-        proxySpoke.executeFunction(target, data);
+        proxySpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_Security_InitialKeepersAreSetCorrectly() public {
@@ -122,23 +135,39 @@ contract ProxySpokeSecurityTest is Test {
     // ==================== FUNCTION EXECUTION SECURITY TESTS ====================
     
     function test_Security_FunctionExecutionWithMaliciousTarget() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         MaliciousSpokeTarget maliciousTarget = new MaliciousSpokeTarget(address(proxySpoke));
         maliciousTarget.setRevert(true);
+        
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         bytes memory data = abi.encodeWithSelector(MaliciousSpokeTarget.maliciousFunction.selector);
         
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(address(maliciousTarget), data);
+        proxySpoke.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
     }
     
     function test_Security_CannotExecuteOnSpokeItself() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         // Try to call sensitive functions on the ProxySpoke itself
         bytes memory data = abi.encodeWithSelector(ProxySpoke.executeFunction.selector, address(0), "");
         
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
+        
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(address(proxySpoke), data);
+        proxySpoke.executeFunction(jobId, tgAmount, address(proxySpoke), data);
     }
 
     // ==================== KEEPER MANAGEMENT SECURITY TESTS ====================

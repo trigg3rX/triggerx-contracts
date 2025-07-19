@@ -318,6 +318,28 @@ contract JobRegistryTest is Test {
         vm.stopPrank();
     }
 
+    function test_GetJobOwner() public {
+        vm.startPrank(user1);
+
+        uint256 jobId = jobRegistry.createJob(
+            JOB_NAME,
+            JOB_TYPE,
+            TIME_FRAME,
+            targetContract,
+            JOB_DATA
+        );
+
+        address jobOwner = jobRegistry.getJobOwner(jobId);
+        assertEq(jobOwner, user1);
+
+        vm.stopPrank();
+    }
+
+    function test_GetJobOwner_NonExistentJob() public view {
+        address jobOwner = jobRegistry.getJobOwner(999);
+        assertEq(jobOwner, address(0)); // Non-existent job should return zero address
+    }
+
     function test_Upgrade() public {
         // Deploy new implementation
         JobRegistry newImplementation = new JobRegistry();

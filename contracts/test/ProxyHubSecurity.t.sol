@@ -6,6 +6,8 @@ import {ProxyHub} from "../src/lz/ProxyHub.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
+import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
 
 contract MaliciousTarget {
     bool public shouldRevert;
@@ -31,7 +33,7 @@ contract MaliciousTarget {
         
         if (shouldReenter) {
             // Try to reenter
-            hub.executeFunction{value: msg.value}(address(this), abi.encodeWithSelector(this.maliciousFunction.selector));
+            hub.executeFunction{value: msg.value}(0, 0, address(this), abi.encodeWithSelector(this.maliciousFunction.selector));
         }
     }
     
@@ -70,6 +72,8 @@ contract GasGriefingContract {
             // Do expensive operation
             keccak256(abi.encode(block.timestamp, gasleft()));
         }
+        // Force a revert after consuming gas
+        revert("Gas griefing attack");
     }
 }
 
@@ -101,7 +105,9 @@ contract ProxyHubSecurityTest is Test {
             owner,
             SRC_EID,
             THIS_CHAIN_EID,
-            initialKeepers
+            initialKeepers,
+            address(new MockJobRegistry()),
+            address(new MockTriggerGasRegistry())
         );
         
         // Add some destination chains
@@ -124,12 +130,20 @@ contract ProxyHubSecurityTest is Test {
     // ==================== ACCESS CONTROL TESTS ====================
     
     function test_Security_OnlyKeeperCanExecuteFunction() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         address target = address(0x999);
         bytes memory data = abi.encodeWithSignature("someFunction()");
         
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
+        
         vm.expectRevert("Not a keeper");
         vm.prank(attacker);
-        proxyHub.executeFunction(target, data);
+        proxyHub.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_Security_OnlyOwnerCanAddSpokes() public {
@@ -209,19 +223,35 @@ contract ProxyHubSecurityTest is Test {
     // ==================== FUNCTION EXECUTION SECURITY TESTS ====================
     
     function test_Security_FunctionExecutionWithMaliciousTarget() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         MaliciousTarget maliciousTarget = new MaliciousTarget(payable(address(proxyHub)));
         maliciousTarget.setRevert(true);
+        
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         bytes memory data = abi.encodeWithSelector(MaliciousTarget.maliciousFunction.selector);
         
         vm.expectRevert("Execution failed");
         vm.prank(keeper1);
-        proxyHub.executeFunction(address(maliciousTarget), data);
+        proxyHub.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
     }
     
     function test_Security_ReentrancyProtectionOnExecution() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         MaliciousTarget maliciousTarget = new MaliciousTarget(payable(address(proxyHub)));
         maliciousTarget.setReenter(true);
+        
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         // Set up proper peer relationship to avoid NoPeer error
         vm.prank(owner);
@@ -245,29 +275,45 @@ contract ProxyHubSecurityTest is Test {
         // The malicious function will fail due to reentrancy when it tries to call back
         vm.expectRevert("Execution failed");
         vm.prank(address(maliciousTarget)); // Now it's a keeper
-        proxyHub.executeFunction(address(maliciousTarget), data);
+        proxyHub.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
         
         // Even though execution failed, the malicious target is still registered as a keeper
         assertTrue(proxyHub.isKeeper(address(maliciousTarget)));
     }
     
     function test_Security_CannotExecuteOnProxyHubItself() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         // Try to call sensitive functions on the ProxyHub itself
         bytes memory data = abi.encodeWithSelector(ProxyHub.withdraw.selector, attacker, 1 ether);
         
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
+        
         vm.expectRevert("Execution failed");
         vm.prank(keeper1);
-        proxyHub.executeFunction(address(proxyHub), data);
+        proxyHub.executeFunction(jobId, tgAmount, address(proxyHub), data);
     }
     
     function test_Security_GasGriefingProtection() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         GasGriefingContract griefingContract = new GasGriefingContract(payable(address(proxyHub)));
         bytes memory data = abi.encodeWithSelector(GasGriefingContract.gasGriefing.selector);
+        
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         // This should fail due to gas exhaustion, which is expected behavior
         vm.expectRevert("Execution failed");
         vm.prank(keeper1);
-        proxyHub.executeFunction(address(griefingContract), data);
+        proxyHub.executeFunction(jobId, tgAmount, address(griefingContract), data);
     }
 
     // ==================== CROSS-CHAIN MESSAGING SECURITY TESTS ====================
@@ -468,16 +514,24 @@ contract ProxyHubSecurityTest is Test {
     // ==================== DENIAL OF SERVICE TESTS ====================
     
     function test_Security_LargePayloadHandling() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
         // Create large payload
         bytes memory largeData = new bytes(10000);
         for (uint i = 0; i < largeData.length; i++) {
             largeData[i] = bytes1(uint8(i % 256));
         }
         
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
+        
         // Should handle large payloads gracefully - calling address(0) with large data should not revert
         // The call will succeed because address(0) doesn't have code, so it's a successful call
         vm.prank(keeper1);
-        proxyHub.executeFunction(address(0), largeData);
+        proxyHub.executeFunction(jobId, tgAmount, address(0), largeData);
     }
     
     function test_Security_MassiveSpokeAddition() public {
@@ -497,6 +551,14 @@ contract ProxyHubSecurityTest is Test {
     
     function test_Security_FullKeeperLifecycleIntegrity() public {
         address testKeeper = address(0x999);
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
+        
+        // Setup job and balance
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxyHub.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxyHub.triggerGasRegistry()));
+        mockJobRegistry.setJobOwner(jobId, address(0x300));
+        mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         // Set up peer relationship first
         vm.prank(owner);
@@ -519,7 +581,7 @@ contract ProxyHubSecurityTest is Test {
         
         // 3. Keeper can execute functions
         vm.prank(testKeeper);
-        proxyHub.executeFunction(address(this), abi.encodeWithSelector(this.dummyFunction.selector));
+        proxyHub.executeFunction(jobId, tgAmount, address(this), abi.encodeWithSelector(this.dummyFunction.selector));
         
         // 4. Unregister keeper
         bytes memory unregisterPayload = abi.encode(ProxyHub.ActionType.UNREGISTER, testKeeper);
@@ -531,7 +593,7 @@ contract ProxyHubSecurityTest is Test {
         // 5. Unregistered keeper cannot execute functions
         vm.expectRevert("Not a keeper");
         vm.prank(testKeeper);
-        proxyHub.executeFunction(address(this), abi.encodeWithSelector(this.dummyFunction.selector));
+        proxyHub.executeFunction(jobId, tgAmount, address(this), abi.encodeWithSelector(this.dummyFunction.selector));
     }
     
     function test_Security_CrossChainSecurityModel() public {

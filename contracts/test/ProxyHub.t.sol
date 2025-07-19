@@ -7,6 +7,8 @@ import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OAppReceiver.sol";
 import {console2} from "forge-std/console2.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
+import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
+import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
 
 // Test wrapper to expose internal functions
 contract ProxyHubForTest is ProxyHub {
@@ -15,8 +17,10 @@ contract ProxyHubForTest is ProxyHub {
         address _owner,
         uint32 _srcEid,
         uint32 _thisChainEid,
-        address[] memory _initialKeepers
-    ) ProxyHub(_endpoint, _owner, _srcEid, _thisChainEid, _initialKeepers) {}
+        address[] memory _initialKeepers,
+        address _jobRegistryAddress,
+        address _triggerGasRegistryAddress
+    ) ProxyHub(_endpoint, _owner, _srcEid, _thisChainEid, _initialKeepers, _jobRegistryAddress, _triggerGasRegistryAddress) {}
     
     // Expose internal _lzReceive function for testing
     function exposed_lzReceive(
@@ -33,11 +37,14 @@ contract ProxyHubForTest is ProxyHub {
 contract ProxyHubTest is Test {
     ProxyHubForTest public proxyHub;
     MockEndpoint public mockEndpoint;
+    MockJobRegistry public mockJobRegistry;
+    MockTriggerGasRegistry public mockTriggerGasRegistry;
     
     address public owner = address(0x1);
     address public keeper1 = address(0x100);
     address public keeper2 = address(0x101);
     address public randomUser = address(0x200);
+    address public jobOwner = address(0x300);
     
     uint32 public constant SRC_EID = 10121; // L1 chain ID
     uint32 public constant THIS_EID = 20202; // This L2 chain ID
@@ -59,6 +66,15 @@ contract ProxyHubTest is Test {
         mockEndpoint = new MockEndpoint();
         console2.log("MockEndpoint deployed at", address(mockEndpoint));
         
+        // Deploy mock contracts
+        console2.log("Deploying MockJobRegistry");
+        mockJobRegistry = new MockJobRegistry();
+        console2.log("MockJobRegistry deployed at", address(mockJobRegistry));
+        
+        console2.log("Deploying MockTriggerGasRegistry");
+        mockTriggerGasRegistry = new MockTriggerGasRegistry();
+        console2.log("MockTriggerGasRegistry deployed at", address(mockTriggerGasRegistry));
+        
         // Setup initial keepers
         console2.log("Setting up initial keepers");
         address[] memory initialKeepers = new address[](1);
@@ -71,7 +87,9 @@ contract ProxyHubTest is Test {
             owner,
             SRC_EID,
             THIS_EID,
-            initialKeepers
+            initialKeepers,
+            address(mockJobRegistry),
+            address(mockTriggerGasRegistry)
         ) returns (ProxyHubForTest hub) {
             proxyHub = hub;
             console2.log("ProxyHub deployed at", address(proxyHub));
@@ -120,9 +138,15 @@ contract ProxyHubTest is Test {
     }
     
     function test_ExecuteFunction() public {
-        address target = address(0x300);
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
+        address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         uint256 value = 1 ether;
+        
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
         
         // Fund both the keeper and the contract
         vm.deal(keeper1, value);
@@ -135,28 +159,70 @@ contract ProxyHubTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        proxyHub.executeFunction{value: value}(target, data);
+        proxyHub.executeFunction{value: value}(jobId, tgAmount, target, data);
+        
+        // Verify TG balance was deducted
+        (, uint256 finalBalance) = mockTriggerGasRegistry.getBalance(jobOwner);
+        assertEq(finalBalance, 900);
     }
     
     function test_ExecuteFunction_OnlyKeeper() public {
-        address target = address(0x300);
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
+        address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
+        
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
         
         vm.expectRevert("Not a keeper");
         vm.prank(randomUser);
-        proxyHub.executeFunction(target, data);
+        proxyHub.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
-        address target = address(0x300);
+        uint256 jobId = 1;
+        uint256 tgAmount = 100;
+        address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
+        
+        // Setup job and balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
         
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
         vm.expectRevert("Execution failed");
         vm.prank(keeper1);
-        proxyHub.executeFunction(target, data);
+        proxyHub.executeFunction(jobId, tgAmount, target, data);
+    }
+
+    function test_ExecuteFunction_JobNotFound() public {
+        uint256 jobId = 999; // Non-existent job
+        uint256 tgAmount = 100;
+        address target = address(0x400);
+        bytes memory data = abi.encodeWithSignature("doSomething()");
+        
+        vm.expectRevert("Job not found");
+        vm.prank(keeper1);
+        proxyHub.executeFunction(jobId, tgAmount, target, data);
+    }
+
+    function test_ExecuteFunction_InsufficientTGBalance() public {
+        uint256 jobId = 1;
+        uint256 tgAmount = 1000; // More than available balance
+        address target = address(0x400);
+        bytes memory data = abi.encodeWithSignature("doSomething()");
+        
+        // Setup job with insufficient balance
+        mockJobRegistry.setJobOwner(jobId, jobOwner);
+        mockTriggerGasRegistry.setBalance(jobOwner, 500); // Less than required
+        
+        vm.expectRevert("Insufficient TG balance");
+        vm.prank(keeper1);
+        proxyHub.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_LzReceive_Register() public {
