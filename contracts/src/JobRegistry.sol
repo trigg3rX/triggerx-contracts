@@ -53,6 +53,9 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     error InvalidJobParameters();
     error EmptyJobName();
     error InvalidTargetContract();
+    error InvalidJobData();
+    error MissingTimeInterval();
+    error MissingIpfsHash();
 
     /**
      * @dev Constructor that disables initializers to prevent implementation contract from being initialized
@@ -85,7 +88,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
      */
     function createJob(
         string memory jobName,
-        uint256 jobType,
+        uint8 jobType,
         uint256 timeFrame,
         address targetContract,
         bytes memory data
@@ -96,6 +99,9 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         if (targetContract == address(0)) {
             revert InvalidTargetContract();
         }
+
+        // Validate data based on jobType
+        _validateJobData(jobType, data);
 
         jobId = ++_lastJobId;
 
@@ -117,49 +123,102 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         emit JobCreated(jobId, msg.sender, jobHash, block.timestamp);
     }
 
+
     /**
      * @dev Update an existing job
      * @param jobId The ID of the job to update
-     * @param jobName The new name of the job
-     * @param jobType The new type/category of the job
-     * @param timeFrame The new timeframe for job execution
-     * @param targetContract The new address of the target contract
-     * @param data New additional data for the job
+     * @param oldJobName The old name of the job
+     * @param jobType The old type/category of the job
+     * @param oldTimeFrame The old timeframe for job execution
+     * @param targetContract The old address of the target contract
+     * @param oldData The old additional data for the job
+     * @param newJobName The new name of the job
+     * @param newTimeFrame The new timeframe for job execution
+     * @param newData The new additional data for the job
      */
     function updateJob(
         uint256 jobId,
-        string memory jobName,
-        uint256 jobType,
-        uint256 timeFrame,
+        string memory oldJobName,
+        uint8 jobType,
+        uint256 oldTimeFrame,
         address targetContract,
-        bytes memory data
+        bytes memory oldData,
+        string memory newJobName, 
+        uint256 newTimeFrame,
+        bytes memory newData
     ) external {
         Job storage job = _jobs[jobId];
 
-        if (job.jobOwner == address(0)) {
-            revert JobNotFound(jobId);
-        }
-        if (job.jobOwner != msg.sender) {
-            revert UnauthorizedJobAccess(jobId, msg.sender);
-        }
-        if (!job.isActive) {
-            revert JobAlreadyInactive(jobId);
-        }
-        if (bytes(jobName).length == 0) {
-            revert EmptyJobName();
-        }
-        if (targetContract == address(0)) {
-            revert InvalidTargetContract();
-        }
+        if (job.jobOwner == address(0)) revert JobNotFound(jobId);
+        if (job.jobOwner != msg.sender) revert UnauthorizedJobAccess(jobId, msg.sender);
+        if (!job.isActive) revert JobAlreadyInactive(jobId);
+
+        bytes32 currentJobHash = keccak256(
+            abi.encode(oldJobName, jobType, oldTimeFrame, targetContract, oldData)
+        );
+        if(currentJobHash != job.jobHash) revert("OLD_VALUES_MISMATCH");
+
+        if(bytes(newJobName).length == 0) revert EmptyJobName();
+        if(targetContract == address(0)) revert InvalidTargetContract();
+
+        // Validate data based on jobType
+        _validateJobData(jobType, newData);
 
         bytes32 newJobHash = keccak256(
-            abi.encode(jobName, jobType, timeFrame, targetContract, data)
+            abi.encode(newJobName, jobType, newTimeFrame, targetContract, newData)
         );
 
         job.jobHash = newJobHash;
         job.lastUpdatedAt = block.timestamp;
 
         emit JobUpdated(jobId, msg.sender, newJobHash, block.timestamp);
+    }
+
+       /**
+     * @dev Validate job data based on jobType requirements
+     * @param jobType The type of the job
+     * @param data The data to validate
+     */
+    function _validateJobData(uint8 jobType, bytes memory data) internal pure {
+        // For jobType 1 or 2, require uint256 timeInterval
+        if (jobType == 1 || jobType == 2) {
+            if (data.length < 32) {
+                revert MissingTimeInterval();
+            }
+            // Extract timeInterval (first 32 bytes)
+            uint256 timeInterval;
+            assembly {
+                timeInterval := mload(add(data, 32))
+            }
+            if (timeInterval == 0) {
+                revert MissingTimeInterval();
+            }
+        } else {
+            // For other jobTypes, require bool recurringJob
+            if (data.length < 32) {
+                revert InvalidJobData();
+            }
+            // Extract recurringJob (first 32 bytes as bool)
+            bool recurringJob;
+            assembly {
+                recurringJob := mload(add(data, 32))
+            }
+        }
+
+        // For jobType 2, 4, or 6, require bytes32 ipfsHash
+        if (jobType == 2 || jobType == 4 || jobType == 6) {
+            if (data.length < 64) { // Need 32 bytes for timeInterval/recurringJob + 32 bytes for ipfsHash
+                revert MissingIpfsHash();
+            }
+            // Extract ipfsHash (second 32 bytes)
+            bytes32 ipfsHash;
+            assembly {
+                ipfsHash := mload(add(data, 64))
+            }
+            if (ipfsHash == bytes32(0)) {
+                revert MissingIpfsHash();
+            }
+        }
     }
 
     /**

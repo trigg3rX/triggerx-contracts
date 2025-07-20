@@ -48,7 +48,6 @@ contract TriggerGasRegistry is
     
     function initialize(address initialOwner, address _operator, uint256 _tgPerEth) public initializer {
         require(initialOwner != address(0), "Initial owner cannot be 0 address");
-        require(_operator != address(0), "Operator cannot be 0 address");
         
         __ReentrancyGuard_init();
         __Ownable_init(initialOwner);
