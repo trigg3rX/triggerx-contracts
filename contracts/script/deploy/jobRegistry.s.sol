@@ -2,7 +2,7 @@
 pragma solidity ^0.8.26;
 
 import {Script, console} from "forge-std/Script.sol";
-import {JobRegistry} from "../src/JobRegistry.sol";
+import {JobRegistry} from "../../src/JobRegistry.sol";
 import {ERC1967Proxy} from "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract DeployJobRegistry is Script {

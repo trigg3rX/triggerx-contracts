@@ -107,9 +107,9 @@ interface IAvsGovernanceLogic {
 
     /**
      * @notice Updates the proxy hub address
-     * @param _proxyHub The new proxy hub address
+     * @param _taskExecutionHub The new proxy hub address
      */
-    function setProxyHub(address _proxyHub) external;
+    function setTaskExecutionHub(address _taskExecutionHub) external;
 
     /**
      * @notice Allows the owner to withdraw ETH from the contract
@@ -148,7 +148,7 @@ interface IAvsGovernanceLogic {
      * @notice Returns the address of the proxy hub
      * @return address The proxy hub address
      */
-    function proxyHub() external view returns (address);
+    function taskExecutionHub() external view returns (address);
 
     /**
      * @notice Returns the LayerZero endpoint ID of the destination chain

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import { Initializable } from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
+import { ReentrancyGuardUpgradeable } from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
@@ -13,83 +16,88 @@ interface ITriggerGasRegistry {
 }
 
 /**
- * @title ProxySpoke
+ * @title TaskExecutionSpoke
  * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
  * @dev This contract receives keeper registration updates from the hub and executes functions on the respective L2 chain
  */
-contract ProxySpoke is Ownable, OApp {
-    /**
-     * @notice Enum defining the types of actions that can be performed on keepers
-     */
-    enum ActionType { REGISTER, UNREGISTER }
+contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyGuardUpgradeable {
+    /// @notice Constructor only runs on the implementation contract. It passes minimal arguments to
+    ///         the OApp constructor (so the byte-code is valid) and immediately disables further
+    ///         initializers to protect the logic contract.
+    constructor(address _endpoint, address _delegate) OApp(_endpoint, _delegate) Ownable(_delegate) {
+        _disableInitializers();
+    }
 
-    /**
-     * @notice Mapping to track registered keepers
-     */
+    // ----------------------------------
+    // --------  State Variables  -------
+    // ----------------------------------
+
     mapping(address => bool) public isKeeper;
 
-    /**
-     * @notice The address of the job registry contract
-     */
     IJobRegistry public jobRegistry;
-
-    /**
-     * @notice The address of the trigger gas registry contract
-     */
     ITriggerGasRegistry public triggerGasRegistry;
 
-    /**
-     * @notice Emitted when a keeper's status is updated
-     * @param action The type of action performed
-     * @param keeper The address of the keeper
-     */
-    event KeeperUpdated(ActionType action, address keeper);
+    enum ActionType { REGISTER, UNREGISTER }
 
-    /**
-     * @notice Emitted when a function is executed
-     * @param keeper The address of the keeper who executed the function
-     * @param target The address of the target contract
-     * @param data The calldata used for the function call
-     * @param value The amount of ETH sent with the call
-     */
+    // ----------------------------------
+    // -------------  Events ------------
+    // ----------------------------------
+
+    event KeeperUpdated(ActionType action, address keeper);
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
 
-    /**
-     * @notice Modifier to restrict function access to registered keepers
-     */
+    // ----------------------------------
+    // ------------  Modifiers ----------
+    // ----------------------------------
+
     modifier onlyKeeper() {
         require(isKeeper[msg.sender], "Spoke: Keeper not registered");
         _;
     }
 
+    // ---------------------------------------------------------------------
+    // Initialization (replaces constructor)
+    // ---------------------------------------------------------------------
+
     /**
-     * @notice Constructor for the ProxySpoke contract
-     * @param _endpoint The LayerZero endpoint address
-     * @param _ownerAddress The owner address
-     * @param _hubEid The hub chain endpoint ID
-     * @param _initialKeepers Array of initial keeper addresses
-     * @param _jobRegistryAddress The address of the job registry contract
-     * @param _triggerGasRegistryAddress The address of the trigger gas registry contract
+     * @dev Initialize function (to be called via proxy).
+     * @param _ownerAddress Contract owner.
+     * @param _hubEid The hub chain endpoint ID.
+     * @param _initialKeepers Array of initial keeper addresses.
+     * @param _jobRegistryAddress The address of the job registry contract.
+     * @param _triggerGasRegistryAddress The address of the trigger gas registry contract.
      */
-    constructor(
-        address _endpoint,
+    function initialize(
         address _ownerAddress,
         uint32 _hubEid,
-        address[] memory _initialKeepers,
+        address[] calldata _initialKeepers,
         address _jobRegistryAddress,
         address _triggerGasRegistryAddress
-    ) Ownable(_ownerAddress) OApp(_endpoint, _ownerAddress) {     
+    ) external initializer {
+        // Init OZ upgradeable helpers
+        __ReentrancyGuard_init();
+        __UUPSUpgradeable_init();
+
+        // Set peer connection to hub
         _setPeer(_hubEid, bytes32(uint256(uint160(address(this)))));
 
         // Initialize keepers
-        for (uint i = 0; i < _initialKeepers.length; i++) {
+        for (uint256 i = 0; i < _initialKeepers.length; i++) {
             isKeeper[_initialKeepers[i]] = true;
             emit KeeperUpdated(ActionType.REGISTER, _initialKeepers[i]);
         }
 
         jobRegistry = IJobRegistry(_jobRegistryAddress);
         triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
+
+        // Delegate & ownership wiring on the LayerZero endpoint
+        endpoint.setDelegate(_ownerAddress);
+        _transferOwnership(_ownerAddress);
     }
+
+    // ---------------------------------------------------------------------
+    // -----------------------    Main Logic     ---------------------------
+    // ---------------------------------------------------------------------
 
     /**
      * @notice Executes a function on a target contract
@@ -98,7 +106,7 @@ contract ProxySpoke is Ownable, OApp {
      * @param target The address of the target contract
      * @param data The calldata for the function call
      */
-    function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes memory data) external payable onlyKeeper {
+    function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes memory data) external payable onlyKeeper nonReentrant {
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 
@@ -123,6 +131,10 @@ contract ProxySpoke is Ownable, OApp {
         return result;
     }
 
+    // ---------------------------------------------------------------------
+    // -----------------   LayerZero Receive Hook   ------------------------
+    // ---------------------------------------------------------------------
+
     /**
      * @notice Handles incoming LayerZero messages from the hub
      * @param message The message payload containing the action and keeper address
@@ -146,4 +158,14 @@ contract ProxySpoke is Ownable, OApp {
 
         emit KeeperUpdated(action, keeper);
     }
+
+    // ---------------------------------------------------------------------
+    // --------------------  UUPS Upgrade Authorisation  -------------------
+    // ---------------------------------------------------------------------
+
+    /// @dev Required by UUPS pattern. Restricts upgrades to the contract owner.
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+
+    // Storage gap for future upgrades
+    uint256[50] private __gap;
 }

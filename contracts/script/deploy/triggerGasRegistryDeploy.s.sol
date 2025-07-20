@@ -3,7 +3,7 @@ pragma solidity ^0.8.26;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
-import {TriggerGasRegistry} from "../src/TriggerGasRegistry.sol";
+import {TriggerGasRegistry} from "../../src/TriggerGasRegistry.sol";
 import {CREATE3} from "lib/solady/src/utils/CREATE3.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 

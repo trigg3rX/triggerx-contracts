@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Script.sol";
 import "forge-std/console.sol";
 import {CREATE3} from "solady/utils/CREATE3.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
+import {TaskExecutionHub} from "../src/lz/TaskExecutionHub.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 
 contract GasBenchmark is Script {
@@ -29,7 +29,7 @@ contract GasBenchmark is Script {
     
     GasMetrics[] public benchmarkResults;
     
-    // ActionType enum matching ProxyHub
+    // ActionType enum matching TaskExecutionHub
     enum ActionType {
         REGISTER,
         UNREGISTER
@@ -37,11 +37,11 @@ contract GasBenchmark is Script {
     
     /**
      * @notice Simulates _lzReceive by calling the LayerZero endpoint directly
-     * @param hub The ProxyHub contract
+     * @param hub The TaskExecutionHub contract
      * @param action 0 for REGISTER, 1 for UNREGISTER
      * @param keeper The keeper address
      */
-    function simulateLzReceive(ProxyHub hub, uint8 action, address keeper) internal {
+    function simulateLzReceive(TaskExecutionHub hub, uint8 action, address keeper) internal {
         // Create the Origin struct
         Origin memory origin = Origin({
             srcEid: HOLESKY_EID,
@@ -91,7 +91,7 @@ contract GasBenchmark is Script {
         uint256 deployerPrivateKey,
         address deployerAddress,
         uint256 spokeCount
-    ) internal returns (ProxyHub, uint256) {
+    ) internal returns (TaskExecutionHub, uint256) {
         console.log("Benchmarking deployment for", spokeCount, "spokes");
         
         vm.startBroadcast(deployerPrivateKey);
@@ -104,7 +104,7 @@ contract GasBenchmark is Script {
         uint256 gasStart = gasleft();
         
         bytes memory hubBytecode = abi.encodePacked(
-            type(ProxyHub).creationCode,
+            type(TaskExecutionHub).creationCode,
             abi.encode(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress, HOLESKY_EID, BASE_SEPOLIA_EID, initialKeepers)
         );
         
@@ -114,7 +114,7 @@ contract GasBenchmark is Script {
         
         uint256 deploymentGas = gasStart - gasleft();
         
-        ProxyHub hub = ProxyHub(payable(hubAddr));
+        TaskExecutionHub hub = TaskExecutionHub(payable(hubAddr));
         
         // Fund the hub
         vm.deal(address(hub), 1000 ether);
@@ -125,7 +125,7 @@ contract GasBenchmark is Script {
     }
     
     function benchmarkAddSpokes(
-        ProxyHub hub,
+        TaskExecutionHub hub,
         uint256 deployerPrivateKey,
         uint256 spokeCount
     ) internal returns (uint256) {
@@ -145,8 +145,8 @@ contract GasBenchmark is Script {
     }
     
     function benchmarkBroadcastOperations(
-        ProxyHub hub,
-        uint256 deployerPrivateKey
+        TaskExecutionHub hub,
+        uint256 // deployerPrivateKey
     ) internal returns (uint256 registrationGas, uint256 unregistrationGas, uint256 ethConsumed) {
         console.log("Benchmarking broadcast operations");
         
@@ -179,7 +179,7 @@ contract GasBenchmark is Script {
         vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
         
         // Benchmark deployment
-        (ProxyHub hub, uint256 deploymentGas) = benchmarkDeployment(deployerPrivateKey, deployerAddress, spokeCount);
+        (TaskExecutionHub hub, uint256 deploymentGas) = benchmarkDeployment(deployerPrivateKey, deployerAddress, spokeCount);
         
         // Benchmark adding spokes
         uint256 addSpokesGas = benchmarkAddSpokes(hub, deployerPrivateKey, spokeCount);
@@ -285,7 +285,7 @@ contract GasBenchmark is Script {
     }
     
     function run() external {
-        console.log("Starting Comprehensive Gas Benchmark for ProxyHub Broadcasting");
+        console.log("Starting Comprehensive Gas Benchmark for TaskExecutionHub Broadcasting");
         console.log("This will test broadcasting to various numbers of L2 spokes\n");
         
         // Test different spoke counts

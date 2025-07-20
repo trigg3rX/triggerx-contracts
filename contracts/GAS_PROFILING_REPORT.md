@@ -33,7 +33,7 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 | **beforeOperatorUnregistered** | 21,557 | 21,557 | 21,557 | 21,557 | 1 | Simple validation |
 | **removeFromWhitelist** | 23,931 | 26,151 | 26,208 | 29,958 | 6 | State cleanup |
 | **setGasOptions** | 24,186 | 27,746 | 28,089 | 30,621 | 4 | Gas configuration |
-| **setProxyHub** | 23,924 | 26,812 | 23,965 | 35,394 | 4 | Hub management |
+| **setTaskExecutionHub** | 23,924 | 26,812 | 23,965 | 35,394 | 4 | Hub management |
 | **withdraw** | 24,300 | 32,953 | 24,409 | 58,707 | 8 | ETH withdrawal |
 
 
@@ -51,7 +51,7 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 | **upgradeToAndCall** | 3,083 | 6,888 | 6,888 | 10,693 | 4 | Contract upgrades |
 
 
-### 3. 🌉 ProxyHub Contract (LayerZero Cross-Chain)
+### 3. 🌉 TaskExecutionHub Contract (LayerZero Cross-Chain)
 
 **Deployment:** 2,066,689 gas (9,860 bytes) - *Most expensive*
 
@@ -65,7 +65,7 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 | **setGasConfig** | 24,110 | 26,776 | 25,517 | 30,701 | 3 | Gas parameter tuning |
 
 
-### 4. 🏢 ProxySpoke Contract (LayerZero L2)
+### 4. 🏢 TaskExecutionSpoke Contract (LayerZero L2)
 
 **Deployment:** 674,741 gas (3,341 bytes) - *Most efficient*
 
@@ -81,14 +81,14 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 ## ⚠️ Critical Gas Usage Alerts
 
 ### 🚨 EXTREME GAS USAGE WARNING
-**ProxyHub.executeFunction:** Max gas of **1.04 BILLION** 
+**TaskExecutionHub.executeFunction:** Max gas of **1.04 BILLION** 
 - **Root Cause:** Gas griefing attack simulation
 - **Status:** ✅ Properly handled with "Execution failed" revert
 - **Recommendation:** Implement gas limits for production
 
 ### 📊 Variable Cost Functions
 1. **addToWhitelist (AvsGovernanceLogic):** 24K - 2.4M gas (batch size dependent)
-2. **addSpokes (ProxyHub):** 24K - 1.4M gas (number of chains)
+2. **addSpokes (TaskExecutionHub):** 24K - 1.4M gas (number of chains)
 3. **Large Security Tests:** Up to 3M gas for batch operations
 
 ---
@@ -106,7 +106,7 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 ### 🛡️ Test Coverage Highlights
 - **136 total tests** across all contracts
 - **91 security-focused tests** 
-- **27 ProxyHub security tests** (including gas griefing)
+- **27 TaskExecutionHub security tests** (including gas griefing)
 - **26 TriggerGasRegistry security tests**
 - **25 AvsGovernanceLogic security tests**
 
@@ -116,17 +116,17 @@ This comprehensive gas profiling report analyzes all contracts in the TriggerX e
 
 | Contract | Gas Cost | Size (bytes) | Efficiency Score |
 |----------|----------|--------------|------------------|
-| **ProxySpoke** | 674,741 | 3,341 | ⭐⭐⭐⭐⭐ Most Efficient |
+| **TaskExecutionSpoke** | 674,741 | 3,341 | ⭐⭐⭐⭐⭐ Most Efficient |
 | **TriggerGasRegistry** | 875,987 | 3,918 | ⭐⭐⭐⭐ |
 | **AvsGovernanceLogic** | 1,564,643 | 7,453 | ⭐⭐⭐ |
-| **ProxyHub** | 2,066,689 | 9,860 | ⭐⭐ Most Complex |
+| **TaskExecutionHub** | 2,066,689 | 9,860 | ⭐⭐ Most Complex |
 
 ---
 
 ## 🎯 Gas Optimization Recommendations
 
 ### 🔥 High Priority
-1. **ProxyHub.executeFunction**
+1. **TaskExecutionHub.executeFunction**
    - Implement strict gas limits (recommend: 500K gas max)
    - Add gas estimation before execution
    - Consider circuit breaker pattern

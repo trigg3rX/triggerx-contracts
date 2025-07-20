@@ -7,22 +7,22 @@ This document provides a comprehensive summary of the Slither static analysis pe
 Slither analysis was performed on the following contracts:
 - `TriggerGasRegistry.sol`
 - `AvsGovernanceLogic.sol` 
-- `lz/ProxyHub.sol`
-- `lz/ProxySpoke.sol`
+- `lz/TaskExecutionHub.sol`
+- `lz/TaskExecutionSpoke.sol`
 
 ## Results Summary
 
 ### Before Remediation
 - **TriggerGasRegistry.sol**: 60 findings
 - **AvsGovernanceLogic.sol**: 35 findings  
-- **ProxyHub.sol**: 35 findings
-- **ProxySpoke.sol**: 27 findings
+- **TaskExecutionHub.sol**: 35 findings
+- **TaskExecutionSpoke.sol**: 27 findings
 
 ### After Remediation
 - **TriggerGasRegistry.sol**: 55 findings (5 disabled)
 - **AvsGovernanceLogic.sol**: 33 findings (2 disabled)
-- **ProxyHub.sol**: 32 findings (3 disabled)
-- **ProxySpoke.sol**: 25 findings (2 disabled)
+- **TaskExecutionHub.sol**: 32 findings (3 disabled)
+- **TaskExecutionSpoke.sol**: 25 findings (2 disabled)
 
 ## Contract-Specific Analysis
 
@@ -83,7 +83,7 @@ Slither analysis was performed on the following contracts:
 #### User Improvements Made:
 - Reverted `_payNative` to non-view (removing `view` keyword) for proper functionality
 
-### ProxyHub.sol (LayerZero)
+### TaskExecutionHub.sol (LayerZero)
 
 #### Issues Successfully Disabled:
 1. **`solc-version`** - Multiple Solidity versions used
@@ -105,7 +105,7 @@ Slither analysis was performed on the following contracts:
 - Naming conventions in LayerZero interfaces
 - Solidity version issues in dependencies
 
-### ProxySpoke.sol (LayerZero)
+### TaskExecutionSpoke.sol (LayerZero)
 
 #### Issues Successfully Disabled:
 1. **`solc-version`** - Multiple Solidity versions used

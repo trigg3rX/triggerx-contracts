@@ -93,12 +93,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         address targetContract,
         bytes memory data
     ) external returns (uint256 jobId) {
-        if (bytes(jobName).length == 0) {
-            revert EmptyJobName();
-        }
-        if (targetContract == address(0)) {
-            revert InvalidTargetContract();
-        }
+        if (bytes(jobName).length == 0) revert EmptyJobName();
+        if (targetContract == address(0)) revert InvalidTargetContract(); 
 
         // Validate data based on jobType
         _validateJobData(jobType, data);
@@ -123,7 +119,6 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         emit JobCreated(jobId, msg.sender, jobHash, block.timestamp);
     }
 
-
     /**
      * @dev Update an existing job
      * @param jobId The ID of the job to update
@@ -143,29 +138,42 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256 oldTimeFrame,
         address targetContract,
         bytes memory oldData,
-        string memory newJobName, 
+        string memory newJobName,
         uint256 newTimeFrame,
         bytes memory newData
     ) external {
         Job storage job = _jobs[jobId];
 
         if (job.jobOwner == address(0)) revert JobNotFound(jobId);
-        if (job.jobOwner != msg.sender) revert UnauthorizedJobAccess(jobId, msg.sender);
+        if (job.jobOwner != msg.sender)
+            revert UnauthorizedJobAccess(jobId, msg.sender);
         if (!job.isActive) revert JobAlreadyInactive(jobId);
 
         bytes32 currentJobHash = keccak256(
-            abi.encode(oldJobName, jobType, oldTimeFrame, targetContract, oldData)
+            abi.encode(
+                oldJobName,
+                jobType,
+                oldTimeFrame,
+                targetContract,
+                oldData
+            )
         );
-        if(currentJobHash != job.jobHash) revert("OLD_VALUES_MISMATCH");
+        if (currentJobHash != job.jobHash) revert("OLD_VALUES_MISMATCH");
 
-        if(bytes(newJobName).length == 0) revert EmptyJobName();
-        if(targetContract == address(0)) revert InvalidTargetContract();
+        if (bytes(newJobName).length == 0) revert EmptyJobName();
+        if (targetContract == address(0)) revert InvalidTargetContract();
 
         // Validate data based on jobType
         _validateJobData(jobType, newData);
 
         bytes32 newJobHash = keccak256(
-            abi.encode(newJobName, jobType, newTimeFrame, targetContract, newData)
+            abi.encode(
+                newJobName,
+                jobType,
+                newTimeFrame,
+                targetContract,
+                newData
+            )
         );
 
         job.jobHash = newJobHash;
@@ -174,7 +182,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         emit JobUpdated(jobId, msg.sender, newJobHash, block.timestamp);
     }
 
-       /**
+    /**
      * @dev Validate job data based on jobType requirements
      * @param jobType The type of the job
      * @param data The data to validate
@@ -207,7 +215,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
         // For jobType 2, 4, or 6, require bytes32 ipfsHash
         if (jobType == 2 || jobType == 4 || jobType == 6) {
-            if (data.length < 64) { // Need 32 bytes for timeInterval/recurringJob + 32 bytes for ipfsHash
+            if (data.length < 64) {
+                // Need 32 bytes for timeInterval/recurringJob + 32 bytes for ipfsHash
                 revert MissingIpfsHash();
             }
             // Extract ipfsHash (second 32 bytes)
@@ -325,7 +334,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
      */
     function getTotalJobsCount() external view returns (uint256 count) {
         return _lastJobId;
-    }   
+    }
 
     // UUPS upgrade authorization
     /**
@@ -335,5 +344,4 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
-
 }

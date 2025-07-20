@@ -3,10 +3,10 @@ pragma solidity ^0.8.22;
 
 import {Script} from "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
+import {TaskExecutionHub} from "../src/lz/TaskExecutionHub.sol";
 
 contract VerifyKeepers is Script {
-    // ProxyHub addresses for different chains
+    // TaskExecutionHub addresses for different chains
     address constant PROXY_ADDRESS = 0x96c5F575940DBe98fd9600F74F0c36139A7Be2A2;
 
     // Operators array
@@ -38,15 +38,15 @@ contract VerifyKeepers is Script {
         verifyKeepersOnChain(OPERATORS, PROXY_ADDRESS);
     }
 
-    function verifyKeepersOnChain(address[] memory operators, address proxyHubAddress) view internal {
-        ProxyHub proxyHub = ProxyHub(payable(proxyHubAddress));
+    function verifyKeepersOnChain(address[] memory operators, address taskExecutionHubAddress) view internal {
+        TaskExecutionHub taskExecutionHub = TaskExecutionHub(payable(taskExecutionHubAddress));
         
         for (uint i = 0; i < operators.length; i++) {
-            bool isKeeper = proxyHub.isKeeper(operators[i]);
+            bool isKeeper = taskExecutionHub.isKeeper(operators[i]);
             console2.log("Operator %s is %s on chain %s", 
                 operators[i], 
                 isKeeper ? "a keeper" : "not a keeper",
-                proxyHubAddress
+                taskExecutionHubAddress
             );
         }
     }

@@ -2,14 +2,15 @@
 pragma solidity ^0.8.22;
 
 import {Test} from "forge-std/Test.sol";
-import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
+import {TaskExecutionSpoke} from "../src/lz/TaskExecutionSpoke.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OAppReceiver.sol";
 import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
 import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
+import {ERC1967Proxy} from "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 // Test wrapper to expose internal functions
-contract ProxySpokeForTest is ProxySpoke {
+contract ProxySpokeForTest is TaskExecutionSpoke {
     constructor(
         address _endpoint, 
         address _owner, 
@@ -17,7 +18,7 @@ contract ProxySpokeForTest is ProxySpoke {
         address[] memory _initialKeepers,
         address _jobRegistryAddress,
         address _triggerGasRegistryAddress
-    ) ProxySpoke(_endpoint, _owner, _srcEid, _initialKeepers, _jobRegistryAddress, _triggerGasRegistryAddress) {}
+    ) TaskExecutionSpoke(_endpoint, _owner) {}
     
     // Expose internal _lzReceive function for testing
     function exposed_lzReceive(
@@ -32,7 +33,7 @@ contract ProxySpokeForTest is ProxySpoke {
 }
 
 contract ProxySpokeTest is Test {
-    ProxySpokeForTest public proxySpoke;
+    ProxySpokeForTest public taskExecutionSpoke;
     MockEndpoint public mockEndpoint;
     MockJobRegistry public mockJobRegistry;
     MockTriggerGasRegistry public mockTriggerGasRegistry;
@@ -45,7 +46,7 @@ contract ProxySpokeTest is Test {
     
     uint32 public constant SRC_EID = 10121; // L1 or Hub chain ID
     
-    event KeeperUpdated(ProxySpoke.ActionType action, address keeper);
+    event KeeperUpdated(TaskExecutionSpoke.ActionType action, address keeper);
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
     
     function setUp() public {
@@ -62,9 +63,26 @@ contract ProxySpokeTest is Test {
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
         
-        // Deploy ProxySpoke
-        proxySpoke = new ProxySpokeForTest(
-            address(mockEndpoint),
+        // Deploy TaskExecutionSpoke
+        taskExecutionSpoke = ProxySpokeForTest(
+            payable(address(
+                new ERC1967Proxy(
+                    address(new ProxySpokeForTest(address(mockEndpoint), owner, SRC_EID, initialKeepers, address(mockJobRegistry), address(mockTriggerGasRegistry))),
+                    abi.encodeWithSignature(
+                        "initialize(address,address,uint32,address[],address,address)",
+                        address(mockEndpoint),
+                        owner,
+                        SRC_EID,
+                        initialKeepers,
+                        address(mockJobRegistry),
+                        address(mockTriggerGasRegistry)
+                    )
+                )
+            ))
+        );
+        
+        // Initialize the contract
+        taskExecutionSpoke.initialize(
             owner,
             SRC_EID,
             initialKeepers,
@@ -75,10 +93,10 @@ contract ProxySpokeTest is Test {
         vm.stopPrank();
     }
     
-    function test_Constructor() public {
-        assertEq(proxySpoke.owner(), owner);
-        assertTrue(proxySpoke.isKeeper(keeper1));
-        assertFalse(proxySpoke.isKeeper(keeper2));
+    function test_Constructor() public view {
+        assertEq(taskExecutionSpoke.owner(), owner);
+        assertTrue(taskExecutionSpoke.isKeeper(keeper1));
+        assertFalse(taskExecutionSpoke.isKeeper(keeper2));
     }
     
     function test_ExecuteFunction() public {
@@ -102,7 +120,7 @@ contract ProxySpokeTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        proxySpoke.executeFunction{value: value}(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction{value: value}(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_OnlyKeeper() public {
@@ -117,7 +135,7 @@ contract ProxySpokeTest is Test {
         
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(randomUser);
-        proxySpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
@@ -135,12 +153,12 @@ contract ProxySpokeTest is Test {
         
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_LzReceive_Register() public {
-        // Simulate a message from ProxyHub to register a new keeper
-        bytes memory payload = abi.encode(ProxySpoke.ActionType.REGISTER, keeper2);
+        // Simulate a message from TaskExecutionHub to register a new keeper
+        bytes memory payload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
         
         // Create Origin struct directly with the 3 required fields
         Origin memory origin = Origin({
@@ -150,10 +168,10 @@ contract ProxySpokeTest is Test {
         });
         
         vm.expectEmit(true, false, false, false);
-        emit KeeperUpdated(ProxySpoke.ActionType.REGISTER, keeper2);
+        emit KeeperUpdated(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
         
         // Call our exposed function to test _lzReceive
-        proxySpoke.exposed_lzReceive(
+        taskExecutionSpoke.exposed_lzReceive(
             origin,
             bytes32(0),
             payload,
@@ -162,12 +180,12 @@ contract ProxySpokeTest is Test {
         );
         
         // Verify keeper was registered
-        assertTrue(proxySpoke.isKeeper(keeper2));
+        assertTrue(taskExecutionSpoke.isKeeper(keeper2));
     }
     
     function test_LzReceive_Unregister() public {
         // First register keeper2
-        bytes memory registerPayload = abi.encode(ProxySpoke.ActionType.REGISTER, keeper2);
+        bytes memory registerPayload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
         
         Origin memory origin = Origin({
             srcEid: SRC_EID,
@@ -175,7 +193,7 @@ contract ProxySpokeTest is Test {
             nonce: 1
         });
         
-        proxySpoke.exposed_lzReceive(
+        taskExecutionSpoke.exposed_lzReceive(
             origin,
             bytes32(0),
             registerPayload,
@@ -183,15 +201,15 @@ contract ProxySpokeTest is Test {
             bytes("")
         );
         
-        assertTrue(proxySpoke.isKeeper(keeper2));
+        assertTrue(taskExecutionSpoke.isKeeper(keeper2));
         
         // Now unregister
-        bytes memory unregisterPayload = abi.encode(ProxySpoke.ActionType.UNREGISTER, keeper2);
+        bytes memory unregisterPayload = abi.encode(TaskExecutionSpoke.ActionType.UNREGISTER, keeper2);
         
         vm.expectEmit(true, false, false, false);
-        emit KeeperUpdated(ProxySpoke.ActionType.UNREGISTER, keeper2);
+        emit KeeperUpdated(TaskExecutionSpoke.ActionType.UNREGISTER, keeper2);
         
-        proxySpoke.exposed_lzReceive(
+        taskExecutionSpoke.exposed_lzReceive(
             origin,
             bytes32(0),
             unregisterPayload,
@@ -200,6 +218,6 @@ contract ProxySpokeTest is Test {
         );
         
         // Verify keeper was unregistered
-        assertFalse(proxySpoke.isKeeper(keeper2));
+        assertFalse(taskExecutionSpoke.isKeeper(keeper2));
     }
 } 

@@ -53,8 +53,8 @@ This document provides an overview of the comprehensive security test suite crea
 - ETH transfer failure handling
 - Mathematical operation safety
 
-### 3. ProxyHubSecurity.t.sol
-**Contract Under Test**: `ProxyHub`
+### 3. TaskExecutionHubSecurity.t.sol
+**Contract Under Test**: `TaskExecutionHub`
 
 **Security Areas Covered**:
 - **Access Control**: Keeper and owner privilege separation
@@ -80,7 +80,7 @@ This document provides an overview of the comprehensive security test suite crea
 - Balance monitoring and alert system testing
 
 ### 4. ProxySpokeSecurity.t.sol
-**Contract Under Test**: `ProxySpoke`
+**Contract Under Test**: `TaskExecutionSpoke`
 
 **Security Areas Covered**:
 - **Access Control**: Keeper-only function execution
@@ -100,7 +100,7 @@ This document provides an overview of the comprehensive security test suite crea
 ## Recent Security Enhancements (Latest Update)
 
 ### Enhanced Error Handling & Fee Management
-Both `AvsGovernanceLogic` and `ProxyHub` contracts have been upgraded with critical security improvements:
+Both `AvsGovernanceLogic` and `TaskExecutionHub` contracts have been upgraded with critical security improvements:
 
 #### 1. **10% Fee Buffer Protection**
 - Implements automatic 10% buffer on all fee calculations
@@ -121,7 +121,7 @@ Both `AvsGovernanceLogic` and `ProxyHub` contracts have been upgraded with criti
 - **Security Benefit**: Prevents service disruption due to insufficient funds
 
 #### 4. **Enhanced Fee Estimation**
-- `estimateTotalFees()` for ProxyHub multi-destination broadcasts
+- `estimateTotalFees()` for TaskExecutionHub multi-destination broadcasts
 - `estimateFee()` for AvsGovernanceLogic single-destination messages
 - Real-time fee calculation with current network conditions
 - **Security Benefit**: Enables proper fund management and prevents underfunding
@@ -273,8 +273,8 @@ function test_Security_LowBalanceAlert() public {
 **Total Security Tests**: 96+ tests across 4 contracts
 - **AvsGovernanceLogic**: 30+ security tests (including new fee and error handling tests)
 - **TriggerGasRegistry**: 26 security tests  
-- **ProxyHub**: 32+ security tests (including new broadcast and balance tests)
-- **ProxySpoke**: 8 security tests
+- **TaskExecutionHub**: 32+ security tests (including new broadcast and balance tests)
+- **TaskExecutionSpoke**: 8 security tests
 
 **Test Categories**:
 - Access Control: ~20% of tests
@@ -297,7 +297,7 @@ To run tests for a specific contract:
 ```bash
 forge test --match-path "*AvsGovernanceLogicSecurity*" -vv
 forge test --match-path "*TriggerGasRegistrySecurity*" -vv
-forge test --match-path "*ProxyHubSecurity*" -vv
+forge test --match-path "*TaskExecutionHubSecurity*" -vv
 forge test --match-path "*ProxySpokeSecurity*" -vv
 ```
 

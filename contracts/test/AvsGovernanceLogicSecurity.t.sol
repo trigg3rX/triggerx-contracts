@@ -4,7 +4,7 @@ pragma solidity ^0.8.26;
 import {Test} from "forge-std/Test.sol";
 import {AvsGovernanceLogic} from "../src/AvsGovernanceLogic.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
-import {MockProxyHub} from "./mocks/MockProxyHub.sol";
+import {MockTaskExecutionHub} from "./mocks/MockTaskExecutionHub.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 
@@ -37,7 +37,7 @@ contract MaliciousOperator {
 contract AvsGovernanceLogicSecurityTest is Test {
     AvsGovernanceLogic public avsGovernance;
     MockEndpoint public mockEndpoint;
-    MockProxyHub public mockProxyHub;
+    MockTaskExecutionHub public mockTaskExecutionHub;
     
     address public owner = address(0x1);
     address public attacker = address(0x666);
@@ -50,11 +50,11 @@ contract AvsGovernanceLogicSecurityTest is Test {
         vm.startPrank(owner);
         
         mockEndpoint = new MockEndpoint();
-        mockProxyHub = new MockProxyHub();
+        mockTaskExecutionHub = new MockTaskExecutionHub();
         
         avsGovernance = new AvsGovernanceLogic(
             address(mockEndpoint),
-            address(mockProxyHub),
+            address(mockTaskExecutionHub),
             DST_EID,
             owner,
             avsGovernanceAddr // placeholder for avsGovernance address
@@ -69,12 +69,12 @@ contract AvsGovernanceLogicSecurityTest is Test {
 
     // ==================== ACCESS CONTROL TESTS ====================
     
-    function test_Security_OnlyOwnerCanSetProxyHub() public {
-        address newProxyHub = address(0x999);
+    function test_Security_OnlyOwnerCanSetTaskExecutionHub() public {
+        address newTaskExecutionHub = address(0x999);
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
         vm.prank(attacker);
-        avsGovernance.setProxyHub(newProxyHub);
+        avsGovernance.setTaskExecutionHub(newTaskExecutionHub);
     }
     
     function test_Security_OnlyOwnerCanWithdraw() public {
@@ -114,8 +114,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
 
     // ==================== PARAMETER VALIDATION TESTS ====================
     
-    function test_Security_ConstructorRejectsZeroProxyHub() public {
-        vm.expectRevert("Invalid proxyHub");
+    function test_Security_ConstructorRejectsZeroTaskExecutionHub() public {
+        vm.expectRevert("Invalid taskExecutionHub");
         new AvsGovernanceLogic(
             address(mockEndpoint),
             address(0),
@@ -125,10 +125,10 @@ contract AvsGovernanceLogicSecurityTest is Test {
         );
     }
     
-    function test_Security_SetProxyHubRejectsZeroAddress() public {
+    function test_Security_SetTaskExecutionHubRejectsZeroAddress() public {
         vm.expectRevert("Invalid proxy hub address");
         vm.prank(owner);
-        avsGovernance.setProxyHub(address(0));
+        avsGovernance.setTaskExecutionHub(address(0));
     }
     
     function test_Security_WithdrawRejectsZeroRecipient() public {
@@ -246,7 +246,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
         // Deploy new contract with failing endpoint
         AvsGovernanceLogic testContract = new AvsGovernanceLogic(
             address(failingEndpoint),
-            address(mockProxyHub),
+            address(mockTaskExecutionHub),
             DST_EID,
             owner,
             address(avsGovernance)
@@ -378,7 +378,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
         vm.expectRevert();
         new AvsGovernanceLogic(
             invalidEndpoint,
-            address(mockProxyHub),
+            address(mockTaskExecutionHub),
             DST_EID,
             owner,
             address(avsGovernance)

@@ -4,7 +4,7 @@ pragma solidity ^0.8.26;
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {console2} from "forge-std/console2.sol";
-import {TriggerGasRegistry} from "../src/TriggerGasRegistry.sol";
+import {TriggerGasRegistry} from "../../src/TriggerGasRegistry.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract TriggerGasRegistryDeploy is Script {
@@ -15,12 +15,6 @@ contract TriggerGasRegistryDeploy is Script {
     }
 
     function run() public {
-
-        bytes32 implementation_salt = keccak256(abi.encodePacked("ImplementationV5"));
-
-        bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
-
-
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
 
@@ -57,17 +51,13 @@ contract TriggerGasRegistryDeploy is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // STEP 2: Deploy new implementation using CREATE2
-        address implementation;
-        assembly {
-            implementation := create2(0, add(implementation_code, 0x20), mload(implementation_code), implementation_salt)
-        }
-        require(implementation != address(0), "CREATE2 deployment failed");
-
-        // STEP 3: Perform upgrade
+        // STEP 2: Deploy new implementation
+        TriggerGasRegistry newImplementation = new TriggerGasRegistry();
         console.log("\n=== PERFORMING UPGRADE ===");
-        console.log("Deploying new implementation to:", implementation);
-        TriggerGasRegistry(proxy).upgradeToAndCall(implementation, "");
+        console.log("Deploying new implementation to:", address(newImplementation));
+        
+        // STEP 3: Perform upgrade
+        TriggerGasRegistry(proxy).upgradeToAndCall(address(newImplementation), "");
         TriggerGasRegistry(proxy).setOperator(operator);
         TriggerGasRegistry(proxy).setTGPerETH(1000);
 
@@ -75,8 +65,8 @@ contract TriggerGasRegistryDeploy is Script {
 
         // STEP 4: Capture AFTER state
         console.log("\n=== AFTER UPGRADE ===");
-        address newImplementation = getImplementation(proxy);
-        console.log("New implementation:", newImplementation);
+        address finalImplementation = getImplementation(proxy);
+        console.log("New implementation:", finalImplementation);
         console.log("New owner:", TriggerGasRegistry(proxy).owner());
         console.log("New operator:", TriggerGasRegistry(proxy).operatorRole());
 
@@ -117,7 +107,7 @@ contract TriggerGasRegistryDeploy is Script {
         console.log("\n=== FINAL VERIFICATION ===");
         console2.log("Total users checked: %s", users.length);
         console2.log("Users with balance data: %s", usersWithData);
-        console2.log("Implementation changed: %s", oldImplementation != newImplementation);
+        console2.log("Implementation changed: %s", oldImplementation != finalImplementation);
         
         if (allDataPreserved && usersWithData > 0) {
             console.log("SUCCESS: All user data preserved during upgrade!");
@@ -130,7 +120,7 @@ contract TriggerGasRegistryDeploy is Script {
         console.log("\n=== DEPLOYMENT SUMMARY ===");
         console.log("Proxy address:", proxy);
         console.log("Old implementation:", oldImplementation);
-        console.log("New implementation:", newImplementation);
+        console.log("New implementation:", finalImplementation);
         console.log("Deployer:", deployer);
     }
 

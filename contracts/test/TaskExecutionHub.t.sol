@@ -2,16 +2,17 @@
 pragma solidity ^0.8.22;
 
 import {Test} from "forge-std/Test.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
+import {TaskExecutionHub} from "../src/lz/TaskExecutionHub.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OAppReceiver.sol";
 import {console2} from "forge-std/console2.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
 import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
+import {ERC1967Proxy} from "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 // Test wrapper to expose internal functions
-contract ProxyHubForTest is ProxyHub {
+contract TaskExecutionHubForTest is TaskExecutionHub {
     constructor(
         address _endpoint,
         address _owner,
@@ -20,7 +21,7 @@ contract ProxyHubForTest is ProxyHub {
         address[] memory _initialKeepers,
         address _jobRegistryAddress,
         address _triggerGasRegistryAddress
-    ) ProxyHub(_endpoint, _owner, _srcEid, _thisChainEid, _initialKeepers, _jobRegistryAddress, _triggerGasRegistryAddress) {}
+    ) TaskExecutionHub(_endpoint, _owner) {}
     
     // Expose internal _lzReceive function for testing
     function exposed_lzReceive(
@@ -34,8 +35,8 @@ contract ProxyHubForTest is ProxyHub {
     }
 }
 
-contract ProxyHubTest is Test {
-    ProxyHubForTest public proxyHub;
+contract TaskExecutionHubTest is Test {
+    TaskExecutionHubForTest public taskExecutionHub;
     MockEndpoint public mockEndpoint;
     MockJobRegistry public mockJobRegistry;
     MockTriggerGasRegistry public mockTriggerGasRegistry;
@@ -53,11 +54,11 @@ contract ProxyHubTest is Test {
     
     event KeeperRegistered(address indexed keeper);
     event KeeperUnregistered(address indexed keeper);
-    event BroadcastSent(ProxyHub.ActionType action, address keeper, uint32 dstEid);
+    event BroadcastSent(TaskExecutionHub.ActionType action, address keeper, uint32 dstEid);
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
     
     function setUp() public {
-        console2.log("Starting ProxyHub test setup");
+        console2.log("Starting TaskExecutionHub test setup");
         
         vm.startPrank(owner);
         
@@ -80,38 +81,48 @@ contract ProxyHubTest is Test {
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
         
-        // Deploy ProxyHub
-        console2.log("Deploying ProxyHub");
-        try new ProxyHubForTest(
-            address(mockEndpoint),
+        // Deploy TaskExecutionHub
+        console2.log("Deploying TaskExecutionHub");
+        taskExecutionHub = TaskExecutionHubForTest(
+            payable(address(
+                new ERC1967Proxy(
+                    address(new TaskExecutionHubForTest(address(mockEndpoint), owner, SRC_EID, THIS_EID, initialKeepers, address(mockJobRegistry), address(mockTriggerGasRegistry))),
+                    abi.encodeWithSignature(
+                        "initialize(address,address,uint32,uint32,address[],address,address)",
+                        address(mockEndpoint),
+                        owner,
+                        SRC_EID,
+                        THIS_EID,
+                        initialKeepers,
+                        address(mockJobRegistry),
+                        address(mockTriggerGasRegistry)
+                    )
+                )
+            ))
+        );
+        console2.log("TaskExecutionHub deployed at", address(taskExecutionHub));
+        
+        // Initialize the contract
+        taskExecutionHub.initialize(
             owner,
             SRC_EID,
             THIS_EID,
             initialKeepers,
             address(mockJobRegistry),
             address(mockTriggerGasRegistry)
-        ) returns (ProxyHubForTest hub) {
-            proxyHub = hub;
-            console2.log("ProxyHub deployed at", address(proxyHub));
-        } catch Error(string memory reason) {
-            console2.log("ProxyHub deployment failed with reason:", reason);
-            revert(reason);
-        } catch (bytes memory reason) {
-            console2.log("ProxyHub deployment failed with low-level error");
-            revert("Low-level error");
-        }
+        );
         
         // Fund contract for message fees
-        vm.deal(address(proxyHub), 100 ether);
+        vm.deal(address(taskExecutionHub), 100 ether);
         
         vm.stopPrank();
-        console2.log("ProxyHub test setup completed");
+        console2.log("TaskExecutionHub test setup completed");
     }
     
-    function test_Constructor() public {
-        assertEq(proxyHub.owner(), owner);
-        assertTrue(proxyHub.isKeeper(keeper1));
-        assertFalse(proxyHub.isKeeper(keeper2));
+    function test_Constructor() public view {
+        assertEq(taskExecutionHub.owner(), owner);
+        assertTrue(taskExecutionHub.isKeeper(keeper1));
+        assertFalse(taskExecutionHub.isKeeper(keeper2));
     }
     
     function test_AddSpokes() public {
@@ -120,11 +131,11 @@ contract ProxyHubTest is Test {
         newEids[1] = DST_EID_2;
         
         vm.prank(owner);
-        proxyHub.addSpokes(newEids);
+        taskExecutionHub.addSpokes(newEids);
         
         // Check that both chains were added
-        assertEq(proxyHub.dstEids(0), DST_EID_1);
-        assertEq(proxyHub.dstEids(1), DST_EID_2);
+        assertEq(taskExecutionHub.dstEids(0), DST_EID_1);
+        assertEq(taskExecutionHub.dstEids(1), DST_EID_2);
     }
     
     function test_AddSpokes_OnlyOwner() public {
@@ -134,7 +145,7 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, randomUser));
         vm.prank(randomUser);
-        proxyHub.addSpokes(newEids);
+        taskExecutionHub.addSpokes(newEids);
     }
     
     function test_ExecuteFunction() public {
@@ -150,7 +161,7 @@ contract ProxyHubTest is Test {
         
         // Fund both the keeper and the contract
         vm.deal(keeper1, value);
-        vm.deal(address(proxyHub), value);
+        vm.deal(address(taskExecutionHub), value);
         
         // Create a mock contract that will always return success
         vm.etch(target, hex"600180600c6000396000f3006000fd"); // Simple bytecode that always returns true
@@ -159,7 +170,7 @@ contract ProxyHubTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        proxyHub.executeFunction{value: value}(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction{value: value}(jobId, tgAmount, target, data);
         
         // Verify TG balance was deducted
         (, uint256 finalBalance) = mockTriggerGasRegistry.getBalance(jobOwner);
@@ -178,7 +189,7 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert("Not a keeper");
         vm.prank(randomUser);
-        proxyHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
@@ -196,7 +207,7 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert("Execution failed");
         vm.prank(keeper1);
-        proxyHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
 
     function test_ExecuteFunction_JobNotFound() public {
@@ -207,7 +218,7 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert("Job not found");
         vm.prank(keeper1);
-        proxyHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
 
     function test_ExecuteFunction_InsufficientTGBalance() public {
@@ -222,12 +233,12 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert("Insufficient TG balance");
         vm.prank(keeper1);
-        proxyHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
     
     function test_LzReceive_Register() public {
         // Simulate a message from AvsGovernanceLogic to register a new keeper
-        bytes memory payload = abi.encode(ProxyHub.ActionType.REGISTER, keeper2);
+        bytes memory payload = abi.encode(TaskExecutionHub.ActionType.REGISTER, keeper2);
         
         // Create Origin struct directly with the 3 required fields
         Origin memory origin = Origin({
@@ -240,7 +251,7 @@ contract ProxyHubTest is Test {
         emit KeeperRegistered(keeper2);
         
         // Call our exposed function to test _lzReceive
-        proxyHub.exposed_lzReceive(
+        taskExecutionHub.exposed_lzReceive(
             origin,
             bytes32(0),
             payload,
@@ -249,12 +260,12 @@ contract ProxyHubTest is Test {
         );
         
         // Verify keeper was registered
-        assertTrue(proxyHub.isKeeper(keeper2));
+        assertTrue(taskExecutionHub.isKeeper(keeper2));
     }
     
     function test_LzReceive_Unregister() public {
         // First register keeper2
-        bytes memory registerPayload = abi.encode(ProxyHub.ActionType.REGISTER, keeper2);
+        bytes memory registerPayload = abi.encode(TaskExecutionHub.ActionType.REGISTER, keeper2);
         
         Origin memory origin = Origin({
             srcEid: SRC_EID,
@@ -262,7 +273,7 @@ contract ProxyHubTest is Test {
             nonce: 1
         });
         
-        proxyHub.exposed_lzReceive(
+        taskExecutionHub.exposed_lzReceive(
             origin,
             bytes32(0),
             registerPayload,
@@ -270,15 +281,15 @@ contract ProxyHubTest is Test {
             bytes("")
         );
         
-        assertTrue(proxyHub.isKeeper(keeper2));
+        assertTrue(taskExecutionHub.isKeeper(keeper2));
         
         // Now unregister
-        bytes memory unregisterPayload = abi.encode(ProxyHub.ActionType.UNREGISTER, keeper2);
+        bytes memory unregisterPayload = abi.encode(TaskExecutionHub.ActionType.UNREGISTER, keeper2);
         
         vm.expectEmit(true, false, false, false);
         emit KeeperUnregistered(keeper2);
         
-        proxyHub.exposed_lzReceive(
+        taskExecutionHub.exposed_lzReceive(
             origin,
             bytes32(0),
             unregisterPayload,
@@ -287,7 +298,7 @@ contract ProxyHubTest is Test {
         );
         
         // Verify keeper was unregistered
-        assertFalse(proxyHub.isKeeper(keeper2));
+        assertFalse(taskExecutionHub.isKeeper(keeper2));
     }
     
     function test_Withdraw() public {
@@ -295,13 +306,13 @@ contract ProxyHubTest is Test {
         address payable recipient = payable(address(0x300));
         
         // Fund contract
-        vm.deal(address(proxyHub), initialBalance);
+        vm.deal(address(taskExecutionHub), initialBalance);
         
         // Withdraw funds
         vm.prank(owner);
-        proxyHub.withdraw(recipient, 5 ether);
+        taskExecutionHub.withdraw(recipient, 5 ether);
         
-        assertEq(address(proxyHub).balance, 5 ether);
+        assertEq(address(taskExecutionHub).balance, 5 ether);
         assertEq(recipient.balance, 5 ether);
     }
     
@@ -310,7 +321,7 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, randomUser));
         vm.prank(randomUser);
-        proxyHub.withdraw(recipient, 1 ether);
+        taskExecutionHub.withdraw(recipient, 1 ether);
     }
     
     function test_ReceiveEther() public {
@@ -320,13 +331,13 @@ contract ProxyHubTest is Test {
         // Fund the sender
         vm.deal(sender, amount);
         
-        uint256 initialBalance = address(proxyHub).balance;
+        uint256 initialBalance = address(taskExecutionHub).balance;
         
         vm.prank(sender);
-        (bool success,) = address(proxyHub).call{value: amount}("");
+        (bool success,) = address(taskExecutionHub).call{value: amount}("");
         
         assertTrue(success);
-        assertEq(address(proxyHub).balance, initialBalance + amount);
+        assertEq(address(taskExecutionHub).balance, initialBalance + amount);
     }
     
     function test_SetPeer() public {
@@ -334,7 +345,7 @@ contract ProxyHubTest is Test {
         bytes32 newAvsGovernance = bytes32(uint256(uint160(address(0x456))));
         
         vm.prank(owner);
-        proxyHub.setPeer(newSrcEid, newAvsGovernance); 
+        taskExecutionHub.setPeer(newSrcEid, newAvsGovernance); 
         
         // We would need a getter function to verify this
         // Instead, we can test that setPeer is called correctly by looking at emitted events
@@ -347,6 +358,6 @@ contract ProxyHubTest is Test {
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, randomUser));
         vm.prank(randomUser);
-        proxyHub.setPeer(newSrcEid, newAvsGovernance);
+        taskExecutionHub.setPeer(newSrcEid, newAvsGovernance);
     }
 } 

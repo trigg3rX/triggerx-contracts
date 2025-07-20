@@ -2,7 +2,7 @@
 pragma solidity ^0.8.26;
 
 import {Test} from "forge-std/Test.sol";
-import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
+import {TaskExecutionSpoke} from "../src/lz/TaskExecutionSpoke.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
@@ -12,10 +12,10 @@ import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
 contract MaliciousSpokeTarget {
     bool public shouldRevert;
     bool public shouldConsumeMuchGas;
-    ProxySpoke public spoke;
+    TaskExecutionSpoke public spoke;
     
     constructor(address _spoke) {
-        spoke = ProxySpoke(_spoke);
+        spoke = TaskExecutionSpoke(_spoke);
     }
     
     function setRevert(bool _shouldRevert) external {
@@ -46,11 +46,9 @@ contract MaliciousSpokeTarget {
     }
 }
 
-contract ProxySpokeSecurityTest is Test {
-    ProxySpoke public proxySpoke;
+contract TaskExecutionSpokeSecurityTest is Test {
+    TaskExecutionSpoke public taskExecutionSpoke;
     MockEndpoint public mockEndpoint;
-    MockJobRegistry public mockJobRegistry;
-    MockTriggerGasRegistry public mockTriggerGasRegistry;
     address public owner = address(0x1);
     address public attacker = address(0x666);
     address public keeper1 = address(0x100);
@@ -67,8 +65,13 @@ contract ProxySpokeSecurityTest is Test {
         initialKeepers[0] = keeper1;
         initialKeepers[1] = keeper2;
         
-        proxySpoke = new ProxySpoke(
+        taskExecutionSpoke = new TaskExecutionSpoke(
             address(mockEndpoint),
+            owner
+        );
+        
+        // Initialize the contract
+        taskExecutionSpoke.initialize(
             owner,
             HUB_EID,
             initialKeepers,
@@ -92,20 +95,20 @@ contract ProxySpokeSecurityTest is Test {
         bytes memory data = abi.encodeWithSignature("someFunction()");
         
         // Setup job and balance
-        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
-        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(taskExecutionSpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(taskExecutionSpoke.triggerGasRegistry()));
         mockJobRegistry.setJobOwner(jobId, address(0x300));
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(attacker);
-        proxySpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
     }
     
-    function test_Security_InitialKeepersAreSetCorrectly() public {
-        assertTrue(proxySpoke.isKeeper(keeper1));
-        assertTrue(proxySpoke.isKeeper(keeper2));
-        assertFalse(proxySpoke.isKeeper(attacker));
+    function test_Security_InitialKeepersAreSetCorrectly() public view {
+        assertTrue(taskExecutionSpoke.isKeeper(keeper1));
+        assertTrue(taskExecutionSpoke.isKeeper(keeper2));
+        assertFalse(taskExecutionSpoke.isKeeper(attacker));
     }
 
     // ==================== CROSS-CHAIN MESSAGING SECURITY TESTS ====================
@@ -113,14 +116,14 @@ contract ProxySpokeSecurityTest is Test {
     function test_Security_OnlyValidActionTypesAccepted() public {
         // Set up peer relationship first
         vm.prank(owner);
-        proxySpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
+        taskExecutionSpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
         
         // Test invalid action type
         bytes memory invalidPayload = abi.encode(uint8(99), attacker); // Invalid action type
         
         vm.expectRevert();
         vm.prank(address(mockEndpoint));
-        proxySpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), invalidPayload, address(0), bytes(""));
+        taskExecutionSpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), invalidPayload, address(0), bytes(""));
     }
     
     function test_Security_MalformedPayloadHandling() public {
@@ -129,7 +132,7 @@ contract ProxySpokeSecurityTest is Test {
         
         vm.expectRevert();
         vm.prank(address(mockEndpoint));
-        proxySpoke.lzReceive(Origin({srcEid: uint32(0), sender: bytes32(0), nonce: uint64(0)}), bytes32(0), malformedPayload, address(0), bytes(""));
+        taskExecutionSpoke.lzReceive(Origin({srcEid: uint32(0), sender: bytes32(0), nonce: uint64(0)}), bytes32(0), malformedPayload, address(0), bytes(""));
     }
 
     // ==================== FUNCTION EXECUTION SECURITY TESTS ====================
@@ -137,12 +140,12 @@ contract ProxySpokeSecurityTest is Test {
     function test_Security_FunctionExecutionWithMaliciousTarget() public {
         uint256 jobId = 1;
         uint256 tgAmount = 100;
-        MaliciousSpokeTarget maliciousTarget = new MaliciousSpokeTarget(address(proxySpoke));
+        MaliciousSpokeTarget maliciousTarget = new MaliciousSpokeTarget(address(taskExecutionSpoke));
         maliciousTarget.setRevert(true);
         
         // Setup job and balance
-        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
-        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(taskExecutionSpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(taskExecutionSpoke.triggerGasRegistry()));
         mockJobRegistry.setJobOwner(jobId, address(0x300));
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
@@ -150,24 +153,24 @@ contract ProxySpokeSecurityTest is Test {
         
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
+        taskExecutionSpoke.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
     }
     
     function test_Security_CannotExecuteOnSpokeItself() public {
         uint256 jobId = 1;
         uint256 tgAmount = 100;
-        // Try to call sensitive functions on the ProxySpoke itself
-        bytes memory data = abi.encodeWithSelector(ProxySpoke.executeFunction.selector, address(0), "");
+        // Try to call sensitive functions on the TaskExecutionSpoke itself
+        bytes memory data = abi.encodeWithSelector(TaskExecutionSpoke.executeFunction.selector, address(0), "");
         
         // Setup job and balance
-        MockJobRegistry mockJobRegistry = MockJobRegistry(address(proxySpoke.jobRegistry()));
-        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(proxySpoke.triggerGasRegistry()));
+        MockJobRegistry mockJobRegistry = MockJobRegistry(address(taskExecutionSpoke.jobRegistry()));
+        MockTriggerGasRegistry mockTriggerGasRegistry = MockTriggerGasRegistry(address(taskExecutionSpoke.triggerGasRegistry()));
         mockJobRegistry.setJobOwner(jobId, address(0x300));
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
         vm.expectRevert("Function execution failed");
         vm.prank(keeper1);
-        proxySpoke.executeFunction(jobId, tgAmount, address(proxySpoke), data);
+        taskExecutionSpoke.executeFunction(jobId, tgAmount, address(taskExecutionSpoke), data);
     }
 
     // ==================== KEEPER MANAGEMENT SECURITY TESTS ====================
@@ -175,19 +178,19 @@ contract ProxySpokeSecurityTest is Test {
     function test_Security_KeeperRegistrationSecurity() public {
         // Set up peer relationship first
         vm.prank(owner);
-        proxySpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
+        taskExecutionSpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
         
         // Initially, attacker is not a keeper
-        assertFalse(proxySpoke.isKeeper(attacker));
+        assertFalse(taskExecutionSpoke.isKeeper(attacker));
         
         // Register attacker via LayerZero message
-        bytes memory payload = abi.encode(ProxySpoke.ActionType.REGISTER, attacker);
+        bytes memory payload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, attacker);
         
         vm.prank(address(mockEndpoint));
-        proxySpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), payload, address(0), bytes(""));
+        taskExecutionSpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), payload, address(0), bytes(""));
         
         // Now attacker should be a keeper
-        assertTrue(proxySpoke.isKeeper(attacker));
+        assertTrue(taskExecutionSpoke.isKeeper(attacker));
     }
     
     function test_Security_KeeperUnregistrationSecurity() public {
@@ -195,23 +198,23 @@ contract ProxySpokeSecurityTest is Test {
         
         // Set up peer relationship first
         vm.prank(owner);
-        proxySpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
+        taskExecutionSpoke.setPeer(HUB_EID, bytes32(uint256(uint160(address(this)))));
         
         // Register a keeper first
-        bytes memory registerPayload = abi.encode(ProxySpoke.ActionType.REGISTER, testKeeper);
+        bytes memory registerPayload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, testKeeper);
         
         vm.prank(address(mockEndpoint));
-        proxySpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), registerPayload, address(0), bytes(""));
+        taskExecutionSpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), registerPayload, address(0), bytes(""));
         
-        assertTrue(proxySpoke.isKeeper(testKeeper));
+        assertTrue(taskExecutionSpoke.isKeeper(testKeeper));
         
         // Unregister the keeper
-        bytes memory unregisterPayload = abi.encode(ProxySpoke.ActionType.UNREGISTER, testKeeper);
+        bytes memory unregisterPayload = abi.encode(TaskExecutionSpoke.ActionType.UNREGISTER, testKeeper);
         
         vm.prank(address(mockEndpoint));
-        proxySpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), unregisterPayload, address(0), bytes(""));
+        taskExecutionSpoke.lzReceive(Origin({srcEid: HUB_EID, sender: bytes32(uint256(uint160(address(this)))), nonce: uint64(0)}), bytes32(0), unregisterPayload, address(0), bytes(""));
         
-        assertFalse(proxySpoke.isKeeper(testKeeper));
+        assertFalse(taskExecutionSpoke.isKeeper(testKeeper));
     }
 
     // ==================== HELPER FUNCTIONS ====================

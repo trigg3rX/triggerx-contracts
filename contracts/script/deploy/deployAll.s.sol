@@ -4,9 +4,10 @@ pragma solidity ^0.8.20;
 import "forge-std/Script.sol";
 import "forge-std/console.sol";
 import {CREATE3} from "solady/utils/CREATE3.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
-import {ProxySpoke} from "../src/lz/ProxySpoke.sol";
-import {IAttestationCenter} from "../src/interfaces/IAttestationCenter.sol";
+import {ERC1967Proxy} from "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
+import {TaskExecutionSpoke} from "../../src/lz/TaskExecutionSpoke.sol";
+import {IAttestationCenter} from "../../src/interfaces/IAttestationCenter.sol";
 
 contract DeployAll is Script {
     // --- Configuration (Update if needed) ---
@@ -26,6 +27,9 @@ contract DeployAll is Script {
     uint32 constant POLYGON_ARBITRUM_EID = 40267; // Polygon Amoy Endpoint ID
     uint32 constant AVALANCHE_FUJI_EID = 40106; // Avalanche Fuji Endpoint ID
     uint32 constant BNB_TESTNET_EID = 40102; // BNB Testnet Endpoint ID
+
+    address constant JOB_REGISTRY_ADDRESS = 0x1;
+    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x2;
     
 
 
@@ -44,7 +48,7 @@ contract DeployAll is Script {
     address private hubAddress;
     address[] private spokeAddresses;
 
-    function fetchOperatorsFromAttestationCenter() internal returns (address[] memory) {
+    function fetchOperatorsFromAttestationCenter() internal view returns (address[] memory) {
         console.log("Attempting to fetch operators from AttestationCenter...");
         
         IAttestationCenter attestationCenter = IAttestationCenter(ATTESATION_CENTER_ADDRESS);
@@ -98,19 +102,34 @@ contract DeployAll is Script {
     }
 
     function deployHub(uint256 deployerPrivateKey, address deployerAddress) internal {
-        console.log("\n=== Deploying ProxyHub on Base Sepolia ===");
+        console.log("\n=== Deploying TaskExecutionHub on Base Sepolia ===");
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // Prepare the bytecode for ProxyHub.
-        bytes memory hubBytecode = abi.encodePacked(
-            type(ProxyHub).creationCode,
-            abi.encode(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress, HOLESKY_EID, BASE_SEPOLIA_EID, operators)
+        // 1. Deploy the implementation contract
+        TaskExecutionHub hubImpl = new TaskExecutionHub(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress);
+        console.log("TaskExecutionHub implementation deployed at:", address(hubImpl));
+
+        // 2. Prepare the initialization calldata
+        bytes memory initData = abi.encodeWithSelector(
+            TaskExecutionHub.initialize.selector,
+            deployerAddress,                   // _ownerAddress
+            HOLESKY_EID,                       // _srcEid
+            BASE_SEPOLIA_EID,                  // _originEid
+            operators,                         // _initialKeepers
+            JOB_REGISTRY_ADDRESS,              // _jobRegistryAddress (random)
+            TRIGGER_GAS_REGISTRY_ADDRESS       // _triggerGasRegistryAddress (random)
+        );
+
+        // 3. Prepare the proxy bytecode
+        bytes memory proxyBytecode = abi.encodePacked(
+            type(ERC1967Proxy).creationCode,
+            abi.encode(address(hubImpl), initData)
         );
         
-        // Deploy using CREATE3 with no ETH value.
-        hubAddress = CREATE3.deployDeterministic(hubBytecode, SALT);
-        console.log("ProxyHub deployed at:", hubAddress);
+        // 4. Deploy proxy using CREATE3
+        hubAddress = CREATE3.deployDeterministic(proxyBytecode, SALT);
+        console.log("TaskExecutionHub proxy deployed at:", hubAddress);
 
         vm.stopBroadcast();
     }
@@ -118,17 +137,17 @@ contract DeployAll is Script {
     function configureHub(uint256 deployerPrivateKey) internal {
         vm.startBroadcast(deployerPrivateKey);
 
-        ProxyHub hub = ProxyHub(payable(hubAddress));
+        TaskExecutionHub hub = TaskExecutionHub(payable(hubAddress));
 
         // Create spoke EIDs array
-        uint32[] memory spokeEids = new uint32[](2);
+        uint32[] memory spokeEids = new uint32[](1);
         spokeEids[0] = OP_SEPOLIA_EID;
-        spokeEids[1] = ARBITRUM_SEPOLIA_EID;
+        // spokeEids[1] = ARBITRUM_SEPOLIA_EID;
 
         // Add all spoke endpoints to Hub
         hub.addSpokes(spokeEids);
         console.log("Added spoke endpoint:", OP_SEPOLIA_EID, "(OP Sepolia)");
-        console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID, "(Arbitrum Sepolia)");
+        // console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID, "(Arbitrum Sepolia)");
 
         // Send ETH to Hub contract to cover LayerZero fees
         vm.deal(address(hub), 1 ether);
@@ -144,21 +163,35 @@ contract DeployAll is Script {
         uint256 deployerPrivateKey,
         address deployerAddress
     ) internal returns (address) {
-        console.log(string.concat("\n=== Deploying ProxySpoke on ", networkName, " ==="));
+        console.log(string.concat("\n=== Deploying TaskExecutionSpoke on ", networkName, " ==="));
         
         // Create fork for the network
         vm.createSelectFork(vm.envString(rpcEnvVar));
         vm.startBroadcast(deployerPrivateKey);
 
-        // Prepare the bytecode for ProxySpoke
-        bytes memory spokeBytecode = abi.encodePacked(
-            type(ProxySpoke).creationCode,
-            abi.encode(endpoint, deployerAddress, BASE_SEPOLIA_EID, operators)
+        // 1. Deploy implementation
+        TaskExecutionSpoke spokeImpl = new TaskExecutionSpoke(endpoint, deployerAddress);
+        console.log(string.concat("TaskExecutionSpoke implementation on ", networkName, " deployed at:"), address(spokeImpl));
+
+        // 2. Prepare initialization calldata
+        bytes memory initData = abi.encodeWithSelector(
+            TaskExecutionSpoke.initialize.selector,
+            deployerAddress,    // _ownerAddress
+            BASE_SEPOLIA_EID,   // _hubEid
+            operators,          // _initialKeepers
+            JOB_REGISTRY_ADDRESS,       // _jobRegistryAddress (random)
+            TRIGGER_GAS_REGISTRY_ADDRESS        // _triggerGasRegistryAddress (random)
+        );
+
+        // 3. Prepare proxy bytecode
+        bytes memory proxyBytecode = abi.encodePacked(
+            type(ERC1967Proxy).creationCode,
+            abi.encode(address(spokeImpl), initData)
         );
         
-        // Deploy using CREATE3 with the same salt
-        address spokeAddr = CREATE3.deployDeterministic(spokeBytecode, SALT);
-        console.log(string.concat("ProxySpoke deployed on ", networkName, " at:"), spokeAddr);
+        // 4. Deploy proxy using CREATE3
+        address spokeAddr = CREATE3.deployDeterministic(proxyBytecode, SALT);
+        console.log(string.concat("TaskExecutionSpoke proxy deployed on ", networkName, " at:"), spokeAddr);
 
         vm.stopBroadcast();
         
@@ -166,7 +199,7 @@ contract DeployAll is Script {
     }
 
     function deployAllSpokes(uint256 deployerPrivateKey, address deployerAddress) internal {
-        spokeAddresses = new address[](2);
+        spokeAddresses = new address[](1);
         
         // Deploy OP Sepolia spoke
         spokeAddresses[0] = deploySpoke(
@@ -177,32 +210,32 @@ contract DeployAll is Script {
             deployerAddress
         );
 
-        // Deploy Arbitrum Sepolia spoke
-        spokeAddresses[1] = deploySpoke(
-            "Arbitrum Sepolia",
-            "ARBITRUM_SEPOLIA_RPC",
-            LZ_ENDPOINT_ARBITRUM_SEPOLIA, 
-            deployerPrivateKey,
-            deployerAddress
-        );
+        // // Deploy Arbitrum Sepolia spoke
+        // spokeAddresses[1] = deploySpoke(
+        //     "Arbitrum Sepolia",
+        //     "ARBITRUM_SEPOLIA_RPC",
+        //     LZ_ENDPOINT_ARBITRUM_SEPOLIA, 
+        //     deployerPrivateKey,
+        //     deployerAddress
+        // );
     }
 
     function printDeploymentSummary() internal view {
         console.log("\n--- Deployment Complete ---");
         console.log("Hub Address:", hubAddress);
         
-        ProxyHub hub = ProxyHub(payable(hubAddress));
+        TaskExecutionHub hub = TaskExecutionHub(payable(hubAddress));
         console.log("Hub Owner:", hub.owner());
         
         // OP Sepolia spoke
-        ProxySpoke opSpoke = ProxySpoke(payable(spokeAddresses[0]));
+        TaskExecutionSpoke opSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
         console.log("OP Sepolia Spoke Address:", spokeAddresses[0]);
         console.log("OP Sepolia Spoke Owner:", opSpoke.owner());
         
         // Arbitrum Sepolia spoke
-        ProxySpoke arbSpoke = ProxySpoke(payable(spokeAddresses[1]));
-        console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[1]);
-        console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
+        // TaskExecutionSpoke arbSpoke = TaskExecutionSpoke(payable(spokeAddresses[1]));
+        // console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[1]);
+        // console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
         
         console.log("---------------------------");
     }

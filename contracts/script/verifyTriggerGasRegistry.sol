@@ -43,7 +43,7 @@ contract VerifyTriggerGasRegistry is Script {
         console2.log(string.concat("Initial ETH balance: ", Strings.toString(initialBalance)));
         
         // Get TG balance before claim
-        (uint256 beforeEthSpent, uint256 beforeTgBalance) = triggerGasRegistry.getBalance(deployer);
+        (, uint256 beforeTgBalance) = triggerGasRegistry.getBalance(deployer);
         console2.log(string.concat("TG balance before claim: ", Strings.toString(beforeTgBalance)));
         
         // Calculate expected ETH to receive (200 TG = 0.0002 ETH)
@@ -53,7 +53,7 @@ contract VerifyTriggerGasRegistry is Script {
         triggerGasRegistry.claimETHForTG(claimAmount);
         
         // Get TG balance after claim
-        (uint256 afterEthSpent, uint256 afterTgBalance) = triggerGasRegistry.getBalance(deployer);
+        (, uint256 afterTgBalance) = triggerGasRegistry.getBalance(deployer);
         console2.log(string.concat("TG balance after claim: ", Strings.toString(afterTgBalance)));
         
         // Verify ETH balance after claim

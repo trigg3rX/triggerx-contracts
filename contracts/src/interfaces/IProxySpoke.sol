@@ -3,7 +3,7 @@ pragma solidity ^0.8.26;
 
 /**
  * @title IProxySpoke
- * @notice Interface for the ProxySpoke contract that acts as a spoke in the keeper network
+ * @notice Interface for the TaskExecutionSpoke contract that acts as a spoke in the keeper network
  */
 interface IProxySpoke {
     /**

@@ -3,12 +3,12 @@ pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
 import "forge-std/console.sol";
-import {AvsGovernanceLogic} from "../src/AvsGovernanceLogic.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
+import {AvsGovernanceLogic} from "../../src/AvsGovernanceLogic.sol";
+import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant PROXY_HUB = payable(0xd2B4F73FE4c747716F20839c37C451f241226b03);
+    address payable constant TASK_EXECUTION_HUB = payable(0xd2B4F73FE4c747716F20839c37C451f241226b03);
 
     address payable constant AVS_GOVERNANCE = payable(0x12f45551f11Df20b3EcBDf329138Bdc65cc58Ec0); // TestnetProduction AVS Governance address
 
@@ -37,7 +37,7 @@ contract DeployAvsGovernance is Script {
         console.log("\n=== Deploying AvsGovernanceLogic on Holesky ===");
         AvsGovernanceLogic avsGovernance = new AvsGovernanceLogic(
             LZ_ENDPOINT_HOLESKY,  // LayerZero endpoint
-            PROXY_HUB,            // ProxyHub address
+            TASK_EXECUTION_HUB,            // TaskExecutionHub address
             BASE_SEPOLIA_EID,     // Destination chain ID (Base Sepolia)
             deployerAddress,      // Owner address
             AVS_GOVERNANCE       // AVS Governance address
@@ -48,22 +48,22 @@ contract DeployAvsGovernance is Script {
         require(success, "Failed to send 0.5 eth to the deployed contract");
         console.log("0.5 eth sent to the deployed contract");
 
-        // setProxyHub on Holesky
+        // setTaskExecutionHub on Holesky
         // AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(AVS_GOVERNANCE);
-        console.log("\n=== Setting proxyHub on Holesky ===");
-        avsGovernance.setProxyHub(PROXY_HUB);
-        console.log("ProxyHub set successfully on Holesky");
+        console.log("\n=== Setting TaskExecutionHub on Holesky ===");
+        avsGovernance.setTaskExecutionHub(TASK_EXECUTION_HUB);
+        console.log("TaskExecutionHub set successfully on Holesky");
         
         vm.stopBroadcast();
 
-        // Switch to Base Sepolia to set peer on ProxyHub
-        console.log("\n=== Switching to Base Sepolia to set peer on ProxyHub ===");
+        // Switch to Base Sepolia to set peer on TaskExecutionHub
+        console.log("\n=== Switching to Base Sepolia to set peer on TaskExecutionHub ===");
         vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
         vm.startBroadcast(deployerPrivateKey);
         
-        ProxyHub proxyHub = ProxyHub(PROXY_HUB);
-        proxyHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
-        console.log("Peer set successfully on ProxyHub");
+        TaskExecutionHub taskExecutionHub = TaskExecutionHub(TASK_EXECUTION_HUB);
+        taskExecutionHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
+        console.log("Peer set successfully on TaskExecutionHub");
         vm.stopBroadcast();
         // Call afterOperatorRegistered with the deployer address
         

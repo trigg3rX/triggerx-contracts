@@ -2,10 +2,10 @@
 pragma solidity ^0.8.26;
 
 /**
- * @title IProxyHub
- * @notice Interface for the ProxyHub contract that manages keeper registration and function execution across multiple chains
+ * @title ITaskExecutionHub
+ * @notice Interface for the TaskExecutionHub contract that manages keeper registration and function execution across multiple chains
  */
-interface IProxyHub {
+interface ITaskExecutionHub {
     /**
      * @notice Enum defining the types of actions that can be performed on keepers
      */

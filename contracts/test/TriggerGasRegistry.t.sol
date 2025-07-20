@@ -48,7 +48,7 @@ contract TriggerGasRegistryTest is Test {
         vm.deal(user2, 10 ether);
     }
     
-    function test_Initialize() public {
+    function test_Initialize() public view {
         assertEq(gasRegistry.owner(), owner);
     }
     

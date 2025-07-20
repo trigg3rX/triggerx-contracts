@@ -4,7 +4,7 @@ pragma solidity ^0.8.22;
 import {Test} from "forge-std/Test.sol";
 import {AvsGovernanceLogic} from "../src/AvsGovernanceLogic.sol";
 import {MockEndpoint} from "./mocks/MockEndpoint.sol";
-import {MockProxyHub} from "./mocks/MockProxyHub.sol";
+import {MockTaskExecutionHub} from "./mocks/MockTaskExecutionHub.sol";
 import {IAvsGovernanceLogic} from "@othentic-core-contracts/NetworkManagement/L1/interfaces/IAvsGovernanceLogic.sol";
 import {console2} from "forge-std/console2.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
@@ -12,7 +12,7 @@ import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/Ownabl
 contract AvsGovernanceLogicTest is Test {
     AvsGovernanceLogic public avsGovernance;
     MockEndpoint public mockEndpoint;
-    MockProxyHub public mockProxyHub;
+    MockTaskExecutionHub public mockTaskExecutionHub;
     address public owner = address(0x1);
     address public operator1 = address(0x100);
     address public operator2 = address(0x101);
@@ -34,15 +34,15 @@ contract AvsGovernanceLogicTest is Test {
         mockEndpoint = new MockEndpoint();
         console2.log("MockEndpoint deployed at", address(mockEndpoint));
         
-        console2.log("Deploying MockProxyHub");
-        mockProxyHub = new MockProxyHub();
-        console2.log("MockProxyHub deployed at", address(mockProxyHub));
+        console2.log("Deploying MockTaskExecutionHub");
+        mockTaskExecutionHub = new MockTaskExecutionHub();
+        console2.log("MockTaskExecutionHub deployed at", address(mockTaskExecutionHub));
         
         // Deploy AvsGovernanceLogic
         console2.log("Deploying AvsGovernanceLogic");
         try new AvsGovernanceLogic(
             address(mockEndpoint),
-            address(mockProxyHub),
+            address(mockTaskExecutionHub),
             DST_EID,
             owner,
             address(0x999) // placeholder for avsGovernance address
@@ -52,7 +52,7 @@ contract AvsGovernanceLogicTest is Test {
         } catch Error(string memory reason) {
             console2.log("AvsGovernanceLogic deployment failed with reason:", reason);
             revert(reason);
-        } catch (bytes memory reason) {
+        } catch (bytes memory) {
             console2.log("AvsGovernanceLogic deployment failed with low-level error");
             revert("Low-level error");
         }
@@ -64,27 +64,27 @@ contract AvsGovernanceLogicTest is Test {
         console2.log("AvsGovernanceLogic test setup completed");
     }
     
-    function test_Constructor() public {
+    function test_Constructor() public view {
         assertEq(avsGovernance.owner(), owner);
-        assertEq(avsGovernance.proxyHub(), address(mockProxyHub));
+        assertEq(avsGovernance.taskExecutionHub(), address(mockTaskExecutionHub));
         assertEq(avsGovernance.dstEid(), DST_EID);
     }
     
-    function test_SetProxyHub() public {
-        address newProxyHub = address(0x202);
+    function test_SetTaskExecutionHub() public {
+        address newTaskExecutionHub = address(0x202);
         
         vm.prank(owner);
-        avsGovernance.setProxyHub(newProxyHub);
+        avsGovernance.setTaskExecutionHub(newTaskExecutionHub);
         
-        assertEq(avsGovernance.proxyHub(), newProxyHub);
+        assertEq(avsGovernance.taskExecutionHub(), newTaskExecutionHub);
     }
     
-    function test_SetProxyHub_OnlyOwner() public {
-        address newProxyHub = address(0x202);
+    function test_SetTaskExecutionHub_OnlyOwner() public {
+        address newTaskExecutionHub = address(0x202);
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, operator1));
         vm.prank(operator1);
-        avsGovernance.setProxyHub(newProxyHub);
+        avsGovernance.setTaskExecutionHub(newTaskExecutionHub);
     }
     
     function test_Withdraw() public {

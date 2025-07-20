@@ -31,9 +31,9 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     }
 
     /**
-     * @notice The address of the L2 proxy hub contract
+     * @notice The address of the L2 task execution hub contract
      */
-    address public proxyHub;
+    address public taskExecutionHub;
 
     /**
      * @notice The address of the AVS Governance contract
@@ -129,34 +129,34 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     /**
      * @notice Constructor for the AvsGovernanceLogic contract
      * @param _endpoint The LayerZero endpoint address
-     * @param _proxyHub The address of the L2 proxy hub contract
+     * @param _taskExecutionHub The address of the L2 task execution hub contract
      * @param _dstEid The destination chain endpoint ID
      * @param _ownerAddress The owner address
      * @param _avsGovernance The address of the AVS Governance contract
      */
     constructor(
         address _endpoint,
-        address _proxyHub,
+        address _taskExecutionHub,
         uint32 _dstEid,
         address _ownerAddress,
         address _avsGovernance
     ) OApp(_endpoint, _ownerAddress) Ownable(_ownerAddress) {
-        require(_proxyHub != address(0), "Invalid proxyHub");
+        require(_taskExecutionHub != address(0), "Invalid taskExecutionHub");
         require(_avsGovernance != address(0), "Invalid avsGovernance");
-        proxyHub = _proxyHub;
+        taskExecutionHub = _taskExecutionHub;
         dstEid = _dstEid;
         avsGovernance = _avsGovernance;
-        _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
+        _setPeer(dstEid, bytes32(uint256(uint160(_taskExecutionHub))));
     }   
 
     /**
-     * @notice Updates the proxy hub address
-     * @param _proxyHub The new proxy hub address
+     * @notice Updates the task execution hub address
+     * @param _taskExecutionHub The new task execution hub address
      */
-    function setProxyHub(address _proxyHub) external onlyOwner {
-        require(_proxyHub != address(0), "Invalid proxy hub address");
-        proxyHub = _proxyHub;
-        _setPeer(dstEid, bytes32(uint256(uint160(_proxyHub))));
+    function setTaskExecutionHub(address _taskExecutionHub) external onlyOwner {
+        require(_taskExecutionHub != address(0), "Invalid task execution hub address");
+        taskExecutionHub = _taskExecutionHub;
+        _setPeer(dstEid, bytes32(uint256(uint160(_taskExecutionHub))));
     }
 
     /**
@@ -203,7 +203,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
             endpoint.quote(
                 MessagingParams({
                     dstEid: dstEid,
-                    receiver: bytes32(uint256(uint160(proxyHub))),
+                    receiver: bytes32(uint256(uint160(taskExecutionHub))),
                     message: payload,
                     options: options,
                     payInLzToken: false
@@ -254,7 +254,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
             endpoint.quote(
                 MessagingParams({
                     dstEid: dstEid,
-                    receiver: bytes32(uint256(uint160(proxyHub))),
+                    receiver: bytes32(uint256(uint160(taskExecutionHub))),
                     message: payload,
                     options: options,
                     payInLzToken: false
@@ -354,7 +354,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     // slither-disable-next-line dead-code
     function _payNative(
         uint256 _nativeFee
-    ) internal override returns (uint256 nativeFee) {
+    ) internal view override returns (uint256 nativeFee) {
         require(
             address(this).balance >= _nativeFee,
             "Insufficient contract balance"

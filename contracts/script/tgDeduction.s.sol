@@ -4,7 +4,7 @@ pragma solidity ^0.8.22;
 import {Script} from "forge-std/Script.sol";
 import {TriggerGasRegistry} from "../src/TriggerGasRegistry.sol";
 import {JobRegistry} from "../src/JobRegistry.sol";
-import {ProxyHub} from "../src/lz/ProxyHub.sol";
+import {TaskExecutionHub} from "../src/lz/TaskExecutionHub.sol";
 import {CREATE3} from "lib/solady/src/utils/CREATE3.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {console2} from "forge-std/console2.sol";
@@ -12,7 +12,7 @@ import {console2} from "forge-std/console2.sol";
 contract TGDeduction is Script {
     TriggerGasRegistry public triggerGasRegistry;
     JobRegistry public jobRegistry;
-    ProxyHub public proxyHub;
+    TaskExecutionHub public taskExecutionHub;
     
     address public deployer;
     address public jobOwner;
@@ -43,10 +43,10 @@ contract TGDeduction is Script {
         // Deploy contracts
         deployTriggerGasRegistry();
         deployJobRegistry();
-        deployProxyHub();
+        deployTaskExecutionHub();
 
-        // Set ProxyHub as operator of TriggerGasRegistry now that it's deployed
-        triggerGasRegistry.setOperator(address(proxyHub));
+        // Set TaskExecutionHub as operator of TriggerGasRegistry now that it's deployed
+        triggerGasRegistry.setOperator(address(taskExecutionHub));
 
         // Test the complete flow
         completeFlowTest();
@@ -96,16 +96,21 @@ contract TGDeduction is Script {
         console2.log("JobRegistry proxy deployed to:", address(jobRegistry));
     }
 
-    function deployProxyHub() public {
-        console2.log("\n--- Deploying ProxyHub ---");
+    function deployTaskExecutionHub() public {
+        console2.log("\n--- Deploying TaskExecutionHub ---");
         
         // Setup initial keepers array
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper;
         
-        // Deploy ProxyHub
-        proxyHub = new ProxyHub(
+        // Deploy TaskExecutionHub
+        taskExecutionHub = new TaskExecutionHub(
             address(0x6EDCE65403992e310A62460808c4b910D972f10f),
+            deployer
+        );
+        
+        // Initialize the contract
+        taskExecutionHub.initialize(
             deployer,
             SRC_EID,
             THIS_EID,
@@ -114,10 +119,10 @@ contract TGDeduction is Script {
             address(triggerGasRegistry)
         );
         
-        console2.log("ProxyHub deployed to:", address(proxyHub));
+        console2.log("TaskExecutionHub deployed to:", address(taskExecutionHub));
         
-        // Fund the ProxyHub for message fees
-        vm.deal(address(proxyHub), 10 ether);
+        // Fund the TaskExecutionHub for message fees
+        vm.deal(address(taskExecutionHub), 10 ether);
     }
 
     function completeFlowTest() public {
@@ -151,14 +156,14 @@ contract TGDeduction is Script {
         console2.log("Purchasing TG with ", vm.toString(ethAmount), " ETH");
         
         // Get initial TG balance
-        (uint256 initialEthSpent, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
+        (, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
         console2.log("Initial TG balance: ", vm.toString(initialTGBalance));
         
         // Purchase TG
         triggerGasRegistry.purchaseTG{value: ethAmount}(ethAmount);
         
         // Get final TG balance
-        (uint256 finalEthSpent, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
+        (, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
         console2.log("Final TG balance: ", vm.toString(finalTGBalance));
         console2.log("TG purchased: ", vm.toString(finalTGBalance - initialTGBalance));
         
@@ -225,10 +230,10 @@ contract TGDeduction is Script {
         }
     }
 
-    function keeperRegistration() public {
+    function keeperRegistration() public view {
         console2.log("\n--- Step 3: Verifying Keeper Registration ---");
         
-        bool isRegistered = proxyHub.isKeeper(keeper);
+        bool isRegistered = taskExecutionHub.isKeeper(keeper);
         console2.log("Keeper registration status: ", vm.toString(isRegistered));
         
         require(isRegistered, "Keeper should be registered");
@@ -243,7 +248,7 @@ contract TGDeduction is Script {
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Get initial TG balance
-        (uint256 initialEthSpent, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
+        (, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
         console2.log("Initial TG balance before execution: ", vm.toString(initialTGBalance));
         console2.log("TG amount to deduct: ", vm.toString(tgAmountToDeduct));
         
@@ -251,13 +256,13 @@ contract TGDeduction is Script {
         bytes memory mockBytecode = hex"600180600c6000396000f3006000fd"; // Simple bytecode that returns true
         vm.etch(targetContract, mockBytecode);
         
-        console2.log("Executing function through ProxyHub...");
+        console2.log("Executing function through TaskExecutionHub...");
         
         // Execute the function
-        proxyHub.executeFunction(jobId, tgAmountToDeduct, targetContract, data);
+        taskExecutionHub.executeFunction(jobId, tgAmountToDeduct, targetContract, data);
         
         // Get final TG balance
-        (uint256 finalEthSpent, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
+        (, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
         console2.log("Final TG balance after execution: ", vm.toString(finalTGBalance));
         console2.log("TG deducted: ", vm.toString(initialTGBalance - finalTGBalance));
         

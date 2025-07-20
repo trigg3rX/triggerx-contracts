@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-contract MockProxyHub {
+contract MockTaskExecutionHub {
     address public owner;
     mapping(address => bool) public isOperator;
     

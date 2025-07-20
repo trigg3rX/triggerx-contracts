@@ -19,10 +19,10 @@ contract TriggerGasRegistry is
 
     mapping(address => TGBalance) public balances;
 
-    address public operatorRole;
-
     // slither-disable-next-line naming-convention
     uint256 public TG_PER_ETH;
+
+    address public operatorRole;
 
     // Events
     event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount);
@@ -54,8 +54,8 @@ contract TriggerGasRegistry is
         __UUPSUpgradeable_init();
 
         // set the operator role
-        operatorRole = _operator;
         TG_PER_ETH = _tgPerEth;
+        operatorRole = _operator;
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}

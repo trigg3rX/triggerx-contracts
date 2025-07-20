@@ -212,7 +212,7 @@ contract TriggerGasRegistrySecurityTest is Test {
         assertGt(tgBalance, 0);
     }
     
-    function test_Security_MaximumTGCalculation() public {
+    function test_Security_MaximumTGCalculation() public pure {
         // Test the maximum safe ETH amount that won't overflow TG calculation
         uint256 maxSafeEth = type(uint256).max / 1000;
         
