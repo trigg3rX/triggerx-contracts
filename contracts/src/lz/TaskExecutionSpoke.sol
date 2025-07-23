@@ -9,6 +9,7 @@ import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
 interface IJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address);
+    function unpackJobId(uint256 jobId) external view returns (uint256 chainId, uint256 jobCounter);
 }
 
 interface ITriggerGasRegistry {
@@ -107,6 +108,9 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
      * @param data The calldata for the function call
      */
     function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes memory data) external payable onlyKeeper nonReentrant {
+        (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
+        require(chainId == block.chainid, "Job is from a different chain");
+
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 

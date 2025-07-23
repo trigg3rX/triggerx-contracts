@@ -8,6 +8,7 @@ import {ERC1967Proxy} from "openzeppelin-contracts/contracts/proxy/ERC1967/ERC19
 import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
 import {TaskExecutionSpoke} from "../../src/lz/TaskExecutionSpoke.sol";
 import {IAttestationCenter} from "../../src/interfaces/IAttestationCenter.sol";
+import {TriggerGasRegistry} from "../../src/TriggerGasRegistry.sol";
 
 contract DeployAll is Script {
     // --- Configuration (Update if needed) ---
@@ -28,12 +29,14 @@ contract DeployAll is Script {
     uint32 constant AVALANCHE_FUJI_EID = 40106; // Avalanche Fuji Endpoint ID
     uint32 constant BNB_TESTNET_EID = 40102; // BNB Testnet Endpoint ID
 
-    address constant JOB_REGISTRY_ADDRESS = 0x1;
-    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x2;
+    address constant JOB_REGISTRY_ADDRESS = 0xdB66c11221234C6B19cCBd29868310c31494C21C;
+    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
+
+    address constant AVS_GOVERNANCE_LOGIC_ADDRESS = 0xACB667202C6F9b84D91dA1D66c82f30c66738299;
     
 
 
-    bytes32 SALT = bytes32(keccak256(abi.encodePacked(vm.envString("TESTNET_PRODUCTION_SALT"))));  // Production contract salt
+    bytes32 SALT = bytes32(keccak256(abi.encodePacked(vm.envString("TASK_EXECUTION_SALT"))));
 
     // Struct to hold network deployment information
     struct NetworkInfo {
@@ -131,6 +134,11 @@ contract DeployAll is Script {
         hubAddress = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log("TaskExecutionHub proxy deployed at:", hubAddress);
 
+        // TaskExecutionHub(payable(hubAddress)).setPeer(HOLESKY_EID, bytes32(uint256(uint160(AVS_GOVERNANCE_LOGIC_ADDRESS))));
+        // TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(hubAddress);
+
+        console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
+
         vm.stopBroadcast();
     }
 
@@ -150,8 +158,8 @@ contract DeployAll is Script {
         // console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID, "(Arbitrum Sepolia)");
 
         // Send ETH to Hub contract to cover LayerZero fees
-        vm.deal(address(hub), 1 ether);
-        console.log("Sent 1 ETH to Hub contract at:", address(hub));
+        // vm.deal(address(hub), 1 ether);
+        // console.log("Sent 1 ETH to Hub contract at:", address(hub));
 
         vm.stopBroadcast();
     }
@@ -192,6 +200,11 @@ contract DeployAll is Script {
         // 4. Deploy proxy using CREATE3
         address spokeAddr = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log(string.concat("TaskExecutionSpoke proxy deployed on ", networkName, " at:"), spokeAddr);
+
+
+        TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(spokeAddr);
+
+        console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
 
         vm.stopBroadcast();
         

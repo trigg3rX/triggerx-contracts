@@ -8,7 +8,7 @@ import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant TASK_EXECUTION_HUB = payable(0xd2B4F73FE4c747716F20839c37C451f241226b03);
+    address payable constant TASK_EXECUTION_HUB = payable(0x2469e89386947535A350EEBccC5F2754fd35F474);
 
     address payable constant AVS_GOVERNANCE = payable(0x12f45551f11Df20b3EcBDf329138Bdc65cc58Ec0); // TestnetProduction AVS Governance address
 
@@ -44,9 +44,9 @@ contract DeployAvsGovernance is Script {
         );
         console.log("AvsGovernanceLogic deployed at:", address(avsGovernance));
         // use call to send the 0.5 eth to the deployed contract from the deployer address
-        (bool success, ) = address(avsGovernance).call{value: 0.5 ether}("");
-        require(success, "Failed to send 0.5 eth to the deployed contract");
-        console.log("0.5 eth sent to the deployed contract");
+        // (bool success, ) = address(avsGovernance).call{value: 0.5 ether}("");
+        // require(success, "Failed to send 0.5 eth to the deployed contract");
+        // console.log("0.5 eth sent to the deployed contract");
 
         // setTaskExecutionHub on Holesky
         // AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(AVS_GOVERNANCE);

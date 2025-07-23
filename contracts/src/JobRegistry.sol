@@ -4,6 +4,7 @@ pragma solidity ^0.8.26;
 import {Initializable} from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/OwnableUpgradeable.sol";
+import {PackedJobIdLib} from "./libraries/PackedJobIdLib.sol";
 
 /**
  * @title JobRegistry
@@ -12,7 +13,7 @@ import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/Ownabl
  */
 contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     // State variables
-    uint256 private _lastJobId;
+    uint256 private _lastJobCounter;
     mapping(uint256 => Job) private _jobs;
     mapping(address => uint256[]) private _userJobIds;
 
@@ -74,7 +75,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         }
 
         __Ownable_init(initialOwner);
-        _lastJobId = 0;
+        _lastJobCounter = 0;
     }
 
     /**
@@ -99,7 +100,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         // Validate data based on jobType
         _validateJobData(jobType, data);
 
-        jobId = ++_lastJobId;
+        uint256 jobCounter = ++_lastJobCounter;
+        jobId = PackedJobIdLib.pack(block.chainid, jobCounter);
 
         bytes32 jobHash = keccak256(
             abi.encode(jobName, jobType, timeFrame, targetContract, data)
@@ -266,6 +268,13 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         }
     }
 
+    function getJobByCounter(uint256 jobCounter) external view returns (Job memory job) {
+        job = _jobs[PackedJobIdLib.pack(block.chainid, jobCounter)];
+        if (job.jobOwner == address(0)) {
+            revert JobNotFound(PackedJobIdLib.pack(block.chainid, jobCounter));
+        }
+    }
+
     /**
      * @dev Get the owner of a job
      * @param jobId The ID of the job
@@ -332,8 +341,18 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
      * @dev Get the total number of jobs created
      * @return count The total number of jobs
      */
-    function getTotalJobsCount() external view returns (uint256 count) {
-        return _lastJobId;
+    function getJobCounter() external view returns (uint256 count) {
+        return _lastJobCounter;
+    }
+
+    /**
+     * @dev Unpack a jobId to get the chainId and jobCounter.
+     * @param jobId The packed job ID.
+     * @return chainId The chain ID from the packed job ID.
+     * @return jobCounter The job counter from the packed job ID.
+     */
+    function unpackJobId(uint256 jobId) external pure returns (uint256 chainId, uint256 jobCounter) {
+        (chainId, jobCounter) = PackedJobIdLib.unpack(jobId);
     }
 
     // UUPS upgrade authorization

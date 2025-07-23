@@ -59,7 +59,7 @@ contract JobRegistryTest is Test {
 
     function test_Initialize() public view {
         assertEq(jobRegistry.owner(), owner);
-        assertEq(jobRegistry.getTotalJobsCount(), 0);
+        assertEq(jobRegistry.getJobCounter(), 0);
     }
 
     function test_Initialize_RevertIfZeroAddress() public {
@@ -90,7 +90,7 @@ contract JobRegistryTest is Test {
         );
 
         assertEq(jobId, 1);
-        assertEq(jobRegistry.getTotalJobsCount(), 1);
+        assertEq(jobRegistry.getJobCounter(), 1);
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
         assertEq(job.jobId, jobId);
@@ -926,7 +926,7 @@ contract JobRegistryTest is Test {
         assertEq(jobId4, 4);
         assertEq(jobId5, 5);
         assertEq(jobId6, 6);
-        assertEq(jobRegistry.getTotalJobsCount(), 6);
+        assertEq(jobRegistry.getJobCounter(), 6);
 
         vm.stopPrank();
     }
@@ -977,7 +977,7 @@ contract JobRegistryTest is Test {
 
         assertEq(jobId1, 1);
         assertEq(jobId2, 2);
-        assertEq(jobRegistry.getTotalJobsCount(), 2);
+        assertEq(jobRegistry.getJobCounter(), 2);
 
         // Check job ownership
         JobRegistry.Job memory job1 = jobRegistry.getJob(jobId1);

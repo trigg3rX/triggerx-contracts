@@ -61,6 +61,11 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     mapping(address => bool) public isWhitelisted;
 
     /**
+     * @notice Mapping to track addresses that can manage the operator whitelist
+     */
+    mapping(address => bool) public isWhitelistManager;
+
+    /**
      * @notice Emitted when an operator is registered
      * @param operator The address of the registered operator
      */
@@ -119,10 +124,30 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
     event GasOptionsUpdated(uint128 gasLimit, uint128 callValue);
 
     /**
+     * @notice Emitted when a new whitelist manager is added
+     * @param manager The address that was granted whitelist manager permissions
+     */
+    event WhitelistManagerAdded(address indexed manager);
+
+    /**
+     * @notice Emitted when a whitelist manager is removed
+     * @param manager The address that had its whitelist manager permissions revoked
+     */
+    event WhitelistManagerRemoved(address indexed manager);
+
+    /**
      * @notice Modifier to check if the caller is AVS Governance
      */
     modifier onlyAvsGovernance() {
         require(msg.sender == avsGovernance, "Only AVS Governance can call this function");
+        _;
+    }
+
+    /**
+     * @notice Modifier to restrict functions to whitelist managers or the contract owner
+     */
+    modifier onlyWhitelistManager() {
+        require(isWhitelistManager[msg.sender] || msg.sender == owner(), "Caller is not a whitelist manager or owner");
         _;
     }
 
@@ -169,6 +194,21 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
         require(_amount > 0, "Amount must be greater than 0");
         require(address(this).balance >= _amount, "Insufficient balance");
         _to.transfer(_amount);
+    }
+
+    /**
+     * @notice Adds or removes addresses that are allowed to manage the operator whitelist
+     * @param _manager The address whose permissions are being updated
+     * @param _isManager Whether the address should be a whitelist manager
+     */
+    function setWhitelistManager(address _manager, bool _isManager) external onlyOwner {
+        require(_manager != address(0), "Invalid address");
+        isWhitelistManager[_manager] = _isManager;
+        if (_isManager) {
+            emit WhitelistManagerAdded(_manager);
+        } else {
+            emit WhitelistManagerRemoved(_manager);
+        }
     }
 
     /**
@@ -366,7 +406,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      * @notice Adds multiple operators to the whitelist
      * @param _operators Array of operator addresses to whitelist
      */
-    function addToWhitelist(address[] calldata _operators) external onlyOwner {
+    function addToWhitelist(address[] calldata _operators) external onlyWhitelistManager {
         for (uint256 i = 0; i < _operators.length; i++) {
             _addToWhitelist(_operators[i]);
         }
@@ -389,7 +429,7 @@ contract AvsGovernanceLogic is Ownable, IAvsGovernanceLogic, OApp {
      */
     function removeFromWhitelist(
         address[] calldata _operators
-    ) external onlyOwner {
+    ) external onlyWhitelistManager {
         for (uint256 i = 0; i < _operators.length; i++) {
             _removeFromWhitelist(_operators[i]);
         }

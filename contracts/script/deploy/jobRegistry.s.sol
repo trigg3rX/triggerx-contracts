@@ -4,6 +4,8 @@ pragma solidity ^0.8.26;
 import {Script, console} from "forge-std/Script.sol";
 import {JobRegistry} from "../../src/JobRegistry.sol";
 import {ERC1967Proxy} from "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {CREATE3} from "solady/utils/CREATE3.sol";
+
 
 contract DeployJobRegistry is Script {
     function run() external {
@@ -11,6 +13,8 @@ contract DeployJobRegistry is Script {
         address deployer = vm.addr(deployerPrivateKey);
         
         vm.startBroadcast(deployerPrivateKey);
+
+        bytes32 salt = keccak256(abi.encode(vm.envString("JR_SALT")));
 
         // Deploy the implementation contract
         JobRegistry implementation = new JobRegistry();
@@ -22,13 +26,11 @@ contract DeployJobRegistry is Script {
             deployer // Set deployer as initial owner
         );
 
-        // Deploy the proxy contract
-        ERC1967Proxy proxy = new ERC1967Proxy(
-            address(implementation),
-            initData
-        );
+        bytes memory proxy_code = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(address(implementation), initData));
         
-        console.log("JobRegistry proxy deployed at:", address(proxy));
+        address proxy = CREATE3.deployDeterministic(proxy_code, salt);
+        
+        console.log("JobRegistry proxy deployed at:", proxy);
         console.log("Initial owner:", deployer);
 
         vm.stopBroadcast();
@@ -36,7 +38,7 @@ contract DeployJobRegistry is Script {
         // Log deployment info
         console.log("=== JobRegistry Deployment Summary ===");
         console.log("Implementation:", address(implementation));
-        console.log("Proxy:", address(proxy));
+        console.log("Proxy:", proxy);
         console.log("Owner:", deployer);
         console.log("========================================");
     }

@@ -10,6 +10,7 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
 interface IJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address);
+    function unpackJobId(uint256 jobId) external view returns (uint256 chainId, uint256 jobCounter);
 }
 
 interface ITriggerGasRegistry {
@@ -133,6 +134,9 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
         address target,
         bytes calldata data
     ) external payable onlyKeeper nonReentrant {
+        (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
+        require(chainId == block.chainid, "Job is from a different chain");
+        
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 
@@ -259,6 +263,18 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
         require(to != address(0), "Invalid recipient");
         require(amount <= address(this).balance, "Insufficient balance");
         to.transfer(amount);
+    }
+
+    function addKeeper(address keeper) external onlyOwner {
+        isKeeper[keeper] = true;
+        emit KeeperRegistered(keeper);
+        _batchBroadcast(ActionType.REGISTER, keeper);
+    }
+
+    function removeKeeper(address keeper) external onlyOwner {
+        isKeeper[keeper] = false;
+        emit KeeperUnregistered(keeper);
+        _batchBroadcast(ActionType.UNREGISTER, keeper);
     }
 
     // ---------------------------------------------------------------------

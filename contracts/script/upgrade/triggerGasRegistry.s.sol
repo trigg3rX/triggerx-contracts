@@ -32,10 +32,13 @@ contract TriggerGasRegistryDeploy is Script {
 
         address payable proxy = payable(triggerGasRegistryAddress);
 
+        vm.startBroadcast(deployerPrivateKey);
         // STEP 1: Capture BEFORE state
         console.log("\n=== BEFORE UPGRADE ===");
         UserBalance[] memory beforeBalances = new UserBalance[](users.length);
-        address oldImplementation = getImplementation(proxy);
+        address oldImplementation = address(uint160(uint256(
+            vm.load(proxy, bytes32(uint256(0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc)))
+        )));
         console.log("Current implementation:", oldImplementation);
         console.log("Current owner:", TriggerGasRegistry(proxy).owner());
         
@@ -49,7 +52,6 @@ contract TriggerGasRegistryDeploy is Script {
             console2.log("User %s: ETH=%s, TG=%s", users[i], ethSpent, tgBalance);
         }
 
-        vm.startBroadcast(deployerPrivateKey);
 
         // STEP 2: Deploy new implementation
         TriggerGasRegistry newImplementation = new TriggerGasRegistry();
@@ -58,14 +60,16 @@ contract TriggerGasRegistryDeploy is Script {
         
         // STEP 3: Perform upgrade
         TriggerGasRegistry(proxy).upgradeToAndCall(address(newImplementation), "");
-        TriggerGasRegistry(proxy).setOperator(operator);
+        // TriggerGasRegistry(proxy).setOperator(operator);
         TriggerGasRegistry(proxy).setTGPerETH(1000);
 
         vm.stopBroadcast();
 
         // STEP 4: Capture AFTER state
         console.log("\n=== AFTER UPGRADE ===");
-        address finalImplementation = getImplementation(proxy);
+        address finalImplementation = address(uint160(uint256(
+            vm.load(proxy, bytes32(uint256(0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc)))
+        )));
         console.log("New implementation:", finalImplementation);
         console.log("New owner:", TriggerGasRegistry(proxy).owner());
         console.log("New operator:", TriggerGasRegistry(proxy).operatorRole());
@@ -126,10 +130,6 @@ contract TriggerGasRegistryDeploy is Script {
 
     function getImplementation(address proxy) internal view returns (address) {
         bytes32 slot = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
-        bytes32 impl;
-        assembly {
-            impl := sload(slot)
-        }
-        return address(uint160(uint256(impl)));
+        return address(uint160(uint256(vm.load(proxy, slot))));
     }
 }

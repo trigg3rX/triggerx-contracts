@@ -1,3 +1,5 @@
 .env
 
 contracts/watchdog
+
+.cursor
