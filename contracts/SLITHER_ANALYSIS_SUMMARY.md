@@ -5,20 +5,23 @@ This document provides a comprehensive summary of the Slither static analysis pe
 ## Overview
 
 Slither analysis was performed on the following contracts:
+
 - `TriggerGasRegistry.sol`
-- `AvsGovernanceLogic.sol` 
+- `AvsGovernanceLogic.sol`
 - `lz/TaskExecutionHub.sol`
 - `lz/TaskExecutionSpoke.sol`
 
 ## Results Summary
 
 ### Before Remediation
+
 - **TriggerGasRegistry.sol**: 60 findings
-- **AvsGovernanceLogic.sol**: 35 findings  
+- **AvsGovernanceLogic.sol**: 35 findings
 - **TaskExecutionHub.sol**: 35 findings
 - **TaskExecutionSpoke.sol**: 27 findings
 
 ### After Remediation
+
 - **TriggerGasRegistry.sol**: 55 findings (5 disabled)
 - **AvsGovernanceLogic.sol**: 33 findings (2 disabled)
 - **TaskExecutionHub.sol**: 32 findings (3 disabled)
@@ -28,47 +31,58 @@ Slither analysis was performed on the following contracts:
 
 ### TriggerGasRegistry.sol
 
-#### Issues Successfully Disabled:
+#### Issues Successfully Disabled
+
 1. **`solc-version`** - Multiple Solidity versions used
+
    - **Reason**: Dependency-related, contract uses appropriate ^0.8.26
    - **Action**: Added `// slither-disable-next-line solc-version`
 
 2. **`naming-convention`** - `TG_PER_ETH` constant naming
+
    - **Reason**: UPPER_CASE is valid convention for constants
    - **Action**: Added `// slither-disable-next-line naming-convention`
 
 3. **`missing-zero-check`** - Operator parameter validation
+
    - **Reason**: Zero address is intentionally allowed to disable operator functionality
    - **Action**: Added proper validation + `// slither-disable-next-line missing-zero-check`
 
 4. **`low-level-calls`** - ETH transfers using `.call()`
+
    - **Reason**: Recommended pattern, protected by reentrancy guards
    - **Action**: Added `// slither-disable-next-line low-level-calls`
 
 5. **`reentrancy-events`** - Events after external calls
+
    - **Reason**: Function uses `nonReentrant` modifier, events are intentional
    - **Action**: Added `// slither-disable-next-line reentrancy-events`
 
 6. **`missing-events-access-control`** - `setOperator` missing events
+
    - **Reason**: Administrative function, events not required for all state changes
    - **Action**: Added `// slither-disable-next-line missing-events-access-control`
 
-7. **`missing-events-arithmetic`** - `setTGPerETH` missing events  
+7. **`missing-events-arithmetic`** - `setTGPerETH` missing events
    - **Reason**: Simple parameter update, added event emission instead
    - **Action**: Added event emission + `// slither-disable-next-line missing-events-arithmetic`
 
-#### User Improvements Made:
+#### User Improvements Made
+
 - Added zero-address validation for `initialOwner` and `_operator` parameters
 - Added `TGPerETHUpdated` event emission in `setTGPerETH` function
 
 ### AvsGovernanceLogic.sol
 
-#### Issues Successfully Disabled:
+#### Issues Successfully Disabled on AvsGovernanceLogic.sol
+
 1. **`solc-version`** - Multiple Solidity versions used
+
    - **Reason**: Dependency-related issue, contract uses appropriate version
    - **Action**: Added `// slither-disable-next-line solc-version`
 
-2. **`reentrancy-events`** - Events after LayerZero calls  
+2. **`reentrancy-events`** - Events after LayerZero calls
+
    - **Reason**: Calls to trusted LayerZero contracts, events intentional for logging
    - **Action**: Added `// slither-disable-next-line reentrancy-events`
 
@@ -76,21 +90,26 @@ Slither analysis was performed on the following contracts:
    - **Reason**: Required overrides for LayerZero OApp interface compliance
    - **Action**: Added `// slither-disable-next-line dead-code`
 
-#### Function Improvements Made:
+#### Function Improvements Made on AvsGovernanceLogic.sol
+
 - Changed `_lzReceive` mutability to `pure` (compiler suggestion)
 - Changed `_payNative` mutability to `view` (compiler suggestion)
 
-#### User Improvements Made:
+#### User Improvements Made on AvsGovernanceLogic.sol
+
 - Reverted `_payNative` to non-view (removing `view` keyword) for proper functionality
 
 ### TaskExecutionHub.sol (LayerZero)
 
-#### Issues Successfully Disabled:
+#### Issues Successfully Disabled on TriggerExecutionHub.sol
+
 1. **`solc-version`** - Multiple Solidity versions used
+
    - **Reason**: Dependency-related, contract uses appropriate ^0.8.26
    - **Action**: User removed disable comment (acceptable)
 
 2. **`low-level-calls`** - Direct call in `_executeFunction`
+
    - **Reason**: Legitimate function execution pattern, protected by access controls
    - **Action**: Added `// slither-disable-next-line low-level-calls`
 
@@ -98,7 +117,8 @@ Slither analysis was performed on the following contracts:
    - **Reason**: Intentional design for multi-chain broadcasting, has error handling
    - **Action**: Added `// slither-disable-next-line calls-loop,reentrancy-events`
 
-#### Remaining Issues (Acceptable):
+#### Remaining Issues (Acceptable)
+
 - Assembly usage in dependencies (OpenZeppelin, LayerZero)
 - Different pragma directives (dependency versions)
 - Dead code in LayerZero libraries
@@ -107,12 +127,15 @@ Slither analysis was performed on the following contracts:
 
 ### TaskExecutionSpoke.sol (LayerZero)
 
-#### Issues Successfully Disabled:
+#### Issues Successfully Disabled on TaskExecutionSpoke.sol
+
 1. **`solc-version`** - Multiple Solidity versions used
-   - **Reason**: Dependency-related, contract uses appropriate ^0.8.26  
+
+   - **Reason**: Dependency-related, contract uses appropriate ^0.8.26
    - **Action**: User removed disable comment (acceptable)
 
 2. **`reentrancy-events`** - Events after external calls
+
    - **Reason**: Function executes keeper commands, events are intentional logging
    - **Action**: Added `// slither-disable-next-line reentrancy-events`
 
@@ -120,10 +143,11 @@ Slither analysis was performed on the following contracts:
    - **Reason**: Legitimate function execution pattern for keeper operations
    - **Action**: Added `// slither-disable-next-line low-level-calls`
 
-#### Remaining Issues (Acceptable):
+#### Remaining Issues (Acceptable) on TaskExecutionSpoke.sol
+
 - Assembly usage in dependencies
 - Version constraints with known issues (dependencies)
-- Dead code in LayerZero libraries  
+- Dead code in LayerZero libraries
 - Naming conventions in LayerZero interfaces
 
 ## Security Assessment
@@ -138,6 +162,7 @@ Slither analysis was performed on the following contracts:
 ### ✅ False Positives Properly Handled
 
 The disabled warnings represent:
+
 - Dependency-related issues (OpenZeppelin, LayerZero, Solady libraries)
 - Intentional design choices (events after safe external calls)
 - Interface compliance requirements (LayerZero OApp pattern)
@@ -146,6 +171,7 @@ The disabled warnings represent:
 ### ✅ Remaining Warnings Are Acceptable
 
 The remaining Slither warnings are primarily:
+
 - Assembly usage in trusted libraries (OpenZeppelin, LayerZero)
 - Different Solidity versions in dependencies (normal for complex projects)
 - Dead code in libraries (functions that may be used by other contracts)
@@ -171,6 +197,6 @@ The contracts are now significantly cleaner for static analysis while maintainin
 
 ---
 
-*Analysis completed on: $(date)*
-*Slither version: Latest available*
-*Contracts analyzed: 4 main contracts + dependencies* 
+_Analysis completed on: $(date)_
+_Slither version: Latest available_
+_Contracts analyzed: 4 main contracts + dependencies_

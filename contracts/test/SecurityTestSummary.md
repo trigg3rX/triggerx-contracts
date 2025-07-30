@@ -5,9 +5,11 @@ This document provides an overview of the comprehensive security test suite crea
 ## Test Files Overview
 
 ### 1. AvsGovernanceLogicSecurity.t.sol
+
 **Contract Under Test**: `AvsGovernanceLogic`
 
 **Security Areas Covered**:
+
 - **Access Control**: Verifies only owner can call privileged functions
 - **Parameter Validation**: Tests input validation and zero-address protection
 - **State Manipulation**: Ensures proper whitelist management and operator registration flow
@@ -22,6 +24,7 @@ This document provides an overview of the comprehensive security test suite crea
 - **Balance Management**: Tests low balance detection and monitoring
 
 **Key Test Categories**:
+
 - Access control enforcement (owner-only functions)
 - Constructor parameter validation
 - Whitelist management security
@@ -32,9 +35,11 @@ This document provides an overview of the comprehensive security test suite crea
 - Message failure recovery and monitoring
 
 ### 2. TriggerGasRegistrySecurity.t.sol
+
 **Contract Under Test**: `TriggerGasRegistry`
 
 **Security Areas Covered**:
+
 - **Access Control**: Owner-only function protection
 - **Reentrancy Protection**: Comprehensive reentrancy attack testing
 - **Parameter Validation**: Input validation and boundary checks
@@ -46,6 +51,7 @@ This document provides an overview of the comprehensive security test suite crea
 - **Denial of Service**: Gas limit and large operation testing
 
 **Key Test Categories**:
+
 - Purchase/claim flow security
 - Balance transfer integrity
 - Reentrancy attack vectors
@@ -54,9 +60,11 @@ This document provides an overview of the comprehensive security test suite crea
 - Mathematical operation safety
 
 ### 3. TaskExecutionHubSecurity.t.sol
+
 **Contract Under Test**: `TaskExecutionHub`
 
 **Security Areas Covered**:
+
 - **Access Control**: Keeper and owner privilege separation
 - **Cross-chain Messaging**: LayerZero message validation and security
 - **Function Execution**: Secure arbitrary function execution
@@ -71,6 +79,7 @@ This document provides an overview of the comprehensive security test suite crea
 - **Balance Management**: Low balance alerts and threshold monitoring
 
 **Key Test Categories**:
+
 - Keeper privilege enforcement
 - Cross-chain message validation with enhanced error handling
 - Function execution security
@@ -80,9 +89,11 @@ This document provides an overview of the comprehensive security test suite crea
 - Balance monitoring and alert system testing
 
 ### 4. ProxySpokeSecurity.t.sol
+
 **Contract Under Test**: `TaskExecutionSpoke`
 
 **Security Areas Covered**:
+
 - **Access Control**: Keeper-only function execution
 - **Cross-chain Messaging**: Message validation from hub
 - **Function Execution**: Secure target function execution
@@ -91,6 +102,7 @@ This document provides an overview of the comprehensive security test suite crea
 - **Edge Cases**: Malicious target handling
 
 **Key Test Categories**:
+
 - Keeper authentication
 - Cross-chain message handling
 - Function execution validation
@@ -100,33 +112,39 @@ This document provides an overview of the comprehensive security test suite crea
 ## Recent Security Enhancements (Latest Update)
 
 ### Enhanced Error Handling & Fee Management
+
 Both `AvsGovernanceLogic` and `TaskExecutionHub` contracts have been upgraded with critical security improvements:
 
 #### 1. **10% Fee Buffer Protection**
+
 - Implements automatic 10% buffer on all fee calculations
 - Protects against gas price fluctuations and MEV attacks
 - Prevents transaction failures due to fee estimation discrepancies
 - **Security Benefit**: Eliminates fee-based DoS attacks and improves transaction reliability
 
 #### 2. **Comprehensive Error Handling**
+
 - Try/catch blocks for all cross-chain operations
 - Graceful failure handling without transaction reverts
 - Detailed error event emission for monitoring
 - **Security Benefit**: Prevents cascade failures and improves system resilience
 
 #### 3. **Low Balance Alert System**
+
 - Proactive balance monitoring with configurable thresholds
 - Automatic alerts when contract balance drops below operational requirements
 - Network-specific thresholds (Ethereum: 0.01 ETH, Base: 0.001 ETH)
 - **Security Benefit**: Prevents service disruption due to insufficient funds
 
 #### 4. **Enhanced Fee Estimation**
+
 - `estimateTotalFees()` for TaskExecutionHub multi-destination broadcasts
 - `estimateFee()` for AvsGovernanceLogic single-destination messages
 - Real-time fee calculation with current network conditions
 - **Security Benefit**: Enables proper fund management and prevents underfunding
 
 #### 5. **Improved Event Monitoring**
+
 - `MessageFailed` events with detailed failure reasons
 - `LowBalanceAlert` events for operational monitoring
 - Enhanced broadcast and message tracking
@@ -135,6 +153,7 @@ Both `AvsGovernanceLogic` and `TaskExecutionHub` contracts have been upgraded wi
 ## Security Test Patterns Used
 
 ### 1. Access Control Testing
+
 ```solidity
 function test_Security_OnlyOwnerCanFunction() public {
     vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
@@ -144,12 +163,13 @@ function test_Security_OnlyOwnerCanFunction() public {
 ```
 
 ### 2. Reentrancy Testing
+
 ```solidity
 contract MaliciousReentrant {
     function attack() external {
         target.vulnerableFunction();
     }
-    
+
     receive() external payable {
         if (callCount < 3) {
             target.vulnerableFunction();
@@ -159,6 +179,7 @@ contract MaliciousReentrant {
 ```
 
 ### 3. Parameter Validation Testing
+
 ```solidity
 function test_Security_RejectsInvalidParameters() public {
     vm.expectRevert("Invalid parameter");
@@ -167,6 +188,7 @@ function test_Security_RejectsInvalidParameters() public {
 ```
 
 ### 4. State Manipulation Testing
+
 ```solidity
 function test_Security_StateIntegrity() public {
     // Perform operations
@@ -176,6 +198,7 @@ function test_Security_StateIntegrity() public {
 ```
 
 ### 5. Cross-chain Message Testing
+
 ```solidity
 function test_Security_InvalidMessage() public {
     Origin memory invalidOrigin = Origin({
@@ -183,22 +206,23 @@ function test_Security_InvalidMessage() public {
         sender: bytes32(0),
         nonce: uint64(0)
     });
-    
+
     vm.expectRevert("Invalid source chain");
     contract.lzReceive(invalidOrigin, bytes32(0), payload, address(0), bytes(""));
 }
 ```
 
 ### 6. Fee Buffer Testing
+
 ```solidity
 function test_Security_FeeBufferProtection() public {
     // Test that fee buffer prevents underfunded transactions
     uint256 estimatedFee = contract.estimateFee(action, operator);
     uint256 feeWithBuffer = estimatedFee + (estimatedFee * 10) / 100;
-    
+
     // Verify buffer is applied correctly
     assertTrue(feeWithBuffer > estimatedFee);
-    
+
     // Test insufficient balance handling
     vm.deal(address(contract), estimatedFee); // Only exact fee, no buffer
     vm.expectEmit(true, true, true, true);
@@ -207,11 +231,12 @@ function test_Security_FeeBufferProtection() public {
 ```
 
 ### 7. Low Balance Alert Testing
+
 ```solidity
 function test_Security_LowBalanceAlert() public {
     uint256 threshold = contract.lowBalanceThreshold();
     vm.deal(address(contract), threshold - 1);
-    
+
     vm.expectEmit(true, true, true, true);
     emit LowBalanceAlert(threshold - 1, threshold);
     contract.checkLowBalance();
@@ -221,21 +246,25 @@ function test_Security_LowBalanceAlert() public {
 ## Security Vulnerabilities Addressed
 
 ### 1. **Access Control Vulnerabilities**
+
 - Unauthorized function calls
 - Privilege escalation
 - Missing owner checks
 
 ### 2. **Reentrancy Attacks**
+
 - Function call reentrancy
 - Cross-function reentrancy
 - External call reentrancy
 
 ### 3. **State Manipulation**
+
 - Direct state corruption
 - Invalid state transitions
 - Race conditions
 
 ### 4. **Cross-chain Security**
+
 - Message source validation
 - Payload integrity
 - Replay attacks
@@ -243,6 +272,7 @@ function test_Security_LowBalanceAlert() public {
 - **NEW**: Message failure cascade effects
 
 ### 5. **Economic Attacks**
+
 - Balance manipulation
 - Token accounting errors
 - Mathematical overflows
@@ -251,6 +281,7 @@ function test_Security_LowBalanceAlert() public {
 - Underfunding attacks
 
 ### 6. **Denial of Service**
+
 - Gas griefing
 - Large payload attacks
 - State bloat attacks
@@ -258,11 +289,13 @@ function test_Security_LowBalanceAlert() public {
 - Balance depletion attacks
 
 ### 7. **Upgrade Security**
+
 - Unauthorized upgrades
 - State corruption during upgrades
 - Implementation replacement attacks
 
 ### 8. **Operational Security (NEW)**
+
 - Service interruption due to insufficient funds
 - Failed transaction recovery
 - Monitoring and alerting gaps
@@ -271,12 +304,14 @@ function test_Security_LowBalanceAlert() public {
 ## Test Execution Statistics
 
 **Total Security Tests**: 96+ tests across 4 contracts
+
 - **AvsGovernanceLogic**: 30+ security tests (including new fee and error handling tests)
-- **TriggerGasRegistry**: 26 security tests  
+- **TriggerGasRegistry**: 26 security tests
 - **TaskExecutionHub**: 32+ security tests (including new broadcast and balance tests)
 - **TaskExecutionSpoke**: 8 security tests
 
 **Test Categories**:
+
 - Access Control: ~20% of tests
 - Parameter Validation: ~15% of tests
 - State Integrity: ~15% of tests
@@ -289,11 +324,13 @@ function test_Security_LowBalanceAlert() public {
 ## Running the Security Tests
 
 To run all security tests:
+
 ```bash
 forge test --match-path "*Security*" -vv
 ```
 
 To run tests for a specific contract:
+
 ```bash
 forge test --match-path "*AvsGovernanceLogicSecurity*" -vv
 forge test --match-path "*TriggerGasRegistrySecurity*" -vv
@@ -302,6 +339,7 @@ forge test --match-path "*ProxySpokeSecurity*" -vv
 ```
 
 To run specific security test categories:
+
 ```bash
 # Fee management and buffer tests
 forge test --match-test "*Fee*" -vv
@@ -316,6 +354,7 @@ forge test --match-test "*Balance*" -vv
 ## Test Maintenance
 
 ### Adding New Security Tests
+
 1. Follow the established naming convention: `test_Security_DescriptiveName()`
 2. Group tests by security category using comment headers
 3. Include comprehensive error message validation
@@ -325,6 +364,7 @@ forge test --match-test "*Balance*" -vv
 7. **NEW**: Test balance threshold and monitoring functionality
 
 ### Mock Contract Patterns
+
 - `MaliciousReentrant`: For reentrancy testing
 - `MaliciousTarget`: For function execution testing
 - `DrainAttacker`: For unauthorized access testing
@@ -335,6 +375,7 @@ forge test --match-test "*Balance*" -vv
 ## Security Considerations
 
 ### Known Limitations
+
 1. Some tests depend on proper mock setup and may fail with inadequate mocking
 2. Cross-chain tests require proper peer configuration
 3. Reentrancy tests may need specific contract configurations
@@ -342,6 +383,7 @@ forge test --match-test "*Balance*" -vv
 5. Low balance tests need proper network threshold configuration
 
 ### Future Enhancements
+
 1. Fuzzing tests for edge case discovery
 2. Formal verification for critical functions
 3. Gas optimization security analysis
@@ -353,6 +395,7 @@ forge test --match-test "*Balance*" -vv
 ## Production Deployment Checklist
 
 ### Pre-Deployment Security Verification
+
 - [ ] All security tests passing
 - [ ] Fee buffer thresholds properly configured for target networks
 - [ ] Low balance alert thresholds set appropriately
@@ -362,6 +405,7 @@ forge test --match-test "*Balance*" -vv
 - [ ] Balance monitoring systems operational
 
 ### Post-Deployment Monitoring
+
 - [ ] Monitor `MessageFailed` events for system health
 - [ ] Track `LowBalanceAlert` events for operational status
 - [ ] Monitor fee estimation accuracy over time
@@ -375,4 +419,4 @@ This security test suite provides comprehensive coverage of potential attack vec
 
 The new fee buffer system, enhanced error handling, and proactive monitoring capabilities represent a significant security upgrade that addresses real-world operational challenges while maintaining the protocol's decentralized and trustless nature.
 
-Regular execution of these tests during development helps maintain security standards and catch regressions early in the development cycle. The enhanced monitoring and alerting capabilities ensure that operational issues can be detected and addressed proactively, improving overall system reliability. 
+Regular execution of these tests during development helps maintain security standards and catch regressions early in the development cycle. The enhanced monitoring and alerting capabilities ensure that operational issues can be detected and addressed proactively, improving overall system reliability.

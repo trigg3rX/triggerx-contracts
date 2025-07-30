@@ -1,6 +1,6 @@
-module github.com/trigg3rX/triggerx-contracts
+module github.com/trigg3rX/triggerx-contracts/bindings
 
-go 1.23.3
+go 1.24.2
 
 require (
 	github.com/ethereum/go-ethereum v1.15.11

@@ -7,13 +7,13 @@ source .env
 DRY_RUN=${1:-false}
 
 # Chain config
-RPC_URL=${BASE_SEPOLIA_RPC}     # Replace with your RPC
-ETHERSCAN_API_KEY=${BASESCAN_API_KEY}  # Add your key to .env
+RPC_URL=${BASE_SEPOLIA_RPC}
+ETHERSCAN_API_KEY=${BASESCAN_API_KEY}
 
 # Deployment values
 IMPLEMENTATION_SALT=$(cast keccak "test3_ImplementationV1")
 PROXY_SALT=$(cast keccak "test3_TriggerGasRegistry")
-CREATE3_DEPLOYER=0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085   # replace with actual address
+CREATE3_DEPLOYER=0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085
 DEPLOYER_PK=$PRIVATE_KEY
 
 # Updated addresses from verification script

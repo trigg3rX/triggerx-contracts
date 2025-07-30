@@ -1,7 +1,9 @@
 #!/bin/bash
 
+cd bindings
+
 echo "Fetching contract ABIs and bytecode..."
-go run ./bindings/fetch_abi.go
+go run ./fetch_abi.go
 
 echo "Generating bindings..."
 
