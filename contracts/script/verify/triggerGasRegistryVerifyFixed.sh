@@ -2,14 +2,14 @@
 source .env
 
 # Accept chain ID as argument, default to Base Sepolia
-CHAIN_ID="${1:-84532}"
+CHAIN_ID="42161"
 
 # Configure network-specific settings based on chain ID
 case "$CHAIN_ID" in
-  "84532")
-    NETWORK_NAME="Base Sepolia"
-    RPC_URL=${BASE_SEPOLIA_RPC}
-    EXPLORER_URL="https://sepolia.basescan.org/address"
+  "42161") # Arbitrum
+    NETWORK_NAME="Arbitrum"
+    RPC_URL=${ARBITRUM_RPC}
+    EXPLORER_URL="https://arbiscan.io/address"
     ;;
   "11155420")
     NETWORK_NAME="OP Sepolia"
@@ -26,7 +26,11 @@ esac
 ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
 
 # TriggerGasRegistry proxy address (same on both networks)
-PROXY_ADDRESS="0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a"
+PROXY_ADDRESS="0x93ddb2307f3af5df85f361e5cddd898acd3d132d"
+IMPLEMENTATION_ADDRESS="0x9f452702490e11af38c213de30c000a46e4da399"
+OWNER_ADDRESS="0xdb43967857f70f04c0ffe62ed240db74ce4e3c87"
+OPERATOR_ADDRESS="0xdb43967857f70f04c0ffe62ed240db74ce4e3c87"
+INITIAL_GAS_PRICE="1000"
 
 echo "=== Verifying TriggerGasRegistry on $NETWORK_NAME (Chain ID: $CHAIN_ID) ==="
 echo "Proxy address: $PROXY_ADDRESS"
@@ -59,7 +63,10 @@ echo "=== Verifying TriggerGasRegistry Implementation ==="
 # Verify the current implementation contract using Etherscan v2 API
 forge verify-contract \
   --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
+  --verifier-url "https://api.etherscan.io/v2/api" \
+  --verifier etherscan \
+  --etherscan-api-version v2 \
+  --chain "$CHAIN_ID" \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
   "$CURRENT_IMPLEMENTATION_ADDRESS" \
   src/TriggerGasRegistry.sol:TriggerGasRegistry
@@ -93,12 +100,13 @@ echo "Using original deployment constructor arguments..."
 # Original implementation from deployment bytecode analysis
 ORIGINAL_IMPLEMENTATION="0x9f452702490e11af38c213de30c000a46e4da399"
 
+INIT_CALL_DATA=$(cast calldata "initialize(address,address,uint256)" "$OWNER_ADDRESS" "$OPERATOR_ADDRESS" "$INITIAL_GAS_PRICE")
 # The proxy was deployed with initialize(address) - single parameter
-INIT_CALL_DATA=$(cast calldata "initialize(address)" "$OWNER_ADDRESS")
+# INIT_CALL_DATA=$(cast calldata "initialize(address)" "$OWNER_ADDRESS")
 echo "Initialize call data: $INIT_CALL_DATA"
 
 # Use cast to encode the constructor arguments with ORIGINAL implementation
-CONSTRUCTOR_ARGS=$(cast abi-encode "constructor(address,bytes)" "$ORIGINAL_IMPLEMENTATION" "$INIT_CALL_DATA")
+CONSTRUCTOR_ARGS=$(cast abi-encode "constructor(address,bytes)" "$IMPLEMENTATION_ADDRESS" "$INIT_CALL_DATA")
 # Remove the 0x prefix for forge verify-contract
 CONSTRUCTOR_ARGS=${CONSTRUCTOR_ARGS#0x}
 
@@ -107,7 +115,10 @@ echo "Proxy constructor args (with original implementation): $CONSTRUCTOR_ARGS"
 # Verify the proxy contract using Etherscan v2 API
 forge verify-contract \
   --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
+  --verifier-url "https://api.etherscan.io/v2/api" \
+  --verifier etherscan \
+  --etherscan-api-version v2 \
+  --chain "$CHAIN_ID" \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
   --constructor-args "$CONSTRUCTOR_ARGS" \
   "$PROXY_ADDRESS" \

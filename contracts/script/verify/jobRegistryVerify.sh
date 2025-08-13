@@ -2,14 +2,15 @@
 source .env
 
 # Accept chain ID as argument, default to Base Sepolia
-CHAIN_ID="${1:-84532}"
+CHAIN_ID="42161"
 
 # Configure network-specific settings based on chain ID
 case "$CHAIN_ID" in
-  "84532")
-    NETWORK_NAME="Base Sepolia"
-    RPC_URL=${BASE_SEPOLIA_RPC}
-    EXPLORER_URL="https://sepolia.basescan.org/address"
+  "42161") # Arbitrum
+    NETWORK_NAME="Arbitrum"
+    RPC_URL=${ARBITRUM_RPC}
+    EXPLORER_URL="https://arbiscan.io/address"
+    VERIFIER_URL="https://api.etherscan.io/v2/api"
     ;;
   "11155420")
     NETWORK_NAME="OP Sepolia"
@@ -26,7 +27,7 @@ esac
 ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
 
 # JobRegistry proxy address (same on both networks)
-PROXY_ADDRESS="0xdB66c11221234C6B19cCBd29868310c31494C21C"
+PROXY_ADDRESS="0xaf1189afd1f1880f09aec3cbc32cf415c735c710"
 
 echo "=== Verifying JobRegistry on $NETWORK_NAME (Chain ID: $CHAIN_ID) ==="
 echo "Proxy address: $PROXY_ADDRESS"
@@ -59,8 +60,11 @@ echo "=== Verifying JobRegistry Implementation ==="
 # Verify the implementation contract using Etherscan v2 API
 forge verify-contract \
   --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
+  --verifier-url "$VERIFIER_URL" \
+  --verifier etherscan \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  --etherscan-api-version v2 \
+  --chain "$CHAIN_ID" \
   "$IMPLEMENTATION_ADDRESS" \
   src/JobRegistry.sol:JobRegistry
 
@@ -107,8 +111,11 @@ echo "Proxy constructor args: $CONSTRUCTOR_ARGS"
 # Verify the proxy contract using Etherscan v2 API
 forge verify-contract \
   --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
+  --verifier-url "$VERIFIER_URL" \
+  --verifier etherscan \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  --etherscan-api-version v2 \
+  --chain "$CHAIN_ID" \
   --constructor-args "$CONSTRUCTOR_ARGS" \
   "$PROXY_ADDRESS" \
   lib/othentic-core-contracts/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy

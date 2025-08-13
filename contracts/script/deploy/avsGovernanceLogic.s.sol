@@ -8,20 +8,21 @@ import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant TASK_EXECUTION_HUB = payable(0x2469e89386947535A350EEBccC5F2754fd35F474);
+ // TODO: // used impl address, contract call can correct that
+    address payable constant TASK_EXECUTION_HUB = payable(0x0E258AC902F116589c86eb3D83253d7223b9c12A); 
 
-    address payable constant AVS_GOVERNANCE = payable(0x12f45551f11Df20b3EcBDf329138Bdc65cc58Ec0); // TestnetProduction AVS Governance address
+    address payable constant AVS_GOVERNANCE = payable(0x875B5ff698B74B26f39C223c4996871F28AcDdea); // Maninnet AVS Governance address
 
     // address payable constant AVS_GOVERNANCE = payable(0xBDd47006B79675274959fE8cA13470ed206a836D);
      // LayerZero Endpoints
-    address constant LZ_ENDPOINT_OP_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
-    address constant LZ_ENDPOINT_BASE_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
-    address constant LZ_ENDPOINT_HOLESKY = 0x6EDCE65403992e310A62460808c4b910D972f10f; // Update with actual Holesky endpoint
+    address constant LZ_ENDPOINT_BASE_SEPOLIA = 0x1a44076050125825900e736c501f859c50fE728c;
+    address constant LZ_ENDPOINT_HOLESKY = 0x1a44076050125825900e736c501f859c50fE728c;
+    address constant LZ_ENDPOINT_ARBITRUM_SEPOLIA = 0x1a44076050125825900e736c501f859c50fE728c;
 
     // Endpoint IDs (EIDs for LayerZero)
-    uint32 constant OP_SEPOLIA_EID = 40232; // Optimism Sepolia Endpoint ID
-    uint32 constant BASE_SEPOLIA_EID = 40245; // Base Sepolia Endpoint ID
-    uint32 constant HOLESKY_EID = 40217; 
+    uint32 constant BASE_SEPOLIA_EID = 30184; // Base Sepolia Endpoint ID
+    uint32 constant HOLESKY_EID = 30101; // Holesky Endpoint ID
+    uint32 constant ARBITRUM_SEPOLIA_EID = 30110; // Arbitrum Sepolia Endpoint ID
 
     function run() external {
         // Fetch deployer information from environment variables.
@@ -30,7 +31,7 @@ contract DeployAvsGovernance is Script {
         console.log("Deploying contracts using deployer:", deployerAddress);
 
         // Create a fork using the Holesky RPC.
-        uint256 forkId = vm.createSelectFork(vm.envString("HOLESKY_RPC"));
+        // uint256 forkId = vm.createSelectFork(vm.envString("ETHEREUM_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy AvsGovernanceLogic
@@ -51,20 +52,20 @@ contract DeployAvsGovernance is Script {
         // setTaskExecutionHub on Holesky
         // AvsGovernanceLogic avsGovernance = AvsGovernanceLogic(AVS_GOVERNANCE);
         console.log("\n=== Setting TaskExecutionHub on Holesky ===");
-        avsGovernance.setTaskExecutionHub(TASK_EXECUTION_HUB);
-        console.log("TaskExecutionHub set successfully on Holesky");
+        // avsGovernance.setTaskExecutionHub(TASK_EXECUTION_HUB);
+        // console.log("TaskExecutionHub set successfully on Holesky");
         
         vm.stopBroadcast();
 
         // Switch to Base Sepolia to set peer on TaskExecutionHub
-        console.log("\n=== Switching to Base Sepolia to set peer on TaskExecutionHub ===");
-        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
-        vm.startBroadcast(deployerPrivateKey);
+        // console.log("\n=== Switching to Base Sepolia to set peer on TaskExecutionHub ===");
+        // vm.createSelectFork(vm.envString("BASE_RPC"));
+        // vm.startBroadcast(deployerPrivateKey);
         
-        TaskExecutionHub taskExecutionHub = TaskExecutionHub(TASK_EXECUTION_HUB);
-        taskExecutionHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
-        console.log("Peer set successfully on TaskExecutionHub");
-        vm.stopBroadcast();
+        // TaskExecutionHub taskExecutionHub = TaskExecutionHub(TASK_EXECUTION_HUB);
+        // taskExecutionHub.setPeer(HOLESKY_EID, bytes32(uint256(uint160(address(avsGovernance)))));
+        // console.log("Peer set successfully on TaskExecutionHub");
+        // vm.stopBroadcast();
         // Call afterOperatorRegistered with the deployer address
         
         // console.log("\n=== Calling afterOperatorRegistered ===");

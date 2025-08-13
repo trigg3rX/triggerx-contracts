@@ -9,7 +9,7 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 
 contract TriggerGasRegistryDeploy is Script {
     function run() public {
-        bytes32 SALT = keccak256(abi.encodePacked("TriggerGasRegistry"));
+        bytes32 SALT = keccak256(abi.encodePacked("triggerX_triggerGasRegistry_V1"));
 
         bytes32 implementation_salt = keccak256(abi.encodePacked("ImplementationV1"));
 
@@ -19,12 +19,17 @@ contract TriggerGasRegistryDeploy is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
 
-        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
+        vm.createSelectFork(vm.envString("ARBITRUM_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         address implementation = CREATE3.deployDeterministic(implementation_code, implementation_salt);
 
-        bytes memory initData = abi.encodeWithSelector(TriggerGasRegistry.initialize.selector, deployer);
+        bytes memory initData = abi.encodeWithSelector(
+            TriggerGasRegistry.initialize.selector, 
+            deployer,
+            deployer,
+            1000
+        );
         bytes memory proxy_code = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(address(implementation), initData));
 
         address proxy = CREATE3.deployDeterministic(proxy_code, SALT);

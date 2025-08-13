@@ -14,7 +14,7 @@ contract DeployJobRegistry is Script {
         
         vm.startBroadcast(deployerPrivateKey);
 
-        bytes32 salt = keccak256(abi.encode(vm.envString("JR_SALT")));
+        bytes32 salt = keccak256(abi.encode("triggerX_eigenlayer_jobRegistry_V1"));
 
         // Deploy the implementation contract
         JobRegistry implementation = new JobRegistry();

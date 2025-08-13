@@ -1,0 +1,33 @@
+{
+  "42161": {
+    "arbitrum_one": {
+      "triggerGasRegistry": {
+        "proxy": "0x93dDB2307F3Af5df85F361E5Cddd898Acd3d132d",
+        "implementation": "0x9F452702490e11Af38C213De30c000A46E4dA399"
+      },
+      "jobRegistry": {
+        "proxy": "0xAf1189aFd1F1880F09AeC3Cbc32cf415c735C710",
+        "implementation": "0xc1F545Fe807b72429952dbFEFE8702658e4C5875"
+      },
+      "taskExecutionSpoke": {
+        "proxy": "0xD5A2Db7ae8b04abC791b685fEd40DC76D6b82014",
+        "implementation": "0x0E258AC902F116589c86eb3D83253d7223b9c12A"
+      }
+    }
+  },
+  "8453": {
+    "base": {
+      "taskExecutionHub": {
+        "proxy": "0xD5A2Db7ae8b04abC791b685fEd40DC76D6b82014",
+        "implementation": "0x0E258AC902F116589c86eb3D83253d7223b9c12A"
+      }
+    }
+  },
+  "1": {
+    "ethereum_mainnet": {
+      "avsGovernanceLogic": {
+        "implementation": "0xc1f545fe807b72429952dbfefe8702658e4c5875"
+      }
+    }
+  }
+}
