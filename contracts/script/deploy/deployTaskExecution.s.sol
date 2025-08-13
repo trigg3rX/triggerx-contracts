@@ -28,14 +28,14 @@ contract DeployAll is Script {
     // uint32 constant AVALANCHE_FUJI_EID = 40106; // Avalanche Fuji Endpoint ID
     // uint32 constant BNB_TESTNET_EID = 40102; // BNB Testnet Endpoint ID
 
-    address constant JOB_REGISTRY_ADDRESS = 0xc1F545Fe807b72429952dbFEFE8702658e4C5875; // implementation address
-    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x845980680264Bc17978E26B367144d17159eeC75; // random address, don't where I got it :(
+    address constant JOB_REGISTRY_ADDRESS = 0xAf1189aFd1F1880F09AeC3Cbc32cf415c735C710; // proxy address on arbitrum
+    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x93dDB2307F3Af5df85F361E5Cddd898Acd3d132d; // proxy address on arbitrum
     address constant ATTESATION_CENTER_ADDRESS = 0x6DFee10D13d5B43AaF97bDA908C1D76d4313aF5f;
-    // address constant AVS_GOVERNANCE_LOGIC_ADDRESS = 0xACB667202C6F9b84D91dA1D66c82f30c66738299;
-    
+    address constant AVS_GOVERNANCE_LOGIC_ADDRESS = 0xc1F545Fe807b72429952dbFEFE8702658e4C5875;
+    address constant HUB_IMPLEMENTATION_ADDRESS = 0x005a2Da42955E3837587D9cD87A19511F8041263;
+    address constant SPOKE_IMPLEMENTATION_ADDRESS = 0x04730cEa1156832Ad18f4dA0c674EcC88d745eE8;
 
-
-    bytes32 SALT = bytes32(keccak256(abi.encodePacked("triggerX_taskExecution_V1")));
+    bytes32 SALT = bytes32(keccak256(abi.encodePacked("triggerX_taskExecutionProxy_V1")));
 
     // Struct to hold network deployment information
     struct NetworkInfo {
@@ -50,67 +50,14 @@ contract DeployAll is Script {
     address private hubAddress;
     address[] private spokeAddresses;
 
-    function fetchOperatorsFromAttestationCenter() internal view returns (address[] memory) {
-        console.log("Attempting to fetch operators from AttestationCenter...");
-        
-        IAttestationCenter attestationCenter = IAttestationCenter(ATTESATION_CENTER_ADDRESS);
-        
-        // Use numOfOperators() which is defined in the interface
-        try attestationCenter.numOfTotalOperators() returns (uint256 operatorCount) {
-            console.log("Number of operators found:", operatorCount);
-            
-            if (operatorCount == 0) {
-                revert("No operators found in AttestationCenter");
-            }
-            
-            return fetchOperatorsByCount(attestationCenter, operatorCount);
-            
-        } catch Error(string memory reason) {
-            console.log("numOfOperators failed:", reason);
-        } catch {
-            console.log("numOfOperators failed with unknown error");
-        }
-        
-        // If all methods fail, revert with error
-        revert("Unable to fetch operators from AttestationCenter. Please check the contract address and network.");
-    }
-    
-    function fetchOperatorsByCount(IAttestationCenter attestationCenter, uint256 operatorCount) internal view returns (address[] memory) {
-        address[] memory tempOperators = new address[](operatorCount);
-        uint256 validOperators = 0;
-        
-        for (uint256 i = 1; i <= operatorCount; i++) {
-            try attestationCenter.getOperatorPaymentDetail(i) returns (IAttestationCenter.PaymentDetails memory details) {
-                if (details.operator != address(0)) {
-                    tempOperators[validOperators] = details.operator;
-                    console.log("Operator", i, ":", details.operator);
-                    validOperators++;
-                }
-            } catch {
-                console.log("Failed to fetch operator", i, "- skipping");
-            }
-        }
-        
-        // Resize array to only include valid operators
-        if (validOperators < operatorCount) {
-            address[] memory validOperatorArray = new address[](validOperators);
-            for (uint256 i = 0; i < validOperators; i++) {
-                validOperatorArray[i] = tempOperators[i];
-            }
-            return validOperatorArray;
-        }
-        
-        return tempOperators;
-    }
-
     function deployHub(uint256 deployerPrivateKey, address deployerAddress) internal {
         console.log("\n=== Deploying TaskExecutionHub on Base Sepolia ===");
 
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy the implementation contract
-        TaskExecutionHub hubImpl = new TaskExecutionHub(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress);
-        console.log("TaskExecutionHub implementation deployed at:", address(hubImpl));
+        // TaskExecutionHub hubImpl = new TaskExecutionHub(LZ_ENDPOINT_BASE_SEPOLIA, deployerAddress);
+        // console.log("TaskExecutionHub implementation deployed at:", address(hubImpl));
 
         // 2. Prepare the initialization calldata
         bytes memory initData = abi.encodeWithSelector(
@@ -126,17 +73,15 @@ contract DeployAll is Script {
         // 3. Prepare the proxy bytecode
         bytes memory proxyBytecode = abi.encodePacked(
             type(ERC1967Proxy).creationCode,
-            abi.encode(address(hubImpl), initData)
+            abi.encode(HUB_IMPLEMENTATION_ADDRESS, initData)
         );
         
         // 4. Deploy proxy using CREATE3
         hubAddress = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log("TaskExecutionHub proxy deployed at:", hubAddress);
 
-        // TaskExecutionHub(payable(hubAddress)).setPeer(HOLESKY_EID, bytes32(uint256(uint160(AVS_GOVERNANCE_LOGIC_ADDRESS))));
-        // TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(hubAddress);
-
-        // console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
+        // Note: setPeer and setOperator calls are moved to configureHub function
+        // where we can handle cross-chain calls properly
 
         vm.stopBroadcast();
     }
@@ -160,6 +105,9 @@ contract DeployAll is Script {
         vm.deal(address(hub), 0.0001 ether);
         // console.log("Sent 1 ETH to Hub contract at:", address(hub));
 
+        // Note: Cross-chain configuration calls (setPeer, setOperator) should be handled separately
+        // as they require interacting with contracts on different networks
+
         vm.stopBroadcast();
     }
 
@@ -177,8 +125,8 @@ contract DeployAll is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy implementation
-        TaskExecutionSpoke spokeImpl = new TaskExecutionSpoke(endpoint, deployerAddress);
-        console.log(string.concat("TaskExecutionSpoke implementation on ", networkName, " deployed at:"), address(spokeImpl));
+        // TaskExecutionSpoke spokeImpl = new TaskExecutionSpoke(endpoint, deployerAddress);
+        // console.log(string.concat("TaskExecutionSpoke implementation on ", networkName, " deployed at:"), address(spokeImpl));
 
         // 2. Prepare initialization calldata
         bytes memory initData = abi.encodeWithSelector(
@@ -193,17 +141,15 @@ contract DeployAll is Script {
         // 3. Prepare proxy bytecode
         bytes memory proxyBytecode = abi.encodePacked(
             type(ERC1967Proxy).creationCode,
-            abi.encode(address(spokeImpl), initData)
+            abi.encode(SPOKE_IMPLEMENTATION_ADDRESS, initData)
         );
         
         // 4. Deploy proxy using CREATE3
         address spokeAddr = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log(string.concat("TaskExecutionSpoke proxy deployed on ", networkName, " at:"), spokeAddr);
 
-
-        // TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(spokeAddr);
-
-        // console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
+        // Note: setOperator call is commented out as it requires cross-chain interaction
+        // This should be handled separately after deployment
 
         vm.stopBroadcast();
         
@@ -240,14 +186,14 @@ contract DeployAll is Script {
         console.log("Hub Owner:", hub.owner());
         
         // OP Sepolia spoke
-        TaskExecutionSpoke opSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
-        console.log("OP Sepolia Spoke Address:", spokeAddresses[0]);
-        console.log("OP Sepolia Spoke Owner:", opSpoke.owner());
+        // TaskExecutionSpoke opSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
+        // console.log("OP Sepolia Spoke Address:", spokeAddresses[0]);
+        // console.log("OP Sepolia Spoke Owner:", opSpoke.owner());
         
         // Arbitrum Sepolia spoke
-        // TaskExecutionSpoke arbSpoke = TaskExecutionSpoke(payable(spokeAddresses[1]));
-        // console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[1]);
-        // console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
+        TaskExecutionSpoke arbSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
+        console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[0]);
+        console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
         
         console.log("---------------------------");
     }
