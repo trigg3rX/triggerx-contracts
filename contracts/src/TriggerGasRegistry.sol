@@ -154,4 +154,29 @@ contract TriggerGasRegistry is
         TG_PER_ETH = _tgPerEth;
         emit TGPerETHUpdated(_tgPerEth);
     }
+
+    /**
+     * @notice Batch migration function for efficient migration of multiple users
+     * @param users Array of user addresses
+     * @param ethSpentAmounts Array of ETH spent amounts
+     * @param tgBalances Array of TG balances
+     */
+    function batchMigrateUsers(
+        address[] calldata users,
+        uint256[] calldata ethSpentAmounts,
+        uint256[] calldata tgBalances
+    ) external payable onlyOwner {
+        require(users.length == ethSpentAmounts.length, "Length mismatch");
+        require(users.length == tgBalances.length, "Length mismatch");
+
+        uint256 totalEthSpent = 0;
+        for (uint i = 0; i < users.length; i++) {
+            TGBalance storage userBalance = balances[users[i]];
+            userBalance.ethSpent = ethSpentAmounts[i];
+            userBalance.TGbalance = tgBalances[i];
+            totalEthSpent += ethSpentAmounts[i];
+            emit TGPurchased(users[i], ethSpentAmounts[i], tgBalances[i]);
+        }
+        require(msg.value >= totalEthSpent, "Sent ETH must be greater than or equal to total ETH spent");
+    }
 } 

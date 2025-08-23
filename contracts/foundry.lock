@@ -1,0 +1,14 @@
+{
+  "lib/layerzero-v2": {
+    "rev": "48976d1c51acb59131b921ec37362cefed1982d3"
+  },
+  "lib/interop-lib": {
+    "rev": "60931177e73eca37a5b3d14463b6cbd6c7b1d741"
+  },
+  "lib/othentic-core-contracts": {
+    "rev": "742a82e472cd6824debf0b434c600a78835186a4"
+  },
+  "lib/solady": {
+    "rev": "61af38fd079475912bb924e02766381353f482f2"
+  }
+}

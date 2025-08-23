@@ -4,147 +4,157 @@ pragma solidity ^0.8.26;
 import "forge-std/Script.sol";
 import "forge-std/console.sol";
 
-interface ITriggerXStakeRegistry {
-    function getStake(address user) external view returns (uint256, uint256);
-    function points(address user) external view returns (uint256);
-}
-
 interface ITriggerGasRegistry {
     function batchMigrateUsers(
         address[] calldata users,
         uint256[] calldata ethSpentAmounts,
-        uint256[] calldata tgBalances,
-        uint256[] calldata userPoints
-    ) external;
+        uint256[] calldata tgBalances
+    ) external payable;
     function getBalance(address user) external view returns (uint256, uint256);
-    function points(address user) external view returns (uint256);
 }
 
 contract TriggerGasMigration is Script {
-    address constant OLD_REG    = 0xF1d505d1f6df11795c77A8A1b7476609E7b6361a;
-    address constant NEW_REG    = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
+    // Update these addresses for your new deployment
+    address constant OLD_REG = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
+    address constant NEW_REG = 0x204F9278D6BB7714D7A40842423dFd5A27cC1b88;
 
     function run() external {
-        uint256 pk      = vm.envUint("PRIVATE_KEY");
+        uint256 pk = vm.envUint("PRIVATE_KEY");
 
-        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
+        // Update RPC URL as needed
+        // vm.createSelectFork(vm.envString("BASE_RPC"));
+        vm.createSelectFork(vm.envString("OPTIMISM_RPC"));
         vm.startBroadcast(pk);
 
-        ITriggerXStakeRegistry oldReg = ITriggerXStakeRegistry(OLD_REG);
-        ITriggerGasRegistry      newReg = ITriggerGasRegistry(NEW_REG);
+        ITriggerGasRegistry oldReg = ITriggerGasRegistry(OLD_REG);
+        ITriggerGasRegistry newReg = ITriggerGasRegistry(NEW_REG);
+        
+        // User addresses:
+        // address[] memory users = getBaseUsers();
+        address[] memory users = getOptimismUsers();
 
-        address[] memory users = new address[](70);
-        users[0] = 0xD5E9061656252a0b44D98C6944B99046FDDf49cA;
-        users[1] = 0xBc0435FB4f37345a420fbD09e5700f3A72fd0534;
-        users[2] = 0xC76EA60887CA82C474cf6dfc17f918DDd68D6cA2;
-        users[3] = 0x751F7CB39462FFc9cbE0276D411EbA4a2a7Ebe46;
-        users[4] = 0xc073A5E091DC60021058346b10cD5A9b3F0619fE;
-        users[5] = 0xE3304AB782c3272D1D7964ba7043e11Fd7ecFEB8;
-        users[6] = 0x28C8568C73E62E42246dFa4a6aAbeCF4Ef497bE3;
-        users[7] = 0xB4e6ee231C86bBcCB35935244CBE9cE333D30Bdf;
-        users[8] = 0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085;
-        users[9] = 0xEd9C18fcc15c02b8B590354dd46C014c62F3DCDE;
-        users[10] = 0x45E4657eE118325F852609e9dB45211fe1A0044C;
-        users[11] = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
-        users[12] = 0x93c0f6dD62D4A5DcfBB4a887048Ff563cBa9C9Fb;
-        users[13] = 0x21e3dBDB71FDe76BC37fA30A0702E7CD2D984546;
-        users[14] = 0x7c0B569F6575608614e0b0dd9D65359D0757a34f;
-        users[15] = 0x8FCE7E1C5Ac0d40451FEd06c127f42F0fd7E8ed0;
-        users[16] = 0x931628CEb6f30c580B58813e19744a0359f37bC8;
-        users[17] = 0xBBE7A17CCD734Fb382de00970CB1DB113DC73Cb5;
-        users[18] = 0x2465b8016dd6d573e790Bd99323Ba7e91a2868CF;
-        users[19] = 0x334eBE7A724ea661fEC3246f21Ce25e3dc25f9C6;
-        users[20] = 0x70D5D108fEf49be40d2c2388ae722B23F4Df2175;
-        users[21] = 0x69b4fe79f7D054468B23858204978e6F677e044A;
-        users[22] = 0x4d264374A1EA425BAdd7930628e3b1481b0dBb69;
-        users[23] = 0x6d14CdB5aD9aBAf8D3eA1f5F9bdCE26C95c406E5;
-        users[24] = 0x655558724583731AEcB88711E76Aed9081225D79;
-        users[25] = 0x149fd3c6326900Bb0489095579e8e8011133d06b;
-        users[26] = 0xC81354b4661C425dA082601b578c6EA9A6510Fa1;
-        users[27] = 0x7C81c3d1241Cc5d6d46b53a0a67e67c9610a7653;
-        users[28] = 0xf439883b6A26F5D74AC0472aa4365cc7e6C2A4Dc;
-        users[29] = 0xC9dC9c361c248fFA0890d7E1a263247670914980;
-        users[30] = 0x71F1DaA35BD934A412577C1e3b5FfFB3572eeBed;
-        users[31] = 0xe9f3EFAC8160E4Fff14F9e7828DE69cAb15541A5;
-        users[32] = 0x0FbF9c8212Ce7a85D70350f438C28284A806aD5a;
-        users[33] = 0x844294eBecC14e934d9d72a319E6Fa9DbAf95Bc5;
-        users[34] = 0xC05cA8C526422Ef68C0cFdFE87fd8dB577174F56;
-        users[35] = 0x82Bb444dfc9B9799A59B068A1677c2fEdF032917;
-        users[36] = 0x7Db951c0E6D8906687B459427eA3F3F2b456473B;
-        users[37] = 0xa059C8e31dAc3Eb0cEe5C821202A3da07E876611;
-        users[38] = 0xba7e4875EB063006b7C9E94EA6bE3ad8be90be4E;
-        users[39] = 0x8a51c19C4B3ed916769B56DbC039f8DF876029bE;
-        users[40] = 0xB5291a0Df6A91Ab9e75c4992eA3f4abeC7f548Be;
-        users[41] = 0x71Cfae5b40Ce7f623208DE3A8D08162572A4AfD9;
-        users[42] = 0x055e07963B956AD77087d70fE351d5B5Cf646208;
-        users[43] = 0x5074411b284B10E706dc7316812D6Ed244a56085;
-        users[44] = 0xe8c1A8f1c4fb011dE16F1E9BDC8bf8653fADD713;
-        users[45] = 0x34Ff6F8A4C7F1673D4c046170d006C10763120A6;
-        users[46] = 0xF4Fcb1A9b5D853cE1C32B5513D4D5cCeC2a3CFe0;
-        users[47] = 0xDa76B028117544D91a6bC86034f3421D94F97cAA;
-        users[48] = 0x998638A1Ec37784f059461B072cB9a4C2ce6E155;
-        users[49] = 0x1A396b462a0701fD0C284C793f290Eb724cf2311;
-        users[50] = 0xaeb1D436436D86b448a45538bc311AAdc18a6DEc;
-        users[51] = 0xA4857864c95e4f6C6ca54844832bDDe036e7a3Ed;
-        users[52] = 0x63Bb96dC6467240DbbDE51CCF16dE7f7C8FdC02D;
-        users[53] = 0xE4346694184e76C1F2eAF1BeBbdf2f30Da5460E8;
-        users[54] = 0xdD6c4B5ff53dECDd5F770840B1803F6880d5c057;
-        users[55] = 0x28a8681595Ff376f12E9eEc274c01b0928b50D3a;
-        users[56] = 0xBb4768E6D19f9c025fe68870B451b36D1F614b5B;
-        users[57] = 0xdfC54a9f540182a01FFc2a94B2Cc62F698E7a899;
-        users[58] = 0x4D85968D0507db91D5c21db19b1652af76671Fd0;
-        users[59] = 0x17d3EE21a6739D9452F714C83c9122D21Af41786;
-        users[60] = 0x50a5271FFf29ABAA78F3d63A72aa849B122E7aBD;
-        users[61] = 0xD8a5F149F40d2C79143Ad8EA9272828F8a00d15a;
-        users[62] = 0x49089A3bFc1F67E1e83Cf56eF441249a09a72c89;
-        users[63] = 0x1407BA540dBB5957e3760C67A63791cD22f1F181;
-        users[64] = 0x0a067a261c5F5e8C4c0b9137430b4FE1255EB62e;
-        users[65] = 0x20e3Bec40047423eEeD14F88935Ed5FF83457F33;
-        users[66] = 0xBd96B9cB77513293A0C7541238c88d0268Fa55c5;
-        users[67] = 0x12f36dCB059B50Bb862336299571380103DCAbD4;
-        users[68] = 0x0000EA905fFcb21aA98251CfA292cdeA347a6416;
-        users[69] = 0xd06CBfc7684372097B80682908DEeB20e95b6307;
+        console.log("Total users to migrate:", users.length);
 
-        console.log("total users:", users.length);
+        // Batch size
+        uint256 totalEthSpent = 0;
 
-        // batch size (tweak to your gas limits)
-        uint256 batch = 100;
-        for (uint256 i = 0; i < users.length; i += batch) {
-            uint256 end = i + batch;
-            if (end > users.length) end = users.length;
+        // Fetch old state
+        uint256[] memory ethSpent = new uint256[](users.length);
+        uint256[] memory tgBal = new uint256[](users.length);
+        uint256[] memory userPoints = new uint256[](users.length); // Will be zeros since no points in current contract
 
-            // slice users[i:end]
-            address[] memory chunk = new address[](end - i);
-            for (uint256 j = i; j < end; j++) {
-                chunk[j - i] = users[j];
-            }
-
-            // fetch old state
-            uint256[] memory ethSpent = new uint256[](chunk.length);
-            uint256[] memory tgBal    = new uint256[](chunk.length);
-            uint256[] memory ptsArr   = new uint256[](chunk.length);
-
-            for (uint256 k = 0; k < chunk.length; k++) {
-                (ethSpent[k], tgBal[k]) = oldReg.getStake(chunk[k]);
-                ptsArr[k]               = oldReg.points(chunk[k]);
-            }
-
-            // migrate
-            newReg.batchMigrateUsers(chunk, ethSpent, tgBal, ptsArr);
-            console.log("migrated batch", i / batch + 1, "size", chunk.length);
-
-            // verify
-            for (uint256 k = 0; k < chunk.length; k++) {
-                (uint256 e2, uint256 t2) = newReg.getBalance(chunk[k]);
-                uint256 p2              = newReg.points(chunk[k]);
-                require(e2 == ethSpent[k],   "ETH mismatch");
-                require(t2 == tgBal[k],       "TG mismatch");
-                require(p2 == ptsArr[k],      "pts mismatch");
-            }
-            console.log("batch", i / batch + 1, "verified");
+        for (uint256 k = 0; k < users.length; k++) {
+            (ethSpent[k], tgBal[k]) = oldReg.getBalance(users[k]);
+            userPoints[k] = 0; // No points in current contract
+            totalEthSpent += ethSpent[k];
         }
 
+        // Calculate required ETH for migration
+        uint256 requiredETH = 0;
+        for (uint256 k = 0; k < ethSpent.length; k++) {
+            requiredETH += ethSpent[k];
+        }
+
+        console.log("Required ETH for this migration:", requiredETH);
+
+        // Migrate batch
+        newReg.batchMigrateUsers{value: requiredETH}(users, ethSpent, tgBal);
+
+        // Verify migration
+        for (uint256 k = 0; k < users.length; k++) {
+            (uint256 newEthSpent, uint256 newTgBal) = newReg.getBalance(users[k]);
+            require(newEthSpent == ethSpent[k], "ETH spent mismatch");
+            require(newTgBal == tgBal[k], "TG balance mismatch");
+        }
+
+        console.log("Migration completed successfully!");
+        console.log("Total ETH migrated:", totalEthSpent);
+
         vm.stopBroadcast();
-        console.log("migration complete");
+    }
+
+    function getBaseUsers() public pure returns (address[] memory) {
+        address[] memory users = new address[](29);
+        users[0] = 0x5074411b284B10E706dc7316812D6Ed244a56085;
+        users[1] = 0xc073A5E091DC60021058346b10cD5A9b3F0619fE;
+        users[2] = 0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085;
+        users[3] = 0x0a067a261c5F5e8C4c0b9137430b4FE1255EB62e;
+        users[4] = 0xA4857864c95e4f6C6ca54844832bDDe036e7a3Ed;
+        users[5] = 0x4BF8E1E54E50E3b64E9c486D4230Ee4F9e7dE792;
+        users[6] = 0x1A396b462a0701fD0C284C793f290Eb724cf2311;
+        users[7] = 0x334eBE7A724ea661fEC3246f21Ce25e3dc25f9C6;
+        users[8] = 0xe6AF6d5C12e4790Dbf8BbAa3715146BAA485Fc3B;
+        users[9] = 0x4D9e5bf28A12266BFA90BBEEAA3F6600B5561B76;
+        users[10] = 0x43a4685A71FecDb47484763373F9dfeE2864c149;
+        users[11] = 0xC9dC9c361c248fFA0890d7E1a263247670914980;
+        users[12] = 0xee2094f32c67B540CFB55C58D38D04718c9fea5B;
+        users[13] = 0x0763ec3E83d89bf431a665403226af438508E97F;
+        users[14] = 0x854cCC3f4C1b4EB2030108Db3454fe8eaee9F676;
+        users[15] = 0x8b5BA20Fd0d5cB69594b98614167155EE5e3a393;
+        users[16] = 0x077f6F930Bc1e892Ebaf4492097161d448ce442f;
+        users[17] = 0xF4f20bf9f8d7D12e2C0026A9a253C53e85FceA67;
+        users[18] = 0x6d14CdB5aD9aBAf8D3eA1f5F9bdCE26C95c406E5;
+        users[19] = 0xD8a5F149F40d2C79143Ad8EA9272828F8a00d15a;
+        users[20] = 0xdfC54a9f540182a01FFc2a94B2Cc62F698E7a899;
+        users[21] = 0x07C4b9865dC8F2970C8e8E518e5DF137fF074b42;
+        users[22] = 0x62Ee26BC056D1676E4064dD637B3d317F33532cf;
+        users[23] = 0x7C81c3d1241Cc5d6d46b53a0a67e67c9610a7653;
+        users[24] = 0x7Db951c0E6D8906687B459427eA3F3F2b456473B;
+        users[25] = 0x45E4657eE118325F852609e9dB45211fe1A0044C;
+        users[26] = 0x149fd3c6326900Bb0489095579e8e8011133d06b;
+        users[27] = 0xd07ba8f10a16EF1e5024CF58a84aDB6Df228Bb4A;
+        users[28] = 0x17d777472885F9b84bd540C3A93FaecEA1204940;
+        return users;
+    }
+
+    function getOptimismUsers() public pure returns (address[] memory) {
+        address[] memory users = new address[](46);
+        users[0] = 0x88826a677aDB340F0c7b8CCd6aF6aD96a40b0085;
+        users[1] = 0x1A396b462a0701fD0C284C793f290Eb724cf2311;
+        users[2] = 0xae229e741938fd71BE75247f6B14B280031e4777;
+        users[3] = 0x2460F77c64B6CA587178c8d931994b1e35C6eA5a;
+        users[4] = 0xe6c691B74E4Ad2246a40D0146A18a145487E1DFe;
+        users[5] = 0x0a067a261c5F5e8C4c0b9137430b4FE1255EB62e;
+        users[6] = 0x0763ec3E83d89bf431a665403226af438508E97F;
+        users[7] = 0x845cd84602c7c97C57DbcC7511FEF59365fD6744;
+        users[8] = 0x5F954aB624bBf9369b81C9a2076eDc32ecdEB542;
+        users[9] = 0x230f0AEe934C9d1Fdf2a4cE0Fc46738786e26B1a;
+        users[10] = 0x4d264374A1EA425BAdd7930628e3b1481b0dBb69;
+        users[11] = 0x2b64ea2059344E7BCABf3881a51de92fBbe7eDfc;
+        users[12] = 0x7C81c3d1241Cc5d6d46b53a0a67e67c9610a7653;
+        users[13] = 0xdfC54a9f540182a01FFc2a94B2Cc62F698E7a899;
+        users[14] = 0xBd0Bc08df8c9Cd7e70e78C00f6eb94449be20C04;
+        users[15] = 0x31533eDB7740462f6A0d031Cb4CCc87E90F3Ec6d;
+        users[16] = 0xC2A3d741ae143BF9f27a6021Fd0a1aCBBAfcB40b;
+        users[17] = 0x998638A1Ec37784f059461B072cB9a4C2ce6E155;
+        users[18] = 0xA4857864c95e4f6C6ca54844832bDDe036e7a3Ed;
+        users[19] = 0xD8a5F149F40d2C79143Ad8EA9272828F8a00d15a;
+        users[20] = 0xf52233666b4ff2336EA47D4509E6371D91A303C1;
+        users[21] = 0xF4Fcb1A9b5D853cE1C32B5513D4D5cCeC2a3CFe0;
+        users[22] = 0x8b5BA20Fd0d5cB69594b98614167155EE5e3a393;
+        users[23] = 0x49089A3bFc1F67E1e83Cf56eF441249a09a72c89;
+        users[24] = 0xe6AF6d5C12e4790Dbf8BbAa3715146BAA485Fc3B;
+        users[25] = 0x20e3Bec40047423eEeD14F88935Ed5FF83457F33;
+        users[26] = 0x618dC17De04cB1DDD07E2f945fFb8357E0cAa370;
+        users[27] = 0x2871e6255d8560F2e16a03373B957F86bf27382d;
+        users[28] = 0x4D9e5bf28A12266BFA90BBEEAA3F6600B5561B76;
+        users[29] = 0x0DFF2137f66AAC67Adfb7ffC88a2a679B46931C0;
+        users[30] = 0x62Ee26BC056D1676E4064dD637B3d317F33532cf;
+        users[31] = 0xF4f20bf9f8d7D12e2C0026A9a253C53e85FceA67;
+        users[32] = 0x6d14CdB5aD9aBAf8D3eA1f5F9bdCE26C95c406E5;
+        users[33] = 0x17d777472885F9b84bd540C3A93FaecEA1204940;
+        users[34] = 0x07C4b9865dC8F2970C8e8E518e5DF137fF074b42;
+        users[35] = 0xF27F42715811394E6b42d29715100db52c9d33FB;
+        users[36] = 0xE2Fdf521907F5A548D01047797D5B580a24a9822;
+        users[37] = 0x63Bb96dC6467240DbbDE51CCF16dE7f7C8FdC02D;
+        users[38] = 0x854cCC3f4C1b4EB2030108Db3454fe8eaee9F676;
+        users[39] = 0x130b11D9CC4ACEB69b9a68031860751Cb4aF1618;
+        users[40] = 0x93ED9Bbc3c7acC85045fD6C8857C8e37968eB1A8;
+        users[41] = 0x8443f65FEe323c1D30C52aa95152AC89FCb0dD31;
+        users[42] = 0x6c275fDff8008fCe66C779CB56BdACACbB9F6436;
+        users[43] = 0x655558724583731AEcB88711E76Aed9081225D79;
+        users[44] = 0x0255F7A175f73a05765719c165445F63155aF8E9;
+        users[45] = 0x58693935b683F73B6Cff9390Dd4fFA707dC4F069;
+        return users;
     }
 }
