@@ -2,26 +2,26 @@
 source .env
 
 # Accept chain ID as argument, default to Base Sepolia
-CHAIN_ID="${1:-84532}"
+CHAIN_ID="421614"
 
 # Configure network-specific settings based on chain ID
-case "$CHAIN_ID" in
-  "84532")
-    NETWORK_NAME="Base Sepolia"
-    RPC_URL=${BASE_SEPOLIA_RPC}
-    EXPLORER_URL="https://sepolia.basescan.org/address"
-    ;;
-  "11155420")
+# case "$CHAIN_ID" in
+#   "84532")
+#     NETWORK_NAME="Base Sepolia"
+#     RPC_URL=${BASE_SEPOLIA_RPC}
+#     EXPLORER_URL="https://sepolia.basescan.org/address"
+#     ;;
+#   "11155420")
     NETWORK_NAME="OP Sepolia"
     RPC_URL=${OPSEPOLIA_RPC}
-    EXPLORER_URL="https://sepolia-optimism.etherscan.io/address"
-    ;;
-  *)
-    echo "Error: Unsupported chain ID: $CHAIN_ID" >&2
-    echo "Supported chains: 84532 (Base Sepolia), 11155420 (OP Sepolia)" >&2
-    exit 1
-    ;;
-esac
+    EXPLORER_URL="https://etherscan.io/v2/address"
+#     ;;
+#   *)
+#     echo "Error: Unsupported chain ID: $CHAIN_ID" >&2
+#     echo "Supported chains: 84532 (Base Sepolia), 11155420 (OP Sepolia)" >&2
+#     exit 1
+#     ;;
+# esac
 
 ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
 
@@ -43,13 +43,13 @@ fi
 
 # Fetch implementation address from proxy contract using EIP-1967 implementation slot
 # Implementation slot: 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
-echo "Fetching implementation address from proxy..."
-IMPLEMENTATION_ADDRESS=$(cast storage --rpc-url "$RPC_URL" "$PROXY_ADDRESS" 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc | sed 's/0x000000000000000000000000/0x/')
+# echo "Fetching implementation address from proxy..."
+# IMPLEMENTATION_ADDRESS=$(cast storage --rpc-url "$RPC_URL" "$PROXY_ADDRESS" 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc | sed 's/0x000000000000000000000000/0x/')
 
-if [ -z "$IMPLEMENTATION_ADDRESS" ] || [ "$IMPLEMENTATION_ADDRESS" = "0x" ]; then
-  echo "Error: Could not fetch implementation address from proxy" >&2
-  exit 1
-fi
+# if [ -z "$IMPLEMENTATION_ADDRESS" ] || [ "$IMPLEMENTATION_ADDRESS" = "0x" ]; then
+#   echo "Error: Could not fetch implementation address from proxy" >&2
+#   exit 1
+# fi
 
 echo "Implementation address: $IMPLEMENTATION_ADDRESS"
 echo ""
@@ -59,9 +59,12 @@ echo "=== Verifying JobRegistry Implementation ==="
 # Verify the implementation contract using Etherscan v2 API
 forge verify-contract \
   --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
+  --verifier-url "$VERIFIER_URL" \
+  --verifier etherscan \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
-  "$IMPLEMENTATION_ADDRESS" \
+  --etherscan-api-version v2 \
+  --chain "$CHAIN_ID" \
+  0x033ab1e37F6d7c7c3447E31d1d5690320A85cee0 \
   src/JobRegistry.sol:JobRegistry
 
 if [ $? -eq 0 ]; then
@@ -76,55 +79,57 @@ else
   exit 1
 fi
 
-echo "=== Verifying JobRegistry Proxy ==="
+# echo "=== Verifying JobRegistry Proxy ==="
 
-# Get the owner address by calling the owner() function on the proxy
-echo "Fetching owner address from proxy..."
-OWNER_ADDRESS=$(cast call --rpc-url "$RPC_URL" "$PROXY_ADDRESS" "owner()(address)" | sed 's/0x000000000000000000000000/0x/')
+# # Get the owner address by calling the owner() function on the proxy
+# echo "Fetching owner address from proxy..."
+# OWNER_ADDRESS=$(cast call --rpc-url "$RPC_URL" "$PROXY_ADDRESS" "owner()(address)" | sed 's/0x000000000000000000000000/0x/')
 
-if [ -z "$OWNER_ADDRESS" ] || [ "$OWNER_ADDRESS" = "0x" ]; then
-  echo "Warning: Could not fetch owner address, using default"
-  OWNER_ADDRESS="0x88826a677adb340f0c7b8ccd6af6ad96a40b0085"
-fi
+# if [ -z "$OWNER_ADDRESS" ] || [ "$OWNER_ADDRESS" = "0x" ]; then
+#   echo "Warning: Could not fetch owner address, using default"
+#   OWNER_ADDRESS="0xed29c8aa8f836C423548de60f1598019C9D6E33E"
+# fi
 
-echo "Owner address: $OWNER_ADDRESS"
+# echo "Owner address: $OWNER_ADDRESS"
 
-# Prepare constructor args for ERC1967Proxy
-# ERC1967Proxy constructor: constructor(address implementation, bytes memory _data)
-# The _data is the encoded initialize call: initialize(address initialOwner)
+# # Prepare constructor args for ERC1967Proxy
+# # ERC1967Proxy constructor: constructor(address implementation, bytes memory _data)
+# # The _data is the encoded initialize call: initialize(address initialOwner)
 
-# Use cast to properly encode the initialize function call
-INIT_CALL_DATA=$(cast calldata "initialize(address)" "$OWNER_ADDRESS")
-echo "Initialize call data: $INIT_CALL_DATA"
+# # Use cast to properly encode the initialize function call
+# INIT_CALL_DATA=$(cast calldata "initialize(address)" "$OWNER_ADDRESS")
+# echo "Initialize call data: $INIT_CALL_DATA"
 
-# Use cast to encode the constructor arguments
-CONSTRUCTOR_ARGS=$(cast abi-encode "constructor(address,bytes)" "$IMPLEMENTATION_ADDRESS" "$INIT_CALL_DATA")
-# Remove the 0x prefix for forge verify-contract
-CONSTRUCTOR_ARGS=${CONSTRUCTOR_ARGS#0x}
+# # Use cast to encode the constructor arguments
+# CONSTRUCTOR_ARGS=$(cast abi-encode "constructor(address,bytes)" "$IMPLEMENTATION_ADDRESS" "$INIT_CALL_DATA")
+# # Remove the 0x prefix for forge verify-contract
+# CONSTRUCTOR_ARGS=${CONSTRUCTOR_ARGS#0x}
 
-echo "Proxy constructor args: $CONSTRUCTOR_ARGS"
+# echo "Proxy constructor args: $CONSTRUCTOR_ARGS"
 
-# Verify the proxy contract using Etherscan v2 API
-forge verify-contract \
-  --watch --compiler-version 0.8.27 \
-  --verifier-url "https://api.etherscan.io/v2/api?chainid=$CHAIN_ID" \
-  --etherscan-api-key "$ETHERSCAN_API_KEY" \
-  --constructor-args "$CONSTRUCTOR_ARGS" \
-  "$PROXY_ADDRESS" \
-  lib/othentic-core-contracts/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy
+# # Verify the proxy contract using Etherscan v2 API
+# forge verify-contract \
+#   --watch --compiler-version 0.8.27 \
+#   --verifier-url "$VERIFIER_URL" \
+#   --verifier etherscan \
+#   --etherscan-api-key "$ETHERSCAN_API_KEY" \
+#   --etherscan-api-version v2 \
+#   --chain "$CHAIN_ID" \
+#   "$PROXY_ADDRESS" \
+#   lib/othentic-core-contracts/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy
 
-if [ $? -eq 0 ]; then
-  echo ""
-  echo "✅ JobRegistry Proxy verified successfully on $NETWORK_NAME!"
-  echo ""
-  echo "🔗 View on Explorer:"
-  echo "$EXPLORER_URL/$PROXY_ADDRESS"
-  echo ""
-  echo "📋 Contract Summary:"
-  echo "- Implementation: $IMPLEMENTATION_ADDRESS"
-  echo "- Proxy: $PROXY_ADDRESS"
-  echo "- Network: $NETWORK_NAME (Chain ID: $CHAIN_ID)"
-  echo "- Owner: $OWNER_ADDRESS"
-else
-  echo "❌ Proxy verification failed!"
-fi 
+# if [ $? -eq 0 ]; then
+#   echo ""
+#   echo "✅ JobRegistry Proxy verified successfully on $NETWORK_NAME!"
+#   echo ""
+#   echo "🔗 View on Explorer:"
+#   echo "$EXPLORER_URL/$PROXY_ADDRESS"
+#   echo ""
+#   echo "📋 Contract Summary:"
+#   echo "- Implementation: $IMPLEMENTATION_ADDRESS"
+#   echo "- Proxy: $PROXY_ADDRESS"
+#   echo "- Network: $NETWORK_NAME (Chain ID: $CHAIN_ID)"
+#   echo "- Owner: $OWNER_ADDRESS"
+# else
+#   echo "❌ Proxy verification failed!"
+# fi 

@@ -15,27 +15,22 @@ contract DeployAll is Script {
     // LayerZero Endpoints
     address constant LZ_ENDPOINT_OP_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
     address constant LZ_ENDPOINT_BASE_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
-    address constant LZ_ENDPOINT_HOLESKY = 0x6EDCE65403992e310A62460808c4b910D972f10f;
+    address constant LZ_ENDPOINT_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
     address constant LZ_ENDPOINT_ARBITRUM_SEPOLIA = 0x6EDCE65403992e310A62460808c4b910D972f10f;
 
-    address constant ATTESATION_CENTER_ADDRESS = 0x9725fB95B5ec36c062A49ca2712b3B1ff66F04eD;
+    address constant ATTESATION_CENTER_ADDRESS = 0xC2F5cC5417330907c0Fa46ED94d87DED90508aBd;
 
     // Endpoint IDs (EIDs for LayerZero)
     uint32 constant OP_SEPOLIA_EID = 40232; // Optimism Sepolia Endpoint ID
     uint32 constant BASE_SEPOLIA_EID = 40245; // Base Sepolia Endpoint ID
-    uint32 constant HOLESKY_EID = 40217; // Holesky Endpoint ID
+    uint32 constant SEPOLIA_EID = 40161; // Sepolia Endpoint ID
     uint32 constant ARBITRUM_SEPOLIA_EID = 40231; // Arbitrum Sepolia Endpoint ID
-    uint32 constant POLYGON_ARBITRUM_EID = 40267; // Polygon Amoy Endpoint ID
-    uint32 constant AVALANCHE_FUJI_EID = 40106; // Avalanche Fuji Endpoint ID
-    uint32 constant BNB_TESTNET_EID = 40102; // BNB Testnet Endpoint ID
 
-    address constant JOB_REGISTRY_ADDRESS = 0xdB66c11221234C6B19cCBd29868310c31494C21C;
-    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0x85ea3eB894105bD7e7e2A8D34cf66C8E8163CD2a;
-
-    address constant AVS_GOVERNANCE_LOGIC_ADDRESS = 0xACB667202C6F9b84D91dA1D66c82f30c66738299;
+    // These addresses will be updated after deployment
+    address constant JOB_REGISTRY_ADDRESS = 0x309Bb6871d548E25e6051074A1bcE73199d8B647; // Will be updated
+    address constant TRIGGER_GAS_REGISTRY_ADDRESS = 0xfe68C5213EfAF66AD620A4b5c48683cB5C876a09; // Will be updated
+    // address constant AVS_GOVERNANCE_LOGIC_ADDRESS = 0x0000000000000000000000000000000000000000; // Will be updated
     
-
-
     bytes32 SALT = bytes32(keccak256(abi.encodePacked(vm.envString("TASK_EXECUTION_SALT"))));
 
     // Struct to hold network deployment information
@@ -48,8 +43,8 @@ contract DeployAll is Script {
 
     // State variables to avoid stack depth issues
     address[] private operators;
-    address private hubAddress;
     address[] private spokeAddresses;
+    address private hubAddress;
 
     function fetchOperatorsFromAttestationCenter() internal view returns (address[] memory) {
         console.log("Attempting to fetch operators from AttestationCenter...");
@@ -117,11 +112,11 @@ contract DeployAll is Script {
         bytes memory initData = abi.encodeWithSelector(
             TaskExecutionHub.initialize.selector,
             deployerAddress,                   // _ownerAddress
-            HOLESKY_EID,                       // _srcEid
+            SEPOLIA_EID,                       // _srcEid (Sepolia)
             BASE_SEPOLIA_EID,                  // _originEid
-            operators,                         // _initialKeepers
-            JOB_REGISTRY_ADDRESS,              // _jobRegistryAddress (random)
-            TRIGGER_GAS_REGISTRY_ADDRESS       // _triggerGasRegistryAddress (random)
+           operators,                         // _initialKeepers
+            JOB_REGISTRY_ADDRESS,              // _jobRegistryAddress (will be updated)
+            TRIGGER_GAS_REGISTRY_ADDRESS       // _triggerGasRegistryAddress (will be updated)
         );
 
         // 3. Prepare the proxy bytecode
@@ -134,11 +129,6 @@ contract DeployAll is Script {
         hubAddress = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log("TaskExecutionHub proxy deployed at:", hubAddress);
 
-        // TaskExecutionHub(payable(hubAddress)).setPeer(HOLESKY_EID, bytes32(uint256(uint160(AVS_GOVERNANCE_LOGIC_ADDRESS))));
-        // TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(hubAddress);
-
-        console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
-
         vm.stopBroadcast();
     }
 
@@ -149,17 +139,11 @@ contract DeployAll is Script {
 
         // Create spoke EIDs array
         uint32[] memory spokeEids = new uint32[](1);
-        spokeEids[0] = OP_SEPOLIA_EID;
-        // spokeEids[1] = ARBITRUM_SEPOLIA_EID;
+        spokeEids[0] = ARBITRUM_SEPOLIA_EID;
 
-        // Add all spoke endpoints to Hub
+        // Add Arbitrum Sepolia spoke endpoint to Hub
         hub.addSpokes(spokeEids);
-        console.log("Added spoke endpoint:", OP_SEPOLIA_EID, "(OP Sepolia)");
-        // console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID, "(Arbitrum Sepolia)");
-
-        // Send ETH to Hub contract to cover LayerZero fees
-        // vm.deal(address(hub), 1 ether);
-        // console.log("Sent 1 ETH to Hub contract at:", address(hub));
+        console.log("Added spoke endpoint:", ARBITRUM_SEPOLIA_EID, "(Arbitrum Sepolia)");
 
         vm.stopBroadcast();
     }
@@ -187,8 +171,8 @@ contract DeployAll is Script {
             deployerAddress,    // _ownerAddress
             BASE_SEPOLIA_EID,   // _hubEid
             operators,          // _initialKeepers
-            JOB_REGISTRY_ADDRESS,       // _jobRegistryAddress (random)
-            TRIGGER_GAS_REGISTRY_ADDRESS        // _triggerGasRegistryAddress (random)
+            JOB_REGISTRY_ADDRESS,       // _jobRegistryAddress (will be updated)
+            TRIGGER_GAS_REGISTRY_ADDRESS        // _triggerGasRegistryAddress (will be updated)
         );
 
         // 3. Prepare proxy bytecode
@@ -201,11 +185,6 @@ contract DeployAll is Script {
         address spokeAddr = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log(string.concat("TaskExecutionSpoke proxy deployed on ", networkName, " at:"), spokeAddr);
 
-
-        TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).setOperator(spokeAddr);
-
-        console.log("Operator Role:", TriggerGasRegistry(TRIGGER_GAS_REGISTRY_ADDRESS).operatorRole());
-
         vm.stopBroadcast();
         
         return spokeAddr;
@@ -214,43 +193,33 @@ contract DeployAll is Script {
     function deployAllSpokes(uint256 deployerPrivateKey, address deployerAddress) internal {
         spokeAddresses = new address[](1);
         
-        // Deploy OP Sepolia spoke
+        // Deploy Arbitrum Sepolia spoke
         spokeAddresses[0] = deploySpoke(
-            "OP Sepolia",
-            "OPSEPOLIA_RPC", 
-            LZ_ENDPOINT_OP_SEPOLIA,
+            "Arbitrum Sepolia",
+            "ARBITRUM_SEPOLIA_RPC",
+            LZ_ENDPOINT_ARBITRUM_SEPOLIA, 
             deployerPrivateKey,
             deployerAddress
         );
-
-        // // Deploy Arbitrum Sepolia spoke
-        // spokeAddresses[1] = deploySpoke(
-        //     "Arbitrum Sepolia",
-        //     "ARBITRUM_SEPOLIA_RPC",
-        //     LZ_ENDPOINT_ARBITRUM_SEPOLIA, 
-        //     deployerPrivateKey,
-        //     deployerAddress
-        // );
     }
 
     function printDeploymentSummary() internal view {
         console.log("\n--- Deployment Complete ---");
-        console.log("Hub Address:", hubAddress);
+        // console.log("Hub Address:", hubAddress);
         
-        TaskExecutionHub hub = TaskExecutionHub(payable(hubAddress));
-        console.log("Hub Owner:", hub.owner());
-        
-        // OP Sepolia spoke
-        TaskExecutionSpoke opSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
-        console.log("OP Sepolia Spoke Address:", spokeAddresses[0]);
-        console.log("OP Sepolia Spoke Owner:", opSpoke.owner());
+        // TaskExecutionHub hub = TaskExecutionHub(payable(hubAddress));
+        // console.log("Hub Owner:", hub.owner());
         
         // Arbitrum Sepolia spoke
-        // TaskExecutionSpoke arbSpoke = TaskExecutionSpoke(payable(spokeAddresses[1]));
-        // console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[1]);
-        // console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
+        TaskExecutionSpoke arbSpoke = TaskExecutionSpoke(payable(spokeAddresses[0]));
+        console.log("Arbitrum Sepolia Spoke Address:", spokeAddresses[0]);
+        console.log("Arbitrum Sepolia Spoke Owner:", arbSpoke.owner());
         
         console.log("---------------------------");
+        console.log("IMPORTANT: Update the following addresses in your scripts:");
+        console.log("JOB_REGISTRY_ADDRESS:", JOB_REGISTRY_ADDRESS);
+        console.log("TRIGGER_GAS_REGISTRY_ADDRESS:", TRIGGER_GAS_REGISTRY_ADDRESS);
+        //console.log("AVS_GOVERNANCE_LOGIC_ADDRESS:", AVS_GOVERNANCE_LOGIC_ADDRESS);
     }
 
     function run() external {
@@ -263,14 +232,14 @@ contract DeployAll is Script {
         vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
         
         // Fetch operators from AttestationCenter
-        operators = fetchOperatorsFromAttestationCenter();
+        operators = [0x011FCbAE5f306cd793456ab7d4c0CC86756c693D];
         console.log("Successfully fetched", operators.length, "operators");
 
         // Deploy Hub on Base Sepolia
-        deployHub(deployerPrivateKey, deployerAddress);
+        // deployHub(deployerPrivateKey, deployerAddress);
         
-        // Configure Hub with spoke endpoints
-        configureHub(deployerPrivateKey);
+        // // Configure Hub with spoke endpoints
+        // configureHub(deployerPrivateKey);
 
         // Deploy all spokes
         deployAllSpokes(deployerPrivateKey, deployerAddress);

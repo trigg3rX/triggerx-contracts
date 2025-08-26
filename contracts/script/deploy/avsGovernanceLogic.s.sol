@@ -8,9 +8,9 @@ import {TaskExecutionHub} from "../../src/lz/TaskExecutionHub.sol";
 
 contract DeployAvsGovernance is Script {
  
-    address payable constant TASK_EXECUTION_HUB = payable(0x2469e89386947535A350EEBccC5F2754fd35F474);
+    address payable constant TASK_EXECUTION_HUB = payable(0x7a2fC7bBE6c8a2248d651FdE1b1bD7d9509F6bfc);
 
-    address payable constant AVS_GOVERNANCE = payable(0x12f45551f11Df20b3EcBDf329138Bdc65cc58Ec0); // TestnetProduction AVS Governance address
+    address payable constant AVS_GOVERNANCE = payable(0x530D21739B4B2cDccEcda80DCe5e1731BDBB9ed8); // TestnetProduction AVS Governance address
 
     // address payable constant AVS_GOVERNANCE = payable(0xBDd47006B79675274959fE8cA13470ed206a836D);
      // LayerZero Endpoints
@@ -30,11 +30,11 @@ contract DeployAvsGovernance is Script {
         console.log("Deploying contracts using deployer:", deployerAddress);
 
         // Create a fork using the Holesky RPC.
-        uint256 forkId = vm.createSelectFork(vm.envString("HOLESKY_RPC"));
+        uint256 forkId = vm.createSelectFork(vm.envString("SEPOLIA_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy AvsGovernanceLogic
-        console.log("\n=== Deploying AvsGovernanceLogic on Holesky ===");
+        console.log("\n=== Deploying AvsGovernanceLogic on Sepolia ===");
         AvsGovernanceLogic avsGovernance = new AvsGovernanceLogic(
             LZ_ENDPOINT_HOLESKY,  // LayerZero endpoint
             TASK_EXECUTION_HUB,            // TaskExecutionHub address

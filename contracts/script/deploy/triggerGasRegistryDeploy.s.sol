@@ -9,31 +9,66 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 
 contract TriggerGasRegistryDeploy is Script {
     function run() public {
-        bytes32 SALT = keccak256(abi.encodePacked("TriggerGasRegistry"));
-
-        bytes32 implementation_salt = keccak256(abi.encodePacked("ImplementationV1"));
-
-        bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
-
-
+        // Load and validate environment variables
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
+        string memory rpcUrl = vm.envString("ARBITRUM_SEPOLIA_RPC");
+        string memory saltString = vm.envString("TGR_SALT");
+        
+        require(bytes(rpcUrl).length > 0, "ARBITRUM_SEPOLIA_RPC not set");
+        require(bytes(saltString).length > 0, "TGR_SALT not set");
+        require(deployer != address(0), "Invalid deployer address");
 
-        vm.createSelectFork(vm.envString("OPSEPOLIA_RPC"));
+        // Create fork
+        vm.createSelectFork(rpcUrl);
         vm.startBroadcast(deployerPrivateKey);
 
-        address implementation = CREATE3.deployDeterministic(implementation_code, implementation_salt);
+        // Generate unique salts
+        bytes32 implementationSalt = keccak256(abi.encodePacked(saltString, "ImplementationV1"));
+        bytes32 proxySalt = keccak256(abi.encodePacked(saltString, "Proxy"));
 
-        bytes memory initData = abi.encodeWithSelector(TriggerGasRegistry.initialize.selector, deployer);
-        bytes memory proxy_code = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(address(implementation), initData));
+        // 1. Deploy Implementation
+        address implementation = CREATE3.deployDeterministic(
+            type(TriggerGasRegistry).creationCode,
+            implementationSalt
+        );
+        require(implementation != address(0), "Implementation deployment failed");
+        console.log("Implementation deployed at:", implementation);
 
-        address proxy = CREATE3.deployDeterministic(proxy_code, SALT);
+        // 2. Prepare Proxy
+        bytes memory initData = abi.encodeWithSelector(
+            TriggerGasRegistry.initialize.selector,
+            deployer,    // owner
+            deployer,    // operator
+            1000        // TG_PER_ETH
+        );
 
-        console.log("Proxy deployed to:", proxy);
-        console.log("Implementation deployed to:", implementation);
-        console.log("Deployer:", deployer);
-        console.log("Proxy owner:", TriggerGasRegistry(payable(proxy)).owner());
+        // 3. Deploy Proxy
+        address proxy = CREATE3.deployDeterministic(
+            abi.encodePacked(
+                type(ERC1967Proxy).creationCode,
+                abi.encode(implementation, initData)
+            ),
+            proxySalt
+        );
+        require(proxy != address(0), "Proxy deployment failed");
+        console.log("Proxy deployed at:", proxy);
+
+        // Verify deployment
+        TriggerGasRegistry registry = TriggerGasRegistry(payable(proxy));
+        require(registry.owner() == deployer, "Owner not set correctly");
+        require(registry.operatorRole() == deployer, "Operator not set correctly");
+        require(registry.TG_PER_ETH() == 1000, "TG rate not set correctly");
 
         vm.stopBroadcast();
+
+        // Deployment summary
+        console.log("\n=== Deployment Successful ===");
+        console.log("Network: Arbitrum Sepolia");
+        console.log("Deployer:", deployer);
+        console.log("Implementation:", implementation);
+        console.log("Proxy:", proxy);
+        console.log("Salt Used:", saltString);
+        console.log("============================\n");
     }
 }
