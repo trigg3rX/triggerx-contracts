@@ -9,7 +9,7 @@ optimizer = true
 optimizer_runs = 200
 
 remappings = [
-    "@createx/=lib/createx/",
+    "@solady/=lib/solady/src/",
     "@interop/=lib/interop-lib/src/",
 
     "@othentic-core-contracts/=lib/othentic-core-contracts/src/",

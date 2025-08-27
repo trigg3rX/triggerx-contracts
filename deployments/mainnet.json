@@ -1,0 +1,68 @@
+{
+    "L1": {
+      "chainId": 1,
+      "AvsGovernance": {
+        "proxy": "0x875B5ff698B74B26f39C223c4996871F28AcDdea",
+        "implementation": "0xc4c93AD215064c193511d292674639A3eb349d15"
+      },
+      "AvsGovernanceLogic": {
+        "proxy": "0xc1f545fe807b72429952dbfefe8702658e4c5875",
+        "implementation": "0xc1f545fe807b72429952dbfefe8702658e4c5875"
+      },
+      "L1MessageHandler": {
+        "proxy": "0xF80b9914465D12CB254A5E34cB7f20c2b96E6212",
+        "implementation": "0x2c28ec78e4df47aeb9cca712f9e302fcf62326e7"
+      },
+      "L1AvsTreasury": {
+        "proxy": "0xC9537A0203690BdB042e1b41fB1Be420580B5977",
+        "implementation": "0xfd082c195c0929088e5dc82c5cc2909034fb52b5"
+      },
+      "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "L2s": [
+      {
+        "chainId": 8453,
+        "AttestationCenter": {
+            "proxy": "0x6DFee10D13d5B43AaF97bDA908C1D76d4313aF5f",
+            "implementation": "0x61cEf94347A54a76B74Eb25d7c679C0C2Bc45A12"
+        },
+        "OBLS": {
+            "proxy": "0x3BE160B3442F667ec97A565D053d1d1038082dB0",
+            "implementation": "0x95225044d99810383386b8525E0B4425F79A7a96"
+        },
+        "L2MessageHandler": {
+            "proxy": "0x56C99Cb127efEe215AaD7929Ed6884ABA283D70C",
+            "implementation": "0xB0D06B3E947261738dB71B52a58448aFf7FDb4E0"
+        },
+        "L2AvsTreasury": {
+            "proxy": "0x787CBdE1662e7bcdB19897Dd284597314d5791aD",
+            "implementation": "0x783eBA0514bE9cfb656622256061B9104bEE9716"
+        },
+        "InternalTaskHandler": {
+            "proxy": "0xb54B0b444B2268158b4b70B3aD00Ce21fedae6C3",
+            "implementation": "0x6982961AA21757ebe76ea5deB50EA81d309B3155"
+        },
+        "l2Rewards": true,
+        "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        "TaskExecutionHub": {
+          "proxy": "0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33",
+          "implementation": "0x005a2Da42955E3837587D9cD87A19511F8041263"
+        }
+      },
+      {
+        "chainId": 42161,
+        "TriggerGasRegistry": {
+          "proxy": "0x93dDB2307F3Af5df85F361E5Cddd898Acd3d132d",
+          "implementation": "0x9F452702490e11Af38C213De30c000A46E4dA399"
+        },
+        "JobRegistry": {
+          "proxy": "0xAf1189aFd1F1880F09AeC3Cbc32cf415c735C710",
+          "implementation": "0xc1F545Fe807b72429952dbFEFE8702658e4C5875"
+        },
+        "TaskExecutionSpoke": {
+          "proxy": "0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33",
+          "implementation": "0x04730cEa1156832Ad18f4dA0c674EcC88d745eE8"
+        }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "11155111": {
+    "AvsGovernance": {
+      "proxy": "0xaaE90bE86cec5E6c34D584917FFfCE7C379fFEE1",
+      "implementation": "0xA48C347B55F11F0248A2Ae10441CC606E9830903"
+    },
+    "AvsGovernanceLogic": {
+      "proxy": "0xD6597486ef0a475E42FDFA827d1cED3B27Dc2F9B",
+      "implementation": "0xD6597486ef0a475E42FDFA827d1cED3B27Dc2F9B"
+    },
+    "L1MessageHandler": {
+      "proxy": "0x4944096992138b8B443ec70fAe43A78daF66b807",
+      "implementation": "0xc1B8B6617DEC67282d71Ed93C8f09CbDE062aF55"
+    },
+    "L1AvsTreasury": {
+      "proxy": "0x2224d0DB2B729bE7DA26Bf500244C269921C9b4D",
+      "implementation": "0x8F9E56d91d9088CB16dE5Db1694Ba17b1145D24b"
+    },
+    "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "JobRegistry": {
+      "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
+      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+    },
+    "TriggerGasRegistry": {
+      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
+      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+    },
+    "TaskExecutionSpoke": {
+      "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
+      "implementation": "0xacb4D5b19557E6255026B8995ABCEB73Df2E7744"
+    }
+  },
+  "84532": {
+    "AttestationCenter": {
+        "proxy": "0x21B099554F6D27E47D57991D2B44251DaFa9323b",
+        "implementation": "0xa9Abcb615c1771d926125feC79faeee4d937d990"
+    },
+    "OBLS": {
+        "proxy": "0xD1764D750Fa7091d5FE81ccA346c8829EF6ceAb5",
+        "implementation": "0xd263C28dDb1EF2754F1742Ff1ec3C734b5E384c0"
+    },
+    "L2MessageHandler": {
+        "proxy": "0x7909FdA830b1eb3A3AF2164d86c6ed5737442bBe",
+        "implementation": "0x5Bef49da7ec06997C7caFeA817E17F0070ADcF58"
+    },
+    "L2AvsTreasury": {
+        "proxy": "0x552331ddb58B053a8A813c97865ebE65BF6cA285",
+        "implementation": "0xBCE19360165532ad3aE44939c1073Bba30656F85"
+    },
+    "InternalTaskHandler": {
+        "proxy": "0x71750E2FfC63465f9B9A7718d4FFBf02597e9Ca3",
+        "implementation": "0xa913712A6A948177155A3e3091176010586b3c3F"
+    },
+    "l2Rewards": true,
+    "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "JobRegistry": {
+      "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
+      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+    },
+    "TriggerGasRegistry": {
+      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
+      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+    },
+    "TaskExecutionHub": {
+      "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
+      "implementation": "0xcbf129E5dE69714fb0d59a8d4a3C984235048878"
+    }
+  },
+  "11155420": {
+    "JobRegistry": {
+      "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
+      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+    },
+    "TriggerGasRegistry": {
+      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
+      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+    },
+    "TaskExecutionSpoke": {
+      "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
+      "implementation": "0x1E55f234eEB2fB31f458AFc60697cd20ca6b1928"
+    }
+  },
+  "421614": {
+    "JobRegistry": {
+      "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
+      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+    },
+    "TriggerGasRegistry": {
+      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
+      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+    },
+    "TaskExecutionSpoke": {
+      "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
+      "implementation": "0x92D3b3483222E0f065461f3a7C7Ccf5B1a88917D"
+    }
+  }
+}
