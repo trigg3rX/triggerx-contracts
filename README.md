@@ -8,7 +8,7 @@ This repository contains the contracts for the TriggerX project.
 
 - AVS Governance Contract (deployed on Ethereum)
   - AVS Governance Logic Contract (deployed on Ethereum, as a hook for the AVS Governance Contract)
-- Attestation Center Contract (deployed on Base)
+- Attestation Centre Contract (deployed on Base)
 
 ### 2. Support Contracts
 
@@ -28,7 +28,7 @@ This repository contains the contracts for the TriggerX project.
 
 ## Contract Deployment Commands
 
-1. Environment variables: Copy the .env.example file and fill the values required.
+1. Environment variables: Copy the `.env.example` file and fill in the required values.
 
    **Note**: The value of `RPC_URL` determines the chain where the contracts are deployed in scripts, so make sure to change it to the correct chain (testnet or mainnet) before deployment.
 
@@ -44,7 +44,7 @@ Deploying on Ethereum Sepolia and Base Sepolia with 0.1 ETH as initial deposit f
 otcli network deploy --name TriggerX --eth --l2-rewards --security-provider eigenlayer --l1-chain 11155111 --l2-chain 84532 --l1-initial-deposit 100000000000000000 --l2-initial-deposit 100000000000000000
 ```
 
-The CLI will ask for registration details for the AVS to EigenLayer.
+The CLI will prompt for registration details for the AVS to be sent to the EigenLayer.
 
 3. Configure the TriggerX AVS:
 
@@ -59,10 +59,10 @@ otcli network set-staking-contracts --l1-chain 11155111
 otcli network create-task-definition --l2-chain 84532
 ```
 
-### **Note: All commands below are meant to be executed from `./contracts/` directory.**
+### **Note: All commands below are meant to be executed from the `./contracts/` directory.**
 
-- User need to set the salt for contracts as required.
-- The RPC Url in script determines the chain where the contracts are deployed.
+- The user needs to set the salt for contracts as required.
+- The RPC URL in the script determines the chain where the contracts are deployed.
 - Set the `AVS_GOVERNANCE_ADDRESS` and `ATTESTATION_CENTER_ADDRESS` in the `.env` file.
 
 4. Deploy JobRegistry Contract:
@@ -73,13 +73,13 @@ forge script script/deploy/1_deployJobRegistry.s.sol:DeployJobRegistry --verify 
 
 5. Deploy TriggerGasRegistry Contract:
 
-- User need to set the operator address (TaskExecutionAddress) to used in the script.
+- The user needs to set the operator address (TaskExecutionAddress) to be used in the script.
 
 ```bash
 forge script script/deploy/2_deployTriggerGasRegistry.s.sol:DeployTriggerGasRegistry --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 84532 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
 
-- If the contracts are being deployed from scratch, then user won't have the operator address (TaskExecutionAddress) to be used in the script. In that case, user need to call the `SetOperatorOnGasRegistry` script after the deployment of the TaskExecution Contracts and set the TaskExecutionAddress in`.env`.
+- If the contracts are being deployed from scratch, then the user won't have the operator address (TaskExecutionAddress) to be used in the script. In that case, the user needs to call the `SetOperatorOnGasRegistry` script after the deployment of the TaskExecution Contracts and set the TaskExecutionAddress in`.env`.
 
 ```bash
 forge script script/deploy/2_deployTriggerGasRegistry.s.sol:SetOperatorOnGasRegistry --broadcast 
@@ -88,26 +88,26 @@ forge script script/deploy/2_deployTriggerGasRegistry.s.sol:SetOperatorOnGasRegi
 6. Deploy TaskExecutionHub Contract:
 
 - Set `JOB_REGISTRY_ADDRESS` and `TRIGGER_GAS_REGISTRY_ADDRESS` in the `.env` file.
-- Deploys the TaskExecutionHub Contract on the Base Chain (As we have deployed AttestationCenter Contract on Base Chain).
+- Deploys the TaskExecutionHub Contract on the Base Chain (As we have deployed the AttestationCenter Contract on Base Chain).
 - 0.1 ETH is deposited to the TaskExecutionHub Contract.
 
 ```bash
 forge script script/deploy/3_deployTaskExecutionHub.s.sol:DeployTaskExecutionHub --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 84532 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
 
-- If the a new Spoke is deployed, then user need to call the `AddSokesToHub` script after the deployment of the TaskExecutionHub Contract, and setting the `spokeEids` in the script function.
+- If a new Spoke is deployed, then the user needs to call the `AddSokesToHub` script after the deployment of the TaskExecutionHub Contract, and set the `spokeEids` in the script function.
 
 ```bash
 forge script script/deploy/3_deployTaskExecutionHub.s.sol:AddSokesToHub --broadcast 
 ```
 
-- If the a new JobRegistry is deployed, then user need to call the `SetJobRegistryonHub` script after the deployment of the TaskExecutionHub Contract.
+- If a new JobRegistry is deployed, then users need to call the `SetJobRegistryonHub` script after the deployment of the TaskExecutionHub Contract.
 
 ```bash
 forge script script/deploy/3_deployTaskExecutionHub.s.sol:SetJobRegistryonHub --broadcast 
 ```
 
-- If the a new TriggerGasRegistry is deployed, then user need to call the `SetTriggerGasRegistryonHub` script after the deployment of the TaskExecutionHub Contract.
+- If a new TriggerGasRegistry is deployed, then the user needs to call the `SetTriggerGasRegistryonHub` script after the deployment of the TaskExecutionHub Contract.
 
 
 ```bash
@@ -135,3 +135,17 @@ forge verify-contract --watch --compiler-version 0.8.27 --verifier-url "https://
 ```bash
 forge script script/deploy/5_deployAvsGovernanceLogic.s.sol:DeployAvsGovernanceLogic --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 11155111 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
+
+## Deploying TriggerX on a new chain
+
+0. Update the env with variables for that chain (RPC, LayerZero EIDs and endpoints).
+1. Deploy JobRegistry, TaskExecutionSoke and GasRegistry in this same order, use the salt to determine the contract addresses.
+2. Update the TaskExecutionHub using the `AddSpokes` function.
+
+### Checklist after Deployment
+
+- [ ] TaskExecutionHub is set as a Peer on the AVS Governance Logic contract.
+- [ ] All TaskExecution Spokes have been added to the TaskExecutionHub contract.
+- [ ] The TaskExecution address has the "operator" role on each chain's GasRegistry.
+- [ ] The AVSGovernanceLogic, TaskExecutionHub and the MessageHandlers (from Othentic stack) have deposits on them for LayerZero message passing.
+- [ ] The keepers have updated the configuration to execute actions on the new chain.
