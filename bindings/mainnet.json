@@ -1,0 +1,16 @@
+{
+  "Eth": {
+      "AvsGovernance": "0xc4c93AD215064c193511d292674639A3eb349d15",
+      "AVSGovernanceLogic": "0xc1f545fe807b72429952dbfefe8702658e4c5875"
+  },
+  "Base": {
+      "AttestationCenter": "0x61cEf94347A54a76B74Eb25d7c679C0C2Bc45A12",
+      "OBLS": "0x95225044d99810383386b8525E0B4425F79A7a96",
+      "TaskExecutionHub": "0x005a2Da42955E3837587D9cD87A19511F8041263"
+  },
+  "Arbitrum": {
+      "JobRegistry": "0xc1F545Fe807b72429952dbFEFE8702658e4C5875",
+      "TriggerGasRegistry": "0x9F452702490e11Af38C213De30c000A46E4dA399",
+      "TaskExecutionSpoke": "0x04730cEa1156832Ad18f4dA0c674EcC88d745eE8"
+  }
+}

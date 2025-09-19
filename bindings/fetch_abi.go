@@ -15,12 +15,13 @@ import (
 )
 
 type ContractsData struct {
-	Eth  map[string]string `json:"Eth"`
-	Base map[string]string `json:"Base"`
+	Eth      map[string]string `json:"Eth"`
+	Base     map[string]string `json:"Base"`
+	Arbitrum map[string]string `json:"Arbitrum"`
 }
 
 const (
-	OUTPUT_DIR = "bindings/abis"
+	OUTPUT_DIR = "abis"
 )
 
 func main() {
@@ -28,17 +29,28 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	ethClient, err := ethclient.Dial(os.Getenv("ETH_RPC_URL"))
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(OUTPUT_DIR, 0755); err != nil {
+		panic(fmt.Sprintf("Failed to create output directory: %v", err))
+	}
+
+	ethClient, err := ethclient.Dial(fmt.Sprintf("https://eth-mainnet.g.alchemy.com/v2/%s", os.Getenv("ALCHEMY_API_KEY")))
 	if err != nil {
 		panic(err)
 	}
 
-	baseClient, err := ethclient.Dial(os.Getenv("BASE_RPC_URL"))
+	baseClient, err := ethclient.Dial(fmt.Sprintf("https://base-mainnet.g.alchemy.com/v2/%s", os.Getenv("ALCHEMY_API_KEY")))
 	if err != nil {
 		panic(err)
 	}
 
-	contractsDataRaw, err := os.ReadFile("./bindings/triggerx.prod.json")
+	arbitrumClient, err := ethclient.Dial(fmt.Sprintf("https://arb-mainnet.g.alchemy.com/v2/%s", os.Getenv("ALCHEMY_API_KEY")))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Fetched clients")
+
+	contractsDataRaw, err := os.ReadFile("./mainnet.json")
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +85,7 @@ func main() {
 
 	for name, addr := range contractsData.Eth {
 		fetchBytecode(name, addr, ethClient, "eth")
-		abi, err := fetchABIFromEtherscan(addr, "17000")
+		abi, err := fetchABIFromEtherscan(addr, "1")
 		if err != nil {
 			panic(err)
 		}
@@ -91,12 +103,12 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Fetched ABI for %s on holesky\n", name)
+		fmt.Printf("Fetched ABI for %s on Ethereum\n", name)
 	}
 
 	for name, addr := range contractsData.Base {
 		fetchBytecode(name, addr, baseClient, "base")
-		abi, err := fetchABIFromEtherscan(addr, "84532")
+		abi, err := fetchABIFromEtherscan(addr, "8453")
 		if err != nil {
 			panic(err)
 		}
@@ -114,7 +126,30 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Fetched ABI for %s on holesky\n", name)
+		fmt.Printf("Fetched ABI for %s on Base\n", name)
+	}
+
+	for name, addr := range contractsData.Arbitrum {
+		fetchBytecode(name, addr, arbitrumClient, "arbitrum")
+		abi, err := fetchABIFromEtherscan(addr, "42161")
+		if err != nil {
+			panic(err)
+		}
+
+		abiPath := filepath.Join(OUTPUT_DIR, name+".arbitrum.abi")
+		if _, err := os.Stat(abiPath); err == nil {
+			continue
+		}
+
+		err = os.WriteFile(
+			abiPath,
+			[]byte(abi),
+			0644,
+		)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("Fetched ABI for %s on Arbitrum\n", name)
 	}
 }
 

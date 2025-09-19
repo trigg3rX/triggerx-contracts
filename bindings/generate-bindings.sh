@@ -13,7 +13,7 @@ script_path=$(
 )
 
 if [[ "$(docker images -q abigen-with-interfaces 2> /dev/null)" == "" ]]; then
-    docker build -t abigen-with-interfaces -f ./bindings/abigen-with-interfaces.Dockerfile $script_path
+    docker build -t abigen-with-interfaces -f ./abigen-with-interfaces.Dockerfile $script_path
 fi
 
 function create_binding {
@@ -59,6 +59,17 @@ for abi_file in $script_path/abis/*.base.abi; do
         if [ -f "$script_path/abis/$contract.base.bin" ]; then
             create_binding . "$contract" ./contracts "base"
             cp $script_path/abis/$contract.base.abi $script_path/abis/$contract.base.abi.json
+        fi
+    fi
+done
+
+# Process Arbitrum contracts
+for abi_file in $script_path/abis/*.arbitrum.abi; do
+    if [ -f "$abi_file" ]; then
+        contract=$(basename "$abi_file" .arbitrum.abi)
+        if [ -f "$script_path/abis/$contract.arbitrum.bin" ]; then
+            create_binding . "$contract" ./contracts "arbitrum"
+            cp $script_path/abis/$contract.arbitrum.abi $script_path/abis/$contract.arbitrum.abi.json
         fi
     fi
 done
