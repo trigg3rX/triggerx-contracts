@@ -11,14 +11,13 @@ contract DeployJobRegistry is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
 
-    bytes32 SALT = keccak256(abi.encodePacked("put_salt_here"));
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put_salt_here"));
+    bytes32 SALT = keccak256(abi.encodePacked(vm.envString("JR_SALT")));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked(vm.envString("JR_IMPL_SALT")));
 
     function run() public {
-        // Create fork for this chain
-        // vm.createSelectFork(vm.envString("BASE_RPC"));
-        // vm.createSelectFork(vm.envString("OP_RPC"));
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        // Create fork for this chain using environment variable
+        string memory rpcUrl = vm.envString("RPC_URL");
+        vm.createSelectFork(rpcUrl);
 
         bytes memory implementation_code = type(JobRegistry).creationCode;
 

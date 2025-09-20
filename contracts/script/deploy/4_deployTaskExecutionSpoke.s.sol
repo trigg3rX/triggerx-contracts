@@ -14,8 +14,8 @@ contract DeployTaskExecutionSpoke is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
 
-    bytes32 SALT = keccak256(abi.encodePacked("put_salt_here"));
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put_salt_here"));
+    bytes32 SALT = keccak256(abi.encodePacked(vm.envString("TASK_EXECUTION_SALT")));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked(vm.envString("TASK_EXECUTION_IMPL_SALT")));
 
     address[] private operators;
     address private spokeAddress;
@@ -78,13 +78,13 @@ contract DeployTaskExecutionSpoke is Script {
     function deploySpoke() internal returns (address) {
         console.log("\n=== Deploying TaskExecutionSpoke ===");
         
-        // Create fork for the deployment network
-        // vm.createSelectFork(vm.envString("OP_RPC"));
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        // Create fork for the deployment network using environment variable
+        string memory rpcUrl = vm.envString("RPC_URL");
+        vm.createSelectFork(rpcUrl);
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy implementation
-        spokeImpl = address(new TaskExecutionSpoke(vm.envAddress("LZ_ENDPOINT_ARB"), deployer));
+        spokeImpl = address(new TaskExecutionSpoke(vm.envAddress("LZ_ENDPOINT"), deployer));
         console.log("TaskExecutionSpoke implementation deployed at:", spokeImpl);
 
         // 2. Prepare initialization calldata
@@ -94,7 +94,7 @@ contract DeployTaskExecutionSpoke is Script {
             vm.envUint("LZ_EID_BASE"),   // _hubEid
             operators,          // _initialKeepers
             vm.envAddress("JOB_REGISTRY_ADDRESS"),       // _jobRegistryAddress (random)
-            vm.envAddress("TRIGGER_GAS_REGISTRY_ADDRESS")        // _triggerGasRegistryAddress (random)
+            vm.envAddress("GAS_REGISTRY_ADDRESS")        // _triggerGasRegistryAddress (random)
         );
 
         // 3. Prepare proxy bytecode
@@ -107,9 +107,9 @@ contract DeployTaskExecutionSpoke is Script {
         spokeAddress = CREATE3.deployDeterministic(proxyBytecode, SALT);
         console.log("TaskExecutionSpoke proxy deployed at:", spokeAddress);
 
-        TriggerGasRegistry(vm.envAddress("TRIGGER_GAS_REGISTRY_ADDRESS")).setOperator(spokeAddress);
+        TriggerGasRegistry(vm.envAddress("GAS_REGISTRY_ADDRESS")).setOperator(spokeAddress);
 
-        console.log("Operator Role:", TriggerGasRegistry(vm.envAddress("TRIGGER_GAS_REGISTRY_ADDRESS")).operatorRole());
+        console.log("Operator Role:", TriggerGasRegistry(vm.envAddress("GAS_REGISTRY_ADDRESS")).operatorRole());
 
         vm.stopBroadcast();
         

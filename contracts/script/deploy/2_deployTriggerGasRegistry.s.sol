@@ -10,17 +10,16 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 contract DeployTriggerGasRegistry is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
-    address operator = 0x179c62e83c3f90981B65bc12176FdFB0f2efAD54; // Task Execution Address
-    uint256 tgPerEth = 1000;
+    address operator = vm.envAddress("TASK_EXECUTION_ADDRESS");
+    uint256 tgPerEth = vm.envUint("TG_PER_ETH");
 
-    bytes32 SALT = keccak256(abi.encodePacked("put_salt_here"));
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put_salt_here"));
+    bytes32 SALT = keccak256(abi.encodePacked(vm.envString("GAS_REGISTRY_SALT")));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked(vm.envString("GAS_REGISTRY_IMPL_SALT")));
 
     function run() public {
-        // Create fork for this chain
-        // vm.createSelectFork(vm.envString("BASE_RPC"));
-        // vm.createSelectFork(vm.envString("OP_RPC"));
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        // Create fork for this chain using environment variable
+        string memory rpcUrl = vm.envString("RPC_URL");
+        vm.createSelectFork(rpcUrl);
 
         bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
 
@@ -63,10 +62,11 @@ contract DeployTriggerGasRegistry is Script {
 
 contract SetOperatorOnGasRegistry is Script {
     function run() public {
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        string memory rpcUrl = vm.envString("RPC_URL");
+        vm.createSelectFork(rpcUrl);
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
-        TriggerGasRegistry registry = TriggerGasRegistry(vm.envAddress("TRIGGER_GAS_REGISTRY_ADDRESS"));
+        TriggerGasRegistry registry = TriggerGasRegistry(vm.envAddress("GAS_REGISTRY_ADDRESS"));
         registry.setOperator(vm.envAddress("TASK_EXECUTION_ADDRESS"));
     }
 }
