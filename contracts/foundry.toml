@@ -25,7 +25,9 @@ remappings = [
     "forge-std/=lib/othentic-core-contracts/lib/forge-std/src/",
 
     "@layerzerolabs/lz-evm-protocol-v2/=lib/layerzero-v2/packages/layerzero-v2/evm/protocol/",
-    "@layerzero-v2/=lib/layerzero-v2/packages/layerzero-v2/evm/"
+    "@layerzero-v2/=lib/layerzero-v2/packages/layerzero-v2/evm/",
+
+    "safe-contracts/=lib/safe-contracts/"
 ]
 
 [rpc_endpoints]
