@@ -43,7 +43,7 @@ contract DeploySafeFactory is Script {
             taskExecutionHub,
             SAFE_PROXY_FACTORY,
             SAFE_SINGLETON
-        );
+        ); 
         
         console.log("TriggerXSafeFactory deployed at:", address(factory));
         console.log("Using Safe singleton:", SAFE_SINGLETON);
