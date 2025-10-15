@@ -80,4 +80,3 @@ contract TriggerXSafeModule is ReentrancyGuard {
     receive() external payable {}
     fallback() external payable {}
 }
-
