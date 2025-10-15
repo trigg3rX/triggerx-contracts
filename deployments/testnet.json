@@ -28,7 +28,8 @@
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
       "implementation": "0xacb4D5b19557E6255026B8995ABCEB73Df2E7744"
-    }
+    },
+    "TriggerXSafeFactory": "0xdf76E2A796a206D877086c717979054544B1D9Bc"
   },
   "84532": {
     "AttestationCenter": {
@@ -64,7 +65,9 @@
     "TaskExecutionHub": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
       "implementation": "0xcbf129E5dE69714fb0d59a8d4a3C984235048878"
-    }
+    },
+    "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
+    "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
   },
   "11155420": {
     "JobRegistry": {
@@ -78,7 +81,9 @@
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
       "implementation": "0x1E55f234eEB2fB31f458AFc60697cd20ca6b1928"
-    }
+    },
+    "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
+    "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
   },
   "421614": {
     "JobRegistry": {
@@ -92,6 +97,8 @@
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
       "implementation": "0x92D3b3483222E0f065461f3a7C7Ccf5B1a88917D"
-    }
+    },
+    "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
+    "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
   }
 }

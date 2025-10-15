@@ -12,7 +12,7 @@ contract DeployTriggerXSafeModule is Script {
 
     function run() public {
         vm.startBroadcast(deployerPrivateKey);
-        bytes32 salt = keccak256(abi.encodePacked("triggerx-safe-module", deployer));
+        bytes32 salt = "TriggerXSafeModule";
         TriggerXSafeModule module = new TriggerXSafeModule{salt: salt}(taskExecutionHub);
         console.log("TriggerXSafeModule deployed at:", payable(address(module)));
         vm.stopBroadcast();

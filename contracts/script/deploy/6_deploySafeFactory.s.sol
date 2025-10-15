@@ -21,7 +21,7 @@ contract DeploySafeFactory is Script {
     // Safe v1.4.1 - Optimized for L1
     address constant SAFE_SINGLETON = 0x41675C099F32341bf84BFc5382aF534df5C7461a;
     
-    // SafeL2 v1.4.1 - Optimized for L2
+    // SafeL2 v1.4.1 - Optimize d for L2
     address constant SAFE_L2_SINGLETON = 0x29fcB43b46531BcA003ddC8FCB67FFE91900C762;
     
     // TriggerX contracts (to be set based on your deployment)
@@ -43,7 +43,7 @@ contract DeploySafeFactory is Script {
             taskExecutionHub,
             SAFE_PROXY_FACTORY,
             SAFE_SINGLETON
-        );
+        ); 
         
         console.log("TriggerXSafeFactory deployed at:", address(factory));
         console.log("Using Safe singleton:", SAFE_SINGLETON);
@@ -73,13 +73,13 @@ contract DeploySafeFactoryL2 is Script {
     function run() public {
         vm.startBroadcast();
         
-        // Deploy factory with SafeL2 singleton (for L2)
-        TriggerXSafeFactory factory = new TriggerXSafeFactory(
+        // Deploy factory with SafeL2 singleton (for L2) using CREATE2
+        bytes32 salt = "TriggerXSafeFactory";
+        TriggerXSafeFactory factory = new TriggerXSafeFactory{salt: salt}(
             taskExecutionHub,
             SAFE_PROXY_FACTORY,
             SAFE_L2_SINGLETON
         );
-        
         console.log("TriggerXSafeFactory (L2) deployed at:", address(factory));
         console.log("Using SafeL2 singleton:", SAFE_L2_SINGLETON);
         console.log("Using SafeProxyFactory:", SAFE_PROXY_FACTORY);

@@ -1,4 +1,3 @@
-// File: contracts/TriggerXSafeModule.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
@@ -81,3 +80,4 @@ contract TriggerXSafeModule is ReentrancyGuard {
     receive() external payable {}
     fallback() external payable {}
 }
+
