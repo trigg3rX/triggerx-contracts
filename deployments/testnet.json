@@ -1,20 +1,20 @@
 {
   "11155111": {
     "AvsGovernance": {
-      "proxy": "0xaaE90bE86cec5E6c34D584917FFfCE7C379fFEE1",
-      "implementation": "0xA48C347B55F11F0248A2Ae10441CC606E9830903"
+      "proxy": "0x635F64A20c5D738F6Cb2E631DF4F4ED74296B4fd",
+      "implementation": "0x10b7f71937Fc45A6542E15f98147Bcd8C64080C7"
     },
     "AvsGovernanceLogic": {
-      "proxy": "0xD6597486ef0a475E42FDFA827d1cED3B27Dc2F9B",
-      "implementation": "0xD6597486ef0a475E42FDFA827d1cED3B27Dc2F9B"
+      "proxy": "0x685A4D4F010841455aEa53527B925C8E00cAb16A",
+      "implementation": "0x685A4D4F010841455aEa53527B925C8E00cAb16A"
     },
     "L1MessageHandler": {
-      "proxy": "0x4944096992138b8B443ec70fAe43A78daF66b807",
-      "implementation": "0xc1B8B6617DEC67282d71Ed93C8f09CbDE062aF55"
+      "proxy": "0x7ECf786c9D7ae7eE699Bcc33fD90981F85f180f4",
+      "implementation": "0x2EbfF40517862e18d14E2b320F5575f3f5f07d56"
     },
     "L1AvsTreasury": {
-      "proxy": "0x2224d0DB2B729bE7DA26Bf500244C269921C9b4D",
-      "implementation": "0x8F9E56d91d9088CB16dE5Db1694Ba17b1145D24b"
+      "proxy": "0xBe9a1E4e36e71BEd4Db1c4d7475E2EE5F2592216",
+      "implementation": "0x103e75e14048C7E4B57579673607cf8756804Cc7"
     },
     "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "JobRegistry": {
@@ -33,24 +33,24 @@
   },
   "84532": {
     "AttestationCenter": {
-        "proxy": "0x21B099554F6D27E47D57991D2B44251DaFa9323b",
-        "implementation": "0xa9Abcb615c1771d926125feC79faeee4d937d990"
+        "proxy": "0xB3c01C8BaEF65436B0d01F891d00B25CA9d7D383",
+        "implementation": "0xac800d3D325468d08f5f38E13E3fcFd07018d57b"
     },
     "OBLS": {
-        "proxy": "0xD1764D750Fa7091d5FE81ccA346c8829EF6ceAb5",
-        "implementation": "0xd263C28dDb1EF2754F1742Ff1ec3C734b5E384c0"
+        "proxy": "0x1Df9cA7b5ACB5dc4F9848D198667D95653d3E725",
+        "implementation": "0x31272a7181A1Df8cA81aA7C62Df6Ee704A2c2736"
     },
     "L2MessageHandler": {
-        "proxy": "0x7909FdA830b1eb3A3AF2164d86c6ed5737442bBe",
-        "implementation": "0x5Bef49da7ec06997C7caFeA817E17F0070ADcF58"
+        "proxy": "0x92a60b0d8d00167B464bfD007da28b3e1233d066",
+        "implementation": "0x1Cf3dB84135338C2638D14C492Bd04505B628923"
     },
     "L2AvsTreasury": {
-        "proxy": "0x552331ddb58B053a8A813c97865ebE65BF6cA285",
-        "implementation": "0xBCE19360165532ad3aE44939c1073Bba30656F85"
+        "proxy": "0xf1080F998b7F82fC0B7d2A77fc0d2f2F0d91B47a",
+        "implementation": "0xCe38cE265f7865928c4DD77eB5ac6Ad7eaaB5547"
     },
     "InternalTaskHandler": {
-        "proxy": "0x71750E2FfC63465f9B9A7718d4FFBf02597e9Ca3",
-        "implementation": "0xa913712A6A948177155A3e3091176010586b3c3F"
+        "proxy": "0x403a14645618c640a52812BB298773E2750f1F09",
+        "implementation": "0x698c0FF6b623e29434cE0B33154b77CcEc05e695"
     },
     "l2Rewards": true,
     "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

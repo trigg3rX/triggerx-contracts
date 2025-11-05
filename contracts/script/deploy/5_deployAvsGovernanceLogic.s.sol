@@ -15,31 +15,43 @@ contract DeployAvsGovernanceLogic is Script {
     function run() external {
         // Create a fork using the Holesky RPC.
         vm.createSelectFork(vm.envString("ETH_RPC"));
-        vm.startBroadcast(deployerPrivateKey);
 
-        // Deploy AvsGovernanceLogic
+        address avsGovernanceAddress = vm.envAddress("AVS_GOVERNANCE_ADDRESS");
+        address avsGovernanceLogicAddress = vm.envAddress("AVS_GOVERNANCE_LOGIC_ADDRESS");
+
+        // Transaction 1: Deploy AvsGovernanceLogic
+        // Separate broadcast block ensures this transaction is confirmed before proceeding
         console.log("\n=== Deploying AvsGovernanceLogic on Ethereum ===");
-        AvsGovernanceLogic avsGovernance = new AvsGovernanceLogic(
+        vm.startBroadcast(deployerPrivateKey);
+        AvsGovernanceLogic deploymentAddress = new AvsGovernanceLogic(
             vm.envAddress("LZ_ENDPOINT_ETH"),    // LayerZero endpoint
             vm.envAddress("TASK_EXECUTION_ADDRESS"), // TaskExecutionHub address
             uint32(vm.envUint("LZ_EID_BASE")),  // Destination chain ID (Base)
             deployer,                            // Owner address
-            vm.envAddress("AVS_GOVERNANCE_ADDRESS")      // AVS Governance address
+            avsGovernanceAddress      // AVS Governance address
         );
+        avsGovernanceLogicAddress = address(deploymentAddress);
+        vm.stopBroadcast();
 
-        // Transfer ETH to AvsGovernanceLogic
-        payable(address(avsGovernance)).transfer(0.1 ether);
+        // Transaction 2: Transfer ETH to AvsGovernanceLogic
+        // Separate broadcast block ensures previous transaction is confirmed
+        console.log("\n=== Transferring ETH to AvsGovernanceLogic ===");
+        vm.startBroadcast(deployerPrivateKey);
+        payable(avsGovernanceAddressLogic).transfer(0.1 ether);
+        vm.stopBroadcast();
 
-        // Set the AvsGovernanceLogic on the AvsGovernance contract
+        // Transaction 3: Set the AvsGovernanceLogic on the AvsGovernance contract
+        // Separate broadcast block ensures previous transaction is confirmed
+        console.log("\n=== Setting AvsGovernanceLogic on AvsGovernance contract ===");
+        vm.startBroadcast(deployerPrivateKey);
         AvsGovernance avsGovernanceContract = AvsGovernance(payable(vm.envAddress("AVS_GOVERNANCE_ADDRESS")));
-        avsGovernanceContract.setAvsGovernanceLogic(IAvsGovernanceLogic(address(avsGovernance)));
-        
+        avsGovernanceContract.setAvsGovernanceLogic(IAvsGovernanceLogic(avsGovernanceAddressLogic));
         vm.stopBroadcast();
 
         // Print final deployment summary
         console.log("");
         console.log("=== AVS GOVERNANCE LOGIC DEPLOYMENT SUMMARY ===");
-        console.log("Implementation:", address(avsGovernance));
+        console.log("Implementation:", avsGovernanceLogicAddress);
         console.log("Deployer:", deployer);
         console.log("");
     }

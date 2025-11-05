@@ -1,0 +1,16 @@
+{
+  "11155111": {
+    "AvsGovernance": "0x10b7f71937Fc45A6542E15f98147Bcd8C64080C7",
+    "AvsGovernanceLogic": "0x685A4D4F010841455aEa53527B925C8E00cAb16A",
+    "JobRegistry": "0x302cDe3407e095f56a63c627e556D9ab48efD177",
+    "TriggerGasRegistry": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972",
+    "TaskExecutionSpoke": "0xacb4D5b19557E6255026B8995ABCEB73Df2E7744"
+  },
+  "84532": {
+    "AttestationCenter": "0xac800d3D325468d08f5f38E13E3fcFd07018d57b",
+    "OBLS": "0x31272a7181A1Df8cA81aA7C62Df6Ee704A2c2736",
+    "TaskExecutionHub": "0xcbf129E5dE69714fb0d59a8d4a3C984235048878",
+    "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
+    "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
+  }
+}
