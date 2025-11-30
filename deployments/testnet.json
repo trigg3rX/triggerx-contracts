@@ -19,15 +19,15 @@
     "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "JobRegistry": {
       "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
-      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+      "implementation": "0xF54eAC9B493eB34de22ce5f3FEBaB1577E5E21A1"
     },
     "TriggerGasRegistry": {
-      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
-      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+      "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
+      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xacb4D5b19557E6255026B8995ABCEB73Df2E7744"
+      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
     },
     "TriggerXSafeFactory": "0xdf76E2A796a206D877086c717979054544B1D9Bc"
   },
@@ -56,15 +56,15 @@
     "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "JobRegistry": {
       "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
-      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+      "implementation": "0xF54eAC9B493eB34de22ce5f3FEBaB1577E5E21A1"
     },
     "TriggerGasRegistry": {
-      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
-      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+      "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
+      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
     },
     "TaskExecutionHub": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xcbf129E5dE69714fb0d59a8d4a3C984235048878"
+      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
@@ -72,15 +72,15 @@
   "11155420": {
     "JobRegistry": {
       "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
-      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+      "implementation": "0xF54eAC9B493eB34de22ce5f3FEBaB1577E5E21A1"
     },
     "TriggerGasRegistry": {
-      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
-      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+      "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
+      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0x1E55f234eEB2fB31f458AFc60697cd20ca6b1928"
+      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
@@ -88,15 +88,15 @@
   "421614": {
     "JobRegistry": {
       "proxy": "0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b",
-      "implementation": "0x302cDe3407e095f56a63c627e556D9ab48efD177"
+      "implementation": "0xF54eAC9B493eB34de22ce5f3FEBaB1577E5E21A1"
     },
     "TriggerGasRegistry": {
-      "proxy": "0x664CB20BCEEc9416D290AC820e5446e61a5c75e4",
-      "implementation": "0x9Fba19b7bfBf5f5d816fDC93dA60c68C1cf0c972"
+      "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
+      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0x92D3b3483222E0f065461f3a7C7Ccf5B1a88917D"
+      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"

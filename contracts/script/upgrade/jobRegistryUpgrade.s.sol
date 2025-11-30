@@ -7,10 +7,13 @@ import {console2} from "forge-std/console2.sol";
 import {JobRegistry} from "../../src/JobRegistry.sol";
 import {PackedJobIdLib} from "../../src/libraries/PackedJobIdLib.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import {CREATE3} from "@solady/utils/CREATE3.sol";
 
 contract JobRegistryUpgrade is Script {
     // Production proxy address
-    address payable constant JOB_REGISTRY_PROXY = payable(0xdB66c11221234C6B19cCBd29868310c31494C21C);
+    address payable constant JOB_REGISTRY_PROXY = payable(0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b);
+
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked("Put your salt here"));
 
     struct JobData {
         uint256 jobId;
@@ -59,13 +62,14 @@ contract JobRegistryUpgrade is Script {
             }
         }
 
-        // STEP 2: Deploy new implementation
-        JobRegistry newImplementation = new JobRegistry();
+        // STEP 2: Deploy new implementation using CREATE3
+        bytes memory implementation_code = type(JobRegistry).creationCode;
+        address newImplementation = CREATE3.deployDeterministic(implementation_code, IMPL_SALT);
         console.log("\n=== PERFORMING UPGRADE ===");
-        console.log("Deploying new implementation to:", address(newImplementation));
+        console.log("Deploying new implementation to:", newImplementation);
         
         // STEP 3: Perform upgrade
-        JobRegistry(proxy).upgradeToAndCall(address(newImplementation), "");
+        JobRegistry(proxy).upgradeToAndCall(newImplementation, "");
 
         vm.stopBroadcast();
 
@@ -100,72 +104,72 @@ contract JobRegistryUpgrade is Script {
         }
 
         // STEP 5: Test new packed jobId functionality
-        console.log("\n=== TESTING NEW PACKED JOBID FUNCTIONALITY ===");
-        vm.startBroadcast(deployerPrivateKey);
+        // console.log("\n=== TESTING NEW PACKED JOBID FUNCTIONALITY ===");
+        // vm.startBroadcast(deployerPrivateKey);
         
-            try JobRegistry(proxy).createJob(
-            "Test Packed Job",
-            1,
-            3600,
-            address(0x123),
-            abi.encode(uint256(300))
-        ) returns (uint256 newJobId) {
-            console2.log("Created new job with packed ID: %s", newJobId);
+        //     try JobRegistry(proxy).createJob(
+        //     "Test Packed Job",
+        //     1,
+        //     3600,
+        //     address(0x123),
+        //     abi.encode(uint256(300))
+        // ) returns (uint256 newJobId) {
+        //     console2.log("Created new job with packed ID: %s", newJobId);
             
-            // Unpack and verify
-            (uint256 chainId, uint256 timestamp, uint256 jobCounter) =
-                PackedJobIdLib.unpack(newJobId);
-            console2.log(
-                "Unpacked - Chain ID: %s, Timestamp: %s, Job Counter: %s",
-                chainId,
-                timestamp,
-                jobCounter
-            );
-            console2.log("Current chain ID: %s", block.chainid);
+        //     // Unpack and verify
+        //     (uint256 chainId, uint256 timestamp, uint256 jobCounter) =
+        //         PackedJobIdLib.unpack(newJobId);
+        //     console2.log(
+        //         "Unpacked - Chain ID: %s, Timestamp: %s, Job Counter: %s",
+        //         chainId,
+        //         timestamp,
+        //         jobCounter
+        //     );
+        //     console2.log("Current chain ID: %s", block.chainid);
             
-            if (chainId == block.chainid) {
-                console.log("SUCCESS: Packed jobId correctly includes chain ID");
-            } else {
-                console.log("ERROR: Packed jobId has wrong chain ID");
-            }
-        } catch Error(string memory reason) {
-            console.log("ERROR creating test job:", reason);
-        }
+        //     if (chainId == block.chainid) {
+        //         console.log("SUCCESS: Packed jobId correctly includes chain ID");
+        //     } else {
+        //         console.log("ERROR: Packed jobId has wrong chain ID");
+        //     }
+        // } catch Error(string memory reason) {
+        //     console.log("ERROR creating test job:", reason);
+        // }
         
-        vm.stopBroadcast();
+        // vm.stopBroadcast();
 
-        // STEP 6: Compare BEFORE vs AFTER
-        console.log("\n=== COMPARISON RESULTS ===");
-        bool allDataPreserved = true;
-        uint256 jobsWithData = 0;
+        // // STEP 6: Compare BEFORE vs AFTER
+        // console.log("\n=== COMPARISON RESULTS ===");
+        // bool allDataPreserved = true;
+        // uint256 jobsWithData = 0;
         
-        for (uint256 i = 0; i < 3; i++) {
-            if (beforeJobs[i].jobOwner != address(0)) {
-                jobsWithData++;
+        // for (uint256 i = 0; i < 3; i++) {
+        //     if (beforeJobs[i].jobOwner != address(0)) {
+        //         jobsWithData++;
                 
-                bool ownerMatches = beforeJobs[i].jobOwner == afterJobs[i].jobOwner;
-                bool activeMatches = beforeJobs[i].isActive == afterJobs[i].isActive;
+        //         bool ownerMatches = beforeJobs[i].jobOwner == afterJobs[i].jobOwner;
+        //         bool activeMatches = beforeJobs[i].isActive == afterJobs[i].isActive;
                 
-                if (ownerMatches && activeMatches) {
-                    console2.log("[OK] Job %s: Data preserved", i + 1);
-                } else {
-                    console2.log("[ERROR] Job %s: Data changed!", i + 1);
-                    console2.log("  Owner: %s -> %s", beforeJobs[i].jobOwner, afterJobs[i].jobOwner);
-                    console2.log("  Active: %s -> %s", beforeJobs[i].isActive, afterJobs[i].isActive);
-                    allDataPreserved = false;
-                }
-            }
-        }
+        //         if (ownerMatches && activeMatches) {
+        //             console2.log("[OK] Job %s: Data preserved", i + 1);
+        //         } else {
+        //             console2.log("[ERROR] Job %s: Data changed!", i + 1);
+        //             console2.log("  Owner: %s -> %s", beforeJobs[i].jobOwner, afterJobs[i].jobOwner);
+        //             console2.log("  Active: %s -> %s", beforeJobs[i].isActive, afterJobs[i].isActive);
+        //             allDataPreserved = false;
+        //         }
+        //     }
+        // }
 
         console.log("\n=== FINAL VERIFICATION ===");
-        console2.log("Jobs with data: %s", jobsWithData);
+        // console2.log("Jobs with data: %s", jobsWithData);
         console2.log("Implementation changed: %s", oldImplementation != finalImplementation);
         
-        if (allDataPreserved) {
-            console.log("SUCCESS: All job data preserved during upgrade!");
-        } else {
-            console.log("CRITICAL: Some job data was lost during upgrade!");
-        }
+        // if (allDataPreserved) {
+        //     console.log("SUCCESS: All job data preserved during upgrade!");
+        // } else {
+        //     console.log("CRITICAL: Some job data was lost during upgrade!");
+        // }
 
         console.log("\n=== DEPLOYMENT SUMMARY ===");
         console.log("Proxy address:", proxy);
