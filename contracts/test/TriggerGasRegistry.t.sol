@@ -17,11 +17,9 @@ contract TriggerGasRegistryTest is Test {
     address public user2 = address(0x101);
     address public keeper = address(0x200);
     
-    event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount);
-    event TGClaimed(address indexed user, uint256 amount);
-    event TGTransferred(address indexed user, address indexed keeper, uint256 amount);
+    event ETHDeposited(address indexed user, uint256 ethAmount);
     event ETHWithdrawn(address indexed owner, uint256 amount, string reason);
-    event TGBalanceDeducted(address indexed user, uint256 amount);
+    event ETHBalanceDeducted(address indexed user, uint256 amount);
     
     function setUp() public {
         vm.startPrank(owner);
@@ -33,8 +31,7 @@ contract TriggerGasRegistryTest is Test {
         bytes memory initData = abi.encodeWithSelector(
             TriggerGasRegistry.initialize.selector,
             owner,
-            operator,
-            1000 // TG_PER_ETH
+            operator
         );
         proxy = new ERC1967Proxy(address(implementation), initData);
         
@@ -43,7 +40,7 @@ contract TriggerGasRegistryTest is Test {
         
         vm.stopPrank();
         
-        // Fund users with ETH for purchasing TG
+        // Fund users with ETH for depositing
         vm.deal(user1, 10 ether);
         vm.deal(user2, 10 ether);
     }
@@ -52,107 +49,89 @@ contract TriggerGasRegistryTest is Test {
         assertEq(gasRegistry.owner(), owner);
     }
     
-    function test_PurchaseTG() public {
+    function test_DepositETH() public {
         uint256 ethAmount = 1 ether;
         
         vm.expectEmit(true, false, false, true);
-        emit TGPurchased(user1, ethAmount, ethAmount * 1000);
+        emit ETHDeposited(user1, ethAmount);
         
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Check balance was recorded correctly
-        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
-        assertEq(ethSpent, ethAmount);
-        assertEq(tgBalance, ethAmount * 1000); // 1 ETH should give 1000 TG tokens
+        uint256 balance = gasRegistry.getBalance(user1);
+        assertEq(balance, ethAmount);
         
         // Check contract balance increased
         assertEq(address(gasRegistry).balance, ethAmount);
     }
     
-    function test_PurchaseTG_ZeroAmount() public {
-        vm.expectRevert("Cannot spend 0 ETH");
+    function test_DepositETH_ZeroAmount() public {
+        vm.expectRevert("Cannot deposit 0 ETH");
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: 0}(0);
+        gasRegistry.depositETH{value: 0}(0);
     }
     
-    function test_PurchaseTG_MismatchedAmount() public {
-        // This test is no longer needed since purchaseTG doesn't take an amount parameter
-        // The function now uses msg.value directly
+    function test_DepositETH_MismatchedAmount() public {
         uint256 ethAmount = 1 ether;
         
+        vm.expectRevert("Sent ETH must match amount");
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        // Check balance was recorded correctly
-        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
-        assertEq(ethSpent, ethAmount);
-        assertEq(tgBalance, ethAmount * 1000);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount + 1);
     }
     
     function test_GetBalance() public {
         uint256 ethAmount = 1 ether;
         
-        // User 1 purchases TG
+        // User 1 deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Check balance info
-        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
-        assertEq(ethSpent, ethAmount);
-        assertEq(tgBalance, ethAmount * 1000);
+        uint256 balance = gasRegistry.getBalance(user1);
+        assertEq(balance, ethAmount);
         
         // User 2 has no balance
-        (ethSpent, tgBalance) = gasRegistry.getBalance(user2);
-        assertEq(ethSpent, 0);
-        assertEq(tgBalance, 0);
+        balance = gasRegistry.getBalance(user2);
+        assertEq(balance, 0);
     }
     
-    function test_ClaimETHForTG() public {
+    function test_WithdrawETHBalance() public {
         uint256 ethAmount = 1 ether;
+        uint256 withdrawAmount = 0.5 ether;
         
-        // User 1 purchases TG
+        // User 1 deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
-        
-        // Calculate expected return
-        uint256 tgAmount = 500; // Claim 500 TG tokens
-        uint256 expectedEthReturn = tgAmount / 1000; // 0.5 ETH
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         uint256 userBalanceBefore = user1.balance;
         
-        vm.expectEmit(true, false, false, true);
-        emit TGClaimed(user1, tgAmount);
-        
-        // User claims ETH for TG
+        // User withdraws ETH
         vm.prank(user1);
-        gasRegistry.claimETHForTG(tgAmount);
+        gasRegistry.withdrawETHBalance(withdrawAmount);
         
-        // Check TG balance decreased
-        (uint256 ethSpent, uint256 tgBalance) = gasRegistry.getBalance(user1);
-        assertEq(ethSpent, ethAmount); // ETH spent unchanged
-        assertEq(tgBalance, ethAmount * 1000 - tgAmount); // TG balance decreased
+        // Check balance decreased
+        uint256 balance = gasRegistry.getBalance(user1);
+        assertEq(balance, ethAmount - withdrawAmount);
         
         // Check user received ETH
-        assertEq(user1.balance, userBalanceBefore + expectedEthReturn);
+        assertEq(user1.balance, userBalanceBefore + withdrawAmount);
         
         // Check contract ETH balance decreased
-        assertEq(address(gasRegistry).balance, ethAmount - expectedEthReturn);
+        assertEq(address(gasRegistry).balance, ethAmount - withdrawAmount);
     }
     
-    function test_ClaimETHForTG_InsufficientTG() public {
+    function test_WithdrawETHBalance_InsufficientBalance() public {
         uint256 ethAmount = 1 ether;
         
-        // User 1 purchases TG
+        // User 1 deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
-        // Try to claim more TG than available
-        uint256 tgAmount = ethAmount * 1000 + 1; // 1 more than available
-        
-        vm.expectRevert("Insufficient TG balance");
+        // Try to withdraw more than available
+        vm.expectRevert("Insufficient ETH balance");
         vm.prank(user1);
-        gasRegistry.claimETHForTG(tgAmount);
+        gasRegistry.withdrawETHBalance(ethAmount + 1);
     }
     
     function test_Upgrade() public {
@@ -180,9 +159,13 @@ contract TriggerGasRegistryTest is Test {
     function test_WithdrawETH() public {
         uint256 ethAmount = 1 ether;
         
-        // First, add some ETH to the contract
+        // First, user deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
+        
+        // Operator deducts some ETH (this adds to totalDeductedBalance)
+        vm.prank(operator);
+        gasRegistry.deductETHBalance(user1, 0.5 ether);
         
         uint256 withdrawAmount = 0.5 ether;
         string memory reason = "Test withdrawal";
@@ -205,9 +188,13 @@ contract TriggerGasRegistryTest is Test {
     function test_WithdrawETH_OnlyOwner() public {
         uint256 ethAmount = 1 ether;
         
-        // First, add some ETH to the contract
+        // First, user deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
+        
+        // Operator deducts some ETH
+        vm.prank(operator);
+        gasRegistry.deductETHBalance(user1, 0.5 ether);
         
         vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, user1));
         vm.prank(user1); // Not owner
@@ -223,176 +210,195 @@ contract TriggerGasRegistryTest is Test {
     function test_WithdrawETH_InsufficientBalance() public {
         uint256 ethAmount = 1 ether;
         
-        // First, add some ETH to the contract
+        // First, user deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
-        vm.expectRevert("Insufficient contract balance");
+        // Operator deducts some ETH
+        vm.prank(operator);
+        gasRegistry.deductETHBalance(user1, 0.5 ether);
+        
+        vm.expectRevert("Cannot withdraw more than deducted balance");
         vm.prank(owner);
-        gasRegistry.withdrawETH(ethAmount + 1, "Test");
+        gasRegistry.withdrawETH(0.6 ether, "Test");
     }
 
-    // ==================== DEDUCT TG BALANCE TESTS ====================
+    // ==================== DEDUCT ETH BALANCE TESTS ====================
     
-    function test_DeductTGBalance_Normal() public {
+    function test_DeductETHBalance_Normal() public {
         uint256 ethAmount = 1 ether;
-        uint256 deductAmount = 500;
+        uint256 deductAmount = 0.5 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Get initial balance
-        (, uint256 initialTG) = gasRegistry.getBalance(user1);
+        uint256 initialBalance = gasRegistry.getBalance(user1);
         
         // Expect event to be emitted
         vm.expectEmit(true, false, false, true);
-        emit TGBalanceDeducted(user1, deductAmount);
+        emit ETHBalanceDeducted(user1, deductAmount);
         
-        // Operator deducts TG
+        // Operator deducts ETH
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, deductAmount);
+        gasRegistry.deductETHBalance(user1, deductAmount);
         
         // Check balance decreased
-        (, uint256 finalTG) = gasRegistry.getBalance(user1);
-        assertEq(finalTG, initialTG - deductAmount);
+        uint256 finalBalance = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, initialBalance - deductAmount);
+        
+        // Check totalDeductedBalance increased
+        assertEq(gasRegistry.totalDeductedBalance(), deductAmount);
     }
     
-    function test_DeductTGBalance_ZeroAmount() public {
+    function test_DeductETHBalance_ZeroAmount() public {
         uint256 ethAmount = 1 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Get initial balance
-        (, uint256 initialTG) = gasRegistry.getBalance(user1);
+        uint256 initialBalance = gasRegistry.getBalance(user1);
         
-        // Deduct 0 TG - should not emit event and should not revert
+        // Deduct 0 ETH - should not emit event and should not revert
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, 0);
+        gasRegistry.deductETHBalance(user1, 0);
         
         // Check balance unchanged
-        (, uint256 finalTG) = gasRegistry.getBalance(user1);
-        assertEq(finalTG, initialTG);
+        uint256 finalBalance = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, initialBalance);
+        
+        // Check totalDeductedBalance unchanged
+        assertEq(gasRegistry.totalDeductedBalance(), 0);
     }
     
-    function test_DeductTGBalance_InsufficientBalance() public {
+    function test_DeductETHBalance_InsufficientBalance() public {
         uint256 ethAmount = 1 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
-        // Try to deduct more TG than available
-        uint256 tgBalance = ethAmount * 1000;
-        
-        vm.expectRevert("Insufficient TG balance");
+        // Try to deduct more ETH than available
+        vm.expectRevert("Insufficient ETH balance");
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, tgBalance + 1);
+        gasRegistry.deductETHBalance(user1, ethAmount + 1);
     }
     
-    function test_DeductTGBalance_OnlyOperator() public {
+    function test_DeductETHBalance_OnlyOperator() public {
         uint256 ethAmount = 1 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Try to deduct as non-operator
         vm.expectRevert("Only operator can call this function");
         vm.prank(user1);
-        gasRegistry.deductTGBalance(user1, 100);
+        gasRegistry.deductETHBalance(user1, 0.1 ether);
         
         // Try to deduct as owner (not operator)
         vm.expectRevert("Only operator can call this function");
         vm.prank(owner);
-        gasRegistry.deductTGBalance(user1, 100);
+        gasRegistry.deductETHBalance(user1, 0.1 ether);
     }
     
-    function test_DeductTGBalance_ExactBalance() public {
+    function test_DeductETHBalance_ExactBalance() public {
         uint256 ethAmount = 1 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Get exact balance
-        (, uint256 tgBalance) = gasRegistry.getBalance(user1);
+        uint256 balance = gasRegistry.getBalance(user1);
         
         // Deduct exact balance
         vm.expectEmit(true, false, false, true);
-        emit TGBalanceDeducted(user1, tgBalance);
+        emit ETHBalanceDeducted(user1, balance);
         
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, tgBalance);
+        gasRegistry.deductETHBalance(user1, balance);
         
         // Check balance is now zero
-        (, uint256 finalTG) = gasRegistry.getBalance(user1);
-        assertEq(finalTG, 0);
+        uint256 finalBalance = gasRegistry.getBalance(user1);
+        assertEq(finalBalance, 0);
+        
+        // Check totalDeductedBalance
+        assertEq(gasRegistry.totalDeductedBalance(), balance);
     }
     
-    function test_DeductTGBalance_FromUserWithZeroBalance() public {
-        // Try to deduct from user with no TG balance
-        vm.expectRevert("Insufficient TG balance");
+    function test_DeductETHBalance_FromUserWithZeroBalance() public {
+        // Try to deduct from user with no ETH balance
+        vm.expectRevert("Insufficient ETH balance");
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, 1);
+        gasRegistry.deductETHBalance(user1, 1);
     }
     
-    function test_DeductTGBalance_MultipleDeductions() public {
+    function test_DeductETHBalance_MultipleDeductions() public {
         uint256 ethAmount = 2 ether;
         
-        // User purchases TG
+        // User deposits ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
-        uint256 initialTG = ethAmount * 1000;
+        uint256 initialBalance = ethAmount;
         
         // First deduction
+        uint256 firstDeduction = 0.3 ether;
         vm.expectEmit(true, false, false, true);
-        emit TGBalanceDeducted(user1, 300);
+        emit ETHBalanceDeducted(user1, firstDeduction);
         
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, 300);
+        gasRegistry.deductETHBalance(user1, firstDeduction);
         
-        (, uint256 afterFirst) = gasRegistry.getBalance(user1);
-        assertEq(afterFirst, initialTG - 300);
+        uint256 afterFirst = gasRegistry.getBalance(user1);
+        assertEq(afterFirst, initialBalance - firstDeduction);
+        assertEq(gasRegistry.totalDeductedBalance(), firstDeduction);
         
         // Second deduction
+        uint256 secondDeduction = 0.7 ether;
         vm.expectEmit(true, false, false, true);
-        emit TGBalanceDeducted(user1, 700);
+        emit ETHBalanceDeducted(user1, secondDeduction);
         
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, 700);
+        gasRegistry.deductETHBalance(user1, secondDeduction);
         
-        (, uint256 afterSecond) = gasRegistry.getBalance(user1);
-        assertEq(afterSecond, initialTG - 300 - 700);
+        uint256 afterSecond = gasRegistry.getBalance(user1);
+        assertEq(afterSecond, initialBalance - firstDeduction - secondDeduction);
+        assertEq(gasRegistry.totalDeductedBalance(), firstDeduction + secondDeduction);
     }
     
-    function test_DeductTGBalance_DoesNotAffectOtherUsers() public {
+    function test_DeductETHBalance_DoesNotAffectOtherUsers() public {
         uint256 ethAmount = 1 ether;
         
-        // Both users purchase TG
+        // Both users deposit ETH
         vm.prank(user1);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         vm.prank(user2);
-        gasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        gasRegistry.depositETH{value: ethAmount}(ethAmount);
         
         // Get initial balances
-        (, uint256 user1InitialTG) = gasRegistry.getBalance(user1);
-        (, uint256 user2InitialTG) = gasRegistry.getBalance(user2);
+        uint256 user1InitialBalance = gasRegistry.getBalance(user1);
+        uint256 user2InitialBalance = gasRegistry.getBalance(user2);
         
         // Deduct from user1
+        uint256 deductAmount = 0.5 ether;
         vm.prank(operator);
-        gasRegistry.deductTGBalance(user1, 500);
+        gasRegistry.deductETHBalance(user1, deductAmount);
         
         // Check user1's balance changed
-        (, uint256 user1FinalTG) = gasRegistry.getBalance(user1);
-        assertEq(user1FinalTG, user1InitialTG - 500);
+        uint256 user1FinalBalance = gasRegistry.getBalance(user1);
+        assertEq(user1FinalBalance, user1InitialBalance - deductAmount);
         
         // Check user2's balance unchanged
-        (, uint256 user2FinalTG) = gasRegistry.getBalance(user2);
-        assertEq(user2FinalTG, user2InitialTG);
+        uint256 user2FinalBalance = gasRegistry.getBalance(user2);
+        assertEq(user2FinalBalance, user2InitialBalance);
+        
+        // Check totalDeductedBalance
+        assertEq(gasRegistry.totalDeductedBalance(), deductAmount);
     }
 } 

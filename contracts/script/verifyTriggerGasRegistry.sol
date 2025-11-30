@@ -26,54 +26,52 @@ contract VerifyTriggerGasRegistry is Script {
         console2.log("Deployer:", deployer);
         require(triggerGasRegistry.owner() == deployer, "Owner mismatch");
 
-        // Test 2: Purchase TG tokens
-        uint256 purchaseAmount = 0.1 ether;
-        triggerGasRegistry.purchaseTG{value: purchaseAmount}(purchaseAmount);
+        // Test 2: Deposit ETH
+        uint256 depositAmount = 0.1 ether;
+        triggerGasRegistry.depositETH{value: depositAmount}(depositAmount);
         
-        // Verify balance after purchase
-        (uint256 ethSpent, uint256 tgBalance) = triggerGasRegistry.getBalance(deployer);
-        console2.log(string.concat("ETH spent: ", Strings.toString(ethSpent)));
-        console2.log(string.concat("TG balance: ", Strings.toString(tgBalance)));
-        require(ethSpent == purchaseAmount, "ETH spent mismatch");
-        require(tgBalance == purchaseAmount * 1000, "TG balance mismatch");
+        // Verify balance after deposit
+        uint256 ethBalance = triggerGasRegistry.getBalance(deployer);
+        console2.log(string.concat("ETH balance: ", Strings.toString(ethBalance)));
+        require(ethBalance == depositAmount, "ETH balance mismatch");
 
-        // Test 3: Claim ETH for TG
-        uint256 claimAmount = 200; // 200 TG tokens
+        // Test 3: Withdraw ETH balance
+        uint256 withdrawAmount = 0.05 ether;
         uint256 initialBalance = address(deployer).balance;
         console2.log(string.concat("Initial ETH balance: ", Strings.toString(initialBalance)));
         
-        // Get TG balance before claim
-        (, uint256 beforeTgBalance) = triggerGasRegistry.getBalance(deployer);
-        console2.log(string.concat("TG balance before claim: ", Strings.toString(beforeTgBalance)));
+        // Get ETH balance before withdraw
+        uint256 beforeETHBalance = triggerGasRegistry.getBalance(deployer);
+        console2.log(string.concat("ETH balance before withdraw: ", Strings.toString(beforeETHBalance)));
         
-        // Calculate expected ETH to receive (200 TG = 0.0002 ETH)
-        uint256 expectedEth = claimAmount / 1000;
-        console2.log(string.concat("Expected ETH to receive: ", Strings.toString(expectedEth)));
+        triggerGasRegistry.withdrawETHBalance(withdrawAmount);
         
-        triggerGasRegistry.claimETHForTG(claimAmount);
+        // Get ETH balance after withdraw
+        uint256 afterETHBalance = triggerGasRegistry.getBalance(deployer);
+        console2.log(string.concat("ETH balance after withdraw: ", Strings.toString(afterETHBalance)));
         
-        // Get TG balance after claim
-        (, uint256 afterTgBalance) = triggerGasRegistry.getBalance(deployer);
-        console2.log(string.concat("TG balance after claim: ", Strings.toString(afterTgBalance)));
-        
-        // Verify ETH balance after claim
+        // Verify ETH balance after withdraw
         uint256 finalBalance = address(deployer).balance;
         console2.log(string.concat("Final ETH balance: ", Strings.toString(finalBalance)));
         uint256 ethReceived = finalBalance - initialBalance;
-        console2.log(string.concat("ETH received from claim: ", Strings.toString(ethReceived)));
+        console2.log(string.concat("ETH received from withdraw: ", Strings.toString(ethReceived)));
         
-        require(afterTgBalance == beforeTgBalance - claimAmount, "TG balance not reduced correctly");
-        require(ethReceived >= expectedEth, "ETH claim amount mismatch");
+        require(afterETHBalance == beforeETHBalance - withdrawAmount, "ETH balance not reduced correctly");
+        require(ethReceived == withdrawAmount, "ETH withdraw amount mismatch");
 
-        // Test 4: Withdraw ETH (as owner)
-        uint256 withdrawAmount = 0.05 ether;
+        // Test 4: Withdraw ETH (as owner) - requires deducted balance first
+        // First, deduct some balance to make it available for owner withdrawal
+        uint256 deductAmount = 0.02 ether;
+        triggerGasRegistry.deductETHBalance(deployer, deductAmount);
+        
+        uint256 ownerWithdrawAmount = 0.02 ether;
         uint256 contractBalance = address(triggerGasRegistry).balance;
-        triggerGasRegistry.withdrawETH(withdrawAmount, "Test withdrawal");
+        triggerGasRegistry.withdrawETH(ownerWithdrawAmount, "Test withdrawal");
         
         // Verify contract balance after withdrawal
         uint256 newContractBalance = address(triggerGasRegistry).balance;
         console2.log(string.concat("Contract balance after withdrawal: ", Strings.toString(newContractBalance)));
-        require(newContractBalance == contractBalance - withdrawAmount, "Withdrawal amount mismatch");
+        require(newContractBalance == contractBalance - ownerWithdrawAmount, "Withdrawal amount mismatch");
 
         vm.stopBroadcast();
 

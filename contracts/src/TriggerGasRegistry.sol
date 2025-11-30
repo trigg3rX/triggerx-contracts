@@ -1,14 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-/**
- * 
- *   ╔╦╗╦═╗╦╔═╗╔═╗╔═╗╦═╗═╗ ╦
- *    ║ ╠╦╝║║ ╦║ ╦║╣ ╠╦╝╔╩╦╝ 
- *    ╩ ╩╚═╩╚═╝╚═╝╚═╝╩╚═╩ ╚═
- * 
- */
-
 import "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
@@ -20,29 +12,15 @@ contract TriggerGasRegistry is
     UUPSUpgradeable,
     OwnableUpgradeable 
 {
-    struct TGBalance {
-        uint256 ethSpent;
-        uint256 TGbalance;
-    }
-
-    mapping(address => TGBalance) public balances;
-
-    // slither-disable-next-line naming-convention
-    uint256 public TG_PER_ETH;
+    mapping(address => uint256) public balances;
 
     address public operatorRole;
+    uint256 public totalDeductedBalance;
 
     // Events
-    event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount);
-    event TGRefunded(address indexed user, uint256 amount);
-    event TGBalanceRemoved(address indexed user, uint256 amount, string reason);
-    event TGClaimed(address indexed user, uint256 amount);
-    event TaskFeeClaimed(address indexed user, uint256 amount);
-    event RewardClaimed(address indexed user, uint256 reward);
-    event TGTransferred(address indexed user, address indexed keeper, uint256 amount);
+    event ETHDeposited(address indexed user, uint256 ethAmount);
     event ETHWithdrawn(address indexed owner, uint256 amount, string reason);
-    event TGBalanceDeducted(address indexed user, uint256 amount);
-    event TGPerETHUpdated(uint256 tgPerEth);
+    event ETHBalanceDeducted(address indexed user, uint256 amount);
 
     // Modifiers
     modifier onlyOperator() {
@@ -54,7 +32,7 @@ contract TriggerGasRegistry is
         _disableInitializers();
     }
     
-    function initialize(address initialOwner, address _operator, uint256 _tgPerEth) public initializer {
+    function initialize(address initialOwner, address _operator) public initializer {
         require(initialOwner != address(0), "Initial owner cannot be 0 address");
         
         __ReentrancyGuard_init();
@@ -62,80 +40,74 @@ contract TriggerGasRegistry is
         __UUPSUpgradeable_init();
 
         // set the operator role
-        TG_PER_ETH = _tgPerEth;
         operatorRole = _operator;
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     /**
-     * @notice Allows a user to purchase TG tokens with ETH
-     * @param ethAmount The amount of ETH to spend
+     * @notice Allows a user to deposit ETH
+     * @param ethAmount The amount of ETH to deposit
      */
-    function purchaseTG(uint256 ethAmount) external payable nonReentrant {
-        require(ethAmount > 0, "Cannot spend 0 ETH");
+    function depositETH(uint256 ethAmount) external payable nonReentrant {
+        require(ethAmount > 0, "Cannot deposit 0 ETH");
         require(msg.value == ethAmount, "Sent ETH must match amount");
         
-        TGBalance storage userBalance = balances[msg.sender];
-        userBalance.ethSpent += ethAmount;
-        
-        uint256 tgAmount = ethAmount * TG_PER_ETH;
-        userBalance.TGbalance += tgAmount;
+        balances[msg.sender] += ethAmount;
 
-        emit TGPurchased(msg.sender, ethAmount, tgAmount);
+        emit ETHDeposited(msg.sender, ethAmount);
     }
 
     /**
-     * @notice Returns the TG balance information for a given user
+     * @notice Returns the ETH balance information for a given user
      * @param user The address of the user
-     * @return ethSpent The amount of ETH spent
-     * @return tgBalance The TG balance
+     * @return ethAmount The amount of ETH available
      */
-    function getBalance(address user) external view returns (uint256 ethSpent, uint256 tgBalance) {
-        TGBalance memory userBalance = balances[user];
-        return (userBalance.ethSpent, userBalance.TGbalance);
+    function getBalance(address user) external view returns (uint256 ethAmount) {
+        return balances[user];
     }
 
     /**
-     * @notice Allows users to claim ETH based on their TG balance
-     * @param tgAmount The amount of TG to convert to ETH
+     * @notice Allows users to withdraw their ETH balance
+     * @param ethAmount The amount of ETH to withdraw
      */
-    function claimETHForTG(uint256 tgAmount) external nonReentrant {
-        TGBalance storage userBalance = balances[msg.sender];
-        require(userBalance.TGbalance >= tgAmount, "Insufficient TG balance");
+    function withdrawETHBalance(uint256 ethAmount) external nonReentrant {
+        require(ethAmount > 0, "Cannot withdraw 0 ETH");
+        require(balances[msg.sender] >= ethAmount, "Insufficient ETH balance");
 
-        uint256 ethToReturn = tgAmount / TG_PER_ETH;
-        userBalance.TGbalance -= tgAmount;
+        balances[msg.sender] -= ethAmount;
 
         // slither-disable-next-line low-level-calls
-        (bool success, ) = msg.sender.call{value: ethToReturn}("");
+        (bool success, ) = msg.sender.call{value: ethAmount}("");
         require(success, "ETH transfer failed");
-
-        emit TGClaimed(msg.sender, tgAmount);
     }
 
     /**
-     * @notice Allows the operator to deduct TG balance from a user
+     * @notice Allows the operator to deduct ETH balance from a user
      * @param user The address of the user
-     * @param tgAmount The amount of TG to deduct
+     * @param ethAmount The amount of ETH to deduct
      */
-    function deductTGBalance(address user, uint256 tgAmount) external onlyOperator {
-        require(balances[user].TGbalance >= tgAmount, "Insufficient TG balance");
-        if(tgAmount > 0) {
-            balances[user].TGbalance -= tgAmount;
-            emit TGBalanceDeducted(user, tgAmount);
+    function deductETHBalance(address user, uint256 ethAmount) external onlyOperator {
+        require(balances[user] >= ethAmount, "Insufficient ETH balance");
+        if(ethAmount > 0) {
+            balances[user] -= ethAmount;
+            totalDeductedBalance += ethAmount;
+            emit ETHBalanceDeducted(user, ethAmount);
         }
     }
 
     /**
-     * @notice Allows the owner to withdraw ETH from the contract
+     * @notice Allows the owner to withdraw ETH from the contract (only deducted balance)
      * @param amount The amount of ETH to withdraw
      * @param reason The reason for withdrawal
      */
     // slither-disable-next-line reentrancy-events
     function withdrawETH(uint256 amount, string memory reason) external onlyOwner nonReentrant {
         require(amount > 0, "Cannot withdraw 0 ETH");
+        require(amount <= totalDeductedBalance, "Cannot withdraw more than deducted balance");
         require(amount <= address(this).balance, "Insufficient contract balance");
+
+        totalDeductedBalance -= amount;
 
         // slither-disable-next-line low-level-calls
         (bool success, ) = owner().call{value: amount}("");
@@ -150,33 +122,23 @@ contract TriggerGasRegistry is
         operatorRole = _operatorRole;
     }
 
-    function setTGPerETH(uint256 _tgPerEth) external onlyOwner {
-        TG_PER_ETH = _tgPerEth;
-        emit TGPerETHUpdated(_tgPerEth);
-    }
-
     /**
      * @notice Batch migration function for efficient migration of multiple users
      * @param users Array of user addresses
-     * @param ethSpentAmounts Array of ETH spent amounts
-     * @param tgBalances Array of TG balances
+     * @param ethAmounts Array of ETH amounts
      */
     function batchMigrateUsers(
         address[] calldata users,
-        uint256[] calldata ethSpentAmounts,
-        uint256[] calldata tgBalances
+        uint256[] calldata ethAmounts
     ) external payable onlyOwner {
-        require(users.length == ethSpentAmounts.length, "Length mismatch");
-        require(users.length == tgBalances.length, "Length mismatch");
+        require(users.length == ethAmounts.length, "Length mismatch");
 
-        uint256 totalEthSpent = 0;
+        uint256 totalEth = 0;
         for (uint i = 0; i < users.length; i++) {
-            TGBalance storage userBalance = balances[users[i]];
-            userBalance.ethSpent = ethSpentAmounts[i];
-            userBalance.TGbalance = tgBalances[i];
-            totalEthSpent += ethSpentAmounts[i];
-            emit TGPurchased(users[i], ethSpentAmounts[i], tgBalances[i]);
+            balances[users[i]] = ethAmounts[i];
+            totalEth += ethAmounts[i];
+            emit ETHDeposited(users[i], ethAmounts[i]);
         }
-        require(msg.value >= totalEthSpent, "Sent ETH must be greater than or equal to total ETH spent");
+        require(msg.value >= totalEth, "Sent ETH must be greater than or equal to total ETH amount");
     }
 } 

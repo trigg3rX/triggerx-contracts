@@ -10,8 +10,7 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 contract TriggerGasRegistryDeploy is Script {
     struct UserBalance {
         address user;
-        uint256 ethSpent;
-        uint256 tgBalance;
+        uint256 ethAmount;
     }
 
     function run() public {
@@ -43,13 +42,12 @@ contract TriggerGasRegistryDeploy is Script {
         console.log("Current owner:", TriggerGasRegistry(proxy).owner());
         
         for (uint256 i = 0; i < users.length; i++) {
-            (uint256 ethSpent, uint256 tgBalance) = TriggerGasRegistry(proxy).balances(users[i]);
+            uint256 ethAmount = TriggerGasRegistry(proxy).balances(users[i]);
             beforeBalances[i] = UserBalance({
                 user: users[i],
-                ethSpent: ethSpent,
-                tgBalance: tgBalance
+                ethAmount: ethAmount
             });
-            console2.log("User %s: ETH=%s, TG=%s", users[i], ethSpent, tgBalance);
+            console2.log("User %s: ETH=%s", users[i], ethAmount);
         }
 
 
@@ -61,7 +59,6 @@ contract TriggerGasRegistryDeploy is Script {
         // STEP 3: Perform upgrade
         TriggerGasRegistry(proxy).upgradeToAndCall(address(newImplementation), "");
         // TriggerGasRegistry(proxy).setOperator(operator);
-        TriggerGasRegistry(proxy).setTGPerETH(1000);
 
         vm.stopBroadcast();
 
@@ -76,13 +73,12 @@ contract TriggerGasRegistryDeploy is Script {
 
         UserBalance[] memory afterBalances = new UserBalance[](users.length);
         for (uint256 i = 0; i < users.length; i++) {
-            (uint256 ethSpent, uint256 tgBalance) = TriggerGasRegistry(proxy).balances(users[i]);
+            uint256 ethAmount = TriggerGasRegistry(proxy).balances(users[i]);
             afterBalances[i] = UserBalance({
                 user: users[i],
-                ethSpent: ethSpent,
-                tgBalance: tgBalance
+                ethAmount: ethAmount
             });
-            console2.log("User %s: ETH=%s, TG=%s", users[i], ethSpent, tgBalance);
+            console2.log("User %s: ETH=%s", users[i], ethAmount);
         }
 
         // STEP 5: Compare BEFORE vs AFTER
@@ -91,19 +87,17 @@ contract TriggerGasRegistryDeploy is Script {
         uint256 usersWithData = 0;
         
         for (uint256 i = 0; i < users.length; i++) {
-            bool ethMatches = beforeBalances[i].ethSpent == afterBalances[i].ethSpent;
-            bool tgMatches = beforeBalances[i].tgBalance == afterBalances[i].tgBalance;
+            bool ethMatches = beforeBalances[i].ethAmount == afterBalances[i].ethAmount;
             
-            if (beforeBalances[i].ethSpent > 0 || beforeBalances[i].tgBalance > 0) {
+            if (beforeBalances[i].ethAmount > 0) {
                 usersWithData++;
             }
             
-            if (ethMatches && tgMatches) {
+            if (ethMatches) {
                 console2.log("[OK] User %s: Data preserved", users[i]);
             } else {
                 console2.log("[ERROR] User %s: Data changed!", users[i]);
-                console2.log("  ETH: %s -> %s", beforeBalances[i].ethSpent, afterBalances[i].ethSpent);
-                console2.log("  TG: %s -> %s", beforeBalances[i].tgBalance, afterBalances[i].tgBalance);
+                console2.log("  ETH: %s -> %s", beforeBalances[i].ethAmount, afterBalances[i].ethAmount);
                 allDataPreserved = false;
             }
         }

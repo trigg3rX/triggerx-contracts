@@ -99,14 +99,14 @@ contract ProxySpokeTest is Test {
     
     function test_ExecuteFunction() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         uint256 value = 1 ether;
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         // Fund the keeper
         vm.deal(keeper1, value);
@@ -118,40 +118,40 @@ contract ProxySpokeTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        taskExecutionSpoke.executeFunction{value: value}(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction{value: value}(jobId, ethAmount, target, data);
     }
     
     function test_ExecuteFunction_OnlyKeeper() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(randomUser);
-        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(jobId, ethAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x300);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
         vm.expectRevert(bytes("Function execution failed"));
         vm.prank(keeper1);
-        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(jobId, ethAmount, target, data);
     }
     
     function test_LzReceive_Register() public {
