@@ -129,18 +129,29 @@ contract TaskExecutionUpgrade is Script {
         );
     }
 
-    function testPackedJobIdHandling(address payable proxy) internal view {
+    function testPackedJobIdHandling(address payable /* proxy */) internal view {
         // Test that the contract can handle packed jobIds
         uint256 testChainId = block.chainid;
+        uint256 testTimestamp = block.timestamp;
         uint256 testJobCounter = 123;
-        uint256 packedJobId = PackedJobIdLib.pack(testChainId, testJobCounter);
+        uint256 packedJobId = PackedJobIdLib.pack(testChainId, testTimestamp, testJobCounter);
         
         console2.log("Test packed jobId: %s", packedJobId);
         
-        (uint256 unpackedChainId, uint256 unpackedJobCounter) = PackedJobIdLib.unpack(packedJobId);
-        console2.log("Unpacked - Chain ID: %s, Job Counter: %s", unpackedChainId, unpackedJobCounter);
+        (uint256 unpackedChainId, uint256 unpackedTimestamp, uint256 unpackedJobCounter) =
+            PackedJobIdLib.unpack(packedJobId);
+        console2.log(
+            "Unpacked - Chain ID: %s, Timestamp: %s, Job Counter: %s",
+            unpackedChainId,
+            unpackedTimestamp,
+            unpackedJobCounter
+        );
         
-        if (unpackedChainId == testChainId && unpackedJobCounter == testJobCounter) {
+        if (
+            unpackedChainId == testChainId &&
+            unpackedJobCounter == testJobCounter &&
+            unpackedTimestamp == testTimestamp
+        ) {
             console.log("SUCCESS: Packed jobId handling works correctly");
         } else {
             console.log("ERROR: Packed jobId handling failed");

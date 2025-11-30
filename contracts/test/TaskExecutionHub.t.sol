@@ -81,36 +81,34 @@ contract TaskExecutionHubTest is Test {
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
         
-        // Deploy TaskExecutionHub
+        // Deploy TaskExecutionHub implementation
         console2.log("Deploying TaskExecutionHub");
-        taskExecutionHub = TaskExecutionHubForTest(
-            payable(address(
-                new ERC1967Proxy(
-                    address(new TaskExecutionHubForTest(address(mockEndpoint), owner, SRC_EID, THIS_EID, initialKeepers, address(mockJobRegistry), address(mockTriggerGasRegistry))),
-                    abi.encodeWithSignature(
-                        "initialize(address,address,uint32,uint32,address[],address,address)",
-                        address(mockEndpoint),
-                        owner,
-                        SRC_EID,
-                        THIS_EID,
-                        initialKeepers,
-                        address(mockJobRegistry),
-                        address(mockTriggerGasRegistry)
-                    )
-                )
-            ))
-        );
-        console2.log("TaskExecutionHub deployed at", address(taskExecutionHub));
-        
-        // Initialize the contract
-        taskExecutionHub.initialize(
-            owner,
-            SRC_EID,
-            THIS_EID,
-            initialKeepers,
-            address(mockJobRegistry),
+        TaskExecutionHubForTest implementation = new TaskExecutionHubForTest(
+            address(mockEndpoint), 
+            owner, 
+            SRC_EID, 
+            THIS_EID, 
+            initialKeepers, 
+            address(mockJobRegistry), 
             address(mockTriggerGasRegistry)
         );
+        
+        // Deploy proxy with initialization
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                TaskExecutionHub.initialize.selector,
+                owner,
+                SRC_EID,
+                THIS_EID,
+                initialKeepers,
+                address(mockJobRegistry),
+                address(mockTriggerGasRegistry)
+            )
+        );
+        
+        taskExecutionHub = TaskExecutionHubForTest(payable(address(proxy)));
+        console2.log("TaskExecutionHub deployed at", address(taskExecutionHub));
         
         // Fund contract for message fees
         vm.deal(address(taskExecutionHub), 100 ether);
@@ -205,7 +203,7 @@ contract TaskExecutionHubTest is Test {
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
-        vm.expectRevert("Execution failed");
+        vm.expectRevert(bytes("Execution failed"));
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
@@ -216,7 +214,7 @@ contract TaskExecutionHubTest is Test {
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
-        vm.expectRevert("Job not found");
+        vm.expectRevert(bytes("Job not found"));
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }
@@ -231,7 +229,7 @@ contract TaskExecutionHubTest is Test {
         mockJobRegistry.setJobOwner(jobId, jobOwner);
         mockTriggerGasRegistry.setBalance(jobOwner, 500); // Less than required
         
-        vm.expectRevert("Insufficient TG balance");
+        vm.expectRevert(bytes("Insufficient TG balance"));
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
     }

@@ -95,13 +95,14 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         bytes memory data
     ) external returns (uint256 jobId) {
         if (bytes(jobName).length == 0) revert EmptyJobName();
-        if (targetContract == address(0)) revert InvalidTargetContract(); 
+        // For JobType 7, targetContract is optional; for all other job types it is required
+        if (jobType != 7 && targetContract == address(0)) revert InvalidTargetContract();
 
         // Validate data based on jobType
         _validateJobData(jobType, data);
 
         uint256 jobCounter = ++_lastJobCounter;
-        jobId = PackedJobIdLib.pack(block.chainid, jobCounter);
+        jobId = PackedJobIdLib.pack(block.chainid, block.timestamp, jobCounter);
 
         bytes32 jobHash = keccak256(
             abi.encode(jobName, jobType, timeFrame, targetContract, data)
@@ -163,7 +164,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         if (currentJobHash != job.jobHash) revert("OLD_VALUES_MISMATCH");
 
         if (bytes(newJobName).length == 0) revert EmptyJobName();
-        if (targetContract == address(0)) revert InvalidTargetContract();
+        // For JobType 7, targetContract is optional; for all other job types it is required
+        if (jobType != 7 && targetContract == address(0)) revert InvalidTargetContract();
 
         // Validate data based on jobType
         _validateJobData(jobType, newData);
@@ -190,8 +192,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
      * @param data The data to validate
      */
     function _validateJobData(uint8 jobType, bytes memory data) internal pure {
-        // For jobType 1 or 2, require uint256 timeInterval
-        if (jobType == 1 || jobType == 2) {
+        // For jobType 1, 2, or 7, require uint256 timeInterval
+        if (jobType == 1 || jobType == 2 || jobType == 7) {
             if (data.length < 32) {
                 revert MissingTimeInterval();
             }
@@ -215,8 +217,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
             }
         }
 
-        // For jobType 2, 4, or 6, require bytes32 ipfsHash
-        if (jobType == 2 || jobType == 4 || jobType == 6) {
+        // For jobType 2, 4, 6, or 7, require bytes32 ipfsHash
+        if (jobType == 2 || jobType == 4 || jobType == 6 || jobType == 7) {
             if (data.length < 64) {
                 // Need 32 bytes for timeInterval/recurringJob + 32 bytes for ipfsHash
                 revert MissingIpfsHash();
@@ -268,11 +270,17 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         }
     }
 
+    /**
+     * @dev Get job details by counter (searches across all timestamps).
+     * @notice This function is deprecated after timestamp packing. Use getJob(jobId) instead.
+     * @param jobCounter The counter of the job
+     * @return job The job details
+     */
     function getJobByCounter(uint256 jobCounter) external view returns (Job memory job) {
-        job = _jobs[PackedJobIdLib.pack(block.chainid, jobCounter)];
-        if (job.jobOwner == address(0)) {
-            revert JobNotFound(PackedJobIdLib.pack(block.chainid, jobCounter));
-        }
+        // NOTE: After the timestamp packing upgrade, this function cannot reliably
+        // look up jobs because the timestamp component is unknown.
+        // It is kept for interface compatibility but will always revert.
+        revert JobNotFound(jobCounter);
     }
 
     /**
@@ -346,13 +354,20 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 
     /**
-     * @dev Unpack a jobId to get the chainId and jobCounter.
+     * @dev Unpack a jobId to get its components.
      * @param jobId The packed job ID.
      * @return chainId The chain ID from the packed job ID.
+     * @return timestamp The timestamp from the packed job ID.
      * @return jobCounter The job counter from the packed job ID.
      */
-    function unpackJobId(uint256 jobId) external pure returns (uint256 chainId, uint256 jobCounter) {
-        (chainId, jobCounter) = PackedJobIdLib.unpack(jobId);
+    function unpackJobId(
+        uint256 jobId
+    )
+        external
+        pure
+        returns (uint256 chainId, uint256 timestamp, uint256 jobCounter)
+    {
+        (chainId, timestamp, jobCounter) = PackedJobIdLib.unpack(jobId);
     }
 
     // UUPS upgrade authorization

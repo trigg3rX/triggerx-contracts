@@ -63,32 +63,30 @@ contract ProxySpokeTest is Test {
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
         
-        // Deploy TaskExecutionSpoke
-        taskExecutionSpoke = ProxySpokeForTest(
-            payable(address(
-                new ERC1967Proxy(
-                    address(new ProxySpokeForTest(address(mockEndpoint), owner, SRC_EID, initialKeepers, address(mockJobRegistry), address(mockTriggerGasRegistry))),
-                    abi.encodeWithSignature(
-                        "initialize(address,address,uint32,address[],address,address)",
-                        address(mockEndpoint),
-                        owner,
-                        SRC_EID,
-                        initialKeepers,
-                        address(mockJobRegistry),
-                        address(mockTriggerGasRegistry)
-                    )
-                )
-            ))
-        );
-        
-        // Initialize the contract
-        taskExecutionSpoke.initialize(
-            owner,
-            SRC_EID,
-            initialKeepers,
-            address(mockJobRegistry),
+        // Deploy TaskExecutionSpoke implementation
+        ProxySpokeForTest implementation = new ProxySpokeForTest(
+            address(mockEndpoint), 
+            owner, 
+            SRC_EID, 
+            initialKeepers, 
+            address(mockJobRegistry), 
             address(mockTriggerGasRegistry)
         );
+        
+        // Deploy proxy with initialization
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                TaskExecutionSpoke.initialize.selector,
+                owner,
+                SRC_EID,
+                initialKeepers,
+                address(mockJobRegistry),
+                address(mockTriggerGasRegistry)
+            )
+        );
+        
+        taskExecutionSpoke = ProxySpokeForTest(payable(address(proxy)));
         
         vm.stopPrank();
     }
@@ -151,7 +149,7 @@ contract ProxySpokeTest is Test {
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
-        vm.expectRevert("Function execution failed");
+        vm.expectRevert(bytes("Function execution failed"));
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
     }

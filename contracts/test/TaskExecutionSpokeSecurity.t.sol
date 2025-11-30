@@ -8,6 +8,7 @@ import {OwnableUpgradeable} from "@openzeppelin-upgrades/contracts/access/Ownabl
 import {Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import {MockJobRegistry} from "./mocks/MockJobRegistry.sol";
 import {MockTriggerGasRegistry} from "./mocks/MockTriggerGasRegistry.sol";
+import {ERC1967Proxy} from "@openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract MaliciousSpokeTarget {
     bool public shouldRevert;
@@ -65,19 +66,30 @@ contract TaskExecutionSpokeSecurityTest is Test {
         initialKeepers[0] = keeper1;
         initialKeepers[1] = keeper2;
         
-        taskExecutionSpoke = new TaskExecutionSpoke(
+        // Deploy implementation
+        TaskExecutionSpoke implementation = new TaskExecutionSpoke(
             address(mockEndpoint),
             owner
         );
         
-        // Initialize the contract
-        taskExecutionSpoke.initialize(
-            owner,
-            HUB_EID,
-            initialKeepers,
-            address(new MockJobRegistry()),
-            address(new MockTriggerGasRegistry())
+        // Deploy mock registries
+        MockJobRegistry mockJobRegistry = new MockJobRegistry();
+        MockTriggerGasRegistry mockTriggerGasRegistry = new MockTriggerGasRegistry();
+        
+        // Deploy proxy with initialization
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                TaskExecutionSpoke.initialize.selector,
+                owner,
+                HUB_EID,
+                initialKeepers,
+                address(mockJobRegistry),
+                address(mockTriggerGasRegistry)
+            )
         );
+        
+        taskExecutionSpoke = TaskExecutionSpoke(payable(address(proxy)));
         
         vm.stopPrank();
         
@@ -151,7 +163,7 @@ contract TaskExecutionSpokeSecurityTest is Test {
         
         bytes memory data = abi.encodeWithSelector(MaliciousSpokeTarget.maliciousFunction.selector);
         
-        vm.expectRevert("Function execution failed");
+        vm.expectRevert(bytes("Function execution failed"));
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction(jobId, tgAmount, address(maliciousTarget), data);
     }
@@ -168,7 +180,7 @@ contract TaskExecutionSpokeSecurityTest is Test {
         mockJobRegistry.setJobOwner(jobId, address(0x300));
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
         
-        vm.expectRevert("Function execution failed");
+        vm.expectRevert(bytes("Function execution failed"));
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction(jobId, tgAmount, address(taskExecutionSpoke), data);
     }

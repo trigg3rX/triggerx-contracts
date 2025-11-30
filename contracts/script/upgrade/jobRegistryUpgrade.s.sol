@@ -103,7 +103,7 @@ contract JobRegistryUpgrade is Script {
         console.log("\n=== TESTING NEW PACKED JOBID FUNCTIONALITY ===");
         vm.startBroadcast(deployerPrivateKey);
         
-        try JobRegistry(proxy).createJob(
+            try JobRegistry(proxy).createJob(
             "Test Packed Job",
             1,
             3600,
@@ -113,8 +113,14 @@ contract JobRegistryUpgrade is Script {
             console2.log("Created new job with packed ID: %s", newJobId);
             
             // Unpack and verify
-            (uint256 chainId, uint256 jobCounter) = PackedJobIdLib.unpack(newJobId);
-            console2.log("Unpacked - Chain ID: %s, Job Counter: %s", chainId, jobCounter);
+            (uint256 chainId, uint256 timestamp, uint256 jobCounter) =
+                PackedJobIdLib.unpack(newJobId);
+            console2.log(
+                "Unpacked - Chain ID: %s, Timestamp: %s, Job Counter: %s",
+                chainId,
+                timestamp,
+                jobCounter
+            );
             console2.log("Current chain ID: %s", block.chainid);
             
             if (chainId == block.chainid) {

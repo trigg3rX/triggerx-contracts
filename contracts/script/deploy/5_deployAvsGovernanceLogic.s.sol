@@ -37,7 +37,7 @@ contract DeployAvsGovernanceLogic is Script {
         // Separate broadcast block ensures previous transaction is confirmed
         console.log("\n=== Transferring ETH to AvsGovernanceLogic ===");
         vm.startBroadcast(deployerPrivateKey);
-        payable(avsGovernanceAddressLogic).transfer(0.1 ether);
+        payable(avsGovernanceLogicAddress).transfer(0.1 ether);
         vm.stopBroadcast();
 
         // Transaction 3: Set the AvsGovernanceLogic on the AvsGovernance contract
@@ -45,7 +45,7 @@ contract DeployAvsGovernanceLogic is Script {
         console.log("\n=== Setting AvsGovernanceLogic on AvsGovernance contract ===");
         vm.startBroadcast(deployerPrivateKey);
         AvsGovernance avsGovernanceContract = AvsGovernance(payable(vm.envAddress("AVS_GOVERNANCE_ADDRESS")));
-        avsGovernanceContract.setAvsGovernanceLogic(IAvsGovernanceLogic(avsGovernanceAddressLogic));
+        avsGovernanceContract.setAvsGovernanceLogic(IAvsGovernanceLogic(avsGovernanceLogicAddress));
         vm.stopBroadcast();
 
         // Print final deployment summary
