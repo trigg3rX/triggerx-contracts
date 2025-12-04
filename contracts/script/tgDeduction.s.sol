@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {TriggerGasRegistry} from "../src/TriggerGasRegistry.sol";
 import {JobRegistry} from "../src/JobRegistry.sol";
 import {TaskExecutionHub} from "../src/lz/TaskExecutionHub.sol";
-import {CREATE3} from "lib/solady/src/utils/CREATE3.sol";
+import {CREATE3} from "@solady/utils/CREATE3.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {console2} from "forge-std/console2.sol";
 
@@ -63,7 +63,7 @@ contract TGDeduction is Script {
         bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
         address implementation = CREATE3.deployDeterministic(implementation_code, implementation_salt);
 
-        bytes memory initData = abi.encodeWithSelector(TriggerGasRegistry.initialize.selector, deployer, address(0), 1000);
+        bytes memory initData = abi.encodeWithSelector(TriggerGasRegistry.initialize.selector, deployer, address(0));
 
         bytes memory proxy_code = abi.encodePacked(type(ERC1967Proxy).creationCode, abi.encode(address(implementation), initData));
 
@@ -155,21 +155,21 @@ contract TGDeduction is Script {
         console2.log("Initial ETH balance: ", vm.toString(initialBalance));
         console2.log("Purchasing TG with ", vm.toString(ethAmount), " ETH");
         
-        // Get initial TG balance
-        (, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
-        console2.log("Initial TG balance: ", vm.toString(initialTGBalance));
+        // Get initial ETH balance
+        uint256 initialETHBalance = triggerGasRegistry.getBalance(jobOwner);
+        console2.log("Initial ETH balance: ", vm.toString(initialETHBalance));
         
-        // Purchase TG
-        triggerGasRegistry.purchaseTG{value: ethAmount}(ethAmount);
+        // Deposit ETH
+        triggerGasRegistry.depositETH{value: ethAmount}(ethAmount);
         
-        // Get final TG balance
-        (, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
-        console2.log("Final TG balance: ", vm.toString(finalTGBalance));
-        console2.log("TG purchased: ", vm.toString(finalTGBalance - initialTGBalance));
+        // Get final ETH balance
+        uint256 finalETHBalance = triggerGasRegistry.getBalance(jobOwner);
+        console2.log("Final ETH balance: ", vm.toString(finalETHBalance));
+        console2.log("ETH deposited: ", vm.toString(finalETHBalance - initialETHBalance));
         
-        // Verify the purchase
-        require(finalTGBalance > initialTGBalance, "TG balance should increase");
-        console2.log("TG purchase successful");
+        // Verify the deposit
+        require(finalETHBalance > initialETHBalance, "ETH balance should increase");
+        console2.log("ETH deposit successful");
     }
 
     function createJob() public returns (uint256 jobId) {
@@ -241,16 +241,16 @@ contract TGDeduction is Script {
     }
 
     function executeFunction(uint256 jobId) public {
-        console2.log("\n--- Step 4: Testing Function Execution and TG Deduction ---");
+        console2.log("\n--- Step 4: Testing Function Execution and ETH Deduction ---");
         
-        uint256 tgAmountToDeduct = 100; // Amount of TG to deduct
+        uint256 ethAmountToDeduct = 0.1 ether; // Amount of ETH to deduct
         address targetContract = address(0x123); // Mock target contract
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
-        // Get initial TG balance
-        (, uint256 initialTGBalance) = triggerGasRegistry.getBalance(jobOwner);
-        console2.log("Initial TG balance before execution: ", vm.toString(initialTGBalance));
-        console2.log("TG amount to deduct: ", vm.toString(tgAmountToDeduct));
+        // Get initial ETH balance
+        uint256 initialETHBalance = triggerGasRegistry.getBalance(jobOwner);
+        console2.log("Initial ETH balance before execution: ", vm.toString(initialETHBalance));
+        console2.log("ETH amount to deduct: ", vm.toString(ethAmountToDeduct));
         
         // Create a simple mock contract that will always succeed
         bytes memory mockBytecode = hex"600180600c6000396000f3006000fd"; // Simple bytecode that returns true
@@ -259,16 +259,16 @@ contract TGDeduction is Script {
         console2.log("Executing function through TaskExecutionHub...");
         
         // Execute the function
-        taskExecutionHub.executeFunction(jobId, tgAmountToDeduct, targetContract, data);
+        taskExecutionHub.executeFunction(jobId, ethAmountToDeduct, targetContract, data);
         
-        // Get final TG balance
-        (, uint256 finalTGBalance) = triggerGasRegistry.getBalance(jobOwner);
-        console2.log("Final TG balance after execution: ", vm.toString(finalTGBalance));
-        console2.log("TG deducted: ", vm.toString(initialTGBalance - finalTGBalance));
+        // Get final ETH balance
+        uint256 finalETHBalance = triggerGasRegistry.getBalance(jobOwner);
+        console2.log("Final ETH balance after execution: ", vm.toString(finalETHBalance));
+        console2.log("ETH deducted: ", vm.toString(initialETHBalance - finalETHBalance));
         
         // Verify the deduction
-        require(finalTGBalance == initialTGBalance - tgAmountToDeduct, "TG should be deducted correctly");
-        console2.log("Function execution and TG deduction successful");
+        require(finalETHBalance == initialETHBalance - ethAmountToDeduct, "ETH should be deducted correctly");
+        console2.log("Function execution and ETH deduction successful");
     }
 
     function differentJobTypes() public {

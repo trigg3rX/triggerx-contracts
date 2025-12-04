@@ -11,4 +11,11 @@ contract MockJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address) {
         return jobOwners[jobId];
     }
+    
+    // Mock unpackJobId - returns current chain ID and jobId as counter
+    function unpackJobId(uint256 jobId) external view returns (uint256 chainId, uint256 timestamp, uint256 jobCounter) {
+        // For testing, return the current chain ID so tests pass the chain check
+        // and return the jobId as the counter
+        return (block.chainid, block.timestamp, jobId);
+    }
 }

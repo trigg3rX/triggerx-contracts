@@ -13,7 +13,7 @@ interface IJobRegistry {
 }
 
 interface ITriggerGasRegistry {
-    function deductTGBalance(address user, uint256 tgAmount) external;
+    function deductETHBalance(address user, uint256 ethAmount) external;
 }
 
 /**
@@ -103,18 +103,18 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
     /**
      * @notice Executes a function on a target contract
      * @param jobId The ID of the job
-     * @param tgAmount The amount of TG to deduct from the job owner
+     * @param ethAmount The amount of ETH to deduct from the job owner
      * @param target The address of the target contract
      * @param data The calldata for the function call
      */
-    function executeFunction(uint256 jobId, uint256 tgAmount, address target, bytes memory data) external payable onlyKeeper nonReentrant {
+    function executeFunction(uint256 jobId, uint256 ethAmount, address target, bytes memory data) external payable onlyKeeper nonReentrant {
         (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
         require(chainId == block.chainid, "Job is from a different chain");
 
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 
-        triggerGasRegistry.deductTGBalance(jobOwner, tgAmount);
+        triggerGasRegistry.deductETHBalance(jobOwner, ethAmount);
 
         _executeFunction(target, data);
     }

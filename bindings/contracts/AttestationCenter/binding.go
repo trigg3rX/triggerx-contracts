@@ -29,27 +29,6 @@ var (
 	_ = abi.ConvertType
 )
 
-// BLSAuthLibrarySignature is an auto generated low-level Go binding around an user-defined struct.
-type BLSAuthLibrarySignature struct {
-	Signature [2]*big.Int
-}
-
-// IAttestationCenterBlsTaskSubmissionDetails is an auto generated low-level Go binding around an user-defined struct.
-type IAttestationCenterBlsTaskSubmissionDetails struct {
-	IsApproved   bool
-	TpSignature  [2]*big.Int
-	TaSignature  [2]*big.Int
-	AttestersIds []*big.Int
-}
-
-// IAttestationCenterEcdsaTaskSubmissionDetails is an auto generated low-level Go binding around an user-defined struct.
-type IAttestationCenterEcdsaTaskSubmissionDetails struct {
-	IsApproved   bool
-	TpSignature  []byte
-	TaSignature  [2]*big.Int
-	AttestersIds []*big.Int
-}
-
 // IAttestationCenterInitializationParams is an auto generated low-level Go binding around an user-defined struct.
 type IAttestationCenterInitializationParams struct {
 	AvsGovernanceMultisigOwner common.Address
@@ -62,6 +41,15 @@ type IAttestationCenterInitializationParams struct {
 	InternalTaskHandler        common.Address
 }
 
+// IAttestationCenterOperatorDetails is an auto generated low-level Go binding around an user-defined struct.
+type IAttestationCenterOperatorDetails struct {
+	Operator    common.Address
+	OperatorId  *big.Int
+	VotingPower *big.Int
+	FeeToClaim  *big.Int
+	BlsKey      [4]*big.Int
+}
+
 // IAttestationCenterPaymentDetails is an auto generated low-level Go binding around an user-defined struct.
 type IAttestationCenterPaymentDetails struct {
 	Operator           common.Address
@@ -70,50 +58,63 @@ type IAttestationCenterPaymentDetails struct {
 	PaymentStatus      uint8
 }
 
-// IAttestationCenterPaymentRequestMessage is an auto generated low-level Go binding around an user-defined struct.
-type IAttestationCenterPaymentRequestMessage struct {
+// IInternalTaskHandlerInternalTaskConfig is an auto generated low-level Go binding around an user-defined struct.
+type IInternalTaskHandlerInternalTaskConfig struct {
+	IsInternalTaskActivated bool
+	Interval                *big.Int
+	LeaderElectionMechanism uint8
+	Data                    []byte
+}
+
+// IRewardsDistributorPaymentRequestMessage is an auto generated low-level Go binding around an user-defined struct.
+type IRewardsDistributorPaymentRequestMessage struct {
 	Operator   common.Address
 	FeeToClaim *big.Int
 }
 
-// IAttestationCenterTaskInfo is an auto generated low-level Go binding around an user-defined struct.
-type IAttestationCenterTaskInfo struct {
-	ProofOfTask      string
-	Data             []byte
-	TaskPerformer    common.Address
-	TaskDefinitionId uint16
+// ISlashingConfigSlashingStakingContractInfo is an auto generated low-level Go binding around an user-defined struct.
+type ISlashingConfigSlashingStakingContractInfo struct {
+	StakingContract        common.Address
+	SharedSecurityProvider uint8
+	WadsToSlash            *big.Int
+}
+
+// TaskDefinition is an auto generated low-level Go binding around an user-defined struct.
+type TaskDefinition struct {
+	TaskDefinitionId                      uint16
+	IsRejectedTaskSlashingEnabled         bool
+	IsIncorrectAttestationSlashingEnabled bool
+	Name                                  string
+	BlockExpiry                           *big.Int
+	BaseRewardFeeForAttesters             *big.Int
+	BaseRewardFeeForPerformer             *big.Int
+	BaseRewardFeeForAggregator            *big.Int
+	DisputePeriodBlocks                   *big.Int
+	MinimumVotingPower                    *big.Int
+	RestrictedAttesterIds                 []*big.Int
+	MaximumNumberOfAttesters              *big.Int
+}
+
+// TaskDefinitionParamsV2 is an auto generated low-level Go binding around an user-defined struct.
+type TaskDefinitionParamsV2 struct {
+	BlockExpiry                *big.Int
+	BaseRewardFeeForAttesters  *big.Int
+	BaseRewardFeeForPerformer  *big.Int
+	BaseRewardFeeForAggregator *big.Int
+	DisputePeriodBlocks        *big.Int
+	MinimumVotingPower         *big.Int
+	RestrictedAttesterIds      []*big.Int
+	MaximumNumberOfAttesters   *big.Int
 }
 
 // ContractAttestationCenterMetaData contains all meta data concerning the ContractAttestationCenter contract.
 var ContractAttestationCenterMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_extensionImplementation\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ECDSAInvalidSignature\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"name\":\"ECDSAInvalidSignatureLength\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"ECDSAInvalidSignatureS\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsDurationExceedsMaximum\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsDurationNotMultipleOfInterval\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"totalRewards\",\"type\":\"uint256\"}],\"name\":\"EigenRewardsMaxRewardsAmountExceeded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsMustBeRetroactive\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsNotSupportedOnL2\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsStartTimestampNotMultipleOfInterval\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsStartTimestampTooFarInPast\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyUnpaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InactiveAggregator\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InactiveTaskPerformer\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"minVotingPower\",\"type\":\"uint256\"}],\"name\":\"InsufficientVotingPowerForTaskDefinition\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidAttesterSet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidMaximumNumberOfAttesters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidOperatorsForPayment\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidPerformerSignature\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidRangeForBatchPaymentRequest\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskDefinitionId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"operatorIndex\",\"type\":\"uint256\"}],\"name\":\"InvalidRestrictedAttester\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidTaskDefinition\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MessageAlreadySigned\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotAnEjector\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operatorAddress\",\"type\":\"address\"}],\"name\":\"OperatorNotRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PauseFlowIsAlreadyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"TaskDefinitionNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnpausingFlowIsAlreadyUnpaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestedTaskNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestedAmountClaimed\",\"type\":\"uint256\"}],\"name\":\"ClearPaymentRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"startTimestamp\",\"type\":\"uint32\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"duration\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"}],\"indexed\":false,\"internalType\":\"structIAttestationCenter.PaymentRequestMessage[]\",\"name\":\"operators\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"}],\"name\":\"EigenPaymentsRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_pauser\",\"type\":\"address\"}],\"name\":\"FlowPaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlowFlag\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_unpauser\",\"type\":\"address\"}],\"name\":\"FlowUnpaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256[4]\",\"name\":\"blsKey\",\"type\":\"uint256[4]\"}],\"name\":\"OperatorBlsKeyUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"OperatorEjectionRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"votingPower\",\"type\":\"uint256\"}],\"name\":\"OperatorRegisteredToNetwork\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"operatorId\",\"type\":\"uint256\"}],\"name\":\"OperatorUnregisteredFromNetwork\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"}],\"indexed\":false,\"internalType\":\"structIAttestationCenter.PaymentRequestMessage[]\",\"name\":\"operators\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"}],\"name\":\"PaymentsRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_operatorId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_baseRewardFeeForOperator\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"uint32\",\"name\":\"_taskNumber\",\"type\":\"uint32\"}],\"name\":\"RewardAccumulated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newMessageHandler\",\"type\":\"address\"}],\"name\":\"SetMessageHandler\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"taskNumber\",\"type\":\"uint32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"proofOfTask\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"attestersIds\",\"type\":\"uint256[]\"}],\"name\":\"TaskRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"taskNumber\",\"type\":\"uint32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"proofOfTask\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"attestersIds\",\"type\":\"uint256[]\"}],\"name\":\"TaskSubmitted\",\"type\":\"event\"},{\"stateMutability\":\"nonpayable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"EXTENSION_IMPLEMENTATION\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsLogic\",\"outputs\":[{\"internalType\":\"contractIAvsLogic\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsTreasury\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"beforePaymentsLogic\",\"outputs\":[{\"internalType\":\"contractIBeforePaymentsLogic\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"}],\"internalType\":\"structIAttestationCenter.PaymentRequestMessage[]\",\"name\":\"_operators\",\"type\":\"tuple[]\"},{\"internalType\":\"uint256\",\"name\":\"_paidTaskNumber\",\"type\":\"uint256\"}],\"name\":\"clearBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"ejectOperatorFromNetwork\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_operatorId\",\"type\":\"uint256\"}],\"name\":\"getOperatorPaymentDetail\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"},{\"internalType\":\"enumIAttestationCenter.PaymentStatus\",\"name\":\"paymentStatus\",\"type\":\"uint8\"}],\"internalType\":\"structIAttestationCenter.PaymentDetails\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"getTaskDefinitionMaximumNumberOfAttesters\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"getTaskDefinitionMinimumVotingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"getTaskDefinitionRestrictedAttesters\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"avsGovernanceMultisigOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operationsMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"communityMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"messageHandler\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"obls\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"avsTreasury\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isRewardsOnL2\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"internalTaskHandler\",\"type\":\"address\"}],\"internalType\":\"structIAttestationCenter.InitializationParams\",\"name\":\"_initializationParams\",\"type\":\"tuple\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"internalTaskHandler\",\"outputs\":[{\"internalType\":\"contractIInternalTaskHandler\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"isFlowPaused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_isPaused\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextEigenRewardsBatchStartTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfActiveOperators\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfTaskDefinitions\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfTotalOperators\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"obls\",\"outputs\":[{\"internalType\":\"contractIOBLS\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"operatorsIdsByAddress\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_votingPower\",\"type\":\"uint256\"},{\"internalType\":\"uint256[4]\",\"name\":\"_blsKey\",\"type\":\"uint256[4]\"},{\"internalType\":\"address\",\"name\":\"_rewardsReceiver\",\"type\":\"address\"}],\"name\":\"registerToNetwork\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_from\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"}],\"name\":\"requestBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requestBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"_startTimestamp\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"_duration\",\"type\":\"uint32\"},{\"internalType\":\"uint256\",\"name\":\"_from\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"}],\"name\":\"requestEigenBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_isRewardsOnL2\",\"type\":\"bool\"}],\"name\":\"setIsRewardsOnL2\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oblsSharesSyncer\",\"type\":\"address\"}],\"name\":\"setOblsSharesSyncer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"proofOfTask\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"taskPerformer\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"}],\"internalType\":\"structIAttestationCenter.TaskInfo\",\"name\":\"_taskInfo\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"isApproved\",\"type\":\"bool\"},{\"internalType\":\"uint256[2]\",\"name\":\"tpSignature\",\"type\":\"uint256[2]\"},{\"internalType\":\"uint256[2]\",\"name\":\"taSignature\",\"type\":\"uint256[2]\"},{\"internalType\":\"uint256[]\",\"name\":\"attestersIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structIAttestationCenter.BlsTaskSubmissionDetails\",\"name\":\"_blsTaskSubmissionDetails\",\"type\":\"tuple\"}],\"name\":\"submitTask\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"proofOfTask\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"taskPerformer\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"}],\"internalType\":\"structIAttestationCenter.TaskInfo\",\"name\":\"_taskInfo\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"isApproved\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"tpSignature\",\"type\":\"bytes\"},{\"internalType\":\"uint256[2]\",\"name\":\"taSignature\",\"type\":\"uint256[2]\"},{\"internalType\":\"uint256[]\",\"name\":\"attestersIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structIAttestationCenter.EcdsaTaskSubmissionDetails\",\"name\":\"_ecdsaTaskSubmissionDetails\",\"type\":\"tuple\"}],\"name\":\"submitTask\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"taskNumber\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newMessageHandler\",\"type\":\"address\"}],\"name\":\"transferMessageHandler\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"unRegisterOperatorFromNetwork\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[4]\",\"name\":\"_blsKey\",\"type\":\"uint256[4]\"},{\"components\":[{\"internalType\":\"uint256[2]\",\"name\":\"signature\",\"type\":\"uint256[2]\"}],\"internalType\":\"structBLSAuthLibrary.Signature\",\"name\":\"_authSignature\",\"type\":\"tuple\"}],\"name\":\"updateBlsKey\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"verifyOperatorValidForTaskDefinition\",\"outputs\":[],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"votingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
-	Bin: "0x608060405234801561001057600080fd5b506004361061025d5760003560e01c80638355e33d11610146578063b7aa2fdf116100c3578063dba8323b11610087578063dba8323b1461054c578063efd969781461055f578063f28eff3914610599578063f6e258cc146105a1578063fcd4e66a146105b4578063fff768e3146105c75761025d565b8063b7aa2fdf14610503578063bac1e94b1461050b578063c07473f61461051e578063c2f429f114610531578063d547741f146105395761025d565b806397b5f3701161010a57806397b5f370146104a05780639eb72d4c146104c0578063a217fddf146104e0578063ac8c16cf146104e8578063b0817c44146104fb5761025d565b80638355e33d1461044c5780638a7ce8a414610454578063915359fc1461046757806391d148541461047a57806395983fee1461048d5761025d565b806336568abe116101df578063659fa976116101a3578063659fa976146103e65780636ba5aa46146103ee5780636f3826191461040157806372d18e8d1461041457806375d9aedf146104315780637897dec3146104445761025d565b806336568abe146103875780633aa83ec71461039a5780634d07f651146103ad5780635b15c568146103c05780635b386be0146103d35761025d565b8063226def0411610226578063226def041461030c578063248a9ca31461033357806327bbb287146103465780632f2ff15d1461035957806334a7c3911461036c5761025d565b8062028b071461028857806301ffc9a7146102a35780630a1e7093146102c65780631164224e146102d95780631246193e146102ec575b6102867f0000000000000000000000003f4d414c5378e6d123322819752506484e97c9ee6105da565b005b610290610603565b6040519081526020015b60405180910390f35b6102b66102b1366004614001565b610616565b604051901515815260200161029a565b6102866102d4366004614044565b61064d565b6102866102e736600461409d565b61091c565b6102f4610999565b6040516001600160a01b03909116815260200161029a565b6102f47f0000000000000000000000003f4d414c5378e6d123322819752506484e97c9ee81565b6102906103413660046140b8565b6109ba565b61028661035436600461409d565b6109dc565b6102866103673660046140d1565b610ad4565b610374610af6565b60405161ffff909116815260200161029a565b6102866103953660046140d1565b610b0d565b6102866103a8366004614001565b610b40565b6102866103bb36600461409d565b610b67565b6102906103ce36600461409d565b610c10565b6102906103e136600461410f565b610c23565b6102f4610c4f565b6102866103fc36600461412a565b610c6b565b61028661040f366004614170565b610d98565b61041c610de5565b60405163ffffffff909116815260200161029a565b61029061043f36600461410f565b610dfb565b610290610e25565b610290610e38565b6102866104623660046141aa565b610e4b565b6102866104753660046142c7565b610f89565b6102b66104883660046140d1565b611064565b61028661049b36600461438d565b61109c565b6104b36104ae36600461410f565b6111a9565b60405161029a91906143dc565b6104d36104ce3660046140b8565b61122a565b60405161029a9190614405565b610290600081565b6102866104f636600461445b565b6112db565b6102f4611543565b61028661155f565b610286610519366004614001565b6115b6565b61029061052c36600461409d565b6115dd565b6102f461166e565b6102866105473660046140d1565b61168a565b61028661055a366004614493565b6116a6565b6102b661056d366004614001565b6001600160e01b031916600090815260008051602061517b833981519152602052604090205460ff1690565b6102f46116d6565b6102866105af36600461409d565b6116f2565b6102866105c23660046144b0565b611803565b6102866105d536600461453a565b6119cf565b3660008037600080366000845af43d6000803e8080156105f9573d6000f35b3d6000fd5b505050565b600061060d611abe565b60020154905090565b60006001600160e01b03198216637965db0b60e01b148061064757506301ffc9a760e01b6001600160e01b03198316145b92915050565b7f4b5254ecaf62d67135de29b9998979c2380f8b9012725c83915824ad95f4e88c61067781611acd565b6378b4401360e11b61068881611b18565b6000610692611abe565b600e81015490915060ff16156106bb5760405163ac187e3160e01b815260040160405180910390fd5b6106c58787611b22565b60008060006106d5848989611c2f565b9250925092506f4b3b4ca85a86c47a098a223fffffffff8111156107145760405163c179495760e01b8152600481018290526024015b60405180910390fd5b81156108df57600182111561084e5760005b6107316001846145af565b81101561084c5760005b600161074783866145af565b61075191906145af565b81101561084357846107648260016145c2565b81518110610774576107746145d5565b6020026020010151600001516001600160a01b031685828151811061079b5761079b6145d5565b6020026020010151600001516001600160a01b0316111561083b57846107c28260016145c2565b815181106107d2576107d26145d5565b60200260200101518582815181106107ec576107ec6145d5565b6020026020010151868381518110610806576108066145d5565b602002602001018784600161081b91906145c2565b8151811061082b5761082b6145d5565b6020026020010182905282905250505b60010161073b565b50600101610726565b505b6040805163ffffffff8c811660208301528b16818301526060810183905260808082018590528251808303909101815260a0909101909152828452610894858583611e1a565b84546040517f928efea964c83ee05474996615e6ed34feaad6ce29a94eeec47d3f69388f5513916108d1918e918e91899163ffffffff1690614630565b60405180910390a1506108f8565b6040516302e66f0160e31b815260040160405180910390fd5b610902898b61466c565b63ffffffff16846011018190555050505050505050505050565b6378b4401360e11b61092d81611b18565b610935611abe565b600301546040516308b2112760e11b81526001600160a01b03848116600483015290911690631164224e90602401600060405180830381600087803b15801561097d57600080fd5b505af1158015610991573d6000803e3d6000fd5b505050505050565b60006109a3611abe565b600e015461010090046001600160a01b0316919050565b600090815260008051602061519b833981519152602052604090206001015490565b638a70a0eb60e01b6109ed81611b18565b60006109f7611abe565b60038101549091506001600160a01b03166000610a148386611eb8565b6001600160a01b03861660009081526009850160205260408120819055600b8501805492935091610a4490614689565b909155506040516333ccef3360e21b8152600481018290526001600160a01b0383169063cf33bccc90602401600060405180830381600087803b158015610a8a57600080fd5b505af1158015610a9e573d6000803e3d6000fd5b50506040518392507fda04f7db725bc5a9ad418baf26d08e9f24561a7cc119bfe1dd26bfebfc175db39150600090a25050505050565b610add826109ba565b610ae681611b18565b610af08383611f05565b50505050565b6000610b00611abe565b6006015461ffff16919050565b6001600160a01b0381163314610b365760405163334bd91960e11b815260040160405180910390fd5b6105fe8282611fb1565b80610b4a81611acd565b6001600160e01b03198216610b5e81611b18565b6105fe8361202d565b63d8a8b5c760e01b610b7881611b18565b6000610b82611abe565b6004810154909150610ba590638a70a0eb60e01b906001600160a01b0316611fb1565b50610bb7638a70a0eb60e01b84611f05565b506004810180546001600160a01b0319166001600160a01b0385169081179091556040519081527f997f84b541d7b68e210e6f50e3402b51d8411dbbc4d44ed81e508383126e4e949060200160405180910390a1505050565b6000610647610c1d611abe565b83611eb8565b600061064782610c31611abe565b61ffff90911660009081526007909101602052604090206009015490565b6000610c59611abe565b600301546001600160a01b0316919050565b6000610c75611abe565b9050336000610c848383611eb8565b600384015460405163475d551f60e11b81529192506001600160a01b0316908190638ebaaa3e90610cbf908890879030908c906004016146a0565b60006040518083038186803b158015610cd757600080fd5b505afa158015610ceb573d6000803e3d6000fd5b50506040516386d897a760e01b81526001600160a01b03841692506386d897a79150610d1d9085908a906004016146d1565b600060405180830381600087803b158015610d3757600080fd5b505af1158015610d4b573d6000803e3d6000fd5b50505050826001600160a01b03167f764bc14e663abcee4585e1a92e552918c69d453c673e7161504ff52fc3d428c987604051610d8891906146e7565b60405180910390a2505050505050565b7fc6d727150e371ebc5958e5c678aae159bc7f1ac1d986edc36fecf6e51285a057610dc281611acd565b6378b4401360e11b610dd381611b18565b610af0610dde611abe565b85856120da565b6000610def611abe565b5463ffffffff16919050565b600061064782610e09611abe565b61ffff9091166000908152600791820160205260409020015490565b6000610e2f611abe565b600b0154905090565b6000610e42611abe565b60110154905090565b7f2aedfbf340ba26a0aa3515c5f66276ef1d8ff6c89d5dbc63de01abc44b017be6610e7581611acd565b610e7d61215d565b6040805160a0810190915260009080610e996020860186614493565b1515815260200160405180602001604052806000815250815260200184602001600280602002604051908101604052809291908260026020028082843760009201919091525050508152604080518082018252602090920191906060870190600290839083908082843760009201919091525050508152602001610f2060a08601866146f6565b8080602002602001604051908101604052809392919081815260200183836020028082843760009201919091525050509152509050610f5f84826121a7565b506105fe60017f9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f0055565b638a70a0eb60e01b610f9a81611b18565b6000610fa4611abe565b905060005b845181108015610fe9575060006001600160a01b0316858281518110610fd157610fd16145d5565b6020026020010151600001516001600160a01b031614155b1561105d576000858281518110611002576110026145d5565b60209081029190910181015180516001600160a01b03166000908152600986018352604080822054808352600a8801855291209282015191935091611048918890612970565b5050808061105590614746565b915050610fa9565b5050505050565b600091825260008051602061519b833981519152602090815260408084206001600160a01b0393909316845291905290205460ff1690565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a008054600160401b810460ff1615906001600160401b03166000811580156110e15750825b90506000826001600160401b031660011480156110fd5750303b155b90508115801561110b575080155b156111295760405163f92ee8a960e01b815260040160405180910390fd5b845467ffffffffffffffff19166001178555831561115357845460ff60401b1916600160401b1785555b61115c86612a04565b831561099157845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a1505050505050565b60606111d4826111b7611abe565b61ffff909116600090815260079091016020526040902060080190565b80548060200260200160405190810160405280929190818152602001828054801561121e57602002820191906000526020600020905b81548152602001906001019080831161120a575b50505050509050919050565b6112526040805160808101825260008082526020820181905291810182905290606082015290565b61125a611abe565b6000838152600a919091016020908152604091829020825160808101845281546001600160a01b0316815260018201549281019290925260028082015493830193909352600381015491929091606084019160ff909116908111156112c1576112c16143ef565b60028111156112d2576112d26143ef565b90525092915050565b60006112e5611abe565b905060006112f38285611eb8565b905060006113018385612c1d565b604080516101408101909152815461ffff16815260018201805491929160208401919061132d9061475f565b80601f01602080910402602001604051908101604052809291908181526020018280546113599061475f565b80156113a65780601f1061137b576101008083540402835291602001916113a6565b820191906000526020600020905b81548152906001019060200180831161138957829003601f168201915b505050505081526020016002820154815260200160038201548152602001600482015481526020016005820154815260200160068201548152602001600782015481526020016008820180548060200260200160405190810160405280929190818152602001828054801561143a57602002820191906000526020600020905b815481526020019060010190808311611426575b5050509183525050600991909101546020918201526040805160018082528183019092529293506000929182810190803683370190505090508281600081518110611487576114876145d5565b60200260200101818152505061149d8282612c5f565b60e082015160038501546040516372c4a92760e01b8152600481018690526001600160a01b03909116906372c4a92790602401602060405180830381865afa1580156114ed573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906115119190614793565b10156109915760e08201516040516349ba8abd60e11b815261ffff87166004820152602481019190915260440161070b565b600061154d611abe565b600501546001600160a01b0316919050565b7fc6d727150e371ebc5958e5c678aae159bc7f1ac1d986edc36fecf6e51285a05761158981611acd565b6378b4401360e11b61159a81611b18565b60006115a4611abe565b90506105fe81600183600201546120da565b806115c081612d2a565b6001600160e01b031982166115d481611b18565b6105fe83612d71565b6000806115e8611abe565b905060006115f68285611eb8565b60038301546040516372c4a92760e01b8152600481018390529192506001600160a01b0316906372c4a92790602401602060405180830381865afa158015611642573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906116669190614793565b949350505050565b6000611678611abe565b600f01546001600160a01b0316919050565b611693826109ba565b61169c81611b18565b610af08383611fb1565b6378b4401360e11b6116b781611b18565b816116c0611abe565b600e01805460ff19169115159190911790555050565b60006116e0611abe565b601001546001600160a01b0316919050565b63297da43760e11b61170381611b18565b600061170d611abe565b9050600061171b8285611eb8565b60038301546040516382afd23b60e01b8152600481018390529192506001600160a01b03169081906382afd23b90602401602060405180830381865afa158015611769573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061178d91906147ac565b6117b55760405163bd62013360e01b81526001600160a01b038616600482015260240161070b565b6117bf8386612e0e565b6040516001600160a01b03861681527f4bbb3ae76ccd0feb230e3802a79c234a035ea750a918f60db5ae976d67c096d0906020015b60405180910390a15050505050565b638a70a0eb60e01b61181481611b18565b600061181e611abe565b90506000816002016000815461183390614746565b919050819055905081600b016000815461184c90614746565b90915550604080516080810182526001600160a01b0389811682526000602080840182815284860183815260608601848152888552600a8a0190935295909220845181546001600160a01b0319169416939093178355905160018084019190915593516002808401919091559051600383018054949593949193909260ff199092169184908111156118e0576118e06143ef565b021790555050506001600160a01b0387811660009081526009840160209081526040808320859055600d86019091529081902080546001600160a01b0319168784161790556003840154905163891a80bb60e01b815291169063891a80bb906119519084908a908a906004016147c9565b600060405180830381600087803b15801561196b57600080fd5b505af115801561197f573d6000803e3d6000fd5b50505050866001600160a01b03167f16c1a2a8195923d655fe84191b37c746f4385a5c32c038578958b29f52daa1a8876040516119be91815260200190565b60405180910390a250505050505050565b7f2aedfbf340ba26a0aa3515c5f66276ef1d8ff6c89d5dbc63de01abc44b017be66119f981611acd565b611a0161215d565b6040805160a0810190915260009080611a1d6020860186614493565b15158152602001848060200190611a34919061480a565b8080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201829052509385525050604080518082018252838152602081810194909452928401929092525080518082018252918101919086810190600290839083908082843760009201919091525050508152602001610f2060808601866146f6565b6000611ac8612eb5565b905090565b6001600160e01b03198116600090815260008051602061517b833981519152602052604090205460ff1615611b155760405163722fdba960e01b815260040160405180910390fd5b50565b611b158133612ee3565b625c490063ffffffff82161115611b4c57604051639464cf7960e01b815260040160405180910390fd5b611b5962093a8082614866565b63ffffffff1615611b7d5760405163e9742bc360e01b815260040160405180910390fd5b611b8a62093a8083614866565b63ffffffff1615611bae5760405163ba36d17960e01b815260040160405180910390fd5b611bbb62dd7c0042614889565b63ffffffff168263ffffffff161080611bdd57506365fb788063ffffffff8316105b15611bfb57604051634bf010dd60e01b815260040160405180910390fd5b42611c06828461466c565b63ffffffff161115611c2b5760405163031b909b60e51b815260040160405180910390fd5b5050565b6060600080841580611c445750856002015484115b80611c4e57508385115b15611c6c57604051639ac893ad60e01b815260040160405180910390fd5b855463ffffffff166000611c8087876145af565b611c8b9060016145c2565b6001600160401b03811115611ca257611ca2614214565b604051908082528060200260200182016040528015611ce757816020015b6040805180820190915260008082526020820152815260200190600190039081611cc05790505b509050600080885b888111611e09576000818152600a8c016020526040902080546001600160a01b031615801590611d3757506000600382015460ff166002811115611d3557611d356143ef565b145b8015611d4c57508563ffffffff168160010154105b8015611d5c575060008160020154115b15611e00576040805180820190915281546001600160a01b03168152600282015460208201528551869086908110611d9657611d966145d5565b602090810291909101015260038101805460ff1916600117905583611dba81614746565b945050806002015483611dcd91906145c2565b600e8d015490935060ff1615611e0057611e008c82888f600e0160019054906101000a90046001600160a01b0316612f1c565b50600101611cef565b509199909850909650945050505050565b6000611e4e83604051602001611e3091906148a6565b60408051601f19818403018152919052855463ffffffff1684613004565b60048086015460405163104c8d4b60e31b81529293506001600160a01b0316916382646a5891611e80918591016148ff565b600060405180830381600087803b158015611e9a57600080fd5b505af1158015611eae573d6000803e3d6000fd5b5050505050505050565b6001600160a01b0381166000908152600983016020526040812054808203611efe5760405163bd62013360e01b81526001600160a01b038416600482015260240161070b565b9392505050565b600060008051602061519b833981519152611f208484611064565b611fa0576000848152602082815260408083206001600160a01b03871684529091529020805460ff19166001179055611f563390565b6001600160a01b0316836001600160a01b0316857f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a46001915050610647565b6000915050610647565b5092915050565b600060008051602061519b833981519152611fcc8484611064565b15611fa0576000848152602082815260408083206001600160a01b0387168085529252808320805460ff1916905551339287917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a46001915050610647565b6001600160e01b03198116600090815260008051602061517b833981519152602081905260409091205460ff16156120785760405163dfe10d7d60e01b815260040160405180910390fd5b6001600160e01b0319821660009081526020829052604090819020805460ff19166001179055517f95c3658c5e0c74e20cf12db371b9b67d26e97a1937f6d2284f88cc44d036b4f6906120ce9084903390614912565b60405180910390a15050565b6000806120e8858585611c2f565b50915091508060000361210e576040516302e66f0160e31b815260040160405180910390fd5b600e85015460ff16612124576121248583613077565b84546040517f3e17ccbb628e667c33839a666b60f15eaefb9db2cbae6f7cc9f3f223cd77fece916117f491859163ffffffff1690614935565b7f9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f008054600119016121a157604051633ee5aeb560e01b815260040160405180910390fd5b60029055565b60006127116121bc608085016060860161410f565b61ffff1610159050600082604001516000600281106121dd576121dd6145d5565b60200201511515905060006121f0611abe565b60058101549091506001600160a01b031660008115801590612210575084155b9050801561230e578315612298578551604080880151606089015160808a015192516379bc050160e01b81526001600160a01b038716946379bc050194612261948e94929390929190600401614a6e565b600060405180830381600087803b15801561227b57600080fd5b505af115801561228f573d6000803e3d6000fd5b5050505061230e565b8551602087015160608801516080890151604051630502f5bd60e41b81526001600160a01b0387169463502f5bd0946122db948e94929391929091600401614ac1565b600060405180830381600087803b1580156122f557600080fd5b505af1158015612309573d6000803e3d6000fd5b505050505b600061231a888061480a565b61232760208b018b61480a565b61233760608d0160408e0161409d565b61234760808e0160608f0161410f565b60405160200161235c96959493929190614b0f565b60408051601f19818403018152918152815160209283012060008181526008880190935291205490915060ff16156123a757604051634510302360e11b815260040160405180910390fd5b60038401546001600160a01b031685156124f3576000816001600160a01b031663a850a9097fb110049506439a07d78731efed3c809a6b13e0bab7cc9805f3bb45fb1e9a67e88560405160200161240091815260200190565b6040516020818303038152906040526040518363ffffffff1660e01b815260040161242c929190614b5e565b6040805180830381865afa158015612448573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061246c9190614b77565b9050816001600160a01b03166353c051bb612499888d6040016020810190612494919061409d565b611eb8565b838c604001516040518463ffffffff1660e01b81526004016124bd93929190614bd7565b60006040518083038186803b1580156124d557600080fd5b505afa1580156124e9573d6000803e3d6000fd5b5050505050612511565b61251161250660608b0160408c0161409d565b838a602001516130aa565b6000816001600160a01b031663a850a9097fb110049506439a07d78731efed3c809a6b13e0bab7cc9805f3bb45fb1e9a67e86125518d8d600001516130ea565b60405160200161256391815260200190565b6040516020818303038152906040526040518363ffffffff1660e01b815260040161258f929190614b5e565b6040805180830381865afa1580156125ab573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906125cf9190614b77565b905061262b604051806101400160405280600061ffff1681526020016060815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160608152602001600081525090565b6126448761263f60808e0160608f0161410f565b612c1d565b604080516101408101909152815461ffff1681526001820180549192916020840191906126709061475f565b80601f016020809104026020016040519081016040528092919081815260200182805461269c9061475f565b80156126e95780601f106126be576101008083540402835291602001916126e9565b820191906000526020600020905b8154815290600101906020018083116126cc57829003601f168201915b505050505081526020016002820154815260200160038201548152602001600482015481526020016005820154815260200160068201548152602001600782015481526020016008820180548060200260200160405190810160405280929190818152602001828054801561277d57602002820191906000526020600020905b815481526020019060010190808311612769575b5050505050815260200160098201548152505090506127a0818b60800151612c5f565b6127cd838b600001518d60600160208101906127bc919061410f565b848e606001518f608001518861315c565b6127e2878c838d600001518e608001516131de565b60008481526008880160205260409020805460ff1916600117905584156128c857871561288457856001600160a01b031663a971515d8c8c600001518d604001518e606001518f608001516040518663ffffffff1660e01b815260040161284d959493929190614a6e565b600060405180830381600087803b15801561286757600080fd5b505af115801561287b573d6000803e3d6000fd5b5050505061293d565b856001600160a01b031663dd1a53878c8c600001518d602001518e606001518f608001516040518663ffffffff1660e01b815260040161284d959493929190614ac1565b8880156128d3575089515b1561293d576010870154604051639d00234560e01b81526001600160a01b0390911690639d0023459061290a908e90600401614bf8565b600060405180830381600087803b15801561292457600080fd5b505af1158015612938573d6000803e3d6000fd5b505050505b5050505050505050505050565b60017f9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f0055565b61297b838383613621565b156129b85780156129a957818360010181905550808360020160008282546129a391906145af565b90915550505b5050600301805460ff19169055565b825460408051848152602081018490526001600160a01b03909216917f1e643658b8248efd3563f24d116430bf571d036bea3721d94e848890a00a1023910160405180910390a2505050565b612a0c61367c565b6000612a1b602083018361409d565b90506000612a2f604084016020850161409d565b90506000612a43606085016040860161409d565b90506000612a57608086016060870161409d565b90506000612a6b60c0870160a0880161409d565b90506001600160a01b038116612a945760405163d92e233d60e01b815260040160405180910390fd5b612a9f8585856136c7565b612aaa858585613704565b612ab261372a565b6000612abc611abe565b805463ffffffff191660011781559050612adc60a088016080890161409d565b6003820180546001600160a01b0319166001600160a01b0392909216919091179055612b0e608088016060890161409d565b6004820180546001600160a01b0319166001600160a01b0392909216919091179055612b4060e0880160c08901614493565b600e820180546001600160a81b031916911515610100600160a81b031916919091176101006001600160a01b038516810291909117909155612b8790880160e0890161409d565b6010820180546001600160a01b0319166001600160a01b0392909216919091179055612bb662093a8042614c0b565b612bc090426145af565b6011820155612bd6638a70a0eb60e01b84611f05565b5060008080526007820160205260409020612bf09061373a565b61271160009081526007820160205260409020612c0c9061378f565b612c146137e4565b50505050505050565b61ffff81811660008181526007850160205260408120805491939092911614611efe576040516321321e1960e11b815261ffff8416600482015260240161070b565b43826040015111612c8357604051635a31d91b60e01b815260040160405180910390fd5b610100820151805115612cf257815181511015612cb357604051630a8d477960e01b815260040160405180910390fd5b6000612cbf8383613847565b90508015612cf0578351604051635966606760e11b815261ffff90911660048201526024810182905260440161070b565b505b6000836101200151118015612d0c57508151836101200151105b156105fe57604051630236998b60e01b815260040160405180910390fd5b6001600160e01b03198116600090815260008051602061517b833981519152602052604090205460ff16611b15576040516368c87f3360e11b815260040160405180910390fd5b6001600160e01b03198116600090815260008051602061517b833981519152602081905260409091205460ff16612dbb57604051635bfd2da760e11b815260040160405180910390fd5b6001600160e01b0319821660009081526020829052604090819020805460ff19169055517fc7e56e17b0a6c4b467df6495e1eda1baecd7ba20604e80c1058ac06f4578d85e906120ce9084903390614912565b604080516001600160a01b0383166024808301919091528251808303909101815260449091019091526020810180516001600160e01b0316636e05955960e01b1790526000905b60048085015460405163104c8d4b60e31b81529293506001600160a01b0316916382646a5891612e87918591016148ff565b600060405180830381600087803b158015612ea157600080fd5b505af1158015612c14573d6000803e3d6000fd5b60008061064760017f47c1bdca9c75057bf1ca178a62fb0ef8908b21ee1ea9b9658ba5135fd3a354696145af565b612eed8282611064565b611c2b5760405163e2517d3f60e01b81526001600160a01b03821660048201526024810183905260440161070b565b82546001600160a01b039081166000908152600d86016020526040812054909116908115612f4a5781612f56565b84546001600160a01b03165b6002860154604051633256b4d160e01b81526001600160a01b03808416600483015263ffffffff88166024830152604482019290925291925060009190851690633256b4d1906064016020604051808303816000875af1158015612fbe573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190612fe291906147ac565b905060008115612ff3575060028601545b611eae878763ffffffff1683612970565b60607f9d0737d982403370785b2d562a1c75961d85a320fe394f421fc3de24bbbce7b884848460405160240161303c93929190614c1f565b60408051601f198184030181529190526020810180516001600160e01b03166001600160e01b03199093169290921790915290509392505050565b6000612e558260405160200161308d91906148a6565b60408051601f19818403018152919052845463ffffffff16613934565b60006130b683836139a4565b9050836001600160a01b0316816001600160a01b031614610af057604051632be1e1cb60e11b815260040160405180910390fd5b60006130f6838061480a565b613103602086018661480a565b613113606088016040890161409d565b6131236080890160608a0161410f565b30468960405160200161313e99989796959493929190614c54565b60405160208183030381529060405280519060200120905092915050565b600061316a888888886139ce565b60e08601516040516365c4647560e01b81529192506001600160a01b038a16916365c46475916131a4918691899189918891600401614cbb565b60006040518083038186803b1580156131bc57600080fd5b505afa1580156131d0573d6000803e3d6000fd5b505050505050505050505050565b845463ffffffff168215613272576131fc608086016060870161410f565b61ffff16613210606087016040880161409d565b6001600160a01b03167faed5b9322f1cce79090471045d025d7a0a841daf787ec955d17cdd32a3ebfdb183613245898061480a565b61325260208c018c61480a565b8960405161326596959493929190614cfc565b60405180910390a36132f4565b613282608086016060870161410f565b61ffff16613296606087016040880161409d565b6001600160a01b03167f834bcdc44f628888090e897856fa3d661504c545654ba804c61b293c36b6595b836132cb898061480a565b6132d860208c018c61480a565b896040516132eb96959493929190614cfc565b60405180910390a35b600061330a876124946060890160408a0161409d565b9050600061331788613af9565b601089015460038a01546040516382afd23b60e01b815260048101869052929350600160a01b90910460ff16916001600160a01b039091169081906382afd23b90602401602060405180830381865afa158015613378573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061339c91906147ac565b6133b9576040516346d3a4a960e01b815260040160405180910390fd5b8115801561342d57506040516382afd23b60e01b8152600481018490526001600160a01b038216906382afd23b90602401602060405180830381865afa158015613407573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061342b91906147ac565b155b1561344b57604051631385e31560e21b815260040160405180910390fd5b5060006040518060a001604052808a61346390614dc7565b8152602081018590526040810186905260608101889052881515608090910152600c8b01549091506001600160a01b031680158015908061350957508080156135095750816001600160a01b031663d005a4f66040518163ffffffff1660e01b8152600401602060405180830381865afa1580156134e5573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061350991906147ac565b1561355b57600080600061351e8f8e88613b1b565b9250925092506135308f848d8d613bd5565b8b15613542576135428f838b8d613c0e565b86613553576135538f828a8d613c0e565b5050506135e0565b6040516336684b6760e01b81526000906001600160a01b038416906336684b679061358a908790600401614e6b565b6000604051808303816000875af11580156135a9573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f191682016040526135d19190810190614f20565b90506135de8d828a613c79565b505b8b5463ffffffff168c60006135f483614fd5565b91906101000a81548163ffffffff021916908363ffffffff16021790555050505050505050505050505050565b60006001600385015460ff16600281111561363e5761363e6143ef565b1461364b57506000611efe565b8284600101541061365e57506000611efe565b818460020154101561367257506000611efe565b5060019392505050565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a0054600160401b900460ff166136c557604051631afcd79f60e31b815260040160405180910390fd5b565b6136cf61367c565b6136e063d8a8b5c760e01b83611f05565b506136f26378b4401360e11b84611f05565b50610af063d3e319af60e01b82611f05565b61370c61367c565b613714613cdf565b61371f838383613ce7565b6105fe600033610b0d565b61373261367c565b6136c5613e24565b604080518082019091526007815266191959985d5b1d60ca1b602082015260018201906137679082615040565b506000196002820155678ac7230489e800006003820181905560048201819055600590910155565b604080518082019091526016815275566f74696e6720506f7765722053796e63205461736b60501b602082015260018201906137cb9082615040565b50805461ffff1916612711178155600019600290910155565b60006137ee611abe565b61271260009081526007820160205260408120919250506040518060600160405280602781526020016151bb60279139600182019061382d9082615040565b50805461ffff191661271217815560001960029091015550565b600080805b84518210801561385c5750835181105b1561392157838181518110613873576138736145d5565b602002602001015185838151811061388d5761388d6145d5565b6020026020010151036138ba57816138a481614746565b92505080806138b290614746565b91505061384c565b8381815181106138cc576138cc6145d5565b60200260200101518583815181106138e6576138e66145d5565b602002602001015111156138fe57806138b281614746565b848281518110613910576139106145d5565b602002602001015192505050610647565b845182036138fe57600092505050610647565b60607fd136f2c682d3b91d0bd1dc36dc70e1a7ffbd859fd1ff2240257fdce81d74fd83838360405160240161396a9291906150ff565b60408051601f198184030181529190526020810180516001600160e01b03166001600160e01b031990931692909217909152905092915050565b6000806000806139b48686613e2c565b9250925092506139c48282613e79565b5090949350505050565b60008060008361010001515111806139ea575060008360e00151115b15613a625760405163255da33160e01b815261ffff851660048201526001600160a01b0387169063255da33190602401602060405180830381865afa158015613a37573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190613a5b9190614793565b9050613ac7565b856001600160a01b031663671b37936040518163ffffffff1660e01b8152600401602060405180830381865afa158015613aa0573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190613ac49190614793565b90505b8415613aec576003613ada826002615121565b613ae49190615138565b915050611666565b6003613ada826001615121565b60108101546000908190600160a01b900460ff1661064757611efe8333611eb8565b600c830154600090819081906001600160a01b03168015801590613bb45760405163156a159960e21b81526001600160a01b038316906355a8566490613b65908990600401614e6b565b6060604051808303816000875af1158015613b84573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190613ba8919061514c565b91965094509250613bca565b86606001519450866080015193508660a0015192505b505093509350939050565b60005b825181101561105d57613c068585858481518110613bf857613bf86145d5565b602002602001015185613c0e565b600101613bd8565b6000828152600a8501602052604081206002018054859290613c319084906145c2565b909155505060405183815263ffffffff82169083907fd3f16e9d8d3fe0ea8a6e5f923fe57e1ae1af6d890ac6c371e8af6cc177a49b659060200160405180910390a350505050565b60005b8251811015610af0576000838281518110613c9957613c996145d5565b60200260200101516000015190506000848381518110613cbb57613cbb6145d5565b6020026020010151602001519050613cd586828487613c0e565b5050600101613c7c565b6136c561367c565b60008051602061517b8339815191526020527f90d0e609be45121efcbf7f1d0ae974a20fcd627e07aa044a1f490249e1d327988054600160ff1991821681179092556312d4953b60e21b6000527fc1d73a3cdf3346e56fde516857b4d0894fb686182db72c29641f07b7f38122b880549091169091179055613d7063c6d7271560e01b84611f05565b50613d826312d4953b60e21b84611f05565b50613d946362250a9560e11b84611f05565b50613da66362250a9560e11b82611f05565b50613db86362250a9560e11b83611f05565b50613dca634bb5f31f60e11b84611f05565b50613ddc634bb5f31f60e11b83611f05565b50613dee634bb5f31f60e11b82611f05565b50613e00632aedfbf360e01b84611f05565b50613e12632aedfbf360e01b83611f05565b50610af0632aedfbf360e01b82611f05565b61294a61367c565b60008060008351604103613e665760208401516040850151606086015160001a613e5888828585613f32565b955095509550505050613e72565b50508151600091506002905b9250925092565b6000826003811115613e8d57613e8d6143ef565b03613e96575050565b6001826003811115613eaa57613eaa6143ef565b03613ec85760405163f645eedf60e01b815260040160405180910390fd5b6002826003811115613edc57613edc6143ef565b03613efd5760405163fce698f760e01b81526004810182905260240161070b565b6003826003811115613f1157613f116143ef565b03611c2b576040516335e2f38360e21b81526004810182905260240161070b565b600080807f7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0841115613f6d5750600091506003905082613ff7565b604080516000808252602082018084528a905260ff891692820192909252606081018790526080810186905260019060a0016020604051602081039080840390855afa158015613fc1573d6000803e3d6000fd5b5050604051601f1901519150506001600160a01b038116613fed57506000925060019150829050613ff7565b9250600091508190505b9450945094915050565b60006020828403121561401357600080fd5b81356001600160e01b031981168114611efe57600080fd5b803563ffffffff8116811461403f57600080fd5b919050565b6000806000806080858703121561405a57600080fd5b6140638561402b565b93506140716020860161402b565b93969395505050506040820135916060013590565b80356001600160a01b038116811461403f57600080fd5b6000602082840312156140af57600080fd5b611efe82614086565b6000602082840312156140ca57600080fd5b5035919050565b600080604083850312156140e457600080fd5b823591506140f460208401614086565b90509250929050565b803561ffff8116811461403f57600080fd5b60006020828403121561412157600080fd5b611efe826140fd565b60008082840360c081121561413e57600080fd5b608084018581111561414f57600080fd5b8493506040607f198301121561416457600080fd5b80925050509250929050565b6000806040838503121561418357600080fd5b50508035926020909101359150565b6000608082840312156141a457600080fd5b50919050565b600080604083850312156141bd57600080fd5b82356001600160401b03808211156141d457600080fd5b6141e086838701614192565b935060208501359150808211156141f657600080fd5b50830160c0818603121561420957600080fd5b809150509250929050565b634e487b7160e01b600052604160045260246000fd5b604080519081016001600160401b038111828210171561424c5761424c614214565b60405290565b604051608081016001600160401b038111828210171561424c5761424c614214565b604051601f8201601f191681016001600160401b038111828210171561429c5761429c614214565b604052919050565b60006001600160401b038211156142bd576142bd614214565b5060051b60200190565b60008060408084860312156142db57600080fd5b83356001600160401b038111156142f157600080fd5b8401601f8101861361430257600080fd5b80356020614317614312836142a4565b614274565b82815260069290921b8301810191818101908984111561433657600080fd5b938201935b8385101561437d5785858b0312156143535760008081fd5b61435b61422a565b61436486614086565b815285840135848201528252938501939082019061433b565b9997909101359750505050505050565b600061010082840312156141a457600080fd5b60008151808452602080850194506020840160005b838110156143d1578151875295820195908201906001016143b5565b509495945050505050565b602081526000611efe60208301846143a0565b634e487b7160e01b600052602160045260246000fd5b81516001600160a01b031681526020808301519082015260408083015190820152606082015160808201906003811061444e57634e487b7160e01b600052602160045260246000fd5b8060608401525092915050565b6000806040838503121561446e57600080fd5b61447783614086565b91506140f4602084016140fd565b8015158114611b1557600080fd5b6000602082840312156144a557600080fd5b8135611efe81614485565b60008060008060e085870312156144c657600080fd5b6144cf85614086565b9350602080860135935086605f8701126144e857600080fd5b6144f0614252565b8060c088018981111561450257600080fd5b604089015b8181101561451e5780358452928401928401614507565b5081955061452b81614086565b94505050505092959194509250565b6000806040838503121561454d57600080fd5b82356001600160401b038082111561456457600080fd5b61457086838701614192565b9350602085013591508082111561458657600080fd5b50830160a0818603121561420957600080fd5b634e487b7160e01b600052601160045260246000fd5b8181038181111561064757610647614599565b8082018082111561064757610647614599565b634e487b7160e01b600052603260045260246000fd5b60008151808452602080850194506020840160005b838110156143d157815180516001600160a01b031688528301518388015260409096019590820190600101614600565b600063ffffffff808716835280861660208401526080604084015261465860808401866145eb565b915080841660608401525095945050505050565b63ffffffff818116838216019080821115611faa57611faa614599565b60008161469857614698614599565b506000190190565b610100810160408683376001600160a01b038581166040840152841660608301526080838184013795945050505050565b82815260a0810160808360208401379392505050565b60808181019083833792915050565b6000808335601e1984360301811261470d57600080fd5b8301803591506001600160401b0382111561472757600080fd5b6020019150600581901b360382131561473f57600080fd5b9250929050565b60006001820161475857614758614599565b5060010190565b600181811c9082168061477357607f821691505b6020821081036141a457634e487b7160e01b600052602260045260246000fd5b6000602082840312156147a557600080fd5b5051919050565b6000602082840312156147be57600080fd5b8151611efe81614485565b838152602080820184905260c0820190604083018460005b60048110156147fe578151835291830191908301906001016147e1565b50505050949350505050565b6000808335601e1984360301811261482157600080fd5b8301803591506001600160401b0382111561483b57600080fd5b60200191503681900382131561473f57600080fd5b634e487b7160e01b600052601260045260246000fd5b600063ffffffff8084168061487d5761487d614850565b92169190910692915050565b63ffffffff828116828216039080821115611faa57611faa614599565b602081526000611efe60208301846145eb565b6000815180845260005b818110156148df576020818501810151868301820152016148c3565b506000602082860101526020601f19601f83011685010191505092915050565b602081526000611efe60208301846148b9565b6001600160e01b03199290921682526001600160a01b0316602082015260400190565b60408152600061494860408301856145eb565b905063ffffffff831660208301529392505050565b6000808335601e1984360301811261497457600080fd5b83016020810192503590506001600160401b0381111561499357600080fd5b80360382131561473f57600080fd5b81835281816020850137506000828201602090810191909152601f909101601f19169091010190565b60006149d7828361495d565b608085526149e96080860182846149a2565b9150506149f9602084018461495d565b8583036020870152614a0c8382846149a2565b92506001600160a01b039150614a26905060408501614086565b16604085015261ffff614a3b606085016140fd565b1660608501528091505092915050565b8060005b6002811015610af0578151845260209384019390910190600101614a4f565b60e081526000614a8160e08301886149cb565b8615156020840152614a966040840187614a4b565b614aa36080840186614a4b565b82810360c0840152614ab581856143a0565b98975050505050505050565b60c081526000614ad460c08301886149cb565b86151560208401528281036040840152614aee81876148b9565b9050614afd6060840186614a4b565b82810360a0840152614ab581856143a0565b608081526000614b2360808301888a6149a2565b8281036020840152614b368187896149a2565b6001600160a01b03959095166040840152505061ffff91909116606090910152949350505050565b82815260406020820152600061166660408301846148b9565b600060408284031215614b8957600080fd5b82601f830112614b9857600080fd5b614ba061422a565b806040840185811115614bb257600080fd5b845b81811015614bcc578051845260209384019301614bb4565b509095945050505050565b83815260a08101614beb6020830185614a4b565b6116666060830184614a4b565b602081526000611efe60208301846149cb565b600082614c1a57614c1a614850565b500690565b606081526000614c3260608301866148b9565b8460208401528281036040840152614c4a81856148b9565b9695505050505050565b60e081526000614c6860e083018b8d6149a2565b8281036020840152614c7b818a8c6149a2565b6001600160a01b03988916604085015261ffff979097166060840152505092909416608083015260a082015291151560c090920191909152949350505050565b614cc58187614a4b565b614cd26040820186614a4b565b60e060808201526000614ce860e08301866143a0565b60a08301949094525060c001529392505050565b63ffffffff87168152608060208201526000614d1c6080830187896149a2565b8281036040840152614d2f8186886149a2565b90508281036060840152614d4381856143a0565b9998505050505050505050565b60006001600160401b03831115614d6957614d69614214565b614d7c601f8401601f1916602001614274565b9050828152838383011115614d9057600080fd5b828260208301376000602084830101529392505050565b600082601f830112614db857600080fd5b611efe83833560208501614d50565b600060808236031215614dd957600080fd5b614de1614252565b82356001600160401b0380821115614df857600080fd5b9084019036601f830112614e0b57600080fd5b614e1a36833560208501614d50565b83526020850135915080821115614e3057600080fd5b50614e3d36828601614da7565b602083015250614e4f60408401614086565b6040820152614e60606084016140fd565b606082015292915050565b602081526000825160a060208401528051608060c0850152614e916101408501826148b9565b9050602082015160bf198583030160e0860152614eae82826148b9565b6040848101516001600160a01b031661010088015260609485015161ffff166101208801526020880151878201528701518487015292860151858403601f19016080870152929150614f02905081836143a0565b9150506080840151614f1860a085018215159052565b509392505050565b60006020808385031215614f3357600080fd5b82516001600160401b03811115614f4957600080fd5b8301601f81018513614f5a57600080fd5b8051614f68614312826142a4565b81815260069190911b82018301908381019087831115614f8757600080fd5b928401925b82841015614fca5760408489031215614fa55760008081fd5b614fad61422a565b845181528585015186820152825260409093019290840190614f8c565b979650505050505050565b600063ffffffff808316818103614fee57614fee614599565b6001019392505050565b601f8211156105fe576000816000526020600020601f850160051c810160208610156150215750805b601f850160051c820191505b818110156109915782815560010161502d565b81516001600160401b0381111561505957615059614214565b61506d81615067845461475f565b84614ff8565b602080601f8311600181146150a2576000841561508a5750858301515b600019600386901b1c1916600185901b178555610991565b600085815260208120601f198616915b828110156150d1578886015182559484019460019091019084016150b2565b50858210156150ef5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b60408152600061511260408301856148b9565b90508260208301529392505050565b808202811582820484141761064757610647614599565b60008261514757615147614850565b500490565b60008060006060848603121561516157600080fd5b835192506020840151915060408401519050925092509256fefe6065fb4e9872e2ad4479001655335380d83f70e163706cd65857449b84510002dd7bc7dec4dceedda775e58dd541e08a116c6c53815c0bd028192f7b626800546f74616c20566f74696e6720506f7765722053796e63205461736b20446566696e6974696f6ea26469706673582212202d4e6fd6300d2b5aee7e355809f3cebbc02684d5b23cde9dc8daa621f8aa963464736f6c63430008190033",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_extensionImplementation\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsDurationExceedsMaximum\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsDurationNotMultipleOfInterval\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"totalRewards\",\"type\":\"uint256\"}],\"name\":\"EigenRewardsMaxRewardsAmountExceeded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsMustBeRetroactive\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsNotSupportedOnL2\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsStartTimestampNotMultipleOfInterval\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EigenRewardsStartTimestampTooFarInPast\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyUnpaused\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"minVotingPower\",\"type\":\"uint256\"}],\"name\":\"InsufficientVotingPowerForTaskDefinition\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidAttesterSet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidBlockExpiry\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidMaximumNumberOfAttesters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidOperatorsForPayment\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidRangeForBatchPaymentRequest\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskDefinitionId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"operatorIndex\",\"type\":\"uint256\"}],\"name\":\"InvalidRestrictedAttester\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidRestrictedAttesterIds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidTaskDefinition\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidWadToSlash\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_roles\",\"type\":\"bytes\"}],\"name\":\"NotAuthorizedRole\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operatorAddress\",\"type\":\"address\"}],\"name\":\"OperatorNotRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PauseFlowIsAlreadyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SymbioticRewardsNotSupportedOnL2\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"TaskDefinitionNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnpausingFlowIsAlreadyUnpaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestedTaskNumber\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"requestedAmountClaimed\",\"type\":\"uint256\"}],\"name\":\"ClearPaymentRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"startTimestamp\",\"type\":\"uint32\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"duration\",\"type\":\"uint32\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"}],\"indexed\":false,\"internalType\":\"structIRewardsDistributor.PaymentRequestMessage[]\",\"name\":\"operators\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"}],\"name\":\"EigenPaymentsRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_pauser\",\"type\":\"address\"}],\"name\":\"FlowPaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlowFlag\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_unpauser\",\"type\":\"address\"}],\"name\":\"FlowUnpaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isOpenAggregator\",\"type\":\"bool\"}],\"name\":\"IsOpenAggregatorSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"OperatorEjectionRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"wadsToSlash\",\"type\":\"uint256\"}],\"indexed\":false,\"internalType\":\"structISlashingConfig.SlashingStakingContractInfo[]\",\"name\":\"slashingStakingContractInfos\",\"type\":\"tuple[]\"}],\"name\":\"OperatorSlashRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"}],\"indexed\":false,\"internalType\":\"structIRewardsDistributor.PaymentRequestMessage[]\",\"name\":\"operators\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"}],\"name\":\"PaymentsRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAvsGovernanceMultisig\",\"type\":\"address\"}],\"name\":\"SetAvsGovernanceMultisig\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"avsLogic\",\"type\":\"address\"}],\"name\":\"SetAvsLogic\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAggregator\",\"type\":\"uint256\"}],\"name\":\"SetBaseRewardFeeForAggregator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAttesters\",\"type\":\"uint256\"}],\"name\":\"SetBaseRewardFeeForAttesters\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForPerformer\",\"type\":\"uint256\"}],\"name\":\"SetBaseRewardFeeForPerformer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"paymentsLogic\",\"type\":\"address\"}],\"name\":\"SetBeforePaymentsLogic\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"challengerRewardFee\",\"type\":\"uint256\"}],\"name\":\"SetChallengerRewardFee\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feeCalculator\",\"type\":\"address\"}],\"name\":\"SetFeeCalculator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newInternalTaskHandler\",\"type\":\"address\"}],\"name\":\"SetInternalTaskHandler\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isIncorrectAttestationSlashingEnabled\",\"type\":\"bool\"}],\"name\":\"SetIsIncorrectAttestationSlashingEnabled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isRejectedTaskSlashingEnabled\",\"type\":\"bool\"}],\"name\":\"SetIsRejectedTaskSlashingEnabled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"maximumNumberOfAttesters\",\"type\":\"uint256\"}],\"name\":\"SetMaximumNumberOfAttesters\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newMessageHandler\",\"type\":\"address\"}],\"name\":\"SetMessageHandler\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimumVotingPower\",\"type\":\"uint256\"}],\"name\":\"SetMinimumTaskDefinitionVotingPower\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"restrictedAttesterIds\",\"type\":\"uint256[]\"}],\"name\":\"SetRestrictedAttester\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blockExpiry\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAttesters\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForPerformer\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAggregator\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"disputePeriodBlocks\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimumVotingPower\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"restrictedAttesterIds\",\"type\":\"uint256[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"maximumNumberOfAttesters\",\"type\":\"uint256\"}],\"name\":\"TaskDefinitionCreated\",\"type\":\"event\"},{\"stateMutability\":\"nonpayable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"EXTENSION_IMPLEMENTATION\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"wadsToSlash\",\"type\":\"uint256\"}],\"internalType\":\"structISlashingConfig.SlashingStakingContractInfo[]\",\"name\":\"_slashingStakingContractInfos\",\"type\":\"tuple[]\"}],\"name\":\"applyCustomSlashing\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsLogic\",\"outputs\":[{\"internalType\":\"contractIAvsLogic\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsTreasury\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"beforePaymentsLogic\",\"outputs\":[{\"internalType\":\"contractIBeforePaymentsLogic\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"blockExpiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAttesters\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForPerformer\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAggregator\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"disputePeriodBlocks\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minimumVotingPower\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"restrictedAttesterIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256\",\"name\":\"maximumNumberOfAttesters\",\"type\":\"uint256\"}],\"internalType\":\"structTaskDefinitionParamsV2\",\"name\":\"_taskDefinitionParams\",\"type\":\"tuple\"}],\"name\":\"createNewTaskDefinition\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"_id\",\"type\":\"uint16\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"ejectOperatorFromNetwork\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"feeCalculator\",\"outputs\":[{\"internalType\":\"contractIFeeCalculator\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getActiveOperatorsDetails\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"operatorId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"votingPower\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"},{\"internalType\":\"uint256[4]\",\"name\":\"blsKey\",\"type\":\"uint256[4]\"}],\"internalType\":\"structIAttestationCenter.OperatorDetails[]\",\"name\":\"_operators\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getL2MessageHandler\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_operatorId\",\"type\":\"uint256\"}],\"name\":\"getOperatorPaymentDetail\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"lastPaidTaskNumber\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeToClaim\",\"type\":\"uint256\"},{\"internalType\":\"enumIAttestationCenter.PaymentStatus\",\"name\":\"paymentStatus\",\"type\":\"uint8\"}],\"internalType\":\"structIAttestationCenter.PaymentDetails\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"getTaskDefinitionDetails\",\"outputs\":[{\"components\":[{\"internalType\":\"uint16\",\"name\":\"taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"bool\",\"name\":\"isRejectedTaskSlashingEnabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isIncorrectAttestationSlashingEnabled\",\"type\":\"bool\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"blockExpiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAttesters\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForPerformer\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRewardFeeForAggregator\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"disputePeriodBlocks\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minimumVotingPower\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"restrictedAttesterIds\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256\",\"name\":\"maximumNumberOfAttesters\",\"type\":\"uint256\"}],\"internalType\":\"structTaskDefinition\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"avsGovernanceMultisigOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operationsMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"communityMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"messageHandler\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"obls\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"avsTreasury\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isRewardsOnL2\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"internalTaskHandler\",\"type\":\"address\"}],\"internalType\":\"structIAttestationCenter.InitializationParams\",\"name\":\"_initializationParams\",\"type\":\"tuple\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"internalTaskHandler\",\"outputs\":[{\"internalType\":\"contractIInternalTaskHandler\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"isFlowPaused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_isPaused\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_avsGovernanceMultisigOwner\",\"type\":\"address\"}],\"name\":\"migrateSlashingFlow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"migration\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextEigenRewardsBatchStartTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfActiveOperators\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfTaskDefinitions\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfTotalOperators\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"obls\",\"outputs\":[{\"internalType\":\"contractIOBLS\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"operatorsIdsByAddress\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentRequestsRole\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_currentPaymentRequestsAdmin\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_from\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"},{\"internalType\":\"enumIRewardsDistributor.SubmissionType\",\"name\":\"_submissionType\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"_distributionData\",\"type\":\"bytes\"}],\"name\":\"requestBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enumIRewardsDistributor.SubmissionType\",\"name\":\"_submissionType\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"_distributionData\",\"type\":\"bytes\"}],\"name\":\"requestBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"_startTimestamp\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"_duration\",\"type\":\"uint32\"},{\"internalType\":\"uint256\",\"name\":\"_from\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"}],\"name\":\"requestEigenBatchPayment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_ejector\",\"type\":\"address\"}],\"name\":\"revokeEjector\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_slasher\",\"type\":\"address\"}],\"name\":\"revokeSlasher\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIAvsLogic\",\"name\":\"_avsLogic\",\"type\":\"address\"}],\"name\":\"setAvsLogic\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_baseRewardFeeForAggregator\",\"type\":\"uint256\"}],\"name\":\"setBaseRewardFeeForAggregator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_baseRewardFeeForAttesters\",\"type\":\"uint256\"}],\"name\":\"setBaseRewardFeeForAttesters\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_baseRewardFeeForPerformer\",\"type\":\"uint256\"}],\"name\":\"setBaseRewardFeeForPerformer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIBeforePaymentsLogic\",\"name\":\"_beforePaymentsLogic\",\"type\":\"address\"}],\"name\":\"setBeforePaymentsLogic\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_challengerRewardFee\",\"type\":\"uint256\"}],\"name\":\"setChallengerRewardFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_ejector\",\"type\":\"address\"}],\"name\":\"setEjector\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIFeeCalculator\",\"name\":\"_feeCalculator\",\"type\":\"address\"}],\"name\":\"setFeeCalculator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIInternalTaskHandler\",\"name\":\"_internalTaskHandler\",\"type\":\"address\"}],\"name\":\"setInternalTaskHandler\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"bool\",\"name\":\"_isIncorrectAttestationSlashingEnabled\",\"type\":\"bool\"}],\"name\":\"setIsIncorrectAttestationSlashingEnabled\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_isOpenAggregator\",\"type\":\"bool\"}],\"name\":\"setIsOpenAggregator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"bool\",\"name\":\"_isRejectedTaskSlashingEnabled\",\"type\":\"bool\"}],\"name\":\"setIsRejectedTaskSlashingEnabled\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oblsSharesSyncer\",\"type\":\"address\"}],\"name\":\"setOblsSharesSyncer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newPaymentRequestsAdmin\",\"type\":\"address\"}],\"name\":\"setPaymentRequestsRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_slasher\",\"type\":\"address\"}],\"name\":\"setSlasher\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_maximumNumberOfAttesters\",\"type\":\"uint256\"}],\"name\":\"setTaskDefinitionMaximumNumberOfAttesters\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"_minimumVotingPower\",\"type\":\"uint256\"}],\"name\":\"setTaskDefinitionMinVotingPower\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"internalType\":\"uint256[]\",\"name\":\"_restrictedAttesterIds\",\"type\":\"uint256[]\"}],\"name\":\"setTaskDefinitionRestrictedAttesters\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"taskNumber\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newAvsGovernanceMultisig\",\"type\":\"address\"}],\"name\":\"transferAvsGovernanceMultisig\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newMessageHandler\",\"type\":\"address\"}],\"name\":\"transferMessageHandler\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"isInternalTaskActivated\",\"type\":\"bool\"},{\"internalType\":\"uint48\",\"name\":\"interval\",\"type\":\"uint48\"},{\"internalType\":\"enumIInternalTaskHandler.LeaderElectionMechanism\",\"name\":\"leaderElectionMechanism\",\"type\":\"uint8\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structIInternalTaskHandler.InternalTaskConfig\",\"name\":\"_config\",\"type\":\"tuple\"}],\"name\":\"updateInternalTaskConfig\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"_taskDefinitionId\",\"type\":\"uint16\"}],\"name\":\"verifyOperatorValidForTaskDefinition\",\"outputs\":[],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"votingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // ContractAttestationCenterABI is the input ABI used to generate the binding from.
 // Deprecated: Use ContractAttestationCenterMetaData.ABI instead.
 var ContractAttestationCenterABI = ContractAttestationCenterMetaData.ABI
-
-// ContractAttestationCenterBin is the compiled bytecode used for deploying new contracts.
-// Deprecated: Use ContractAttestationCenterMetaData.Bin instead.
-var ContractAttestationCenterBin = ContractAttestationCenterMetaData.Bin
-
-// DeployContractAttestationCenter deploys a new Ethereum contract, binding an instance of ContractAttestationCenter to it.
-func DeployContractAttestationCenter(auth *bind.TransactOpts, backend bind.ContractBackend, _extensionImplementation common.Address) (common.Address, *types.Transaction, *ContractAttestationCenter, error) {
-	parsed, err := ContractAttestationCenterMetaData.GetAbi()
-	if err != nil {
-		return common.Address{}, nil, nil, err
-	}
-	if parsed == nil {
-		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
-	}
-
-	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(ContractAttestationCenterBin), backend, _extensionImplementation)
-	if err != nil {
-		return common.Address{}, nil, nil, err
-	}
-	return address, tx, &ContractAttestationCenter{ContractAttestationCenterCaller: ContractAttestationCenterCaller{contract: contract}, ContractAttestationCenterTransactor: ContractAttestationCenterTransactor{contract: contract}, ContractAttestationCenterFilterer: ContractAttestationCenterFilterer{contract: contract}}, nil
-}
 
 // ContractAttestationCenterMethods is an auto generated interface around an Ethereum contract.
 type ContractAttestationCenterMethods interface {
@@ -134,15 +135,17 @@ type ContractAttestationCenterCalls interface {
 
 	BeforePaymentsLogic(opts *bind.CallOpts) (common.Address, error)
 
+	FeeCalculator(opts *bind.CallOpts) (common.Address, error)
+
+	GetActiveOperatorsDetails(opts *bind.CallOpts) ([]IAttestationCenterOperatorDetails, error)
+
+	GetL2MessageHandler(opts *bind.CallOpts) (common.Address, error)
+
 	GetOperatorPaymentDetail(opts *bind.CallOpts, _operatorId *big.Int) (IAttestationCenterPaymentDetails, error)
 
 	GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error)
 
-	GetTaskDefinitionMaximumNumberOfAttesters(opts *bind.CallOpts, _taskDefinitionId uint16) (*big.Int, error)
-
-	GetTaskDefinitionMinimumVotingPower(opts *bind.CallOpts, _taskDefinitionId uint16) (*big.Int, error)
-
-	GetTaskDefinitionRestrictedAttesters(opts *bind.CallOpts, _taskDefinitionId uint16) ([]*big.Int, error)
+	GetTaskDefinitionDetails(opts *bind.CallOpts, _taskDefinitionId uint16) (TaskDefinition, error)
 
 	HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error)
 
@@ -162,6 +165,8 @@ type ContractAttestationCenterCalls interface {
 
 	OperatorsIdsByAddress(opts *bind.CallOpts, _operator common.Address) (*big.Int, error)
 
+	PaymentRequestsRole(opts *bind.CallOpts) (common.Address, error)
+
 	SupportsInterface(opts *bind.CallOpts, interfaceId [4]byte) (bool, error)
 
 	TaskNumber(opts *bind.CallOpts) (uint32, error)
@@ -173,7 +178,9 @@ type ContractAttestationCenterCalls interface {
 
 // ContractAttestationCenterTransacts is an auto generated interface that defines the transact methods available for an Ethereum contract.
 type ContractAttestationCenterTransacts interface {
-	ClearBatchPayment(opts *bind.TransactOpts, _operators []IAttestationCenterPaymentRequestMessage, _paidTaskNumber *big.Int) (*types.Transaction, error)
+	ApplyCustomSlashing(opts *bind.TransactOpts, _operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error)
+
+	CreateNewTaskDefinition(opts *bind.TransactOpts, _name string, _taskDefinitionParams TaskDefinitionParamsV2) (*types.Transaction, error)
 
 	EjectOperatorFromNetwork(opts *bind.TransactOpts, _operator common.Address) (*types.Transaction, error)
 
@@ -181,35 +188,69 @@ type ContractAttestationCenterTransacts interface {
 
 	Initialize(opts *bind.TransactOpts, _initializationParams IAttestationCenterInitializationParams) (*types.Transaction, error)
 
-	Pause(opts *bind.TransactOpts, _pausableFlow [4]byte) (*types.Transaction, error)
+	MigrateSlashingFlow(opts *bind.TransactOpts, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error)
 
-	RegisterToNetwork(opts *bind.TransactOpts, _operator common.Address, _votingPower *big.Int, _blsKey [4]*big.Int, _rewardsReceiver common.Address) (*types.Transaction, error)
+	Migration(opts *bind.TransactOpts) (*types.Transaction, error)
+
+	Pause(opts *bind.TransactOpts, _pausableFlow [4]byte) (*types.Transaction, error)
 
 	RenounceRole(opts *bind.TransactOpts, role [32]byte, callerConfirmation common.Address) (*types.Transaction, error)
 
-	RequestBatchPayment(opts *bind.TransactOpts, _from *big.Int, _to *big.Int) (*types.Transaction, error)
+	RequestBatchPayment(opts *bind.TransactOpts, _from *big.Int, _to *big.Int, _submissionType uint8, _distributionData []byte) (*types.Transaction, error)
 
-	RequestBatchPayment0(opts *bind.TransactOpts) (*types.Transaction, error)
+	RequestBatchPayment0(opts *bind.TransactOpts, _submissionType uint8, _distributionData []byte) (*types.Transaction, error)
 
 	RequestEigenBatchPayment(opts *bind.TransactOpts, _startTimestamp uint32, _duration uint32, _from *big.Int, _to *big.Int) (*types.Transaction, error)
 
+	RevokeEjector(opts *bind.TransactOpts, _ejector common.Address) (*types.Transaction, error)
+
 	RevokeRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error)
 
-	SetIsRewardsOnL2(opts *bind.TransactOpts, _isRewardsOnL2 bool) (*types.Transaction, error)
+	RevokeSlasher(opts *bind.TransactOpts, _slasher common.Address) (*types.Transaction, error)
+
+	SetAvsLogic(opts *bind.TransactOpts, _avsLogic common.Address) (*types.Transaction, error)
+
+	SetBaseRewardFeeForAggregator(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForAggregator *big.Int) (*types.Transaction, error)
+
+	SetBaseRewardFeeForAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForAttesters *big.Int) (*types.Transaction, error)
+
+	SetBaseRewardFeeForPerformer(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForPerformer *big.Int) (*types.Transaction, error)
+
+	SetBeforePaymentsLogic(opts *bind.TransactOpts, _beforePaymentsLogic common.Address) (*types.Transaction, error)
+
+	SetChallengerRewardFee(opts *bind.TransactOpts, _challengerRewardFee *big.Int) (*types.Transaction, error)
+
+	SetEjector(opts *bind.TransactOpts, _ejector common.Address) (*types.Transaction, error)
+
+	SetFeeCalculator(opts *bind.TransactOpts, _feeCalculator common.Address) (*types.Transaction, error)
+
+	SetInternalTaskHandler(opts *bind.TransactOpts, _internalTaskHandler common.Address) (*types.Transaction, error)
+
+	SetIsIncorrectAttestationSlashingEnabled(opts *bind.TransactOpts, _taskDefinitionId uint16, _isIncorrectAttestationSlashingEnabled bool) (*types.Transaction, error)
+
+	SetIsOpenAggregator(opts *bind.TransactOpts, _isOpenAggregator bool) (*types.Transaction, error)
+
+	SetIsRejectedTaskSlashingEnabled(opts *bind.TransactOpts, _taskDefinitionId uint16, _isRejectedTaskSlashingEnabled bool) (*types.Transaction, error)
 
 	SetOblsSharesSyncer(opts *bind.TransactOpts, _oblsSharesSyncer common.Address) (*types.Transaction, error)
 
-	SubmitTask(opts *bind.TransactOpts, _taskInfo IAttestationCenterTaskInfo, _blsTaskSubmissionDetails IAttestationCenterBlsTaskSubmissionDetails) (*types.Transaction, error)
+	SetPaymentRequestsRole(opts *bind.TransactOpts, _newPaymentRequestsAdmin common.Address) (*types.Transaction, error)
 
-	SubmitTask0(opts *bind.TransactOpts, _taskInfo IAttestationCenterTaskInfo, _ecdsaTaskSubmissionDetails IAttestationCenterEcdsaTaskSubmissionDetails) (*types.Transaction, error)
+	SetSlasher(opts *bind.TransactOpts, _slasher common.Address) (*types.Transaction, error)
+
+	SetTaskDefinitionMaximumNumberOfAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _maximumNumberOfAttesters *big.Int) (*types.Transaction, error)
+
+	SetTaskDefinitionMinVotingPower(opts *bind.TransactOpts, _taskDefinitionId uint16, _minimumVotingPower *big.Int) (*types.Transaction, error)
+
+	SetTaskDefinitionRestrictedAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _restrictedAttesterIds []*big.Int) (*types.Transaction, error)
+
+	TransferAvsGovernanceMultisig(opts *bind.TransactOpts, _newAvsGovernanceMultisig common.Address) (*types.Transaction, error)
 
 	TransferMessageHandler(opts *bind.TransactOpts, _newMessageHandler common.Address) (*types.Transaction, error)
 
-	UnRegisterOperatorFromNetwork(opts *bind.TransactOpts, _operator common.Address) (*types.Transaction, error)
-
 	Unpause(opts *bind.TransactOpts, _pausableFlow [4]byte) (*types.Transaction, error)
 
-	UpdateBlsKey(opts *bind.TransactOpts, _blsKey [4]*big.Int, _authSignature BLSAuthLibrarySignature) (*types.Transaction, error)
+	UpdateInternalTaskConfig(opts *bind.TransactOpts, _taskDefinitionId uint16, _config IInternalTaskHandlerInternalTaskConfig) (*types.Transaction, error)
 }
 
 // ContractAttestationCenterFilterer is an auto generated interface that defines the log filtering methods available for an Ethereum contract.
@@ -234,29 +275,21 @@ type ContractAttestationCenterFilters interface {
 	WatchInitialized(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterInitialized) (event.Subscription, error)
 	ParseInitialized(log types.Log) (*ContractAttestationCenterInitialized, error)
 
-	FilterOperatorBlsKeyUpdated(opts *bind.FilterOpts, operator []common.Address) (*ContractAttestationCenterOperatorBlsKeyUpdatedIterator, error)
-	WatchOperatorBlsKeyUpdated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorBlsKeyUpdated, operator []common.Address) (event.Subscription, error)
-	ParseOperatorBlsKeyUpdated(log types.Log) (*ContractAttestationCenterOperatorBlsKeyUpdated, error)
+	FilterIsOpenAggregatorSet(opts *bind.FilterOpts) (*ContractAttestationCenterIsOpenAggregatorSetIterator, error)
+	WatchIsOpenAggregatorSet(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterIsOpenAggregatorSet) (event.Subscription, error)
+	ParseIsOpenAggregatorSet(log types.Log) (*ContractAttestationCenterIsOpenAggregatorSet, error)
 
 	FilterOperatorEjectionRequested(opts *bind.FilterOpts) (*ContractAttestationCenterOperatorEjectionRequestedIterator, error)
 	WatchOperatorEjectionRequested(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorEjectionRequested) (event.Subscription, error)
 	ParseOperatorEjectionRequested(log types.Log) (*ContractAttestationCenterOperatorEjectionRequested, error)
 
-	FilterOperatorRegisteredToNetwork(opts *bind.FilterOpts, operator []common.Address) (*ContractAttestationCenterOperatorRegisteredToNetworkIterator, error)
-	WatchOperatorRegisteredToNetwork(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorRegisteredToNetwork, operator []common.Address) (event.Subscription, error)
-	ParseOperatorRegisteredToNetwork(log types.Log) (*ContractAttestationCenterOperatorRegisteredToNetwork, error)
-
-	FilterOperatorUnregisteredFromNetwork(opts *bind.FilterOpts, operatorId []*big.Int) (*ContractAttestationCenterOperatorUnregisteredFromNetworkIterator, error)
-	WatchOperatorUnregisteredFromNetwork(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorUnregisteredFromNetwork, operatorId []*big.Int) (event.Subscription, error)
-	ParseOperatorUnregisteredFromNetwork(log types.Log) (*ContractAttestationCenterOperatorUnregisteredFromNetwork, error)
+	FilterOperatorSlashRequested(opts *bind.FilterOpts) (*ContractAttestationCenterOperatorSlashRequestedIterator, error)
+	WatchOperatorSlashRequested(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorSlashRequested) (event.Subscription, error)
+	ParseOperatorSlashRequested(log types.Log) (*ContractAttestationCenterOperatorSlashRequested, error)
 
 	FilterPaymentsRequested(opts *bind.FilterOpts) (*ContractAttestationCenterPaymentsRequestedIterator, error)
 	WatchPaymentsRequested(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterPaymentsRequested) (event.Subscription, error)
 	ParsePaymentsRequested(log types.Log) (*ContractAttestationCenterPaymentsRequested, error)
-
-	FilterRewardAccumulated(opts *bind.FilterOpts, _operatorId []*big.Int, _taskNumber []uint32) (*ContractAttestationCenterRewardAccumulatedIterator, error)
-	WatchRewardAccumulated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterRewardAccumulated, _operatorId []*big.Int, _taskNumber []uint32) (event.Subscription, error)
-	ParseRewardAccumulated(log types.Log) (*ContractAttestationCenterRewardAccumulated, error)
 
 	FilterRoleAdminChanged(opts *bind.FilterOpts, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (*ContractAttestationCenterRoleAdminChangedIterator, error)
 	WatchRoleAdminChanged(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterRoleAdminChanged, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (event.Subscription, error)
@@ -270,17 +303,69 @@ type ContractAttestationCenterFilters interface {
 	WatchRoleRevoked(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterRoleRevoked, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error)
 	ParseRoleRevoked(log types.Log) (*ContractAttestationCenterRoleRevoked, error)
 
+	FilterSetAvsGovernanceMultisig(opts *bind.FilterOpts) (*ContractAttestationCenterSetAvsGovernanceMultisigIterator, error)
+	WatchSetAvsGovernanceMultisig(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetAvsGovernanceMultisig) (event.Subscription, error)
+	ParseSetAvsGovernanceMultisig(log types.Log) (*ContractAttestationCenterSetAvsGovernanceMultisig, error)
+
+	FilterSetAvsLogic(opts *bind.FilterOpts) (*ContractAttestationCenterSetAvsLogicIterator, error)
+	WatchSetAvsLogic(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetAvsLogic) (event.Subscription, error)
+	ParseSetAvsLogic(log types.Log) (*ContractAttestationCenterSetAvsLogic, error)
+
+	FilterSetBaseRewardFeeForAggregator(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator, error)
+	WatchSetBaseRewardFeeForAggregator(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForAggregator, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetBaseRewardFeeForAggregator(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForAggregator, error)
+
+	FilterSetBaseRewardFeeForAttesters(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForAttestersIterator, error)
+	WatchSetBaseRewardFeeForAttesters(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForAttesters, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetBaseRewardFeeForAttesters(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForAttesters, error)
+
+	FilterSetBaseRewardFeeForPerformer(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForPerformerIterator, error)
+	WatchSetBaseRewardFeeForPerformer(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForPerformer, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetBaseRewardFeeForPerformer(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForPerformer, error)
+
+	FilterSetBeforePaymentsLogic(opts *bind.FilterOpts) (*ContractAttestationCenterSetBeforePaymentsLogicIterator, error)
+	WatchSetBeforePaymentsLogic(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBeforePaymentsLogic) (event.Subscription, error)
+	ParseSetBeforePaymentsLogic(log types.Log) (*ContractAttestationCenterSetBeforePaymentsLogic, error)
+
+	FilterSetChallengerRewardFee(opts *bind.FilterOpts) (*ContractAttestationCenterSetChallengerRewardFeeIterator, error)
+	WatchSetChallengerRewardFee(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetChallengerRewardFee) (event.Subscription, error)
+	ParseSetChallengerRewardFee(log types.Log) (*ContractAttestationCenterSetChallengerRewardFee, error)
+
+	FilterSetFeeCalculator(opts *bind.FilterOpts) (*ContractAttestationCenterSetFeeCalculatorIterator, error)
+	WatchSetFeeCalculator(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetFeeCalculator) (event.Subscription, error)
+	ParseSetFeeCalculator(log types.Log) (*ContractAttestationCenterSetFeeCalculator, error)
+
+	FilterSetInternalTaskHandler(opts *bind.FilterOpts) (*ContractAttestationCenterSetInternalTaskHandlerIterator, error)
+	WatchSetInternalTaskHandler(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetInternalTaskHandler) (event.Subscription, error)
+	ParseSetInternalTaskHandler(log types.Log) (*ContractAttestationCenterSetInternalTaskHandler, error)
+
+	FilterSetIsIncorrectAttestationSlashingEnabled(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator, error)
+	WatchSetIsIncorrectAttestationSlashingEnabled(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetIsIncorrectAttestationSlashingEnabled(log types.Log) (*ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled, error)
+
+	FilterSetIsRejectedTaskSlashingEnabled(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator, error)
+	WatchSetIsRejectedTaskSlashingEnabled(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetIsRejectedTaskSlashingEnabled, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetIsRejectedTaskSlashingEnabled(log types.Log) (*ContractAttestationCenterSetIsRejectedTaskSlashingEnabled, error)
+
+	FilterSetMaximumNumberOfAttesters(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetMaximumNumberOfAttestersIterator, error)
+	WatchSetMaximumNumberOfAttesters(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetMaximumNumberOfAttesters, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetMaximumNumberOfAttesters(log types.Log) (*ContractAttestationCenterSetMaximumNumberOfAttesters, error)
+
 	FilterSetMessageHandler(opts *bind.FilterOpts) (*ContractAttestationCenterSetMessageHandlerIterator, error)
 	WatchSetMessageHandler(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetMessageHandler) (event.Subscription, error)
 	ParseSetMessageHandler(log types.Log) (*ContractAttestationCenterSetMessageHandler, error)
 
-	FilterTaskRejected(opts *bind.FilterOpts, operator []common.Address, taskDefinitionId []uint16) (*ContractAttestationCenterTaskRejectedIterator, error)
-	WatchTaskRejected(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskRejected, operator []common.Address, taskDefinitionId []uint16) (event.Subscription, error)
-	ParseTaskRejected(log types.Log) (*ContractAttestationCenterTaskRejected, error)
+	FilterSetMinimumTaskDefinitionVotingPower(opts *bind.FilterOpts) (*ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator, error)
+	WatchSetMinimumTaskDefinitionVotingPower(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetMinimumTaskDefinitionVotingPower) (event.Subscription, error)
+	ParseSetMinimumTaskDefinitionVotingPower(log types.Log) (*ContractAttestationCenterSetMinimumTaskDefinitionVotingPower, error)
 
-	FilterTaskSubmitted(opts *bind.FilterOpts, operator []common.Address, taskDefinitionId []uint16) (*ContractAttestationCenterTaskSubmittedIterator, error)
-	WatchTaskSubmitted(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskSubmitted, operator []common.Address, taskDefinitionId []uint16) (event.Subscription, error)
-	ParseTaskSubmitted(log types.Log) (*ContractAttestationCenterTaskSubmitted, error)
+	FilterSetRestrictedAttester(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetRestrictedAttesterIterator, error)
+	WatchSetRestrictedAttester(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetRestrictedAttester, taskDefinitionId []uint16) (event.Subscription, error)
+	ParseSetRestrictedAttester(log types.Log) (*ContractAttestationCenterSetRestrictedAttester, error)
+
+	FilterTaskDefinitionCreated(opts *bind.FilterOpts) (*ContractAttestationCenterTaskDefinitionCreatedIterator, error)
+	WatchTaskDefinitionCreated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskDefinitionCreated) (event.Subscription, error)
+	ParseTaskDefinitionCreated(log types.Log) (*ContractAttestationCenterTaskDefinitionCreated, error)
 }
 
 // ContractAttestationCenter is an auto generated Go binding around an Ethereum contract.
@@ -592,6 +677,99 @@ func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) Before
 	return _ContractAttestationCenter.Contract.BeforePaymentsLogic(&_ContractAttestationCenter.CallOpts)
 }
 
+// FeeCalculator is a free data retrieval call binding the contract method 0xb00eb9fe.
+//
+// Solidity: function feeCalculator() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterCaller) FeeCalculator(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _ContractAttestationCenter.contract.Call(opts, &out, "feeCalculator")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// FeeCalculator is a free data retrieval call binding the contract method 0xb00eb9fe.
+//
+// Solidity: function feeCalculator() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterSession) FeeCalculator() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.FeeCalculator(&_ContractAttestationCenter.CallOpts)
+}
+
+// FeeCalculator is a free data retrieval call binding the contract method 0xb00eb9fe.
+//
+// Solidity: function feeCalculator() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) FeeCalculator() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.FeeCalculator(&_ContractAttestationCenter.CallOpts)
+}
+
+// GetActiveOperatorsDetails is a free data retrieval call binding the contract method 0x9878eccb.
+//
+// Solidity: function getActiveOperatorsDetails() view returns((address,uint256,uint256,uint256,uint256[4])[] _operators)
+func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetActiveOperatorsDetails(opts *bind.CallOpts) ([]IAttestationCenterOperatorDetails, error) {
+	var out []interface{}
+	err := _ContractAttestationCenter.contract.Call(opts, &out, "getActiveOperatorsDetails")
+
+	if err != nil {
+		return *new([]IAttestationCenterOperatorDetails), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]IAttestationCenterOperatorDetails)).(*[]IAttestationCenterOperatorDetails)
+
+	return out0, err
+
+}
+
+// GetActiveOperatorsDetails is a free data retrieval call binding the contract method 0x9878eccb.
+//
+// Solidity: function getActiveOperatorsDetails() view returns((address,uint256,uint256,uint256,uint256[4])[] _operators)
+func (_ContractAttestationCenter *ContractAttestationCenterSession) GetActiveOperatorsDetails() ([]IAttestationCenterOperatorDetails, error) {
+	return _ContractAttestationCenter.Contract.GetActiveOperatorsDetails(&_ContractAttestationCenter.CallOpts)
+}
+
+// GetActiveOperatorsDetails is a free data retrieval call binding the contract method 0x9878eccb.
+//
+// Solidity: function getActiveOperatorsDetails() view returns((address,uint256,uint256,uint256,uint256[4])[] _operators)
+func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetActiveOperatorsDetails() ([]IAttestationCenterOperatorDetails, error) {
+	return _ContractAttestationCenter.Contract.GetActiveOperatorsDetails(&_ContractAttestationCenter.CallOpts)
+}
+
+// GetL2MessageHandler is a free data retrieval call binding the contract method 0xf0e058d1.
+//
+// Solidity: function getL2MessageHandler() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetL2MessageHandler(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _ContractAttestationCenter.contract.Call(opts, &out, "getL2MessageHandler")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetL2MessageHandler is a free data retrieval call binding the contract method 0xf0e058d1.
+//
+// Solidity: function getL2MessageHandler() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterSession) GetL2MessageHandler() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.GetL2MessageHandler(&_ContractAttestationCenter.CallOpts)
+}
+
+// GetL2MessageHandler is a free data retrieval call binding the contract method 0xf0e058d1.
+//
+// Solidity: function getL2MessageHandler() view returns(address)
+func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetL2MessageHandler() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.GetL2MessageHandler(&_ContractAttestationCenter.CallOpts)
+}
+
 // GetOperatorPaymentDetail is a free data retrieval call binding the contract method 0x9eb72d4c.
 //
 // Solidity: function getOperatorPaymentDetail(uint256 _operatorId) view returns((address,uint256,uint256,uint8))
@@ -654,97 +832,35 @@ func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetRol
 	return _ContractAttestationCenter.Contract.GetRoleAdmin(&_ContractAttestationCenter.CallOpts, role)
 }
 
-// GetTaskDefinitionMaximumNumberOfAttesters is a free data retrieval call binding the contract method 0x5b386be0.
+// GetTaskDefinitionDetails is a free data retrieval call binding the contract method 0x2fd60f1d.
 //
-// Solidity: function getTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetTaskDefinitionMaximumNumberOfAttesters(opts *bind.CallOpts, _taskDefinitionId uint16) (*big.Int, error) {
+// Solidity: function getTaskDefinitionDetails(uint16 _taskDefinitionId) view returns((uint16,bool,bool,string,uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256))
+func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetTaskDefinitionDetails(opts *bind.CallOpts, _taskDefinitionId uint16) (TaskDefinition, error) {
 	var out []interface{}
-	err := _ContractAttestationCenter.contract.Call(opts, &out, "getTaskDefinitionMaximumNumberOfAttesters", _taskDefinitionId)
+	err := _ContractAttestationCenter.contract.Call(opts, &out, "getTaskDefinitionDetails", _taskDefinitionId)
 
 	if err != nil {
-		return *new(*big.Int), err
+		return *new(TaskDefinition), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	out0 := *abi.ConvertType(out[0], new(TaskDefinition)).(*TaskDefinition)
 
 	return out0, err
 
 }
 
-// GetTaskDefinitionMaximumNumberOfAttesters is a free data retrieval call binding the contract method 0x5b386be0.
+// GetTaskDefinitionDetails is a free data retrieval call binding the contract method 0x2fd60f1d.
 //
-// Solidity: function getTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterSession) GetTaskDefinitionMaximumNumberOfAttesters(_taskDefinitionId uint16) (*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionMaximumNumberOfAttesters(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
+// Solidity: function getTaskDefinitionDetails(uint16 _taskDefinitionId) view returns((uint16,bool,bool,string,uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256))
+func (_ContractAttestationCenter *ContractAttestationCenterSession) GetTaskDefinitionDetails(_taskDefinitionId uint16) (TaskDefinition, error) {
+	return _ContractAttestationCenter.Contract.GetTaskDefinitionDetails(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
 }
 
-// GetTaskDefinitionMaximumNumberOfAttesters is a free data retrieval call binding the contract method 0x5b386be0.
+// GetTaskDefinitionDetails is a free data retrieval call binding the contract method 0x2fd60f1d.
 //
-// Solidity: function getTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetTaskDefinitionMaximumNumberOfAttesters(_taskDefinitionId uint16) (*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionMaximumNumberOfAttesters(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
-}
-
-// GetTaskDefinitionMinimumVotingPower is a free data retrieval call binding the contract method 0x75d9aedf.
-//
-// Solidity: function getTaskDefinitionMinimumVotingPower(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetTaskDefinitionMinimumVotingPower(opts *bind.CallOpts, _taskDefinitionId uint16) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAttestationCenter.contract.Call(opts, &out, "getTaskDefinitionMinimumVotingPower", _taskDefinitionId)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetTaskDefinitionMinimumVotingPower is a free data retrieval call binding the contract method 0x75d9aedf.
-//
-// Solidity: function getTaskDefinitionMinimumVotingPower(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterSession) GetTaskDefinitionMinimumVotingPower(_taskDefinitionId uint16) (*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionMinimumVotingPower(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
-}
-
-// GetTaskDefinitionMinimumVotingPower is a free data retrieval call binding the contract method 0x75d9aedf.
-//
-// Solidity: function getTaskDefinitionMinimumVotingPower(uint16 _taskDefinitionId) view returns(uint256)
-func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetTaskDefinitionMinimumVotingPower(_taskDefinitionId uint16) (*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionMinimumVotingPower(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
-}
-
-// GetTaskDefinitionRestrictedAttesters is a free data retrieval call binding the contract method 0x97b5f370.
-//
-// Solidity: function getTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId) view returns(uint256[])
-func (_ContractAttestationCenter *ContractAttestationCenterCaller) GetTaskDefinitionRestrictedAttesters(opts *bind.CallOpts, _taskDefinitionId uint16) ([]*big.Int, error) {
-	var out []interface{}
-	err := _ContractAttestationCenter.contract.Call(opts, &out, "getTaskDefinitionRestrictedAttesters", _taskDefinitionId)
-
-	if err != nil {
-		return *new([]*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
-
-	return out0, err
-
-}
-
-// GetTaskDefinitionRestrictedAttesters is a free data retrieval call binding the contract method 0x97b5f370.
-//
-// Solidity: function getTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId) view returns(uint256[])
-func (_ContractAttestationCenter *ContractAttestationCenterSession) GetTaskDefinitionRestrictedAttesters(_taskDefinitionId uint16) ([]*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionRestrictedAttesters(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
-}
-
-// GetTaskDefinitionRestrictedAttesters is a free data retrieval call binding the contract method 0x97b5f370.
-//
-// Solidity: function getTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId) view returns(uint256[])
-func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetTaskDefinitionRestrictedAttesters(_taskDefinitionId uint16) ([]*big.Int, error) {
-	return _ContractAttestationCenter.Contract.GetTaskDefinitionRestrictedAttesters(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
+// Solidity: function getTaskDefinitionDetails(uint16 _taskDefinitionId) view returns((uint16,bool,bool,string,uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256))
+func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) GetTaskDefinitionDetails(_taskDefinitionId uint16) (TaskDefinition, error) {
+	return _ContractAttestationCenter.Contract.GetTaskDefinitionDetails(&_ContractAttestationCenter.CallOpts, _taskDefinitionId)
 }
 
 // HasRole is a free data retrieval call binding the contract method 0x91d14854.
@@ -1026,6 +1142,37 @@ func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) Operat
 	return _ContractAttestationCenter.Contract.OperatorsIdsByAddress(&_ContractAttestationCenter.CallOpts, _operator)
 }
 
+// PaymentRequestsRole is a free data retrieval call binding the contract method 0xc8e5bff8.
+//
+// Solidity: function paymentRequestsRole() view returns(address _currentPaymentRequestsAdmin)
+func (_ContractAttestationCenter *ContractAttestationCenterCaller) PaymentRequestsRole(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _ContractAttestationCenter.contract.Call(opts, &out, "paymentRequestsRole")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// PaymentRequestsRole is a free data retrieval call binding the contract method 0xc8e5bff8.
+//
+// Solidity: function paymentRequestsRole() view returns(address _currentPaymentRequestsAdmin)
+func (_ContractAttestationCenter *ContractAttestationCenterSession) PaymentRequestsRole() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.PaymentRequestsRole(&_ContractAttestationCenter.CallOpts)
+}
+
+// PaymentRequestsRole is a free data retrieval call binding the contract method 0xc8e5bff8.
+//
+// Solidity: function paymentRequestsRole() view returns(address _currentPaymentRequestsAdmin)
+func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) PaymentRequestsRole() (common.Address, error) {
+	return _ContractAttestationCenter.Contract.PaymentRequestsRole(&_ContractAttestationCenter.CallOpts)
+}
+
 // SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
 //
 // Solidity: function supportsInterface(bytes4 interfaceId) view returns(bool)
@@ -1148,25 +1295,46 @@ func (_ContractAttestationCenter *ContractAttestationCenterCallerSession) Voting
 	return _ContractAttestationCenter.Contract.VotingPower(&_ContractAttestationCenter.CallOpts, _operator)
 }
 
-// ClearBatchPayment is a paid mutator transaction binding the contract method 0x915359fc.
+// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
 //
-// Solidity: function clearBatchPayment((address,uint256)[] _operators, uint256 _paidTaskNumber) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) ClearBatchPayment(opts *bind.TransactOpts, _operators []IAttestationCenterPaymentRequestMessage, _paidTaskNumber *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "clearBatchPayment", _operators, _paidTaskNumber)
+// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) ApplyCustomSlashing(opts *bind.TransactOpts, _operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "applyCustomSlashing", _operator, _slashingStakingContractInfos)
 }
 
-// ClearBatchPayment is a paid mutator transaction binding the contract method 0x915359fc.
+// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
 //
-// Solidity: function clearBatchPayment((address,uint256)[] _operators, uint256 _paidTaskNumber) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) ClearBatchPayment(_operators []IAttestationCenterPaymentRequestMessage, _paidTaskNumber *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.ClearBatchPayment(&_ContractAttestationCenter.TransactOpts, _operators, _paidTaskNumber)
+// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) ApplyCustomSlashing(_operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.ApplyCustomSlashing(&_ContractAttestationCenter.TransactOpts, _operator, _slashingStakingContractInfos)
 }
 
-// ClearBatchPayment is a paid mutator transaction binding the contract method 0x915359fc.
+// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
 //
-// Solidity: function clearBatchPayment((address,uint256)[] _operators, uint256 _paidTaskNumber) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) ClearBatchPayment(_operators []IAttestationCenterPaymentRequestMessage, _paidTaskNumber *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.ClearBatchPayment(&_ContractAttestationCenter.TransactOpts, _operators, _paidTaskNumber)
+// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) ApplyCustomSlashing(_operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.ApplyCustomSlashing(&_ContractAttestationCenter.TransactOpts, _operator, _slashingStakingContractInfos)
+}
+
+// CreateNewTaskDefinition is a paid mutator transaction binding the contract method 0x306fba1c.
+//
+// Solidity: function createNewTaskDefinition(string _name, (uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256) _taskDefinitionParams) returns(uint16 _id)
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) CreateNewTaskDefinition(opts *bind.TransactOpts, _name string, _taskDefinitionParams TaskDefinitionParamsV2) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "createNewTaskDefinition", _name, _taskDefinitionParams)
+}
+
+// CreateNewTaskDefinition is a paid mutator transaction binding the contract method 0x306fba1c.
+//
+// Solidity: function createNewTaskDefinition(string _name, (uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256) _taskDefinitionParams) returns(uint16 _id)
+func (_ContractAttestationCenter *ContractAttestationCenterSession) CreateNewTaskDefinition(_name string, _taskDefinitionParams TaskDefinitionParamsV2) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.CreateNewTaskDefinition(&_ContractAttestationCenter.TransactOpts, _name, _taskDefinitionParams)
+}
+
+// CreateNewTaskDefinition is a paid mutator transaction binding the contract method 0x306fba1c.
+//
+// Solidity: function createNewTaskDefinition(string _name, (uint256,uint256,uint256,uint256,uint256,uint256,uint256[],uint256) _taskDefinitionParams) returns(uint16 _id)
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) CreateNewTaskDefinition(_name string, _taskDefinitionParams TaskDefinitionParamsV2) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.CreateNewTaskDefinition(&_ContractAttestationCenter.TransactOpts, _name, _taskDefinitionParams)
 }
 
 // EjectOperatorFromNetwork is a paid mutator transaction binding the contract method 0xf6e258cc.
@@ -1232,6 +1400,48 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) In
 	return _ContractAttestationCenter.Contract.Initialize(&_ContractAttestationCenter.TransactOpts, _initializationParams)
 }
 
+// MigrateSlashingFlow is a paid mutator transaction binding the contract method 0x460fd1be.
+//
+// Solidity: function migrateSlashingFlow(address _avsGovernanceMultisigOwner) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) MigrateSlashingFlow(opts *bind.TransactOpts, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "migrateSlashingFlow", _avsGovernanceMultisigOwner)
+}
+
+// MigrateSlashingFlow is a paid mutator transaction binding the contract method 0x460fd1be.
+//
+// Solidity: function migrateSlashingFlow(address _avsGovernanceMultisigOwner) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) MigrateSlashingFlow(_avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.MigrateSlashingFlow(&_ContractAttestationCenter.TransactOpts, _avsGovernanceMultisigOwner)
+}
+
+// MigrateSlashingFlow is a paid mutator transaction binding the contract method 0x460fd1be.
+//
+// Solidity: function migrateSlashingFlow(address _avsGovernanceMultisigOwner) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) MigrateSlashingFlow(_avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.MigrateSlashingFlow(&_ContractAttestationCenter.TransactOpts, _avsGovernanceMultisigOwner)
+}
+
+// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
+//
+// Solidity: function migration() returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) Migration(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "migration")
+}
+
+// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
+//
+// Solidity: function migration() returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) Migration() (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.Migration(&_ContractAttestationCenter.TransactOpts)
+}
+
+// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
+//
+// Solidity: function migration() returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Migration() (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.Migration(&_ContractAttestationCenter.TransactOpts)
+}
+
 // Pause is a paid mutator transaction binding the contract method 0x3aa83ec7.
 //
 // Solidity: function pause(bytes4 _pausableFlow) returns()
@@ -1251,27 +1461,6 @@ func (_ContractAttestationCenter *ContractAttestationCenterSession) Pause(_pausa
 // Solidity: function pause(bytes4 _pausableFlow) returns()
 func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Pause(_pausableFlow [4]byte) (*types.Transaction, error) {
 	return _ContractAttestationCenter.Contract.Pause(&_ContractAttestationCenter.TransactOpts, _pausableFlow)
-}
-
-// RegisterToNetwork is a paid mutator transaction binding the contract method 0xfcd4e66a.
-//
-// Solidity: function registerToNetwork(address _operator, uint256 _votingPower, uint256[4] _blsKey, address _rewardsReceiver) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RegisterToNetwork(opts *bind.TransactOpts, _operator common.Address, _votingPower *big.Int, _blsKey [4]*big.Int, _rewardsReceiver common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "registerToNetwork", _operator, _votingPower, _blsKey, _rewardsReceiver)
-}
-
-// RegisterToNetwork is a paid mutator transaction binding the contract method 0xfcd4e66a.
-//
-// Solidity: function registerToNetwork(address _operator, uint256 _votingPower, uint256[4] _blsKey, address _rewardsReceiver) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) RegisterToNetwork(_operator common.Address, _votingPower *big.Int, _blsKey [4]*big.Int, _rewardsReceiver common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RegisterToNetwork(&_ContractAttestationCenter.TransactOpts, _operator, _votingPower, _blsKey, _rewardsReceiver)
-}
-
-// RegisterToNetwork is a paid mutator transaction binding the contract method 0xfcd4e66a.
-//
-// Solidity: function registerToNetwork(address _operator, uint256 _votingPower, uint256[4] _blsKey, address _rewardsReceiver) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RegisterToNetwork(_operator common.Address, _votingPower *big.Int, _blsKey [4]*big.Int, _rewardsReceiver common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RegisterToNetwork(&_ContractAttestationCenter.TransactOpts, _operator, _votingPower, _blsKey, _rewardsReceiver)
 }
 
 // RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
@@ -1295,46 +1484,46 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Re
 	return _ContractAttestationCenter.Contract.RenounceRole(&_ContractAttestationCenter.TransactOpts, role, callerConfirmation)
 }
 
-// RequestBatchPayment is a paid mutator transaction binding the contract method 0x6f382619.
+// RequestBatchPayment is a paid mutator transaction binding the contract method 0x2bfcb2bc.
 //
-// Solidity: function requestBatchPayment(uint256 _from, uint256 _to) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RequestBatchPayment(opts *bind.TransactOpts, _from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "requestBatchPayment", _from, _to)
+// Solidity: function requestBatchPayment(uint256 _from, uint256 _to, uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RequestBatchPayment(opts *bind.TransactOpts, _from *big.Int, _to *big.Int, _submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "requestBatchPayment", _from, _to, _submissionType, _distributionData)
 }
 
-// RequestBatchPayment is a paid mutator transaction binding the contract method 0x6f382619.
+// RequestBatchPayment is a paid mutator transaction binding the contract method 0x2bfcb2bc.
 //
-// Solidity: function requestBatchPayment(uint256 _from, uint256 _to) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) RequestBatchPayment(_from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RequestBatchPayment(&_ContractAttestationCenter.TransactOpts, _from, _to)
+// Solidity: function requestBatchPayment(uint256 _from, uint256 _to, uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) RequestBatchPayment(_from *big.Int, _to *big.Int, _submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RequestBatchPayment(&_ContractAttestationCenter.TransactOpts, _from, _to, _submissionType, _distributionData)
 }
 
-// RequestBatchPayment is a paid mutator transaction binding the contract method 0x6f382619.
+// RequestBatchPayment is a paid mutator transaction binding the contract method 0x2bfcb2bc.
 //
-// Solidity: function requestBatchPayment(uint256 _from, uint256 _to) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RequestBatchPayment(_from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RequestBatchPayment(&_ContractAttestationCenter.TransactOpts, _from, _to)
+// Solidity: function requestBatchPayment(uint256 _from, uint256 _to, uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RequestBatchPayment(_from *big.Int, _to *big.Int, _submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RequestBatchPayment(&_ContractAttestationCenter.TransactOpts, _from, _to, _submissionType, _distributionData)
 }
 
-// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xb7aa2fdf.
+// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xd0c613a9.
 //
-// Solidity: function requestBatchPayment() returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RequestBatchPayment0(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "requestBatchPayment0")
+// Solidity: function requestBatchPayment(uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RequestBatchPayment0(opts *bind.TransactOpts, _submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "requestBatchPayment0", _submissionType, _distributionData)
 }
 
-// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xb7aa2fdf.
+// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xd0c613a9.
 //
-// Solidity: function requestBatchPayment() returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) RequestBatchPayment0() (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RequestBatchPayment0(&_ContractAttestationCenter.TransactOpts)
+// Solidity: function requestBatchPayment(uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) RequestBatchPayment0(_submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RequestBatchPayment0(&_ContractAttestationCenter.TransactOpts, _submissionType, _distributionData)
 }
 
-// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xb7aa2fdf.
+// RequestBatchPayment0 is a paid mutator transaction binding the contract method 0xd0c613a9.
 //
-// Solidity: function requestBatchPayment() returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RequestBatchPayment0() (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.RequestBatchPayment0(&_ContractAttestationCenter.TransactOpts)
+// Solidity: function requestBatchPayment(uint8 _submissionType, bytes _distributionData) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RequestBatchPayment0(_submissionType uint8, _distributionData []byte) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RequestBatchPayment0(&_ContractAttestationCenter.TransactOpts, _submissionType, _distributionData)
 }
 
 // RequestEigenBatchPayment is a paid mutator transaction binding the contract method 0x0a1e7093.
@@ -1358,6 +1547,27 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Re
 	return _ContractAttestationCenter.Contract.RequestEigenBatchPayment(&_ContractAttestationCenter.TransactOpts, _startTimestamp, _duration, _from, _to)
 }
 
+// RevokeEjector is a paid mutator transaction binding the contract method 0x7de6e60d.
+//
+// Solidity: function revokeEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RevokeEjector(opts *bind.TransactOpts, _ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "revokeEjector", _ejector)
+}
+
+// RevokeEjector is a paid mutator transaction binding the contract method 0x7de6e60d.
+//
+// Solidity: function revokeEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) RevokeEjector(_ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RevokeEjector(&_ContractAttestationCenter.TransactOpts, _ejector)
+}
+
+// RevokeEjector is a paid mutator transaction binding the contract method 0x7de6e60d.
+//
+// Solidity: function revokeEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RevokeEjector(_ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RevokeEjector(&_ContractAttestationCenter.TransactOpts, _ejector)
+}
+
 // RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
 //
 // Solidity: function revokeRole(bytes32 role, address account) returns()
@@ -1379,25 +1589,277 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Re
 	return _ContractAttestationCenter.Contract.RevokeRole(&_ContractAttestationCenter.TransactOpts, role, account)
 }
 
-// SetIsRewardsOnL2 is a paid mutator transaction binding the contract method 0xdba8323b.
+// RevokeSlasher is a paid mutator transaction binding the contract method 0x74a91439.
 //
-// Solidity: function setIsRewardsOnL2(bool _isRewardsOnL2) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetIsRewardsOnL2(opts *bind.TransactOpts, _isRewardsOnL2 bool) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "setIsRewardsOnL2", _isRewardsOnL2)
+// Solidity: function revokeSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) RevokeSlasher(opts *bind.TransactOpts, _slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "revokeSlasher", _slasher)
 }
 
-// SetIsRewardsOnL2 is a paid mutator transaction binding the contract method 0xdba8323b.
+// RevokeSlasher is a paid mutator transaction binding the contract method 0x74a91439.
 //
-// Solidity: function setIsRewardsOnL2(bool _isRewardsOnL2) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) SetIsRewardsOnL2(_isRewardsOnL2 bool) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SetIsRewardsOnL2(&_ContractAttestationCenter.TransactOpts, _isRewardsOnL2)
+// Solidity: function revokeSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) RevokeSlasher(_slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RevokeSlasher(&_ContractAttestationCenter.TransactOpts, _slasher)
 }
 
-// SetIsRewardsOnL2 is a paid mutator transaction binding the contract method 0xdba8323b.
+// RevokeSlasher is a paid mutator transaction binding the contract method 0x74a91439.
 //
-// Solidity: function setIsRewardsOnL2(bool _isRewardsOnL2) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetIsRewardsOnL2(_isRewardsOnL2 bool) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SetIsRewardsOnL2(&_ContractAttestationCenter.TransactOpts, _isRewardsOnL2)
+// Solidity: function revokeSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) RevokeSlasher(_slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.RevokeSlasher(&_ContractAttestationCenter.TransactOpts, _slasher)
+}
+
+// SetAvsLogic is a paid mutator transaction binding the contract method 0x008fd386.
+//
+// Solidity: function setAvsLogic(address _avsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetAvsLogic(opts *bind.TransactOpts, _avsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setAvsLogic", _avsLogic)
+}
+
+// SetAvsLogic is a paid mutator transaction binding the contract method 0x008fd386.
+//
+// Solidity: function setAvsLogic(address _avsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetAvsLogic(_avsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetAvsLogic(&_ContractAttestationCenter.TransactOpts, _avsLogic)
+}
+
+// SetAvsLogic is a paid mutator transaction binding the contract method 0x008fd386.
+//
+// Solidity: function setAvsLogic(address _avsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetAvsLogic(_avsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetAvsLogic(&_ContractAttestationCenter.TransactOpts, _avsLogic)
+}
+
+// SetBaseRewardFeeForAggregator is a paid mutator transaction binding the contract method 0x6b3ba95f.
+//
+// Solidity: function setBaseRewardFeeForAggregator(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetBaseRewardFeeForAggregator(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForAggregator *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setBaseRewardFeeForAggregator", _taskDefinitionId, _baseRewardFeeForAggregator)
+}
+
+// SetBaseRewardFeeForAggregator is a paid mutator transaction binding the contract method 0x6b3ba95f.
+//
+// Solidity: function setBaseRewardFeeForAggregator(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetBaseRewardFeeForAggregator(_taskDefinitionId uint16, _baseRewardFeeForAggregator *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForAggregator(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForAggregator)
+}
+
+// SetBaseRewardFeeForAggregator is a paid mutator transaction binding the contract method 0x6b3ba95f.
+//
+// Solidity: function setBaseRewardFeeForAggregator(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetBaseRewardFeeForAggregator(_taskDefinitionId uint16, _baseRewardFeeForAggregator *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForAggregator(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForAggregator)
+}
+
+// SetBaseRewardFeeForAttesters is a paid mutator transaction binding the contract method 0xd33cf7d8.
+//
+// Solidity: function setBaseRewardFeeForAttesters(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetBaseRewardFeeForAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setBaseRewardFeeForAttesters", _taskDefinitionId, _baseRewardFeeForAttesters)
+}
+
+// SetBaseRewardFeeForAttesters is a paid mutator transaction binding the contract method 0xd33cf7d8.
+//
+// Solidity: function setBaseRewardFeeForAttesters(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetBaseRewardFeeForAttesters(_taskDefinitionId uint16, _baseRewardFeeForAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForAttesters)
+}
+
+// SetBaseRewardFeeForAttesters is a paid mutator transaction binding the contract method 0xd33cf7d8.
+//
+// Solidity: function setBaseRewardFeeForAttesters(uint16 _taskDefinitionId, uint256 _baseRewardFeeForAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetBaseRewardFeeForAttesters(_taskDefinitionId uint16, _baseRewardFeeForAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForAttesters)
+}
+
+// SetBaseRewardFeeForPerformer is a paid mutator transaction binding the contract method 0x19636e2a.
+//
+// Solidity: function setBaseRewardFeeForPerformer(uint16 _taskDefinitionId, uint256 _baseRewardFeeForPerformer) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetBaseRewardFeeForPerformer(opts *bind.TransactOpts, _taskDefinitionId uint16, _baseRewardFeeForPerformer *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setBaseRewardFeeForPerformer", _taskDefinitionId, _baseRewardFeeForPerformer)
+}
+
+// SetBaseRewardFeeForPerformer is a paid mutator transaction binding the contract method 0x19636e2a.
+//
+// Solidity: function setBaseRewardFeeForPerformer(uint16 _taskDefinitionId, uint256 _baseRewardFeeForPerformer) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetBaseRewardFeeForPerformer(_taskDefinitionId uint16, _baseRewardFeeForPerformer *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForPerformer(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForPerformer)
+}
+
+// SetBaseRewardFeeForPerformer is a paid mutator transaction binding the contract method 0x19636e2a.
+//
+// Solidity: function setBaseRewardFeeForPerformer(uint16 _taskDefinitionId, uint256 _baseRewardFeeForPerformer) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetBaseRewardFeeForPerformer(_taskDefinitionId uint16, _baseRewardFeeForPerformer *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBaseRewardFeeForPerformer(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _baseRewardFeeForPerformer)
+}
+
+// SetBeforePaymentsLogic is a paid mutator transaction binding the contract method 0x11a95e38.
+//
+// Solidity: function setBeforePaymentsLogic(address _beforePaymentsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetBeforePaymentsLogic(opts *bind.TransactOpts, _beforePaymentsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setBeforePaymentsLogic", _beforePaymentsLogic)
+}
+
+// SetBeforePaymentsLogic is a paid mutator transaction binding the contract method 0x11a95e38.
+//
+// Solidity: function setBeforePaymentsLogic(address _beforePaymentsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetBeforePaymentsLogic(_beforePaymentsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBeforePaymentsLogic(&_ContractAttestationCenter.TransactOpts, _beforePaymentsLogic)
+}
+
+// SetBeforePaymentsLogic is a paid mutator transaction binding the contract method 0x11a95e38.
+//
+// Solidity: function setBeforePaymentsLogic(address _beforePaymentsLogic) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetBeforePaymentsLogic(_beforePaymentsLogic common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetBeforePaymentsLogic(&_ContractAttestationCenter.TransactOpts, _beforePaymentsLogic)
+}
+
+// SetChallengerRewardFee is a paid mutator transaction binding the contract method 0x7c742fb6.
+//
+// Solidity: function setChallengerRewardFee(uint256 _challengerRewardFee) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetChallengerRewardFee(opts *bind.TransactOpts, _challengerRewardFee *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setChallengerRewardFee", _challengerRewardFee)
+}
+
+// SetChallengerRewardFee is a paid mutator transaction binding the contract method 0x7c742fb6.
+//
+// Solidity: function setChallengerRewardFee(uint256 _challengerRewardFee) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetChallengerRewardFee(_challengerRewardFee *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetChallengerRewardFee(&_ContractAttestationCenter.TransactOpts, _challengerRewardFee)
+}
+
+// SetChallengerRewardFee is a paid mutator transaction binding the contract method 0x7c742fb6.
+//
+// Solidity: function setChallengerRewardFee(uint256 _challengerRewardFee) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetChallengerRewardFee(_challengerRewardFee *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetChallengerRewardFee(&_ContractAttestationCenter.TransactOpts, _challengerRewardFee)
+}
+
+// SetEjector is a paid mutator transaction binding the contract method 0x2cdd1e86.
+//
+// Solidity: function setEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetEjector(opts *bind.TransactOpts, _ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setEjector", _ejector)
+}
+
+// SetEjector is a paid mutator transaction binding the contract method 0x2cdd1e86.
+//
+// Solidity: function setEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetEjector(_ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetEjector(&_ContractAttestationCenter.TransactOpts, _ejector)
+}
+
+// SetEjector is a paid mutator transaction binding the contract method 0x2cdd1e86.
+//
+// Solidity: function setEjector(address _ejector) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetEjector(_ejector common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetEjector(&_ContractAttestationCenter.TransactOpts, _ejector)
+}
+
+// SetFeeCalculator is a paid mutator transaction binding the contract method 0x8c66d04f.
+//
+// Solidity: function setFeeCalculator(address _feeCalculator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetFeeCalculator(opts *bind.TransactOpts, _feeCalculator common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setFeeCalculator", _feeCalculator)
+}
+
+// SetFeeCalculator is a paid mutator transaction binding the contract method 0x8c66d04f.
+//
+// Solidity: function setFeeCalculator(address _feeCalculator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetFeeCalculator(_feeCalculator common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetFeeCalculator(&_ContractAttestationCenter.TransactOpts, _feeCalculator)
+}
+
+// SetFeeCalculator is a paid mutator transaction binding the contract method 0x8c66d04f.
+//
+// Solidity: function setFeeCalculator(address _feeCalculator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetFeeCalculator(_feeCalculator common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetFeeCalculator(&_ContractAttestationCenter.TransactOpts, _feeCalculator)
+}
+
+// SetInternalTaskHandler is a paid mutator transaction binding the contract method 0x8f350ef4.
+//
+// Solidity: function setInternalTaskHandler(address _internalTaskHandler) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetInternalTaskHandler(opts *bind.TransactOpts, _internalTaskHandler common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setInternalTaskHandler", _internalTaskHandler)
+}
+
+// SetInternalTaskHandler is a paid mutator transaction binding the contract method 0x8f350ef4.
+//
+// Solidity: function setInternalTaskHandler(address _internalTaskHandler) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetInternalTaskHandler(_internalTaskHandler common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetInternalTaskHandler(&_ContractAttestationCenter.TransactOpts, _internalTaskHandler)
+}
+
+// SetInternalTaskHandler is a paid mutator transaction binding the contract method 0x8f350ef4.
+//
+// Solidity: function setInternalTaskHandler(address _internalTaskHandler) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetInternalTaskHandler(_internalTaskHandler common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetInternalTaskHandler(&_ContractAttestationCenter.TransactOpts, _internalTaskHandler)
+}
+
+// SetIsIncorrectAttestationSlashingEnabled is a paid mutator transaction binding the contract method 0xcc021985.
+//
+// Solidity: function setIsIncorrectAttestationSlashingEnabled(uint16 _taskDefinitionId, bool _isIncorrectAttestationSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetIsIncorrectAttestationSlashingEnabled(opts *bind.TransactOpts, _taskDefinitionId uint16, _isIncorrectAttestationSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setIsIncorrectAttestationSlashingEnabled", _taskDefinitionId, _isIncorrectAttestationSlashingEnabled)
+}
+
+// SetIsIncorrectAttestationSlashingEnabled is a paid mutator transaction binding the contract method 0xcc021985.
+//
+// Solidity: function setIsIncorrectAttestationSlashingEnabled(uint16 _taskDefinitionId, bool _isIncorrectAttestationSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetIsIncorrectAttestationSlashingEnabled(_taskDefinitionId uint16, _isIncorrectAttestationSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsIncorrectAttestationSlashingEnabled(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _isIncorrectAttestationSlashingEnabled)
+}
+
+// SetIsIncorrectAttestationSlashingEnabled is a paid mutator transaction binding the contract method 0xcc021985.
+//
+// Solidity: function setIsIncorrectAttestationSlashingEnabled(uint16 _taskDefinitionId, bool _isIncorrectAttestationSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetIsIncorrectAttestationSlashingEnabled(_taskDefinitionId uint16, _isIncorrectAttestationSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsIncorrectAttestationSlashingEnabled(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _isIncorrectAttestationSlashingEnabled)
+}
+
+// SetIsOpenAggregator is a paid mutator transaction binding the contract method 0x51720945.
+//
+// Solidity: function setIsOpenAggregator(bool _isOpenAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetIsOpenAggregator(opts *bind.TransactOpts, _isOpenAggregator bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setIsOpenAggregator", _isOpenAggregator)
+}
+
+// SetIsOpenAggregator is a paid mutator transaction binding the contract method 0x51720945.
+//
+// Solidity: function setIsOpenAggregator(bool _isOpenAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetIsOpenAggregator(_isOpenAggregator bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsOpenAggregator(&_ContractAttestationCenter.TransactOpts, _isOpenAggregator)
+}
+
+// SetIsOpenAggregator is a paid mutator transaction binding the contract method 0x51720945.
+//
+// Solidity: function setIsOpenAggregator(bool _isOpenAggregator) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetIsOpenAggregator(_isOpenAggregator bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsOpenAggregator(&_ContractAttestationCenter.TransactOpts, _isOpenAggregator)
+}
+
+// SetIsRejectedTaskSlashingEnabled is a paid mutator transaction binding the contract method 0xeaa6867a.
+//
+// Solidity: function setIsRejectedTaskSlashingEnabled(uint16 _taskDefinitionId, bool _isRejectedTaskSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetIsRejectedTaskSlashingEnabled(opts *bind.TransactOpts, _taskDefinitionId uint16, _isRejectedTaskSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setIsRejectedTaskSlashingEnabled", _taskDefinitionId, _isRejectedTaskSlashingEnabled)
+}
+
+// SetIsRejectedTaskSlashingEnabled is a paid mutator transaction binding the contract method 0xeaa6867a.
+//
+// Solidity: function setIsRejectedTaskSlashingEnabled(uint16 _taskDefinitionId, bool _isRejectedTaskSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetIsRejectedTaskSlashingEnabled(_taskDefinitionId uint16, _isRejectedTaskSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsRejectedTaskSlashingEnabled(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _isRejectedTaskSlashingEnabled)
+}
+
+// SetIsRejectedTaskSlashingEnabled is a paid mutator transaction binding the contract method 0xeaa6867a.
+//
+// Solidity: function setIsRejectedTaskSlashingEnabled(uint16 _taskDefinitionId, bool _isRejectedTaskSlashingEnabled) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetIsRejectedTaskSlashingEnabled(_taskDefinitionId uint16, _isRejectedTaskSlashingEnabled bool) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetIsRejectedTaskSlashingEnabled(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _isRejectedTaskSlashingEnabled)
 }
 
 // SetOblsSharesSyncer is a paid mutator transaction binding the contract method 0x1164224e.
@@ -1421,46 +1883,130 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Se
 	return _ContractAttestationCenter.Contract.SetOblsSharesSyncer(&_ContractAttestationCenter.TransactOpts, _oblsSharesSyncer)
 }
 
-// SubmitTask is a paid mutator transaction binding the contract method 0x8a7ce8a4.
+// SetPaymentRequestsRole is a paid mutator transaction binding the contract method 0x3e3e99ab.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,uint256[2],uint256[2],uint256[]) _blsTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SubmitTask(opts *bind.TransactOpts, _taskInfo IAttestationCenterTaskInfo, _blsTaskSubmissionDetails IAttestationCenterBlsTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "submitTask", _taskInfo, _blsTaskSubmissionDetails)
+// Solidity: function setPaymentRequestsRole(address _newPaymentRequestsAdmin) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetPaymentRequestsRole(opts *bind.TransactOpts, _newPaymentRequestsAdmin common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setPaymentRequestsRole", _newPaymentRequestsAdmin)
 }
 
-// SubmitTask is a paid mutator transaction binding the contract method 0x8a7ce8a4.
+// SetPaymentRequestsRole is a paid mutator transaction binding the contract method 0x3e3e99ab.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,uint256[2],uint256[2],uint256[]) _blsTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) SubmitTask(_taskInfo IAttestationCenterTaskInfo, _blsTaskSubmissionDetails IAttestationCenterBlsTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SubmitTask(&_ContractAttestationCenter.TransactOpts, _taskInfo, _blsTaskSubmissionDetails)
+// Solidity: function setPaymentRequestsRole(address _newPaymentRequestsAdmin) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetPaymentRequestsRole(_newPaymentRequestsAdmin common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetPaymentRequestsRole(&_ContractAttestationCenter.TransactOpts, _newPaymentRequestsAdmin)
 }
 
-// SubmitTask is a paid mutator transaction binding the contract method 0x8a7ce8a4.
+// SetPaymentRequestsRole is a paid mutator transaction binding the contract method 0x3e3e99ab.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,uint256[2],uint256[2],uint256[]) _blsTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SubmitTask(_taskInfo IAttestationCenterTaskInfo, _blsTaskSubmissionDetails IAttestationCenterBlsTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SubmitTask(&_ContractAttestationCenter.TransactOpts, _taskInfo, _blsTaskSubmissionDetails)
+// Solidity: function setPaymentRequestsRole(address _newPaymentRequestsAdmin) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetPaymentRequestsRole(_newPaymentRequestsAdmin common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetPaymentRequestsRole(&_ContractAttestationCenter.TransactOpts, _newPaymentRequestsAdmin)
 }
 
-// SubmitTask0 is a paid mutator transaction binding the contract method 0xfff768e3.
+// SetSlasher is a paid mutator transaction binding the contract method 0xaabc2496.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,bytes,uint256[2],uint256[]) _ecdsaTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SubmitTask0(opts *bind.TransactOpts, _taskInfo IAttestationCenterTaskInfo, _ecdsaTaskSubmissionDetails IAttestationCenterEcdsaTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "submitTask0", _taskInfo, _ecdsaTaskSubmissionDetails)
+// Solidity: function setSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetSlasher(opts *bind.TransactOpts, _slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setSlasher", _slasher)
 }
 
-// SubmitTask0 is a paid mutator transaction binding the contract method 0xfff768e3.
+// SetSlasher is a paid mutator transaction binding the contract method 0xaabc2496.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,bytes,uint256[2],uint256[]) _ecdsaTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) SubmitTask0(_taskInfo IAttestationCenterTaskInfo, _ecdsaTaskSubmissionDetails IAttestationCenterEcdsaTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SubmitTask0(&_ContractAttestationCenter.TransactOpts, _taskInfo, _ecdsaTaskSubmissionDetails)
+// Solidity: function setSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetSlasher(_slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetSlasher(&_ContractAttestationCenter.TransactOpts, _slasher)
 }
 
-// SubmitTask0 is a paid mutator transaction binding the contract method 0xfff768e3.
+// SetSlasher is a paid mutator transaction binding the contract method 0xaabc2496.
 //
-// Solidity: function submitTask((string,bytes,address,uint16) _taskInfo, (bool,bytes,uint256[2],uint256[]) _ecdsaTaskSubmissionDetails) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SubmitTask0(_taskInfo IAttestationCenterTaskInfo, _ecdsaTaskSubmissionDetails IAttestationCenterEcdsaTaskSubmissionDetails) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.SubmitTask0(&_ContractAttestationCenter.TransactOpts, _taskInfo, _ecdsaTaskSubmissionDetails)
+// Solidity: function setSlasher(address _slasher) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetSlasher(_slasher common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetSlasher(&_ContractAttestationCenter.TransactOpts, _slasher)
+}
+
+// SetTaskDefinitionMaximumNumberOfAttesters is a paid mutator transaction binding the contract method 0x5fdd0ac7.
+//
+// Solidity: function setTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId, uint256 _maximumNumberOfAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetTaskDefinitionMaximumNumberOfAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _maximumNumberOfAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setTaskDefinitionMaximumNumberOfAttesters", _taskDefinitionId, _maximumNumberOfAttesters)
+}
+
+// SetTaskDefinitionMaximumNumberOfAttesters is a paid mutator transaction binding the contract method 0x5fdd0ac7.
+//
+// Solidity: function setTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId, uint256 _maximumNumberOfAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetTaskDefinitionMaximumNumberOfAttesters(_taskDefinitionId uint16, _maximumNumberOfAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionMaximumNumberOfAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _maximumNumberOfAttesters)
+}
+
+// SetTaskDefinitionMaximumNumberOfAttesters is a paid mutator transaction binding the contract method 0x5fdd0ac7.
+//
+// Solidity: function setTaskDefinitionMaximumNumberOfAttesters(uint16 _taskDefinitionId, uint256 _maximumNumberOfAttesters) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetTaskDefinitionMaximumNumberOfAttesters(_taskDefinitionId uint16, _maximumNumberOfAttesters *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionMaximumNumberOfAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _maximumNumberOfAttesters)
+}
+
+// SetTaskDefinitionMinVotingPower is a paid mutator transaction binding the contract method 0x64ada5d0.
+//
+// Solidity: function setTaskDefinitionMinVotingPower(uint16 _taskDefinitionId, uint256 _minimumVotingPower) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetTaskDefinitionMinVotingPower(opts *bind.TransactOpts, _taskDefinitionId uint16, _minimumVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setTaskDefinitionMinVotingPower", _taskDefinitionId, _minimumVotingPower)
+}
+
+// SetTaskDefinitionMinVotingPower is a paid mutator transaction binding the contract method 0x64ada5d0.
+//
+// Solidity: function setTaskDefinitionMinVotingPower(uint16 _taskDefinitionId, uint256 _minimumVotingPower) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetTaskDefinitionMinVotingPower(_taskDefinitionId uint16, _minimumVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionMinVotingPower(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _minimumVotingPower)
+}
+
+// SetTaskDefinitionMinVotingPower is a paid mutator transaction binding the contract method 0x64ada5d0.
+//
+// Solidity: function setTaskDefinitionMinVotingPower(uint16 _taskDefinitionId, uint256 _minimumVotingPower) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetTaskDefinitionMinVotingPower(_taskDefinitionId uint16, _minimumVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionMinVotingPower(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _minimumVotingPower)
+}
+
+// SetTaskDefinitionRestrictedAttesters is a paid mutator transaction binding the contract method 0x58e75c82.
+//
+// Solidity: function setTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId, uint256[] _restrictedAttesterIds) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) SetTaskDefinitionRestrictedAttesters(opts *bind.TransactOpts, _taskDefinitionId uint16, _restrictedAttesterIds []*big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "setTaskDefinitionRestrictedAttesters", _taskDefinitionId, _restrictedAttesterIds)
+}
+
+// SetTaskDefinitionRestrictedAttesters is a paid mutator transaction binding the contract method 0x58e75c82.
+//
+// Solidity: function setTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId, uint256[] _restrictedAttesterIds) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) SetTaskDefinitionRestrictedAttesters(_taskDefinitionId uint16, _restrictedAttesterIds []*big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionRestrictedAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _restrictedAttesterIds)
+}
+
+// SetTaskDefinitionRestrictedAttesters is a paid mutator transaction binding the contract method 0x58e75c82.
+//
+// Solidity: function setTaskDefinitionRestrictedAttesters(uint16 _taskDefinitionId, uint256[] _restrictedAttesterIds) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) SetTaskDefinitionRestrictedAttesters(_taskDefinitionId uint16, _restrictedAttesterIds []*big.Int) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.SetTaskDefinitionRestrictedAttesters(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _restrictedAttesterIds)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) TransferAvsGovernanceMultisig(opts *bind.TransactOpts, _newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "transferAvsGovernanceMultisig", _newAvsGovernanceMultisig)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) TransferAvsGovernanceMultisig(_newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.TransferAvsGovernanceMultisig(&_ContractAttestationCenter.TransactOpts, _newAvsGovernanceMultisig)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) TransferAvsGovernanceMultisig(_newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.TransferAvsGovernanceMultisig(&_ContractAttestationCenter.TransactOpts, _newAvsGovernanceMultisig)
 }
 
 // TransferMessageHandler is a paid mutator transaction binding the contract method 0x4d07f651.
@@ -1484,27 +2030,6 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Tr
 	return _ContractAttestationCenter.Contract.TransferMessageHandler(&_ContractAttestationCenter.TransactOpts, _newMessageHandler)
 }
 
-// UnRegisterOperatorFromNetwork is a paid mutator transaction binding the contract method 0x27bbb287.
-//
-// Solidity: function unRegisterOperatorFromNetwork(address _operator) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) UnRegisterOperatorFromNetwork(opts *bind.TransactOpts, _operator common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "unRegisterOperatorFromNetwork", _operator)
-}
-
-// UnRegisterOperatorFromNetwork is a paid mutator transaction binding the contract method 0x27bbb287.
-//
-// Solidity: function unRegisterOperatorFromNetwork(address _operator) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) UnRegisterOperatorFromNetwork(_operator common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.UnRegisterOperatorFromNetwork(&_ContractAttestationCenter.TransactOpts, _operator)
-}
-
-// UnRegisterOperatorFromNetwork is a paid mutator transaction binding the contract method 0x27bbb287.
-//
-// Solidity: function unRegisterOperatorFromNetwork(address _operator) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) UnRegisterOperatorFromNetwork(_operator common.Address) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.UnRegisterOperatorFromNetwork(&_ContractAttestationCenter.TransactOpts, _operator)
-}
-
 // Unpause is a paid mutator transaction binding the contract method 0xbac1e94b.
 //
 // Solidity: function unpause(bytes4 _pausableFlow) returns()
@@ -1526,25 +2051,25 @@ func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) Un
 	return _ContractAttestationCenter.Contract.Unpause(&_ContractAttestationCenter.TransactOpts, _pausableFlow)
 }
 
-// UpdateBlsKey is a paid mutator transaction binding the contract method 0x6ba5aa46.
+// UpdateInternalTaskConfig is a paid mutator transaction binding the contract method 0x84efb8ea.
 //
-// Solidity: function updateBlsKey(uint256[4] _blsKey, (uint256[2]) _authSignature) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactor) UpdateBlsKey(opts *bind.TransactOpts, _blsKey [4]*big.Int, _authSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
-	return _ContractAttestationCenter.contract.Transact(opts, "updateBlsKey", _blsKey, _authSignature)
+// Solidity: function updateInternalTaskConfig(uint16 _taskDefinitionId, (bool,uint48,uint8,bytes) _config) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactor) UpdateInternalTaskConfig(opts *bind.TransactOpts, _taskDefinitionId uint16, _config IInternalTaskHandlerInternalTaskConfig) (*types.Transaction, error) {
+	return _ContractAttestationCenter.contract.Transact(opts, "updateInternalTaskConfig", _taskDefinitionId, _config)
 }
 
-// UpdateBlsKey is a paid mutator transaction binding the contract method 0x6ba5aa46.
+// UpdateInternalTaskConfig is a paid mutator transaction binding the contract method 0x84efb8ea.
 //
-// Solidity: function updateBlsKey(uint256[4] _blsKey, (uint256[2]) _authSignature) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterSession) UpdateBlsKey(_blsKey [4]*big.Int, _authSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.UpdateBlsKey(&_ContractAttestationCenter.TransactOpts, _blsKey, _authSignature)
+// Solidity: function updateInternalTaskConfig(uint16 _taskDefinitionId, (bool,uint48,uint8,bytes) _config) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterSession) UpdateInternalTaskConfig(_taskDefinitionId uint16, _config IInternalTaskHandlerInternalTaskConfig) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.UpdateInternalTaskConfig(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _config)
 }
 
-// UpdateBlsKey is a paid mutator transaction binding the contract method 0x6ba5aa46.
+// UpdateInternalTaskConfig is a paid mutator transaction binding the contract method 0x84efb8ea.
 //
-// Solidity: function updateBlsKey(uint256[4] _blsKey, (uint256[2]) _authSignature) returns()
-func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) UpdateBlsKey(_blsKey [4]*big.Int, _authSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
-	return _ContractAttestationCenter.Contract.UpdateBlsKey(&_ContractAttestationCenter.TransactOpts, _blsKey, _authSignature)
+// Solidity: function updateInternalTaskConfig(uint16 _taskDefinitionId, (bool,uint48,uint8,bytes) _config) returns()
+func (_ContractAttestationCenter *ContractAttestationCenterTransactorSession) UpdateInternalTaskConfig(_taskDefinitionId uint16, _config IInternalTaskHandlerInternalTaskConfig) (*types.Transaction, error) {
+	return _ContractAttestationCenter.Contract.UpdateInternalTaskConfig(&_ContractAttestationCenter.TransactOpts, _taskDefinitionId, _config)
 }
 
 // Fallback is a paid mutator transaction binding the contract fallback function.
@@ -1785,7 +2310,7 @@ func (it *ContractAttestationCenterEigenPaymentsRequestedIterator) Close() error
 type ContractAttestationCenterEigenPaymentsRequested struct {
 	StartTimestamp     uint32
 	Duration           uint32
-	Operators          []IAttestationCenterPaymentRequestMessage
+	Operators          []IRewardsDistributorPaymentRequestMessage
 	LastPaidTaskNumber *big.Int
 	Raw                types.Log // Blockchain specific contextual infos
 }
@@ -2255,9 +2780,9 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseInitia
 	return event, nil
 }
 
-// ContractAttestationCenterOperatorBlsKeyUpdatedIterator is returned from FilterOperatorBlsKeyUpdated and is used to iterate over the raw logs and unpacked data for OperatorBlsKeyUpdated events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorBlsKeyUpdatedIterator struct {
-	Event *ContractAttestationCenterOperatorBlsKeyUpdated // Event containing the contract specifics and raw log
+// ContractAttestationCenterIsOpenAggregatorSetIterator is returned from FilterIsOpenAggregatorSet and is used to iterate over the raw logs and unpacked data for IsOpenAggregatorSet events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterIsOpenAggregatorSetIterator struct {
+	Event *ContractAttestationCenterIsOpenAggregatorSet // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2271,7 +2796,7 @@ type ContractAttestationCenterOperatorBlsKeyUpdatedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Next() bool {
+func (it *ContractAttestationCenterIsOpenAggregatorSetIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2280,7 +2805,7 @@ func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterOperatorBlsKeyUpdated)
+			it.Event = new(ContractAttestationCenterIsOpenAggregatorSet)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2295,7 +2820,7 @@ func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterOperatorBlsKeyUpdated)
+		it.Event = new(ContractAttestationCenterIsOpenAggregatorSet)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -2311,52 +2836,41 @@ func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Error() error {
+func (it *ContractAttestationCenterIsOpenAggregatorSetIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAttestationCenterOperatorBlsKeyUpdatedIterator) Close() error {
+func (it *ContractAttestationCenterIsOpenAggregatorSetIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAttestationCenterOperatorBlsKeyUpdated represents a OperatorBlsKeyUpdated event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorBlsKeyUpdated struct {
-	Operator common.Address
-	BlsKey   [4]*big.Int
-	Raw      types.Log // Blockchain specific contextual infos
+// ContractAttestationCenterIsOpenAggregatorSet represents a IsOpenAggregatorSet event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterIsOpenAggregatorSet struct {
+	IsOpenAggregator bool
+	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterOperatorBlsKeyUpdated is a free log retrieval operation binding the contract event 0x764bc14e663abcee4585e1a92e552918c69d453c673e7161504ff52fc3d428c9.
+// FilterIsOpenAggregatorSet is a free log retrieval operation binding the contract event 0x660f8962d35177409475cadba4b4e75639dc5b6af824076b1b50616a39ec565f.
 //
-// Solidity: event OperatorBlsKeyUpdated(address indexed operator, uint256[4] blsKey)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterOperatorBlsKeyUpdated(opts *bind.FilterOpts, operator []common.Address) (*ContractAttestationCenterOperatorBlsKeyUpdatedIterator, error) {
+// Solidity: event IsOpenAggregatorSet(bool isOpenAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterIsOpenAggregatorSet(opts *bind.FilterOpts) (*ContractAttestationCenterIsOpenAggregatorSetIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "OperatorBlsKeyUpdated", operatorRule)
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "IsOpenAggregatorSet")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAttestationCenterOperatorBlsKeyUpdatedIterator{contract: _ContractAttestationCenter.contract, event: "OperatorBlsKeyUpdated", logs: logs, sub: sub}, nil
+	return &ContractAttestationCenterIsOpenAggregatorSetIterator{contract: _ContractAttestationCenter.contract, event: "IsOpenAggregatorSet", logs: logs, sub: sub}, nil
 }
 
-// WatchOperatorBlsKeyUpdated is a free log subscription operation binding the contract event 0x764bc14e663abcee4585e1a92e552918c69d453c673e7161504ff52fc3d428c9.
+// WatchIsOpenAggregatorSet is a free log subscription operation binding the contract event 0x660f8962d35177409475cadba4b4e75639dc5b6af824076b1b50616a39ec565f.
 //
-// Solidity: event OperatorBlsKeyUpdated(address indexed operator, uint256[4] blsKey)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperatorBlsKeyUpdated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorBlsKeyUpdated, operator []common.Address) (event.Subscription, error) {
+// Solidity: event IsOpenAggregatorSet(bool isOpenAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchIsOpenAggregatorSet(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterIsOpenAggregatorSet) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "OperatorBlsKeyUpdated", operatorRule)
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "IsOpenAggregatorSet")
 	if err != nil {
 		return nil, err
 	}
@@ -2366,8 +2880,8 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperat
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterOperatorBlsKeyUpdated)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorBlsKeyUpdated", log); err != nil {
+				event := new(ContractAttestationCenterIsOpenAggregatorSet)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "IsOpenAggregatorSet", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2388,12 +2902,12 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperat
 	}), nil
 }
 
-// ParseOperatorBlsKeyUpdated is a log parse operation binding the contract event 0x764bc14e663abcee4585e1a92e552918c69d453c673e7161504ff52fc3d428c9.
+// ParseIsOpenAggregatorSet is a log parse operation binding the contract event 0x660f8962d35177409475cadba4b4e75639dc5b6af824076b1b50616a39ec565f.
 //
-// Solidity: event OperatorBlsKeyUpdated(address indexed operator, uint256[4] blsKey)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseOperatorBlsKeyUpdated(log types.Log) (*ContractAttestationCenterOperatorBlsKeyUpdated, error) {
-	event := new(ContractAttestationCenterOperatorBlsKeyUpdated)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorBlsKeyUpdated", log); err != nil {
+// Solidity: event IsOpenAggregatorSet(bool isOpenAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseIsOpenAggregatorSet(log types.Log) (*ContractAttestationCenterIsOpenAggregatorSet, error) {
+	event := new(ContractAttestationCenterIsOpenAggregatorSet)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "IsOpenAggregatorSet", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -2534,9 +3048,9 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseOperat
 	return event, nil
 }
 
-// ContractAttestationCenterOperatorRegisteredToNetworkIterator is returned from FilterOperatorRegisteredToNetwork and is used to iterate over the raw logs and unpacked data for OperatorRegisteredToNetwork events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorRegisteredToNetworkIterator struct {
-	Event *ContractAttestationCenterOperatorRegisteredToNetwork // Event containing the contract specifics and raw log
+// ContractAttestationCenterOperatorSlashRequestedIterator is returned from FilterOperatorSlashRequested and is used to iterate over the raw logs and unpacked data for OperatorSlashRequested events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterOperatorSlashRequestedIterator struct {
+	Event *ContractAttestationCenterOperatorSlashRequested // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2550,7 +3064,7 @@ type ContractAttestationCenterOperatorRegisteredToNetworkIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Next() bool {
+func (it *ContractAttestationCenterOperatorSlashRequestedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2559,7 +3073,7 @@ func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Next() b
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterOperatorRegisteredToNetwork)
+			it.Event = new(ContractAttestationCenterOperatorSlashRequested)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2574,7 +3088,7 @@ func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Next() b
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterOperatorRegisteredToNetwork)
+		it.Event = new(ContractAttestationCenterOperatorSlashRequested)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -2590,52 +3104,42 @@ func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Next() b
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Error() error {
+func (it *ContractAttestationCenterOperatorSlashRequestedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAttestationCenterOperatorRegisteredToNetworkIterator) Close() error {
+func (it *ContractAttestationCenterOperatorSlashRequestedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAttestationCenterOperatorRegisteredToNetwork represents a OperatorRegisteredToNetwork event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorRegisteredToNetwork struct {
-	Operator    common.Address
-	VotingPower *big.Int
-	Raw         types.Log // Blockchain specific contextual infos
+// ContractAttestationCenterOperatorSlashRequested represents a OperatorSlashRequested event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterOperatorSlashRequested struct {
+	Operator                     common.Address
+	SlashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo
+	Raw                          types.Log // Blockchain specific contextual infos
 }
 
-// FilterOperatorRegisteredToNetwork is a free log retrieval operation binding the contract event 0x16c1a2a8195923d655fe84191b37c746f4385a5c32c038578958b29f52daa1a8.
+// FilterOperatorSlashRequested is a free log retrieval operation binding the contract event 0xdc2e6e7be0395520e6d44a5a96b4b957de4ce57bd39ff7b4be319bdfad0d20e8.
 //
-// Solidity: event OperatorRegisteredToNetwork(address indexed operator, uint256 votingPower)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterOperatorRegisteredToNetwork(opts *bind.FilterOpts, operator []common.Address) (*ContractAttestationCenterOperatorRegisteredToNetworkIterator, error) {
+// Solidity: event OperatorSlashRequested(address operator, (address,uint8,uint256)[] slashingStakingContractInfos)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterOperatorSlashRequested(opts *bind.FilterOpts) (*ContractAttestationCenterOperatorSlashRequestedIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "OperatorRegisteredToNetwork", operatorRule)
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "OperatorSlashRequested")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAttestationCenterOperatorRegisteredToNetworkIterator{contract: _ContractAttestationCenter.contract, event: "OperatorRegisteredToNetwork", logs: logs, sub: sub}, nil
+	return &ContractAttestationCenterOperatorSlashRequestedIterator{contract: _ContractAttestationCenter.contract, event: "OperatorSlashRequested", logs: logs, sub: sub}, nil
 }
 
-// WatchOperatorRegisteredToNetwork is a free log subscription operation binding the contract event 0x16c1a2a8195923d655fe84191b37c746f4385a5c32c038578958b29f52daa1a8.
+// WatchOperatorSlashRequested is a free log subscription operation binding the contract event 0xdc2e6e7be0395520e6d44a5a96b4b957de4ce57bd39ff7b4be319bdfad0d20e8.
 //
-// Solidity: event OperatorRegisteredToNetwork(address indexed operator, uint256 votingPower)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperatorRegisteredToNetwork(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorRegisteredToNetwork, operator []common.Address) (event.Subscription, error) {
+// Solidity: event OperatorSlashRequested(address operator, (address,uint8,uint256)[] slashingStakingContractInfos)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperatorSlashRequested(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorSlashRequested) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "OperatorRegisteredToNetwork", operatorRule)
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "OperatorSlashRequested")
 	if err != nil {
 		return nil, err
 	}
@@ -2645,8 +3149,8 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperat
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterOperatorRegisteredToNetwork)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorRegisteredToNetwork", log); err != nil {
+				event := new(ContractAttestationCenterOperatorSlashRequested)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorSlashRequested", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2667,156 +3171,12 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperat
 	}), nil
 }
 
-// ParseOperatorRegisteredToNetwork is a log parse operation binding the contract event 0x16c1a2a8195923d655fe84191b37c746f4385a5c32c038578958b29f52daa1a8.
+// ParseOperatorSlashRequested is a log parse operation binding the contract event 0xdc2e6e7be0395520e6d44a5a96b4b957de4ce57bd39ff7b4be319bdfad0d20e8.
 //
-// Solidity: event OperatorRegisteredToNetwork(address indexed operator, uint256 votingPower)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseOperatorRegisteredToNetwork(log types.Log) (*ContractAttestationCenterOperatorRegisteredToNetwork, error) {
-	event := new(ContractAttestationCenterOperatorRegisteredToNetwork)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorRegisteredToNetwork", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAttestationCenterOperatorUnregisteredFromNetworkIterator is returned from FilterOperatorUnregisteredFromNetwork and is used to iterate over the raw logs and unpacked data for OperatorUnregisteredFromNetwork events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorUnregisteredFromNetworkIterator struct {
-	Event *ContractAttestationCenterOperatorUnregisteredFromNetwork // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterOperatorUnregisteredFromNetworkIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterOperatorUnregisteredFromNetwork)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterOperatorUnregisteredFromNetwork)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterOperatorUnregisteredFromNetworkIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAttestationCenterOperatorUnregisteredFromNetworkIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAttestationCenterOperatorUnregisteredFromNetwork represents a OperatorUnregisteredFromNetwork event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterOperatorUnregisteredFromNetwork struct {
-	OperatorId *big.Int
-	Raw        types.Log // Blockchain specific contextual infos
-}
-
-// FilterOperatorUnregisteredFromNetwork is a free log retrieval operation binding the contract event 0xda04f7db725bc5a9ad418baf26d08e9f24561a7cc119bfe1dd26bfebfc175db3.
-//
-// Solidity: event OperatorUnregisteredFromNetwork(uint256 indexed operatorId)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterOperatorUnregisteredFromNetwork(opts *bind.FilterOpts, operatorId []*big.Int) (*ContractAttestationCenterOperatorUnregisteredFromNetworkIterator, error) {
-
-	var operatorIdRule []interface{}
-	for _, operatorIdItem := range operatorId {
-		operatorIdRule = append(operatorIdRule, operatorIdItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "OperatorUnregisteredFromNetwork", operatorIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAttestationCenterOperatorUnregisteredFromNetworkIterator{contract: _ContractAttestationCenter.contract, event: "OperatorUnregisteredFromNetwork", logs: logs, sub: sub}, nil
-}
-
-// WatchOperatorUnregisteredFromNetwork is a free log subscription operation binding the contract event 0xda04f7db725bc5a9ad418baf26d08e9f24561a7cc119bfe1dd26bfebfc175db3.
-//
-// Solidity: event OperatorUnregisteredFromNetwork(uint256 indexed operatorId)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchOperatorUnregisteredFromNetwork(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterOperatorUnregisteredFromNetwork, operatorId []*big.Int) (event.Subscription, error) {
-
-	var operatorIdRule []interface{}
-	for _, operatorIdItem := range operatorId {
-		operatorIdRule = append(operatorIdRule, operatorIdItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "OperatorUnregisteredFromNetwork", operatorIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterOperatorUnregisteredFromNetwork)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorUnregisteredFromNetwork", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseOperatorUnregisteredFromNetwork is a log parse operation binding the contract event 0xda04f7db725bc5a9ad418baf26d08e9f24561a7cc119bfe1dd26bfebfc175db3.
-//
-// Solidity: event OperatorUnregisteredFromNetwork(uint256 indexed operatorId)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseOperatorUnregisteredFromNetwork(log types.Log) (*ContractAttestationCenterOperatorUnregisteredFromNetwork, error) {
-	event := new(ContractAttestationCenterOperatorUnregisteredFromNetwork)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorUnregisteredFromNetwork", log); err != nil {
+// Solidity: event OperatorSlashRequested(address operator, (address,uint8,uint256)[] slashingStakingContractInfos)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseOperatorSlashRequested(log types.Log) (*ContractAttestationCenterOperatorSlashRequested, error) {
+	event := new(ContractAttestationCenterOperatorSlashRequested)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "OperatorSlashRequested", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -2892,7 +3252,7 @@ func (it *ContractAttestationCenterPaymentsRequestedIterator) Close() error {
 
 // ContractAttestationCenterPaymentsRequested represents a PaymentsRequested event raised by the ContractAttestationCenter contract.
 type ContractAttestationCenterPaymentsRequested struct {
-	Operators          []IAttestationCenterPaymentRequestMessage
+	Operators          []IRewardsDistributorPaymentRequestMessage
 	LastPaidTaskNumber *big.Int
 	Raw                types.Log // Blockchain specific contextual infos
 }
@@ -2952,162 +3312,6 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchPaymen
 func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParsePaymentsRequested(log types.Log) (*ContractAttestationCenterPaymentsRequested, error) {
 	event := new(ContractAttestationCenterPaymentsRequested)
 	if err := _ContractAttestationCenter.contract.UnpackLog(event, "PaymentsRequested", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAttestationCenterRewardAccumulatedIterator is returned from FilterRewardAccumulated and is used to iterate over the raw logs and unpacked data for RewardAccumulated events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterRewardAccumulatedIterator struct {
-	Event *ContractAttestationCenterRewardAccumulated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterRewardAccumulatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterRewardAccumulated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterRewardAccumulated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterRewardAccumulatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAttestationCenterRewardAccumulatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAttestationCenterRewardAccumulated represents a RewardAccumulated event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterRewardAccumulated struct {
-	OperatorId               *big.Int
-	BaseRewardFeeForOperator *big.Int
-	TaskNumber               uint32
-	Raw                      types.Log // Blockchain specific contextual infos
-}
-
-// FilterRewardAccumulated is a free log retrieval operation binding the contract event 0xd3f16e9d8d3fe0ea8a6e5f923fe57e1ae1af6d890ac6c371e8af6cc177a49b65.
-//
-// Solidity: event RewardAccumulated(uint256 indexed _operatorId, uint256 _baseRewardFeeForOperator, uint32 indexed _taskNumber)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterRewardAccumulated(opts *bind.FilterOpts, _operatorId []*big.Int, _taskNumber []uint32) (*ContractAttestationCenterRewardAccumulatedIterator, error) {
-
-	var _operatorIdRule []interface{}
-	for _, _operatorIdItem := range _operatorId {
-		_operatorIdRule = append(_operatorIdRule, _operatorIdItem)
-	}
-
-	var _taskNumberRule []interface{}
-	for _, _taskNumberItem := range _taskNumber {
-		_taskNumberRule = append(_taskNumberRule, _taskNumberItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "RewardAccumulated", _operatorIdRule, _taskNumberRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAttestationCenterRewardAccumulatedIterator{contract: _ContractAttestationCenter.contract, event: "RewardAccumulated", logs: logs, sub: sub}, nil
-}
-
-// WatchRewardAccumulated is a free log subscription operation binding the contract event 0xd3f16e9d8d3fe0ea8a6e5f923fe57e1ae1af6d890ac6c371e8af6cc177a49b65.
-//
-// Solidity: event RewardAccumulated(uint256 indexed _operatorId, uint256 _baseRewardFeeForOperator, uint32 indexed _taskNumber)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchRewardAccumulated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterRewardAccumulated, _operatorId []*big.Int, _taskNumber []uint32) (event.Subscription, error) {
-
-	var _operatorIdRule []interface{}
-	for _, _operatorIdItem := range _operatorId {
-		_operatorIdRule = append(_operatorIdRule, _operatorIdItem)
-	}
-
-	var _taskNumberRule []interface{}
-	for _, _taskNumberItem := range _taskNumber {
-		_taskNumberRule = append(_taskNumberRule, _taskNumberItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "RewardAccumulated", _operatorIdRule, _taskNumberRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterRewardAccumulated)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "RewardAccumulated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRewardAccumulated is a log parse operation binding the contract event 0xd3f16e9d8d3fe0ea8a6e5f923fe57e1ae1af6d890ac6c371e8af6cc177a49b65.
-//
-// Solidity: event RewardAccumulated(uint256 indexed _operatorId, uint256 _baseRewardFeeForOperator, uint32 indexed _taskNumber)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseRewardAccumulated(log types.Log) (*ContractAttestationCenterRewardAccumulated, error) {
-	event := new(ContractAttestationCenterRewardAccumulated)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "RewardAccumulated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -3600,6 +3804,1680 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseRoleRe
 	return event, nil
 }
 
+// ContractAttestationCenterSetAvsGovernanceMultisigIterator is returned from FilterSetAvsGovernanceMultisig and is used to iterate over the raw logs and unpacked data for SetAvsGovernanceMultisig events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetAvsGovernanceMultisigIterator struct {
+	Event *ContractAttestationCenterSetAvsGovernanceMultisig // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetAvsGovernanceMultisigIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetAvsGovernanceMultisig)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetAvsGovernanceMultisig)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetAvsGovernanceMultisigIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetAvsGovernanceMultisigIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetAvsGovernanceMultisig represents a SetAvsGovernanceMultisig event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetAvsGovernanceMultisig struct {
+	NewAvsGovernanceMultisig common.Address
+	Raw                      types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetAvsGovernanceMultisig is a free log retrieval operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetAvsGovernanceMultisig(opts *bind.FilterOpts) (*ContractAttestationCenterSetAvsGovernanceMultisigIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetAvsGovernanceMultisig")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetAvsGovernanceMultisigIterator{contract: _ContractAttestationCenter.contract, event: "SetAvsGovernanceMultisig", logs: logs, sub: sub}, nil
+}
+
+// WatchSetAvsGovernanceMultisig is a free log subscription operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetAvsGovernanceMultisig(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetAvsGovernanceMultisig) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetAvsGovernanceMultisig")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetAvsGovernanceMultisig)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetAvsGovernanceMultisig", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetAvsGovernanceMultisig is a log parse operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetAvsGovernanceMultisig(log types.Log) (*ContractAttestationCenterSetAvsGovernanceMultisig, error) {
+	event := new(ContractAttestationCenterSetAvsGovernanceMultisig)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetAvsGovernanceMultisig", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetAvsLogicIterator is returned from FilterSetAvsLogic and is used to iterate over the raw logs and unpacked data for SetAvsLogic events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetAvsLogicIterator struct {
+	Event *ContractAttestationCenterSetAvsLogic // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetAvsLogicIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetAvsLogic)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetAvsLogic)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetAvsLogicIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetAvsLogicIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetAvsLogic represents a SetAvsLogic event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetAvsLogic struct {
+	AvsLogic common.Address
+	Raw      types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetAvsLogic is a free log retrieval operation binding the contract event 0xdf0d3b0bf99a87fc195d045bc7ec61d3e2619e6a49dd3f5cb69102b8c9702034.
+//
+// Solidity: event SetAvsLogic(address avsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetAvsLogic(opts *bind.FilterOpts) (*ContractAttestationCenterSetAvsLogicIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetAvsLogic")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetAvsLogicIterator{contract: _ContractAttestationCenter.contract, event: "SetAvsLogic", logs: logs, sub: sub}, nil
+}
+
+// WatchSetAvsLogic is a free log subscription operation binding the contract event 0xdf0d3b0bf99a87fc195d045bc7ec61d3e2619e6a49dd3f5cb69102b8c9702034.
+//
+// Solidity: event SetAvsLogic(address avsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetAvsLogic(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetAvsLogic) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetAvsLogic")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetAvsLogic)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetAvsLogic", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetAvsLogic is a log parse operation binding the contract event 0xdf0d3b0bf99a87fc195d045bc7ec61d3e2619e6a49dd3f5cb69102b8c9702034.
+//
+// Solidity: event SetAvsLogic(address avsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetAvsLogic(log types.Log) (*ContractAttestationCenterSetAvsLogic, error) {
+	event := new(ContractAttestationCenterSetAvsLogic)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetAvsLogic", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator is returned from FilterSetBaseRewardFeeForAggregator and is used to iterate over the raw logs and unpacked data for SetBaseRewardFeeForAggregator events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator struct {
+	Event *ContractAttestationCenterSetBaseRewardFeeForAggregator // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetBaseRewardFeeForAggregator)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetBaseRewardFeeForAggregator)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForAggregator represents a SetBaseRewardFeeForAggregator event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForAggregator struct {
+	TaskDefinitionId           uint16
+	BaseRewardFeeForAggregator *big.Int
+	Raw                        types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetBaseRewardFeeForAggregator is a free log retrieval operation binding the contract event 0x4793dc4cc042d7bb55de6974e13f051eaed18732c9f5fea5830bc76604b38dc2.
+//
+// Solidity: event SetBaseRewardFeeForAggregator(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetBaseRewardFeeForAggregator(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetBaseRewardFeeForAggregator", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetBaseRewardFeeForAggregatorIterator{contract: _ContractAttestationCenter.contract, event: "SetBaseRewardFeeForAggregator", logs: logs, sub: sub}, nil
+}
+
+// WatchSetBaseRewardFeeForAggregator is a free log subscription operation binding the contract event 0x4793dc4cc042d7bb55de6974e13f051eaed18732c9f5fea5830bc76604b38dc2.
+//
+// Solidity: event SetBaseRewardFeeForAggregator(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetBaseRewardFeeForAggregator(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForAggregator, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetBaseRewardFeeForAggregator", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetBaseRewardFeeForAggregator)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForAggregator", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetBaseRewardFeeForAggregator is a log parse operation binding the contract event 0x4793dc4cc042d7bb55de6974e13f051eaed18732c9f5fea5830bc76604b38dc2.
+//
+// Solidity: event SetBaseRewardFeeForAggregator(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAggregator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetBaseRewardFeeForAggregator(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForAggregator, error) {
+	event := new(ContractAttestationCenterSetBaseRewardFeeForAggregator)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForAggregator", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForAttestersIterator is returned from FilterSetBaseRewardFeeForAttesters and is used to iterate over the raw logs and unpacked data for SetBaseRewardFeeForAttesters events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForAttestersIterator struct {
+	Event *ContractAttestationCenterSetBaseRewardFeeForAttesters // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAttestersIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetBaseRewardFeeForAttesters)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetBaseRewardFeeForAttesters)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAttestersIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetBaseRewardFeeForAttestersIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForAttesters represents a SetBaseRewardFeeForAttesters event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForAttesters struct {
+	TaskDefinitionId          uint16
+	BaseRewardFeeForAttesters *big.Int
+	Raw                       types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetBaseRewardFeeForAttesters is a free log retrieval operation binding the contract event 0x13e7ed4e07d552b0c14aaba5b1725d6e31eb89bc4d0e1d1f1103fc30a1d419e5.
+//
+// Solidity: event SetBaseRewardFeeForAttesters(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetBaseRewardFeeForAttesters(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForAttestersIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetBaseRewardFeeForAttesters", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetBaseRewardFeeForAttestersIterator{contract: _ContractAttestationCenter.contract, event: "SetBaseRewardFeeForAttesters", logs: logs, sub: sub}, nil
+}
+
+// WatchSetBaseRewardFeeForAttesters is a free log subscription operation binding the contract event 0x13e7ed4e07d552b0c14aaba5b1725d6e31eb89bc4d0e1d1f1103fc30a1d419e5.
+//
+// Solidity: event SetBaseRewardFeeForAttesters(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetBaseRewardFeeForAttesters(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForAttesters, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetBaseRewardFeeForAttesters", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetBaseRewardFeeForAttesters)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForAttesters", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetBaseRewardFeeForAttesters is a log parse operation binding the contract event 0x13e7ed4e07d552b0c14aaba5b1725d6e31eb89bc4d0e1d1f1103fc30a1d419e5.
+//
+// Solidity: event SetBaseRewardFeeForAttesters(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetBaseRewardFeeForAttesters(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForAttesters, error) {
+	event := new(ContractAttestationCenterSetBaseRewardFeeForAttesters)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForAttesters", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForPerformerIterator is returned from FilterSetBaseRewardFeeForPerformer and is used to iterate over the raw logs and unpacked data for SetBaseRewardFeeForPerformer events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForPerformerIterator struct {
+	Event *ContractAttestationCenterSetBaseRewardFeeForPerformer // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetBaseRewardFeeForPerformerIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetBaseRewardFeeForPerformer)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetBaseRewardFeeForPerformer)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetBaseRewardFeeForPerformerIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetBaseRewardFeeForPerformerIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetBaseRewardFeeForPerformer represents a SetBaseRewardFeeForPerformer event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBaseRewardFeeForPerformer struct {
+	TaskDefinitionId          uint16
+	BaseRewardFeeForPerformer *big.Int
+	Raw                       types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetBaseRewardFeeForPerformer is a free log retrieval operation binding the contract event 0xbbc9e65198877320a28bfeba97eec9813ff314fc72b3dc385a99a631cfa39ef4.
+//
+// Solidity: event SetBaseRewardFeeForPerformer(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForPerformer)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetBaseRewardFeeForPerformer(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetBaseRewardFeeForPerformerIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetBaseRewardFeeForPerformer", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetBaseRewardFeeForPerformerIterator{contract: _ContractAttestationCenter.contract, event: "SetBaseRewardFeeForPerformer", logs: logs, sub: sub}, nil
+}
+
+// WatchSetBaseRewardFeeForPerformer is a free log subscription operation binding the contract event 0xbbc9e65198877320a28bfeba97eec9813ff314fc72b3dc385a99a631cfa39ef4.
+//
+// Solidity: event SetBaseRewardFeeForPerformer(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForPerformer)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetBaseRewardFeeForPerformer(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBaseRewardFeeForPerformer, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetBaseRewardFeeForPerformer", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetBaseRewardFeeForPerformer)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForPerformer", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetBaseRewardFeeForPerformer is a log parse operation binding the contract event 0xbbc9e65198877320a28bfeba97eec9813ff314fc72b3dc385a99a631cfa39ef4.
+//
+// Solidity: event SetBaseRewardFeeForPerformer(uint16 indexed taskDefinitionId, uint256 baseRewardFeeForPerformer)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetBaseRewardFeeForPerformer(log types.Log) (*ContractAttestationCenterSetBaseRewardFeeForPerformer, error) {
+	event := new(ContractAttestationCenterSetBaseRewardFeeForPerformer)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBaseRewardFeeForPerformer", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetBeforePaymentsLogicIterator is returned from FilterSetBeforePaymentsLogic and is used to iterate over the raw logs and unpacked data for SetBeforePaymentsLogic events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBeforePaymentsLogicIterator struct {
+	Event *ContractAttestationCenterSetBeforePaymentsLogic // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetBeforePaymentsLogicIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetBeforePaymentsLogic)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetBeforePaymentsLogic)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetBeforePaymentsLogicIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetBeforePaymentsLogicIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetBeforePaymentsLogic represents a SetBeforePaymentsLogic event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetBeforePaymentsLogic struct {
+	PaymentsLogic common.Address
+	Raw           types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetBeforePaymentsLogic is a free log retrieval operation binding the contract event 0x6da780d66fa2f1ae3eb780c2f39d31bec5c71c81a572640a6af0e8a443477792.
+//
+// Solidity: event SetBeforePaymentsLogic(address paymentsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetBeforePaymentsLogic(opts *bind.FilterOpts) (*ContractAttestationCenterSetBeforePaymentsLogicIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetBeforePaymentsLogic")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetBeforePaymentsLogicIterator{contract: _ContractAttestationCenter.contract, event: "SetBeforePaymentsLogic", logs: logs, sub: sub}, nil
+}
+
+// WatchSetBeforePaymentsLogic is a free log subscription operation binding the contract event 0x6da780d66fa2f1ae3eb780c2f39d31bec5c71c81a572640a6af0e8a443477792.
+//
+// Solidity: event SetBeforePaymentsLogic(address paymentsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetBeforePaymentsLogic(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetBeforePaymentsLogic) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetBeforePaymentsLogic")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetBeforePaymentsLogic)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBeforePaymentsLogic", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetBeforePaymentsLogic is a log parse operation binding the contract event 0x6da780d66fa2f1ae3eb780c2f39d31bec5c71c81a572640a6af0e8a443477792.
+//
+// Solidity: event SetBeforePaymentsLogic(address paymentsLogic)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetBeforePaymentsLogic(log types.Log) (*ContractAttestationCenterSetBeforePaymentsLogic, error) {
+	event := new(ContractAttestationCenterSetBeforePaymentsLogic)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetBeforePaymentsLogic", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetChallengerRewardFeeIterator is returned from FilterSetChallengerRewardFee and is used to iterate over the raw logs and unpacked data for SetChallengerRewardFee events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetChallengerRewardFeeIterator struct {
+	Event *ContractAttestationCenterSetChallengerRewardFee // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetChallengerRewardFeeIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetChallengerRewardFee)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetChallengerRewardFee)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetChallengerRewardFeeIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetChallengerRewardFeeIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetChallengerRewardFee represents a SetChallengerRewardFee event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetChallengerRewardFee struct {
+	ChallengerRewardFee *big.Int
+	Raw                 types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetChallengerRewardFee is a free log retrieval operation binding the contract event 0xabfb14e76f333086004dff417c020e5e0edde86950bcc21ec5c64b590eee222b.
+//
+// Solidity: event SetChallengerRewardFee(uint256 challengerRewardFee)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetChallengerRewardFee(opts *bind.FilterOpts) (*ContractAttestationCenterSetChallengerRewardFeeIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetChallengerRewardFee")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetChallengerRewardFeeIterator{contract: _ContractAttestationCenter.contract, event: "SetChallengerRewardFee", logs: logs, sub: sub}, nil
+}
+
+// WatchSetChallengerRewardFee is a free log subscription operation binding the contract event 0xabfb14e76f333086004dff417c020e5e0edde86950bcc21ec5c64b590eee222b.
+//
+// Solidity: event SetChallengerRewardFee(uint256 challengerRewardFee)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetChallengerRewardFee(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetChallengerRewardFee) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetChallengerRewardFee")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetChallengerRewardFee)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetChallengerRewardFee", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetChallengerRewardFee is a log parse operation binding the contract event 0xabfb14e76f333086004dff417c020e5e0edde86950bcc21ec5c64b590eee222b.
+//
+// Solidity: event SetChallengerRewardFee(uint256 challengerRewardFee)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetChallengerRewardFee(log types.Log) (*ContractAttestationCenterSetChallengerRewardFee, error) {
+	event := new(ContractAttestationCenterSetChallengerRewardFee)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetChallengerRewardFee", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetFeeCalculatorIterator is returned from FilterSetFeeCalculator and is used to iterate over the raw logs and unpacked data for SetFeeCalculator events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetFeeCalculatorIterator struct {
+	Event *ContractAttestationCenterSetFeeCalculator // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetFeeCalculatorIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetFeeCalculator)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetFeeCalculator)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetFeeCalculatorIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetFeeCalculatorIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetFeeCalculator represents a SetFeeCalculator event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetFeeCalculator struct {
+	FeeCalculator common.Address
+	Raw           types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetFeeCalculator is a free log retrieval operation binding the contract event 0x83b9ee7f260088fdd4ee12aa07fa7daebc115d796b6bfb55bfb0fc839bccff2d.
+//
+// Solidity: event SetFeeCalculator(address feeCalculator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetFeeCalculator(opts *bind.FilterOpts) (*ContractAttestationCenterSetFeeCalculatorIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetFeeCalculator")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetFeeCalculatorIterator{contract: _ContractAttestationCenter.contract, event: "SetFeeCalculator", logs: logs, sub: sub}, nil
+}
+
+// WatchSetFeeCalculator is a free log subscription operation binding the contract event 0x83b9ee7f260088fdd4ee12aa07fa7daebc115d796b6bfb55bfb0fc839bccff2d.
+//
+// Solidity: event SetFeeCalculator(address feeCalculator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetFeeCalculator(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetFeeCalculator) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetFeeCalculator")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetFeeCalculator)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetFeeCalculator", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetFeeCalculator is a log parse operation binding the contract event 0x83b9ee7f260088fdd4ee12aa07fa7daebc115d796b6bfb55bfb0fc839bccff2d.
+//
+// Solidity: event SetFeeCalculator(address feeCalculator)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetFeeCalculator(log types.Log) (*ContractAttestationCenterSetFeeCalculator, error) {
+	event := new(ContractAttestationCenterSetFeeCalculator)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetFeeCalculator", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetInternalTaskHandlerIterator is returned from FilterSetInternalTaskHandler and is used to iterate over the raw logs and unpacked data for SetInternalTaskHandler events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetInternalTaskHandlerIterator struct {
+	Event *ContractAttestationCenterSetInternalTaskHandler // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetInternalTaskHandlerIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetInternalTaskHandler)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetInternalTaskHandler)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetInternalTaskHandlerIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetInternalTaskHandlerIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetInternalTaskHandler represents a SetInternalTaskHandler event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetInternalTaskHandler struct {
+	NewInternalTaskHandler common.Address
+	Raw                    types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetInternalTaskHandler is a free log retrieval operation binding the contract event 0x422f68e5e2c91706d1dfc874a022d02851fa68385617d07a5efe61b07adca4c3.
+//
+// Solidity: event SetInternalTaskHandler(address newInternalTaskHandler)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetInternalTaskHandler(opts *bind.FilterOpts) (*ContractAttestationCenterSetInternalTaskHandlerIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetInternalTaskHandler")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetInternalTaskHandlerIterator{contract: _ContractAttestationCenter.contract, event: "SetInternalTaskHandler", logs: logs, sub: sub}, nil
+}
+
+// WatchSetInternalTaskHandler is a free log subscription operation binding the contract event 0x422f68e5e2c91706d1dfc874a022d02851fa68385617d07a5efe61b07adca4c3.
+//
+// Solidity: event SetInternalTaskHandler(address newInternalTaskHandler)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetInternalTaskHandler(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetInternalTaskHandler) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetInternalTaskHandler")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetInternalTaskHandler)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetInternalTaskHandler", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetInternalTaskHandler is a log parse operation binding the contract event 0x422f68e5e2c91706d1dfc874a022d02851fa68385617d07a5efe61b07adca4c3.
+//
+// Solidity: event SetInternalTaskHandler(address newInternalTaskHandler)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetInternalTaskHandler(log types.Log) (*ContractAttestationCenterSetInternalTaskHandler, error) {
+	event := new(ContractAttestationCenterSetInternalTaskHandler)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetInternalTaskHandler", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator is returned from FilterSetIsIncorrectAttestationSlashingEnabled and is used to iterate over the raw logs and unpacked data for SetIsIncorrectAttestationSlashingEnabled events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator struct {
+	Event *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled represents a SetIsIncorrectAttestationSlashingEnabled event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled struct {
+	TaskDefinitionId                      uint16
+	IsIncorrectAttestationSlashingEnabled bool
+	Raw                                   types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetIsIncorrectAttestationSlashingEnabled is a free log retrieval operation binding the contract event 0x85e223b0f927390a7ced3882ec7361e1701b985e1908393bf858abcfa23b2307.
+//
+// Solidity: event SetIsIncorrectAttestationSlashingEnabled(uint16 indexed taskDefinitionId, bool isIncorrectAttestationSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetIsIncorrectAttestationSlashingEnabled(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetIsIncorrectAttestationSlashingEnabled", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabledIterator{contract: _ContractAttestationCenter.contract, event: "SetIsIncorrectAttestationSlashingEnabled", logs: logs, sub: sub}, nil
+}
+
+// WatchSetIsIncorrectAttestationSlashingEnabled is a free log subscription operation binding the contract event 0x85e223b0f927390a7ced3882ec7361e1701b985e1908393bf858abcfa23b2307.
+//
+// Solidity: event SetIsIncorrectAttestationSlashingEnabled(uint16 indexed taskDefinitionId, bool isIncorrectAttestationSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetIsIncorrectAttestationSlashingEnabled(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetIsIncorrectAttestationSlashingEnabled", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetIsIncorrectAttestationSlashingEnabled", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetIsIncorrectAttestationSlashingEnabled is a log parse operation binding the contract event 0x85e223b0f927390a7ced3882ec7361e1701b985e1908393bf858abcfa23b2307.
+//
+// Solidity: event SetIsIncorrectAttestationSlashingEnabled(uint16 indexed taskDefinitionId, bool isIncorrectAttestationSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetIsIncorrectAttestationSlashingEnabled(log types.Log) (*ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled, error) {
+	event := new(ContractAttestationCenterSetIsIncorrectAttestationSlashingEnabled)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetIsIncorrectAttestationSlashingEnabled", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator is returned from FilterSetIsRejectedTaskSlashingEnabled and is used to iterate over the raw logs and unpacked data for SetIsRejectedTaskSlashingEnabled events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator struct {
+	Event *ContractAttestationCenterSetIsRejectedTaskSlashingEnabled // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetIsRejectedTaskSlashingEnabled)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetIsRejectedTaskSlashingEnabled)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetIsRejectedTaskSlashingEnabled represents a SetIsRejectedTaskSlashingEnabled event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetIsRejectedTaskSlashingEnabled struct {
+	TaskDefinitionId              uint16
+	IsRejectedTaskSlashingEnabled bool
+	Raw                           types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetIsRejectedTaskSlashingEnabled is a free log retrieval operation binding the contract event 0xbfff858ae099e475f126ce7aed2c36b4ddb5eed760f2cac98d57cd5fc9ae34db.
+//
+// Solidity: event SetIsRejectedTaskSlashingEnabled(uint16 indexed taskDefinitionId, bool isRejectedTaskSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetIsRejectedTaskSlashingEnabled(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetIsRejectedTaskSlashingEnabled", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetIsRejectedTaskSlashingEnabledIterator{contract: _ContractAttestationCenter.contract, event: "SetIsRejectedTaskSlashingEnabled", logs: logs, sub: sub}, nil
+}
+
+// WatchSetIsRejectedTaskSlashingEnabled is a free log subscription operation binding the contract event 0xbfff858ae099e475f126ce7aed2c36b4ddb5eed760f2cac98d57cd5fc9ae34db.
+//
+// Solidity: event SetIsRejectedTaskSlashingEnabled(uint16 indexed taskDefinitionId, bool isRejectedTaskSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetIsRejectedTaskSlashingEnabled(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetIsRejectedTaskSlashingEnabled, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetIsRejectedTaskSlashingEnabled", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetIsRejectedTaskSlashingEnabled)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetIsRejectedTaskSlashingEnabled", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetIsRejectedTaskSlashingEnabled is a log parse operation binding the contract event 0xbfff858ae099e475f126ce7aed2c36b4ddb5eed760f2cac98d57cd5fc9ae34db.
+//
+// Solidity: event SetIsRejectedTaskSlashingEnabled(uint16 indexed taskDefinitionId, bool isRejectedTaskSlashingEnabled)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetIsRejectedTaskSlashingEnabled(log types.Log) (*ContractAttestationCenterSetIsRejectedTaskSlashingEnabled, error) {
+	event := new(ContractAttestationCenterSetIsRejectedTaskSlashingEnabled)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetIsRejectedTaskSlashingEnabled", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterSetMaximumNumberOfAttestersIterator is returned from FilterSetMaximumNumberOfAttesters and is used to iterate over the raw logs and unpacked data for SetMaximumNumberOfAttesters events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetMaximumNumberOfAttestersIterator struct {
+	Event *ContractAttestationCenterSetMaximumNumberOfAttesters // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterSetMaximumNumberOfAttestersIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterSetMaximumNumberOfAttesters)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterSetMaximumNumberOfAttesters)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterSetMaximumNumberOfAttestersIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterSetMaximumNumberOfAttestersIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterSetMaximumNumberOfAttesters represents a SetMaximumNumberOfAttesters event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetMaximumNumberOfAttesters struct {
+	TaskDefinitionId         uint16
+	MaximumNumberOfAttesters *big.Int
+	Raw                      types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetMaximumNumberOfAttesters is a free log retrieval operation binding the contract event 0x08b4fb8850cdb8d9c6d276d628973bff1146e12e74dabf396622beca8b5ce5ae.
+//
+// Solidity: event SetMaximumNumberOfAttesters(uint16 indexed taskDefinitionId, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetMaximumNumberOfAttesters(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetMaximumNumberOfAttestersIterator, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetMaximumNumberOfAttesters", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterSetMaximumNumberOfAttestersIterator{contract: _ContractAttestationCenter.contract, event: "SetMaximumNumberOfAttesters", logs: logs, sub: sub}, nil
+}
+
+// WatchSetMaximumNumberOfAttesters is a free log subscription operation binding the contract event 0x08b4fb8850cdb8d9c6d276d628973bff1146e12e74dabf396622beca8b5ce5ae.
+//
+// Solidity: event SetMaximumNumberOfAttesters(uint16 indexed taskDefinitionId, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetMaximumNumberOfAttesters(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetMaximumNumberOfAttesters, taskDefinitionId []uint16) (event.Subscription, error) {
+
+	var taskDefinitionIdRule []interface{}
+	for _, taskDefinitionIdItem := range taskDefinitionId {
+		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
+	}
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetMaximumNumberOfAttesters", taskDefinitionIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterSetMaximumNumberOfAttesters)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetMaximumNumberOfAttesters", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetMaximumNumberOfAttesters is a log parse operation binding the contract event 0x08b4fb8850cdb8d9c6d276d628973bff1146e12e74dabf396622beca8b5ce5ae.
+//
+// Solidity: event SetMaximumNumberOfAttesters(uint16 indexed taskDefinitionId, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetMaximumNumberOfAttesters(log types.Log) (*ContractAttestationCenterSetMaximumNumberOfAttesters, error) {
+	event := new(ContractAttestationCenterSetMaximumNumberOfAttesters)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetMaximumNumberOfAttesters", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // ContractAttestationCenterSetMessageHandlerIterator is returned from FilterSetMessageHandler and is used to iterate over the raw logs and unpacked data for SetMessageHandler events raised by the ContractAttestationCenter contract.
 type ContractAttestationCenterSetMessageHandlerIterator struct {
 	Event *ContractAttestationCenterSetMessageHandler // Event containing the contract specifics and raw log
@@ -3734,9 +5612,9 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetMes
 	return event, nil
 }
 
-// ContractAttestationCenterTaskRejectedIterator is returned from FilterTaskRejected and is used to iterate over the raw logs and unpacked data for TaskRejected events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterTaskRejectedIterator struct {
-	Event *ContractAttestationCenterTaskRejected // Event containing the contract specifics and raw log
+// ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator is returned from FilterSetMinimumTaskDefinitionVotingPower and is used to iterate over the raw logs and unpacked data for SetMinimumTaskDefinitionVotingPower events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator struct {
+	Event *ContractAttestationCenterSetMinimumTaskDefinitionVotingPower // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -3750,7 +5628,7 @@ type ContractAttestationCenterTaskRejectedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterTaskRejectedIterator) Next() bool {
+func (it *ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -3759,7 +5637,7 @@ func (it *ContractAttestationCenterTaskRejectedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterTaskRejected)
+			it.Event = new(ContractAttestationCenterSetMinimumTaskDefinitionVotingPower)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -3774,7 +5652,7 @@ func (it *ContractAttestationCenterTaskRejectedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterTaskRejected)
+		it.Event = new(ContractAttestationCenterSetMinimumTaskDefinitionVotingPower)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -3790,66 +5668,41 @@ func (it *ContractAttestationCenterTaskRejectedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterTaskRejectedIterator) Error() error {
+func (it *ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAttestationCenterTaskRejectedIterator) Close() error {
+func (it *ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAttestationCenterTaskRejected represents a TaskRejected event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterTaskRejected struct {
-	Operator         common.Address
-	TaskNumber       uint32
-	ProofOfTask      string
-	Data             []byte
-	TaskDefinitionId uint16
-	AttestersIds     []*big.Int
-	Raw              types.Log // Blockchain specific contextual infos
+// ContractAttestationCenterSetMinimumTaskDefinitionVotingPower represents a SetMinimumTaskDefinitionVotingPower event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetMinimumTaskDefinitionVotingPower struct {
+	MinimumVotingPower *big.Int
+	Raw                types.Log // Blockchain specific contextual infos
 }
 
-// FilterTaskRejected is a free log retrieval operation binding the contract event 0x834bcdc44f628888090e897856fa3d661504c545654ba804c61b293c36b6595b.
+// FilterSetMinimumTaskDefinitionVotingPower is a free log retrieval operation binding the contract event 0x255c174d5deb340ac0a0c908147d9c66ae7d94a6c7f969f722bf5d71b92e98f8.
 //
-// Solidity: event TaskRejected(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterTaskRejected(opts *bind.FilterOpts, operator []common.Address, taskDefinitionId []uint16) (*ContractAttestationCenterTaskRejectedIterator, error) {
+// Solidity: event SetMinimumTaskDefinitionVotingPower(uint256 minimumVotingPower)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetMinimumTaskDefinitionVotingPower(opts *bind.FilterOpts) (*ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	var taskDefinitionIdRule []interface{}
-	for _, taskDefinitionIdItem := range taskDefinitionId {
-		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "TaskRejected", operatorRule, taskDefinitionIdRule)
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetMinimumTaskDefinitionVotingPower")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAttestationCenterTaskRejectedIterator{contract: _ContractAttestationCenter.contract, event: "TaskRejected", logs: logs, sub: sub}, nil
+	return &ContractAttestationCenterSetMinimumTaskDefinitionVotingPowerIterator{contract: _ContractAttestationCenter.contract, event: "SetMinimumTaskDefinitionVotingPower", logs: logs, sub: sub}, nil
 }
 
-// WatchTaskRejected is a free log subscription operation binding the contract event 0x834bcdc44f628888090e897856fa3d661504c545654ba804c61b293c36b6595b.
+// WatchSetMinimumTaskDefinitionVotingPower is a free log subscription operation binding the contract event 0x255c174d5deb340ac0a0c908147d9c66ae7d94a6c7f969f722bf5d71b92e98f8.
 //
-// Solidity: event TaskRejected(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskRejected(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskRejected, operator []common.Address, taskDefinitionId []uint16) (event.Subscription, error) {
+// Solidity: event SetMinimumTaskDefinitionVotingPower(uint256 minimumVotingPower)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetMinimumTaskDefinitionVotingPower(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetMinimumTaskDefinitionVotingPower) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	var taskDefinitionIdRule []interface{}
-	for _, taskDefinitionIdItem := range taskDefinitionId {
-		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
-	}
-
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "TaskRejected", operatorRule, taskDefinitionIdRule)
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetMinimumTaskDefinitionVotingPower")
 	if err != nil {
 		return nil, err
 	}
@@ -3859,8 +5712,8 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskRe
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterTaskRejected)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskRejected", log); err != nil {
+				event := new(ContractAttestationCenterSetMinimumTaskDefinitionVotingPower)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetMinimumTaskDefinitionVotingPower", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -3881,21 +5734,21 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskRe
 	}), nil
 }
 
-// ParseTaskRejected is a log parse operation binding the contract event 0x834bcdc44f628888090e897856fa3d661504c545654ba804c61b293c36b6595b.
+// ParseSetMinimumTaskDefinitionVotingPower is a log parse operation binding the contract event 0x255c174d5deb340ac0a0c908147d9c66ae7d94a6c7f969f722bf5d71b92e98f8.
 //
-// Solidity: event TaskRejected(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseTaskRejected(log types.Log) (*ContractAttestationCenterTaskRejected, error) {
-	event := new(ContractAttestationCenterTaskRejected)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskRejected", log); err != nil {
+// Solidity: event SetMinimumTaskDefinitionVotingPower(uint256 minimumVotingPower)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetMinimumTaskDefinitionVotingPower(log types.Log) (*ContractAttestationCenterSetMinimumTaskDefinitionVotingPower, error) {
+	event := new(ContractAttestationCenterSetMinimumTaskDefinitionVotingPower)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetMinimumTaskDefinitionVotingPower", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// ContractAttestationCenterTaskSubmittedIterator is returned from FilterTaskSubmitted and is used to iterate over the raw logs and unpacked data for TaskSubmitted events raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterTaskSubmittedIterator struct {
-	Event *ContractAttestationCenterTaskSubmitted // Event containing the contract specifics and raw log
+// ContractAttestationCenterSetRestrictedAttesterIterator is returned from FilterSetRestrictedAttester and is used to iterate over the raw logs and unpacked data for SetRestrictedAttester events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetRestrictedAttesterIterator struct {
+	Event *ContractAttestationCenterSetRestrictedAttester // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -3909,7 +5762,7 @@ type ContractAttestationCenterTaskSubmittedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAttestationCenterTaskSubmittedIterator) Next() bool {
+func (it *ContractAttestationCenterSetRestrictedAttesterIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -3918,7 +5771,7 @@ func (it *ContractAttestationCenterTaskSubmittedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAttestationCenterTaskSubmitted)
+			it.Event = new(ContractAttestationCenterSetRestrictedAttester)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -3933,7 +5786,7 @@ func (it *ContractAttestationCenterTaskSubmittedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAttestationCenterTaskSubmitted)
+		it.Event = new(ContractAttestationCenterSetRestrictedAttester)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -3949,66 +5802,52 @@ func (it *ContractAttestationCenterTaskSubmittedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAttestationCenterTaskSubmittedIterator) Error() error {
+func (it *ContractAttestationCenterSetRestrictedAttesterIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAttestationCenterTaskSubmittedIterator) Close() error {
+func (it *ContractAttestationCenterSetRestrictedAttesterIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAttestationCenterTaskSubmitted represents a TaskSubmitted event raised by the ContractAttestationCenter contract.
-type ContractAttestationCenterTaskSubmitted struct {
-	Operator         common.Address
-	TaskNumber       uint32
-	ProofOfTask      string
-	Data             []byte
-	TaskDefinitionId uint16
-	AttestersIds     []*big.Int
-	Raw              types.Log // Blockchain specific contextual infos
+// ContractAttestationCenterSetRestrictedAttester represents a SetRestrictedAttester event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterSetRestrictedAttester struct {
+	TaskDefinitionId      uint16
+	RestrictedAttesterIds []*big.Int
+	Raw                   types.Log // Blockchain specific contextual infos
 }
 
-// FilterTaskSubmitted is a free log retrieval operation binding the contract event 0xaed5b9322f1cce79090471045d025d7a0a841daf787ec955d17cdd32a3ebfdb1.
+// FilterSetRestrictedAttester is a free log retrieval operation binding the contract event 0x7d9be67d2c086f7b6d17bd6e99430a2757c5b4dc4519288a62d5f167e441c240.
 //
-// Solidity: event TaskSubmitted(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterTaskSubmitted(opts *bind.FilterOpts, operator []common.Address, taskDefinitionId []uint16) (*ContractAttestationCenterTaskSubmittedIterator, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
+// Solidity: event SetRestrictedAttester(uint16 indexed taskDefinitionId, uint256[] restrictedAttesterIds)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterSetRestrictedAttester(opts *bind.FilterOpts, taskDefinitionId []uint16) (*ContractAttestationCenterSetRestrictedAttesterIterator, error) {
 
 	var taskDefinitionIdRule []interface{}
 	for _, taskDefinitionIdItem := range taskDefinitionId {
 		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
 	}
 
-	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "TaskSubmitted", operatorRule, taskDefinitionIdRule)
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "SetRestrictedAttester", taskDefinitionIdRule)
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAttestationCenterTaskSubmittedIterator{contract: _ContractAttestationCenter.contract, event: "TaskSubmitted", logs: logs, sub: sub}, nil
+	return &ContractAttestationCenterSetRestrictedAttesterIterator{contract: _ContractAttestationCenter.contract, event: "SetRestrictedAttester", logs: logs, sub: sub}, nil
 }
 
-// WatchTaskSubmitted is a free log subscription operation binding the contract event 0xaed5b9322f1cce79090471045d025d7a0a841daf787ec955d17cdd32a3ebfdb1.
+// WatchSetRestrictedAttester is a free log subscription operation binding the contract event 0x7d9be67d2c086f7b6d17bd6e99430a2757c5b4dc4519288a62d5f167e441c240.
 //
-// Solidity: event TaskSubmitted(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskSubmitted(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskSubmitted, operator []common.Address, taskDefinitionId []uint16) (event.Subscription, error) {
-
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
+// Solidity: event SetRestrictedAttester(uint16 indexed taskDefinitionId, uint256[] restrictedAttesterIds)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchSetRestrictedAttester(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterSetRestrictedAttester, taskDefinitionId []uint16) (event.Subscription, error) {
 
 	var taskDefinitionIdRule []interface{}
 	for _, taskDefinitionIdItem := range taskDefinitionId {
 		taskDefinitionIdRule = append(taskDefinitionIdRule, taskDefinitionIdItem)
 	}
 
-	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "TaskSubmitted", operatorRule, taskDefinitionIdRule)
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "SetRestrictedAttester", taskDefinitionIdRule)
 	if err != nil {
 		return nil, err
 	}
@@ -4018,8 +5857,8 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskSu
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAttestationCenterTaskSubmitted)
-				if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskSubmitted", log); err != nil {
+				event := new(ContractAttestationCenterSetRestrictedAttester)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetRestrictedAttester", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -4040,12 +5879,155 @@ func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskSu
 	}), nil
 }
 
-// ParseTaskSubmitted is a log parse operation binding the contract event 0xaed5b9322f1cce79090471045d025d7a0a841daf787ec955d17cdd32a3ebfdb1.
+// ParseSetRestrictedAttester is a log parse operation binding the contract event 0x7d9be67d2c086f7b6d17bd6e99430a2757c5b4dc4519288a62d5f167e441c240.
 //
-// Solidity: event TaskSubmitted(address indexed operator, uint32 taskNumber, string proofOfTask, bytes data, uint16 indexed taskDefinitionId, uint256[] attestersIds)
-func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseTaskSubmitted(log types.Log) (*ContractAttestationCenterTaskSubmitted, error) {
-	event := new(ContractAttestationCenterTaskSubmitted)
-	if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskSubmitted", log); err != nil {
+// Solidity: event SetRestrictedAttester(uint16 indexed taskDefinitionId, uint256[] restrictedAttesterIds)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseSetRestrictedAttester(log types.Log) (*ContractAttestationCenterSetRestrictedAttester, error) {
+	event := new(ContractAttestationCenterSetRestrictedAttester)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "SetRestrictedAttester", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAttestationCenterTaskDefinitionCreatedIterator is returned from FilterTaskDefinitionCreated and is used to iterate over the raw logs and unpacked data for TaskDefinitionCreated events raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterTaskDefinitionCreatedIterator struct {
+	Event *ContractAttestationCenterTaskDefinitionCreated // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAttestationCenterTaskDefinitionCreatedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAttestationCenterTaskDefinitionCreated)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAttestationCenterTaskDefinitionCreated)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAttestationCenterTaskDefinitionCreatedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAttestationCenterTaskDefinitionCreatedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAttestationCenterTaskDefinitionCreated represents a TaskDefinitionCreated event raised by the ContractAttestationCenter contract.
+type ContractAttestationCenterTaskDefinitionCreated struct {
+	TaskDefinitionId           uint16
+	Name                       string
+	BlockExpiry                *big.Int
+	BaseRewardFeeForAttesters  *big.Int
+	BaseRewardFeeForPerformer  *big.Int
+	BaseRewardFeeForAggregator *big.Int
+	DisputePeriodBlocks        *big.Int
+	MinimumVotingPower         *big.Int
+	RestrictedAttesterIds      []*big.Int
+	MaximumNumberOfAttesters   *big.Int
+	Raw                        types.Log // Blockchain specific contextual infos
+}
+
+// FilterTaskDefinitionCreated is a free log retrieval operation binding the contract event 0x7eae3686e408afa807ebe15ce7995105877e176b7384d0656633435f6e58eab8.
+//
+// Solidity: event TaskDefinitionCreated(uint16 taskDefinitionId, string name, uint256 blockExpiry, uint256 baseRewardFeeForAttesters, uint256 baseRewardFeeForPerformer, uint256 baseRewardFeeForAggregator, uint256 disputePeriodBlocks, uint256 minimumVotingPower, uint256[] restrictedAttesterIds, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) FilterTaskDefinitionCreated(opts *bind.FilterOpts) (*ContractAttestationCenterTaskDefinitionCreatedIterator, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.FilterLogs(opts, "TaskDefinitionCreated")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAttestationCenterTaskDefinitionCreatedIterator{contract: _ContractAttestationCenter.contract, event: "TaskDefinitionCreated", logs: logs, sub: sub}, nil
+}
+
+// WatchTaskDefinitionCreated is a free log subscription operation binding the contract event 0x7eae3686e408afa807ebe15ce7995105877e176b7384d0656633435f6e58eab8.
+//
+// Solidity: event TaskDefinitionCreated(uint16 taskDefinitionId, string name, uint256 blockExpiry, uint256 baseRewardFeeForAttesters, uint256 baseRewardFeeForPerformer, uint256 baseRewardFeeForAggregator, uint256 disputePeriodBlocks, uint256 minimumVotingPower, uint256[] restrictedAttesterIds, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) WatchTaskDefinitionCreated(opts *bind.WatchOpts, sink chan<- *ContractAttestationCenterTaskDefinitionCreated) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAttestationCenter.contract.WatchLogs(opts, "TaskDefinitionCreated")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAttestationCenterTaskDefinitionCreated)
+				if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskDefinitionCreated", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseTaskDefinitionCreated is a log parse operation binding the contract event 0x7eae3686e408afa807ebe15ce7995105877e176b7384d0656633435f6e58eab8.
+//
+// Solidity: event TaskDefinitionCreated(uint16 taskDefinitionId, string name, uint256 blockExpiry, uint256 baseRewardFeeForAttesters, uint256 baseRewardFeeForPerformer, uint256 baseRewardFeeForAggregator, uint256 disputePeriodBlocks, uint256 minimumVotingPower, uint256[] restrictedAttesterIds, uint256 maximumNumberOfAttesters)
+func (_ContractAttestationCenter *ContractAttestationCenterFilterer) ParseTaskDefinitionCreated(log types.Log) (*ContractAttestationCenterTaskDefinitionCreated, error) {
+	event := new(ContractAttestationCenterTaskDefinitionCreated)
+	if err := _ContractAttestationCenter.contract.UnpackLog(event, "TaskDefinitionCreated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

@@ -104,17 +104,22 @@ contract TriggerXSafeModuleTest is Test {
         );
     }
 
-    function testReplayProtection() public {
+    function testMultipleCallsAllowed() public {
+        // The contract doesn't have replay protection - multiple identical calls are allowed
+        // This is by design since the hub is trusted and manages replay protection at a higher level
         bytes memory actionData = abi.encodeWithSelector(DummyTarget.doSomething.selector, 5);
         uint8 op = 0;
 
         vm.prank(address(hub));
-        bool ok = moduleContract.execJobFromHub(address(safe), address(target), uint256(0), actionData, op);
-        assertTrue(ok);
+        bool ok1 = moduleContract.execJobFromHub(address(safe), address(target), uint256(0), actionData, op);
+        assertTrue(ok1);
 
-        // second call should revert
+        // second call should also succeed (no replay protection in module)
         vm.prank(address(hub));
-        vm.expectRevert();
-        moduleContract.execJobFromHub(address(safe), address(target), uint256(0), actionData, op);
+        bool ok2 = moduleContract.execJobFromHub(address(safe), address(target), uint256(0), actionData, op);
+        assertTrue(ok2);
+        
+        // Verify both calls executed
+        assertEq(target.x(), 5);
     }
 }

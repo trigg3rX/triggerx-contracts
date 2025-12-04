@@ -1,132 +1,121 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/joho/godotenv"
 )
 
-type ContractsData struct {
-	Eth  map[string]string `json:"Eth"`
-	Base map[string]string `json:"Base"`
-}
+// ContractsData represents the structure of the contracts.json file
+type ContractsData map[string]map[string]interface{}
 
 const (
-	OUTPUT_DIR = "bindings/abis"
+	OUTPUT_DIR = "abis"
 )
+
+// Network configuration for different chain IDs
+var networkConfigs = map[string]struct {
+	networkName string
+	chainID     string
+}{
+	"11155111": {"sepolia", "11155111"},   // Ethereum Sepolia
+	"84532":    {"base-sepolia", "84532"}, // Base Sepolia
+}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("Error loading .env file")
 	}
 
-	ethClient, err := ethclient.Dial(os.Getenv("ETH_RPC_URL"))
-	if err != nil {
-		panic(err)
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(OUTPUT_DIR, 0755); err != nil {
+		panic(fmt.Sprintf("Failed to create output directory: %v", err))
 	}
 
-	baseClient, err := ethclient.Dial(os.Getenv("BASE_RPC_URL"))
+	// Read the testnet deployment file
+	contractsDataRaw, err := os.ReadFile("./contracts.json")
 	if err != nil {
-		panic(err)
-	}
-
-	contractsDataRaw, err := os.ReadFile("./bindings/triggerx.prod.json")
-	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to read contracts.json: %v", err))
 	}
 
 	var contractsData ContractsData
 	if err := json.Unmarshal(contractsDataRaw, &contractsData); err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to parse contracts.json: %v", err))
 	}
 
-	fetchBytecode := func(name string, address string, client *ethclient.Client, network string) {
-		binPath := filepath.Join(OUTPUT_DIR, name+"."+network+".bin")
-		if _, err := os.Stat(binPath); err == nil {
-			return
-		}
-
-		addr := common.HexToAddress(address)
-		bytecode, err := client.CodeAt(context.Background(), addr, nil)
-		if err != nil {
-			panic(err)
-		}
-
-		err = os.WriteFile(
-			binPath,
-			[]byte(fmt.Sprintf("%x", bytecode)),
-			0644,
-		)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("Fetched bytecode for %s on %s\n", name, network)
-	}
-
-	for name, addr := range contractsData.Eth {
-		fetchBytecode(name, addr, ethClient, "eth")
-		abi, err := fetchABIFromEtherscan(addr, "17000")
-		if err != nil {
-			panic(err)
-		}
-
-		abiPath := filepath.Join(OUTPUT_DIR, name+".eth.abi")
-		if _, err := os.Stat(abiPath); err == nil {
+	// Process each network
+	for chainID, contracts := range contractsData {
+		config, exists := networkConfigs[chainID]
+		if !exists {
+			fmt.Printf("Skipping unknown chain ID: %s\n", chainID)
 			continue
 		}
 
-		err = os.WriteFile(
-			abiPath,
-			[]byte(abi),
-			0644,
-		)
-		if err != nil {
-			panic(err)
+		fmt.Printf("\nProcessing network: %s (chain ID: %s)\n", config.networkName, config.chainID)
+		fmt.Println(strings.Repeat("-", 50))
+
+		// Process each contract in the network
+		for contractName, contractData := range contracts {
+			var implementationAddress string
+
+			// Handle contract data - in contracts.json, addresses are stored as strings
+			switch v := contractData.(type) {
+			case string:
+				// Direct address string
+				implementationAddress = v
+			default:
+				fmt.Printf("Skipping %s (unknown format)\n", contractName)
+				continue
+			}
+
+			// Skip if address is the zero address or empty
+			if implementationAddress == "" || implementationAddress == "0x0000000000000000000000000000000000000000" {
+				fmt.Printf("Skipping %s (zero or empty address)\n", contractName)
+				continue
+			}
+
+			// Fetch ABI
+			fmt.Printf("Fetching ABI for %s (address: %s)...\n", contractName, implementationAddress)
+
+			abiPath := filepath.Join(OUTPUT_DIR, fmt.Sprintf("%s.abi", contractName))
+
+			// Skip if already exists
+			if _, err := os.Stat(abiPath); err == nil {
+				fmt.Printf("ABI already exists for %s\n", contractName)
+				continue
+			}
+
+			abi, err := fetchABIFromEtherscan(implementationAddress, config.chainID)
+			if err != nil {
+				fmt.Printf("Failed to fetch ABI for %s: %v\n", contractName, err)
+				continue
+			}
+
+			// Write ABI to file
+			if err := os.WriteFile(abiPath, []byte(abi), 0644); err != nil {
+				fmt.Printf("Failed to write ABI for %s: %v\n", contractName, err)
+				continue
+			}
+
+			fmt.Printf("Successfully fetched ABI for %s\n", contractName)
 		}
-		fmt.Printf("Fetched ABI for %s on holesky\n", name)
 	}
 
-	for name, addr := range contractsData.Base {
-		fetchBytecode(name, addr, baseClient, "base")
-		abi, err := fetchABIFromEtherscan(addr, "84532")
-		if err != nil {
-			panic(err)
-		}
-
-		abiPath := filepath.Join(OUTPUT_DIR, name+".base.abi")
-		if _, err := os.Stat(abiPath); err == nil {
-			continue
-		}
-
-		err = os.WriteFile(
-			abiPath,
-			[]byte(abi),
-			0644,
-		)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("Fetched ABI for %s on holesky\n", name)
-	}
+	fmt.Println("\nABI fetching complete!")
 }
 
-func fetchABIFromEtherscan(address string, network string) (string, error) {
+func fetchABIFromEtherscan(address string, chainID string) (string, error) {
 	apiKey := os.Getenv("ETHERSCAN_API_KEY")
-	if apiKey == "" {
-		return "", fmt.Errorf("ETHERSCAN_API_KEY not set in environment")
-	}
 
 	baseURL := "https://api.etherscan.io/v2/api"
 
-	url := fmt.Sprintf("%s?chainid=%s&module=contract&action=getabi&address=%s&apikey=%s", baseURL, network, address, apiKey)
+	url := fmt.Sprintf("%s?chainid=%s&module=contract&action=getabi&address=%s&apikey=%s", baseURL, chainID, address, apiKey)
 
 	resp, err := http.Get(url)
 	if err != nil {

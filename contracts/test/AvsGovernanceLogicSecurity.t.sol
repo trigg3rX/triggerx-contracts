@@ -87,7 +87,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
         address[] memory operators = new address[](1);
         operators[0] = operator1;
         
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
+        // The contract uses a custom modifier that allows whitelist managers or owner
+        vm.expectRevert("Caller is not a whitelist manager or owner");
         vm.prank(attacker);
         avsGovernance.addToWhitelist(operators);
     }
@@ -100,8 +101,8 @@ contract AvsGovernanceLogicSecurityTest is Test {
         vm.prank(owner);
         avsGovernance.addToWhitelist(operators);
         
-        // Try to remove as attacker
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, attacker));
+        // Try to remove as attacker - uses custom modifier
+        vm.expectRevert("Caller is not a whitelist manager or owner");
         vm.prank(attacker);
         avsGovernance.removeFromWhitelist(operators);
     }
@@ -126,7 +127,7 @@ contract AvsGovernanceLogicSecurityTest is Test {
     }
     
     function test_Security_SetTaskExecutionHubRejectsZeroAddress() public {
-        vm.expectRevert("Invalid proxy hub address");
+        vm.expectRevert("Invalid task execution hub address");
         vm.prank(owner);
         avsGovernance.setTaskExecutionHub(address(0));
     }

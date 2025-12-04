@@ -11,16 +11,15 @@ contract DeployTriggerGasRegistry is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
     address operator = 0x179c62e83c3f90981B65bc12176FdFB0f2efAD54; // Task Execution Address
-    uint256 tgPerEth = 1000;
 
-    bytes32 SALT = keccak256(abi.encodePacked("put_salt_here"));
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put_salt_here"));
+    bytes32 SALT = keccak256(abi.encodePacked("TriggerX_GasRegistry_V2"));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked("TriggerX_GasRegistryImpl_V2"));
 
     function run() public {
         // Create fork for this chain
         // vm.createSelectFork(vm.envString("BASE_RPC"));
         // vm.createSelectFork(vm.envString("OP_RPC"));
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        // vm.createSelectFork(vm.envString("ARB_RPC"));
 
         bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
 
@@ -33,8 +32,7 @@ contract DeployTriggerGasRegistry is Script {
         bytes memory initData = abi.encodeWithSelector(
             TriggerGasRegistry.initialize.selector, 
             deployer, 
-            operator, 
-            tgPerEth
+            operator
         );
         bytes memory proxy_code = abi.encodePacked(
             type(ERC1967Proxy).creationCode, 
@@ -47,7 +45,6 @@ contract DeployTriggerGasRegistry is Script {
         TriggerGasRegistry registry = TriggerGasRegistry(payable(proxy));
         require(registry.owner() == deployer, "Owner mismatch");
         require(registry.operatorRole() == operator, "Operator mismatch");
-        require(registry.TG_PER_ETH() == tgPerEth, "TG_PER_ETH mismatch");
 
         vm.stopBroadcast();
 
@@ -57,13 +54,14 @@ contract DeployTriggerGasRegistry is Script {
         console.log("Proxy:", proxy);
         console.log("Implementation:", implementation);
         console.log("Deployer:", deployer);
+        console.log("Operator:", operator);
         console.log("");
     }
 }
 
 contract SetOperatorOnGasRegistry is Script {
     function run() public {
-        vm.createSelectFork(vm.envString("ARB_RPC"));
+        // vm.createSelectFork(vm.envString("ARB_RPC"));
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
         TriggerGasRegistry registry = TriggerGasRegistry(vm.envAddress("TRIGGER_GAS_REGISTRY_ADDRESS"));

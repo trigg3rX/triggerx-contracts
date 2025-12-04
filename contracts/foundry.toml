@@ -37,6 +37,7 @@ sepolia = "${SEPOLIA_RPC_URL}"
 anvil = "${ANVIL_RPC_URL}"
 op_sepolia = "${OPSEPOLIA_RPC}"
 base_sepolia = "${BASE_SEPOLIA_RPC}"
+arb_sepolia = "${ARB_SEPOLIA_RPC}"
 
 
 [fmt]

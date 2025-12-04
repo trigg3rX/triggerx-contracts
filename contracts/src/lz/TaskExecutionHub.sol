@@ -14,7 +14,7 @@ interface IJobRegistry {
 }
 
 interface ITriggerGasRegistry {
-    function deductTGBalance(address user, uint256 tgAmount) external;
+    function deductETHBalance(address user, uint256 ethAmount) external;
 }
 
 /**
@@ -130,7 +130,7 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
 
     function executeFunction(
         uint256 jobId,
-        uint256 tgAmount,
+        uint256 ethAmount,
         address target,
         bytes calldata data
     ) external payable onlyKeeper nonReentrant {
@@ -140,7 +140,7 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 
-        triggerGasRegistry.deductTGBalance(jobOwner, tgAmount);
+        triggerGasRegistry.deductETHBalance(jobOwner, ethAmount);
 
         _executeFunction(target, data);
     }

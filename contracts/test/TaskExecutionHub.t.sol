@@ -81,36 +81,34 @@ contract TaskExecutionHubTest is Test {
         address[] memory initialKeepers = new address[](1);
         initialKeepers[0] = keeper1;
         
-        // Deploy TaskExecutionHub
+        // Deploy TaskExecutionHub implementation
         console2.log("Deploying TaskExecutionHub");
-        taskExecutionHub = TaskExecutionHubForTest(
-            payable(address(
-                new ERC1967Proxy(
-                    address(new TaskExecutionHubForTest(address(mockEndpoint), owner, SRC_EID, THIS_EID, initialKeepers, address(mockJobRegistry), address(mockTriggerGasRegistry))),
-                    abi.encodeWithSignature(
-                        "initialize(address,address,uint32,uint32,address[],address,address)",
-                        address(mockEndpoint),
-                        owner,
-                        SRC_EID,
-                        THIS_EID,
-                        initialKeepers,
-                        address(mockJobRegistry),
-                        address(mockTriggerGasRegistry)
-                    )
-                )
-            ))
-        );
-        console2.log("TaskExecutionHub deployed at", address(taskExecutionHub));
-        
-        // Initialize the contract
-        taskExecutionHub.initialize(
-            owner,
-            SRC_EID,
-            THIS_EID,
-            initialKeepers,
-            address(mockJobRegistry),
+        TaskExecutionHubForTest implementation = new TaskExecutionHubForTest(
+            address(mockEndpoint), 
+            owner, 
+            SRC_EID, 
+            THIS_EID, 
+            initialKeepers, 
+            address(mockJobRegistry), 
             address(mockTriggerGasRegistry)
         );
+        
+        // Deploy proxy with initialization
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(implementation),
+            abi.encodeWithSelector(
+                TaskExecutionHub.initialize.selector,
+                owner,
+                SRC_EID,
+                THIS_EID,
+                initialKeepers,
+                address(mockJobRegistry),
+                address(mockTriggerGasRegistry)
+            )
+        );
+        
+        taskExecutionHub = TaskExecutionHubForTest(payable(address(proxy)));
+        console2.log("TaskExecutionHub deployed at", address(taskExecutionHub));
         
         // Fund contract for message fees
         vm.deal(address(taskExecutionHub), 100 ether);
@@ -150,14 +148,14 @@ contract TaskExecutionHubTest is Test {
     
     function test_ExecuteFunction() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         uint256 value = 1 ether;
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         // Fund both the keeper and the contract
         vm.deal(keeper1, value);
@@ -170,70 +168,70 @@ contract TaskExecutionHubTest is Test {
         emit FunctionExecuted(keeper1, target, data, value);
         
         vm.prank(keeper1);
-        taskExecutionHub.executeFunction{value: value}(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction{value: value}(jobId, ethAmount, target, data);
         
-        // Verify TG balance was deducted
-        (, uint256 finalBalance) = mockTriggerGasRegistry.getBalance(jobOwner);
-        assertEq(finalBalance, 900);
+        // Verify ETH balance was deducted
+        uint256 finalBalance = mockTriggerGasRegistry.getBalance(jobOwner);
+        assertEq(finalBalance, 1 ether - ethAmount);
     }
     
     function test_ExecuteFunction_OnlyKeeper() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         vm.expectRevert("Not a keeper");
         vm.prank(randomUser);
-        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, ethAmount, target, data);
     }
     
     function test_ExecuteFunction_Failure() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Setup job and balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 1000);
+        mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
         
         // Create a mock contract that will always revert
         vm.etch(target, hex"60006000fd"); // Simple bytecode that always reverts
         
-        vm.expectRevert("Execution failed");
+        vm.expectRevert(bytes("Execution failed"));
         vm.prank(keeper1);
-        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, ethAmount, target, data);
     }
 
     function test_ExecuteFunction_JobNotFound() public {
         uint256 jobId = 999; // Non-existent job
-        uint256 tgAmount = 100;
+        uint256 ethAmount = 0.1 ether;
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
-        vm.expectRevert("Job not found");
+        vm.expectRevert(bytes("Job not found"));
         vm.prank(keeper1);
-        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, ethAmount, target, data);
     }
 
-    function test_ExecuteFunction_InsufficientTGBalance() public {
+    function test_ExecuteFunction_InsufficientETHBalance() public {
         uint256 jobId = 1;
-        uint256 tgAmount = 1000; // More than available balance
+        uint256 ethAmount = 1 ether; // More than available balance
         address target = address(0x400);
         bytes memory data = abi.encodeWithSignature("doSomething()");
         
         // Setup job with insufficient balance
         mockJobRegistry.setJobOwner(jobId, jobOwner);
-        mockTriggerGasRegistry.setBalance(jobOwner, 500); // Less than required
+        mockTriggerGasRegistry.setBalance(jobOwner, 0.5 ether); // Less than required
         
-        vm.expectRevert("Insufficient TG balance");
+        vm.expectRevert(bytes("Insufficient ETH balance"));
         vm.prank(keeper1);
-        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(jobId, ethAmount, target, data);
     }
     
     function test_LzReceive_Register() public {
