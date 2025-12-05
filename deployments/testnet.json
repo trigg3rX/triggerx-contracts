@@ -23,11 +23,11 @@
     },
     "TriggerGasRegistry": {
       "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
-      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
+      "implementation": "0x68b9EBB18c2ed1eD441E716f460834dc4BD54da0"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
+      "implementation": "0x7883A9e13542af5ededC889f5cbAB9BcCb56D65B"
     },
     "TriggerXSafeFactory": "0xdf76E2A796a206D877086c717979054544B1D9Bc"
   },
@@ -60,11 +60,11 @@
     },
     "TriggerGasRegistry": {
       "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
-      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
+      "implementation": "0x68b9EBB18c2ed1eD441E716f460834dc4BD54da0"
     },
     "TaskExecutionHub": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
+      "implementation": "0x7883A9e13542af5ededC889f5cbAB9BcCb56D65B"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
@@ -76,11 +76,11 @@
     },
     "TriggerGasRegistry": {
       "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
-      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
+      "implementation": "0x68b9EBB18c2ed1eD441E716f460834dc4BD54da0"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
+      "implementation": "0x7883A9e13542af5ededC889f5cbAB9BcCb56D65B"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"
@@ -92,11 +92,11 @@
     },
     "TriggerGasRegistry": {
       "proxy": "0x248E9f1B99F1AC8068254233D1F271ed0e0903D6",
-      "implementation": "0x037D69E952522217a374ff910B03097295b68D58"
+      "implementation": "0x68b9EBB18c2ed1eD441E716f460834dc4BD54da0"
     },
     "TaskExecutionSpoke": {
       "proxy": "0x179c62e83c3f90981B65bc12176FdFB0f2efAD54",
-      "implementation": "0xFcE776F1538cf5B241B04B62fd33c577B4AC53e1"
+      "implementation": "0x7883A9e13542af5ededC889f5cbAB9BcCb56D65B"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
     "TriggerXSafeModule": "0xa0bC1477cfc452C05786262c377DE51FB8bc4669"

@@ -7,7 +7,6 @@ pragma solidity ^0.8.26;
  * - Module executes the user action via SAFE.execTransactionFromModule(...)
  */
 
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 interface IGnosisSafe {
@@ -20,8 +19,6 @@ interface IGnosisSafe {
 }
 
 contract TriggerXSafeModule is ReentrancyGuard {
-    using ECDSA for bytes32;
-
     // Addresses
     address public immutable taskExecutionHub;
 
@@ -77,6 +74,4 @@ contract TriggerXSafeModule is ReentrancyGuard {
         return true;
     }
 
-    receive() external payable {}
-    fallback() external payable {}
 }

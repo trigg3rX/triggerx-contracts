@@ -12,10 +12,10 @@ import {CREATE3} from "@solady/utils/CREATE3.sol";
 
 contract TaskExecutionUpgrade is Script {
     // Production proxy addresses
-    address payable constant TASK_EXECUTION_HUB_PROXY = payable(0x179c62e83c3f90981B65bc12176FdFB0f2efAD54);
+    address payable TASK_EXECUTION_HUB_PROXY = payable(vm.envAddress("TASK_EXECUTION_PROXY"));
     
     // Salt for deterministic deployment
-    bytes32 constant IMPL_SALT = keccak256(abi.encodePacked("put_salt_here"));
+    bytes32 constant IMPL_SALT = keccak256(abi.encodePacked("put_your_salt_here"));
     
     struct ContractState {
         address implementation;
@@ -33,15 +33,16 @@ contract TaskExecutionUpgrade is Script {
         upgradeTaskExecutionHub(deployerPrivateKey, deployer);
 
         // Upgrade TaskExecutionSpoke on multiple chains
-        upgradeTaskExecutionSpokeOnChain("SEPOLIA_RPC_URL", "SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
-        upgradeTaskExecutionSpokeOnChain("OPSEPOLIA_RPC", "OP SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
-        upgradeTaskExecutionSpokeOnChain("ARB_SEPOLIA_RPC", "ARBITRUM SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        upgradeTaskExecutionSpokeOnChain("ARB_RPC", "MAINNET", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        // upgradeTaskExecutionSpokeOnChain("SEPOLIA_RPC_URL", "SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        // upgradeTaskExecutionSpokeOnChain("OPSEPOLIA_RPC", "OP SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        // upgradeTaskExecutionSpokeOnChain("ARB_SEPOLIA_RPC", "ARBITRUM SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
     }
 
     function upgradeTaskExecutionHub(uint256 deployerPrivateKey, address deployer) internal {
         address payable proxy = TASK_EXECUTION_HUB_PROXY;
 
-        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        vm.createSelectFork(vm.envString("BASE_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         
@@ -69,7 +70,7 @@ contract TaskExecutionUpgrade is Script {
         console.log("Deploying new implementation to:", newImplementation);
         
         // STEP 3: Perform upgrade
-        TaskExecutionHub(proxy).upgradeToAndCall(newImplementation, "");
+        // TaskExecutionHub(proxy).upgradeToAndCall(newImplementation, "");
 
         vm.stopBroadcast();
 
@@ -198,7 +199,7 @@ contract TaskExecutionUpgrade is Script {
         console.log("Deploying new TaskExecutionSpoke implementation to:", newImplementation);
         
         // Perform upgrade
-        spoke.upgradeToAndCall(newImplementation, "");
+        // spoke.upgradeToAndCall(newImplementation, "");
         
         // Verify upgrade
         address newImpl = getImplementation(spokeProxy);

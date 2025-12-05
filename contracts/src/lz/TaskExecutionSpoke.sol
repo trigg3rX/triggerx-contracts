@@ -1,15 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import { Initializable } from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import { ReentrancyGuardUpgradeable } from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
-import { UUPSUpgradeable } from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
-import { OApp, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
-import { Ownable } from "@openzeppelin-contracts/contracts/access/Ownable.sol";
+import {Initializable} from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
+import {OApp, Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
 interface IJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address);
-    function unpackJobId(uint256 jobId) external view returns (uint256 chainId, uint256 jobCounter);
+
+    function unpackJobId(
+        uint256 jobId
+    ) external view returns (uint256 chainId, uint256 jobCounter);
 }
 
 interface ITriggerGasRegistry {
@@ -21,11 +24,19 @@ interface ITriggerGasRegistry {
  * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
  * @dev This contract receives keeper registration updates from the hub and executes functions on the respective L2 chain
  */
-contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyGuardUpgradeable {
+contract TaskExecutionSpoke is
+    Initializable,
+    OApp,
+    UUPSUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     /// @notice Constructor only runs on the implementation contract. It passes minimal arguments to
     ///         the OApp constructor (so the byte-code is valid) and immediately disables further
     ///         initializers to protect the logic contract.
-    constructor(address _endpoint, address _delegate) OApp(_endpoint, _delegate) Ownable(_delegate) {
+    constructor(
+        address _endpoint,
+        address _delegate
+    ) OApp(_endpoint, _delegate) Ownable(_delegate) {
         _disableInitializers();
     }
 
@@ -38,14 +49,29 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
     IJobRegistry public jobRegistry;
     ITriggerGasRegistry public triggerGasRegistry;
 
-    enum ActionType { REGISTER, UNREGISTER }
+    enum ActionType {
+        REGISTER,
+        UNREGISTER
+    }
 
     // ----------------------------------
     // -------------  Events ------------
     // ----------------------------------
 
     event KeeperUpdated(ActionType action, address keeper);
-    event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
+    event FunctionExecuted(
+        address indexed keeper,
+        address indexed target,
+        bytes data,
+        uint256 value
+    );
+    event FunctionExecutionFailed(
+        address indexed keeper,
+        address indexed target,
+        bytes data,
+        uint256 value,
+        bytes result
+    );
 
     // ----------------------------------
     // ------------  Modifiers ----------
@@ -107,7 +133,12 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
      * @param target The address of the target contract
      * @param data The calldata for the function call
      */
-    function executeFunction(uint256 jobId, uint256 ethAmount, address target, bytes memory data) external payable onlyKeeper nonReentrant {
+    function executeFunction(
+        uint256 jobId,
+        uint256 ethAmount,
+        address target,
+        bytes memory data
+    ) external payable onlyKeeper nonReentrant {
         (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
         require(chainId == block.chainid, "Job is from a different chain");
 
@@ -126,13 +157,36 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
      * @return The return data from the function call
      */
     // slither-disable-next-line reentrancy-events
-    function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
-        // slither-disable-next-line low-level-calls
-        (bool success, bytes memory result) = target.call{value: msg.value}(callData);
-        require(success, "Function execution failed");
+    function _executeFunction(
+        address target,
+        bytes memory callData
+    ) internal returns (bytes memory) {
+        (bool success, bytes memory result) = target.call{value: msg.value}(
+            callData
+        );
 
-        emit FunctionExecuted(msg.sender, target, callData, msg.value);
+        if (success) {
+            emit FunctionExecuted(msg.sender, target, callData, msg.value);
+        } else {
+            emit FunctionExecutionFailed(
+                msg.sender,
+                target,
+                callData,
+                msg.value,
+                result
+            );
+        }
         return result;
+    }
+
+    function setJobRegistry(address _jobRegistryAddress) external onlyOwner {
+        jobRegistry = IJobRegistry(_jobRegistryAddress);
+    }
+
+    function setTriggerGasRegistry(
+        address _triggerGasRegistryAddress
+    ) external onlyOwner {
+        triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
     }
 
     // ---------------------------------------------------------------------
@@ -150,7 +204,10 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
         address /* _executor */,
         bytes calldata /* _extraData */
     ) internal override {
-        (ActionType action, address keeper) = abi.decode(message, (ActionType, address));
+        (ActionType action, address keeper) = abi.decode(
+            message,
+            (ActionType, address)
+        );
 
         if (action == ActionType.REGISTER) {
             isKeeper[keeper] = true;
@@ -168,7 +225,9 @@ contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyG
     // ---------------------------------------------------------------------
 
     /// @dev Required by UUPS pattern. Restricts upgrades to the contract owner.
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 
     // Storage gap for future upgrades
     uint256[50] private __gap;

@@ -10,10 +10,10 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 contract DeployTriggerGasRegistry is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
-    address operator = 0x179c62e83c3f90981B65bc12176FdFB0f2efAD54; // Task Execution Address
+    address operator = 0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33; // Task Execution Address
 
-    bytes32 SALT = keccak256(abi.encodePacked("TriggerX_GasRegistry_V2"));
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("TriggerX_GasRegistryImpl_V2"));
+    bytes32 SALT = keccak256(abi.encodePacked("put your salt here"));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put your impl salt here"));
 
     function run() public {
         // Create fork for this chain

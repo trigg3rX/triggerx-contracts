@@ -11,9 +11,9 @@ import {CREATE3} from "@solady/utils/CREATE3.sol";
 
 contract JobRegistryUpgrade is Script {
     // Production proxy address
-    address payable constant JOB_REGISTRY_PROXY = payable(0x476ACc7949a95e31144cC84b8F6BC7abF0967E4b);
+    address payable constant JOB_REGISTRY_PROXY = payable(0xAf1189aFd1F1880F09AeC3Cbc32cf415c735C710);
 
-    bytes32 IMPL_SALT = keccak256(abi.encodePacked("Put your salt here"));
+    bytes32 IMPL_SALT = keccak256(abi.encodePacked("put_your_salt_here"));
 
     struct JobData {
         uint256 jobId;
@@ -69,7 +69,7 @@ contract JobRegistryUpgrade is Script {
         console.log("Deploying new implementation to:", newImplementation);
         
         // STEP 3: Perform upgrade
-        JobRegistry(proxy).upgradeToAndCall(newImplementation, "");
+        // JobRegistry(proxy).upgradeToAndCall(newImplementation, "");
 
         vm.stopBroadcast();
 
