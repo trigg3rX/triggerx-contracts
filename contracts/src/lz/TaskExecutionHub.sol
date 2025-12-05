@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import { Initializable } from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import { ReentrancyGuardUpgradeable } from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
-import { UUPSUpgradeable } from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
-import { OApp, MessagingFee, Origin } from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
-import { OAppOptionsType3 } from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
+import {Initializable} from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
+import {OApp, MessagingFee, Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
+import {OAppOptionsType3} from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 
 interface IJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address);
-    function unpackJobId(uint256 jobId) external view returns (uint256 chainId, uint256 jobCounter);
+
+    function unpackJobId(
+        uint256 jobId
+    ) external view returns (uint256 chainId, uint256 jobCounter);
 }
 
 interface ITriggerGasRegistry {
@@ -22,12 +25,18 @@ interface ITriggerGasRegistry {
  * @notice A LayerZero-enabled contract that manages task execution across multiple chains
  * @dev This contract acts as a hub for managing task execution and broadcasting their status across different chains
  */
-contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsType3, ReentrancyGuardUpgradeable {
+contract TaskExecutionHub is
+    Initializable,
+    OApp,
+    UUPSUpgradeable,
+    OAppOptionsType3,
+    ReentrancyGuardUpgradeable
+{
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(address _endpoint, address _delegate)
-        OApp(_endpoint, _delegate)
-        Ownable(_delegate)
-    {
+    constructor(
+        address _endpoint,
+        address _delegate
+    ) OApp(_endpoint, _delegate) Ownable(_delegate) {
         _disableInitializers();
     }
 
@@ -55,6 +64,7 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
     event KeeperUnregistered(address indexed keeper);
     event BroadcastSent(ActionType action, address keeper, uint32 dstEid);
     event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
+    event FunctionExecutionFailed(address indexed keeper, address indexed target, bytes data, uint256 value, bytes result);
     event FeeUsed(uint32 dstEid, uint256 fee);
     event GasConfigUpdated(uint128 gas, uint128 value);
     event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
@@ -136,7 +146,7 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
     ) external payable onlyKeeper nonReentrant {
         (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
         require(chainId == block.chainid, "Job is from a different chain");
-        
+
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
 
@@ -145,11 +155,25 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
         _executeFunction(target, data);
     }
 
-    function _executeFunction(address target, bytes memory callData) internal returns (bytes memory) {
-        (bool success, bytes memory result) = target.call{ value: msg.value }(callData);
-        require(success, "Execution failed");
+    function _executeFunction(
+        address target,
+        bytes memory callData
+    ) internal returns (bytes memory) {
+        (bool success, bytes memory result) = target.call{value: msg.value}(
+            callData
+        );
 
-        emit FunctionExecuted(msg.sender, target, callData, msg.value);
+        if (success) {
+            emit FunctionExecuted(msg.sender, target, callData, msg.value);
+        } else {
+            emit FunctionExecutionFailed(
+                msg.sender,
+                target,
+                callData,
+                msg.value,
+                result
+            );
+        }
         return result;
     }
 
@@ -253,6 +277,14 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
         }
     }
 
+    function setJobRegistry(address _jobRegistryAddress) external onlyOwner {
+        jobRegistry = IJobRegistry(_jobRegistryAddress);
+    }
+
+    function setTriggerGasRegistry(address _triggerGasRegistryAddress) external onlyOwner {
+        triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
+    }
+
     function setGasConfig(uint128 gas, uint128 value) external onlyOwner {
         defaultGas = gas;
         defaultValue = value;
@@ -286,4 +318,4 @@ contract TaskExecutionHub is Initializable, OApp, UUPSUpgradeable, OAppOptionsTy
 
     // Storage gap for future upgrades
     uint256[50] private __gap;
-} 
+}

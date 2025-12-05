@@ -16,7 +16,6 @@ contract TriggerXSafeFactory {
     // Maps a user to their current saltNonce for deterministic address generation.
     mapping(address => uint256) private userSaltNonces;
     
-    address public immutable taskExecutionHub;
     address public immutable safeProxyFactory;
     address public immutable safeSingleton;
 
@@ -27,14 +26,11 @@ contract TriggerXSafeFactory {
     );
 
     constructor(
-        address _taskExecutionHub, 
         address _safeProxyFactory,
         address _safeSingleton
     ) {
-        require(_taskExecutionHub != address(0), "Zero hub");
         require(_safeProxyFactory != address(0), "Zero proxy factory");
         require(_safeSingleton != address(0), "Zero singleton");
-        taskExecutionHub = _taskExecutionHub;
         safeProxyFactory = _safeProxyFactory;
         safeSingleton = _safeSingleton;
     }
@@ -82,6 +78,7 @@ contract TriggerXSafeFactory {
         SafeProxy safeProxy = factory.createProxyWithNonce(safeSingleton, initializer, saltNonce);
         
         safeAddress = address(safeProxy);
+        require(safeAddress != address(0), "Zero proxy");
         userSafeWallets[user].push(safeAddress);
         emit SafeWalletCreated(user, safeAddress, saltNonce);
         return safeAddress;
