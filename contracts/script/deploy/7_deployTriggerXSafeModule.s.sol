@@ -8,7 +8,7 @@ import {TriggerXSafeModule} from "../../src/TriggerXSafeModule.sol";
 contract DeployTriggerXSafeModule is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
-    address taskExecutionHub = 0x179c62e83c3f90981B65bc12176FdFB0f2efAD54;
+    address taskExecutionHub = vm.envAddress("TASK_EXECUTION_PROXY");
 
     function run() public {
         vm.startBroadcast(deployerPrivateKey);

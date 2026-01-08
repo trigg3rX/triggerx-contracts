@@ -46,23 +46,26 @@
         "RewardsToken": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         "TaskExecutionHub": {
           "proxy": "0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33",
-          "implementation": "0x005a2Da42955E3837587D9cD87A19511F8041263"
+          "implementation": "0xE8dc129939D1b5f48F39150a8a610Fee4efD81Dd"
         }
       },
       {
         "chainId": 42161,
         "TriggerGasRegistry": {
-          "proxy": "0x93dDB2307F3Af5df85F361E5Cddd898Acd3d132d",
-          "implementation": "0x9F452702490e11Af38C213De30c000A46E4dA399"
+          "proxy": "0xe2AC670F7D66c69D547A44D08F9bA1Fc0Fc0f991",
+          "implementation": "0x52F8d1408d3b235c25465dCD7765256AA7B2c894"
         },
         "JobRegistry": {
           "proxy": "0xAf1189aFd1F1880F09AeC3Cbc32cf415c735C710",
-          "implementation": "0xc1F545Fe807b72429952dbFEFE8702658e4C5875"
+          "implementation": "0x8EF4F9866D97b479AF5b1a488148B743F653aC9C"
         },
         "TaskExecutionSpoke": {
           "proxy": "0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33",
-          "implementation": "0x04730cEa1156832Ad18f4dA0c674EcC88d745eE8"
-        }
+          "implementation": "0xE8dc129939D1b5f48F39150a8a610Fee4efD81Dd"
+        },
+        "TriggerXSafeFactory": "0x93528Df5984231059Cf5c5f2CE9b85c59250D096",
+        "TriggerXSafeModule": "0x100656372C821539651f5905Ca39b7C95f9AA433"
+
     }
   ]
 }
