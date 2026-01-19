@@ -7,6 +7,8 @@ import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPS
 import {OApp, MessagingFee, Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import {OAppOptionsType3} from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
+import {ECDSA} from "@openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
+import {MessageHashUtils} from "@openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IJobRegistry {
     function getJobOwner(uint256 jobId) external view returns (address);
@@ -56,6 +58,9 @@ contract TaskExecutionHub is
     IJobRegistry public jobRegistry;
     ITriggerGasRegistry public triggerGasRegistry;
 
+    /// @notice The authorized dispatcher address for signature verification
+    address public dispatcher;
+
     // ----------------------------------
     // -------------  Events ------------
     // ----------------------------------
@@ -63,12 +68,31 @@ contract TaskExecutionHub is
     event KeeperRegistered(address indexed keeper);
     event KeeperUnregistered(address indexed keeper);
     event BroadcastSent(ActionType action, address keeper, uint32 dstEid);
-    event FunctionExecuted(address indexed keeper, address indexed target, bytes data, uint256 value);
-    event FunctionExecutionFailed(address indexed keeper, address indexed target, bytes data, uint256 value, bytes result);
+    event FunctionExecuted(
+        address indexed keeper,
+        address indexed target,
+        bytes data,
+        uint256 value
+    );
+    event FunctionExecutionFailed(
+        address indexed keeper,
+        address indexed target,
+        bytes data,
+        uint256 value,
+        bytes result
+    );
     event FeeUsed(uint32 dstEid, uint256 fee);
     event GasConfigUpdated(uint128 gas, uint128 value);
     event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
-    event MessageFailed(uint32 indexed dstEid, bytes32 indexed guid, bytes reason);
+    event DispatcherUpdated(
+        address indexed oldDispatcher,
+        address indexed newDispatcher
+    );
+    event MessageFailed(
+        uint32 indexed dstEid,
+        bytes32 indexed guid,
+        bytes reason
+    );
 
     enum ActionType {
         REGISTER,
@@ -138,14 +162,43 @@ contract TaskExecutionHub is
     // -----------------------    Main Logic     ---------------------------
     // ---------------------------------------------------------------------
 
+    /**
+     * @notice Execute a function call with dispatcher signature verification
+     * @param jobId The ID of the job to execute
+     * @param ethAmount The amount of ETH to deduct from the job owner
+     * @param target The address of the target contract
+     * @param data The calldata for the function call
+     * @param deadline The signature expiration timestamp
+     * @param signature The dispatcher's signature authorizing this execution
+     */
     function executeFunction(
         uint256 jobId,
         uint256 ethAmount,
         address target,
-        bytes calldata data
+        bytes calldata data,
+        uint256 deadline,
+        bytes calldata signature
     ) external payable onlyKeeper nonReentrant {
-        (uint256 chainId, ) = jobRegistry.unpackJobId(jobId);
-        require(chainId == block.chainid, "Job is from a different chain");
+        // 1. Deadline check
+        require(block.timestamp <= deadline, "Signature expired");
+
+        // 2. Signature verification
+        require(dispatcher != address(0), "Dispatcher not set");
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                jobId,
+                target,
+                keccak256(data),
+                deadline,
+                msg.sender,
+                block.chainid
+            )
+        );
+        bytes32 ethSignedHash = MessageHashUtils.toEthSignedMessageHash(hash);
+        require(
+            ECDSA.recover(ethSignedHash, signature) == dispatcher,
+            "Invalid signature"
+        );
 
         address jobOwner = jobRegistry.getJobOwner(jobId);
         require(jobOwner != address(0), "Job not found");
@@ -188,10 +241,14 @@ contract TaskExecutionHub is
         address /*_executor*/,
         bytes calldata /*extraData*/
     ) internal override nonReentrant {
-        if (address(this).balance < 3e15) emit LowBalanceAlert(address(this).balance, 3e15);
+        if (address(this).balance < 3e15)
+            emit LowBalanceAlert(address(this).balance, 3e15);
 
         require(_origin.srcEid == srcEid, "Invalid source chain");
-        (ActionType action, address keeper) = abi.decode(_payload, (ActionType, address));
+        (ActionType action, address keeper) = abi.decode(
+            _payload,
+            (ActionType, address)
+        );
 
         if (action == ActionType.REGISTER) {
             isKeeper[keeper] = true;
@@ -219,13 +276,24 @@ contract TaskExecutionHub is
         for (uint256 i = 0; i < dstEids.length; i++) {
             uint32 dstEid = dstEids[i];
 
-            bytes memory options = _buildExecutorOptions(defaultGas, defaultValue);
+            bytes memory options = _buildExecutorOptions(
+                defaultGas,
+                defaultValue
+            );
 
-            try this._quoteFee(dstEid, payload, options) returns (MessagingFee memory fee) {
-                uint256 feeWithBuffer = fee.nativeFee + (fee.nativeFee * 10) / 100;
+            try this._quoteFee(dstEid, payload, options) returns (
+                MessagingFee memory fee
+            ) {
+                uint256 feeWithBuffer = fee.nativeFee +
+                    (fee.nativeFee * 10) /
+                    100;
 
                 if (initialValue < totalUsed + feeWithBuffer) {
-                    emit MessageFailed(dstEid, bytes32(0), "Insufficient balance for broadcast (with 10% buffer)");
+                    emit MessageFailed(
+                        dstEid,
+                        bytes32(0),
+                        "Insufficient balance for broadcast (with 10% buffer)"
+                    );
                     continue;
                 }
 
@@ -250,20 +318,37 @@ contract TaskExecutionHub is
         return _quote(dstEid, payload, options, false);
     }
 
-    function _buildExecutorOptions(uint128 gas, uint128 value) internal pure returns (bytes memory) {
+    function _buildExecutorOptions(
+        uint128 gas,
+        uint128 value
+    ) internal pure returns (bytes memory) {
         uint16 TYPE_3 = 3;
         uint8 WORKER_ID = 1;
         uint8 OPTION_TYPE_LZRECEIVE = 1;
 
-        bytes memory option = value == 0 ? abi.encodePacked(gas) : abi.encodePacked(gas, value);
+        bytes memory option = value == 0
+            ? abi.encodePacked(gas)
+            : abi.encodePacked(gas, value);
 
         uint16 optionLength = uint16(option.length + 1);
 
-        return abi.encodePacked(TYPE_3, WORKER_ID, optionLength, OPTION_TYPE_LZRECEIVE, option);
+        return
+            abi.encodePacked(
+                TYPE_3,
+                WORKER_ID,
+                optionLength,
+                OPTION_TYPE_LZRECEIVE,
+                option
+            );
     }
 
-    function _payNative(uint256 _nativeFee) internal view override returns (uint256 nativeFee) {
-        require(address(this).balance >= _nativeFee, "Insufficient contract balance");
+    function _payNative(
+        uint256 _nativeFee
+    ) internal view override returns (uint256 nativeFee) {
+        require(
+            address(this).balance >= _nativeFee,
+            "Insufficient contract balance"
+        );
         return _nativeFee;
     }
 
@@ -281,7 +366,16 @@ contract TaskExecutionHub is
         jobRegistry = IJobRegistry(_jobRegistryAddress);
     }
 
-    function setTriggerGasRegistry(address _triggerGasRegistryAddress) external onlyOwner {
+    function setDispatcher(address _dispatcher) external onlyOwner {
+        require(_dispatcher != address(0), "Invalid dispatcher address");
+        address oldDispatcher = dispatcher;
+        dispatcher = _dispatcher;
+        emit DispatcherUpdated(oldDispatcher, _dispatcher);
+    }
+
+    function setTriggerGasRegistry(
+        address _triggerGasRegistryAddress
+    ) external onlyOwner {
         triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
     }
 
@@ -291,7 +385,10 @@ contract TaskExecutionHub is
         emit GasConfigUpdated(gas, value);
     }
 
-    function withdraw(address payable to, uint256 amount) external onlyOwner nonReentrant {
+    function withdraw(
+        address payable to,
+        uint256 amount
+    ) external onlyOwner nonReentrant {
         require(to != address(0), "Invalid recipient");
         require(amount <= address(this).balance, "Insufficient balance");
         to.transfer(amount);
@@ -314,7 +411,9 @@ contract TaskExecutionHub is
     // ---------------------------------------------------------------------
 
     /// @dev Required by UUPS pattern. Restricts upgrades to the contract owner.
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 
     // Storage gap for future upgrades
     uint256[50] private __gap;
