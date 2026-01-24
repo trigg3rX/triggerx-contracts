@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 script_path=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
     pwd -P
@@ -7,10 +9,12 @@ script_path=$(
 
 cd "$script_path"
 
-echo "Fetching contract ABIs..."
-go run ./fetch_abi.go
+echo "Compiling contracts from source..."
+chmod +x ./compile_contracts.sh
+./compile_contracts.sh
 
-echo "Generating bindings..."
+echo ""
+echo "Generating Go bindings..."
 
 if [[ "$(docker images -q abigen-with-interfaces 2> /dev/null)" == "" ]]; then
     docker build -t abigen-with-interfaces -f ./abigen-with-interfaces.Dockerfile "$script_path"
@@ -53,6 +57,7 @@ function create_binding {
     
     # Copy ABI as JSON for reference
     cp "$abi_file" "$script_path/abis/${contract}.abi.json"
+    rm "$bin_file"
 }
 
 # Process all .abi files found in the abis directory
