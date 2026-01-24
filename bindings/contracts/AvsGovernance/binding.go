@@ -29,6 +29,11 @@ var (
 	_ = abi.ConvertType
 )
 
+// BLSAuthLibrarySignature is an auto generated low-level Go binding around an user-defined struct.
+type BLSAuthLibrarySignature struct {
+	Signature [2]*big.Int
+}
+
 // IAvsGovernanceInitializationParams is an auto generated low-level Go binding around an user-defined struct.
 type IAvsGovernanceInitializationParams struct {
 	AvsGovernanceMultisigOwner common.Address
@@ -36,72 +41,62 @@ type IAvsGovernanceInitializationParams struct {
 	CommunityMultisig          common.Address
 	OthenticRegistry           common.Address
 	MessageHandler             common.Address
-	AvsTreasury                common.Address
+	Vault                      common.Address
 	AvsDirectoryContract       common.Address
 	AllowlistSigner            common.Address
 	AvsName                    string
 	BlsAuthSingleton           common.Address
-	RedistributionManager      common.Address
 }
 
-// IAvsGovernanceSlashingConfig is an auto generated low-level Go binding around an user-defined struct.
-type IAvsGovernanceSlashingConfig struct {
-	Activated              bool
-	EjectOperator          bool
-	StakeSlashedPercentage *big.Int
+// IAvsGovernancePaymentRequestMessage is an auto generated low-level Go binding around an user-defined struct.
+type IAvsGovernancePaymentRequestMessage struct {
+	Operator   common.Address
+	FeeToClaim *big.Int
 }
 
-// IAvsGovernanceStakingContractDetails is an auto generated low-level Go binding around an user-defined struct.
-type IAvsGovernanceStakingContractDetails struct {
-	StakingContract        common.Address
-	MinStake               *big.Int
-	MinSlashableStake      *big.Int
-	SharedSecurityProvider uint8
+// IAvsGovernanceStrategyMultiplier is an auto generated low-level Go binding around an user-defined struct.
+type IAvsGovernanceStrategyMultiplier struct {
+	Strategy   common.Address
+	Multiplier *big.Int
 }
 
-// IAvsGovernanceStakingContractInfo is an auto generated low-level Go binding around an user-defined struct.
-type IAvsGovernanceStakingContractInfo struct {
-	StakingContract        common.Address
-	SharedSecurityProvider uint8
-}
-
-// IAvsGovernanceVetoSlashRequest is an auto generated low-level Go binding around an user-defined struct.
-type IAvsGovernanceVetoSlashRequest struct {
-	Slasher    common.Address
-	SlashIndex *big.Int
-}
-
-// IAvsGovernanceVotingPowerMultiplier is an auto generated low-level Go binding around an user-defined struct.
-type IAvsGovernanceVotingPowerMultiplier struct {
-	StakingContract        common.Address
-	Multiplier             *big.Int
-	SlashableStakeWeight   *big.Int
-	SharedSecurityProvider uint8
-}
-
-// IRedistributionManagerSlashDetails is an auto generated low-level Go binding around an user-defined struct.
-type IRedistributionManagerSlashDetails struct {
-	Operator          common.Address
-	EigenStrategies   []common.Address
-	SharesSlashed     []*big.Int
-	SlashingCondition uint8
-}
-
-// ISlashingConfigSlashingStakingContractInfo is an auto generated low-level Go binding around an user-defined struct.
-type ISlashingConfigSlashingStakingContractInfo struct {
-	StakingContract        common.Address
-	SharedSecurityProvider uint8
-	WadsToSlash            *big.Int
+// ISignatureUtilsSignatureWithSaltAndExpiry is an auto generated low-level Go binding around an user-defined struct.
+type ISignatureUtilsSignatureWithSaltAndExpiry struct {
+	Signature []byte
+	Salt      [32]byte
+	Expiry    *big.Int
 }
 
 // ContractAvsGovernanceMetaData contains all meta data concerning the ContractAvsGovernance contract.
 var ContractAvsGovernanceMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_extensionImplementation\",\"type\":\"address\"},{\"internalType\":\"contractIOthenticRegistry\",\"name\":\"_othenticRegistry\",\"type\":\"address\"},{\"internalType\":\"contractIAllocationManager\",\"name\":\"_allocationManager\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AccessControlInvalidMultiplierSyncer\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AllowlistDisabled\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AllowlistEnabled\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EmptyAvsName\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EmptySharedSecurityProvidersList\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FlowIsCurrentlyUnpaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidMultiplier\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidMultiplierNotSet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidRewardsReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"arrayIndex\",\"type\":\"uint256\"}],\"name\":\"InvalidSharedSecurityProviderList\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidSlashingRate\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidStakingContract\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidVetoSlashRange\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ModificationDelayNotPassed\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_roles\",\"type\":\"bytes\"}],\"name\":\"NotAuthorizedRole\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotEnoughVotingPower\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OperatorAlreadyRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OperatorNotRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PauseFlowIsAlreadyPaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RedistributionManagerDeploymentFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RedistributionManagerNotSet\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"bits\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"SafeCastOverflowedUintDowncast\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SlashingConfigNotFound\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"StakingContractsNotInAscendingOrder\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"Unauthorized\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnpausingFlowIsAlreadyUnpaused\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnsupportedChainId\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"VetoSlashIndexOutOfBounds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"EjectOperatorFailed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_pauser\",\"type\":\"address\"}],\"name\":\"FlowPaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"_pausableFlowFlag\",\"type\":\"bytes4\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_unpauser\",\"type\":\"address\"}],\"name\":\"FlowUnpaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"InvalidStakingContractsForSlashing\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minSlashableStake\",\"type\":\"uint256\"}],\"name\":\"MinSlashableStakePerStakingContractSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minStake\",\"type\":\"uint256\"}],\"name\":\"MinStakePerStakingContractSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashId\",\"type\":\"uint256\"}],\"name\":\"OperatorSlashed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feed\",\"type\":\"address\"}],\"name\":\"PriceFeedSet\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"delay\",\"type\":\"uint256\"}],\"name\":\"QueuedRewardsReceiverModification\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"RedistributionFailed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"avsGovernanceLogic\",\"type\":\"address\"}],\"name\":\"SetAvsGovernanceLogic\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"avsName\",\"type\":\"string\"}],\"name\":\"SetAvsName\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isAllowlisted\",\"type\":\"bool\"}],\"name\":\"SetIsAllowlisted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"_isEnabled\",\"type\":\"bool\"}],\"name\":\"SetP2pAuthenticationEnabled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"SetRewardsReceiver\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stakingContractMultiplier\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashableStakeWeight\",\"type\":\"uint256\"}],\"name\":\"SetStakingContractMultiplier\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"SetToken\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"contractIStrategy[]\",\"name\":\"eigenStrategies\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"sharesSlashed\",\"type\":\"uint256[]\"},{\"internalType\":\"enumISlashingConfig.SlashingCondition\",\"name\":\"slashingCondition\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"structIRedistributionManager.SlashDetails\",\"name\":\"slashDetails\",\"type\":\"tuple\"}],\"name\":\"SlashedFundsRedistributed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"SlashingConfigNotActivated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[],\"name\":\"SlashingConfigNotFound\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"SlashingFailed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"SymbioticSlashingBypassedZeroAmount\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashAmount\",\"type\":\"uint256\"}],\"name\":\"SymbioticSlashingExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashAmount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"revertData\",\"type\":\"bytes\"}],\"name\":\"SymbioticSlashingReverted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"SymbioticSlashingSkipped\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"}],\"name\":\"VetoSlashAlreadyCompleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"slashedAmount\",\"type\":\"uint256\"}],\"name\":\"VetoSlashExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"revertData\",\"type\":\"bytes\"}],\"name\":\"VetoSlashExecutionFailed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"VetoSlashRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address[]\",\"name\":\"stakingContracts\",\"type\":\"address[]\"}],\"name\":\"setNewSupportedStakingContracts\",\"type\":\"event\"},{\"stateMutability\":\"nonpayable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"EXTENSION_IMPLEMENTATION\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"wadsToSlash\",\"type\":\"uint256\"}],\"internalType\":\"structISlashingConfig.SlashingStakingContractInfo[]\",\"name\":\"_slashingStakingContractInfos\",\"type\":\"tuple[]\"}],\"name\":\"applyCustomSlashing\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsGovernanceLogic\",\"outputs\":[{\"internalType\":\"contractIAvsGovernanceLogic\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"avsTreasury\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"completeRewardsReceiverModification\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_from\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_to\",\"type\":\"uint256\"}],\"name\":\"executeVetoSlashRequests\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getIsAllowlisted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"getIsOperatorEjected\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"getOperatorRestakedStrategies\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingVetoSlashCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getPendingVetoSlashRequest\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"}],\"internalType\":\"structIAvsGovernance.VetoSlashRequest\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingVetoSlashRequests\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"slasher\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"slashIndex\",\"type\":\"uint256\"}],\"internalType\":\"structIAvsGovernance.VetoSlashRequest[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRestakeableStrategies\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRestakeableVaults\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"getRewardsReceiver\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSlashableStrategies\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enumISlashingConfig.SlashingCondition\",\"name\":\"_condition\",\"type\":\"uint8\"}],\"name\":\"getSlashingConfig\",\"outputs\":[{\"components\":[{\"internalType\":\"bool\",\"name\":\"activated\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"ejectOperator\",\"type\":\"bool\"},{\"internalType\":\"uint24\",\"name\":\"stakeSlashedPercentage\",\"type\":\"uint24\"}],\"internalType\":\"structIAvsGovernance.SlashingConfig\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStakingContractDetailsAndMultipliers\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"minStake\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minSlashableStake\",\"type\":\"uint256\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"}],\"internalType\":\"structIAvsGovernance.StakingContractDetails[]\",\"name\":\"\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"multiplier\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"slashableStakeWeight\",\"type\":\"uint256\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"}],\"internalType\":\"structIAvsGovernance.VotingPowerMultiplier[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"avsGovernanceMultisigOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operationsMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"communityMultisig\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"othenticRegistry\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"messageHandler\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"avsTreasury\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"avsDirectoryContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"allowlistSigner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"avsName\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"blsAuthSingleton\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"redistributionManager\",\"type\":\"address\"}],\"internalType\":\"structIAvsGovernance.InitializationParams\",\"name\":\"_initializationParams\",\"type\":\"tuple\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"isFlowPaused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_isPaused\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isOperatorRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"maxEffectiveBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_metadataURI\",\"type\":\"string\"}],\"name\":\"migrateAvsToAllocationManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_l1AvsFactory\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_avsGovernanceMultisigOwner\",\"type\":\"address\"}],\"name\":\"migrateRedistributionManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"migration\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"}],\"name\":\"minSlashableStakePerStakingContract\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"}],\"name\":\"minStakePerStakingContract\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minVotingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"}],\"name\":\"multiplier\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"numOfActiveOperators\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"p2pAuthenticationEnabled\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newRewardsReceiver\",\"type\":\"address\"}],\"name\":\"queueRewardsReceiverModification\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"redistributionManager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"metadataURI\",\"type\":\"string\"}],\"name\":\"registerAvsToEigenLayer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"registerAvsToSymbiotic\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIAvsGovernanceLogic\",\"name\":\"_avsGovernanceLogic\",\"type\":\"address\"}],\"name\":\"setAvsGovernanceLogic\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_isAllowlisted\",\"type\":\"bool\"}],\"name\":\"setIsAllowlisted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_p2pAuthenticationEnabled\",\"type\":\"bool\"}],\"name\":\"setP2pAuthenticationEnabled\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"multiplier\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"slashableStakeWeight\",\"type\":\"uint256\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"}],\"internalType\":\"structIAvsGovernance.VotingPowerMultiplier\",\"name\":\"_votingPowerMultiplier\",\"type\":\"tuple\"}],\"name\":\"setStakingContractMultiplier\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"multiplier\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"slashableStakeWeight\",\"type\":\"uint256\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"}],\"internalType\":\"structIAvsGovernance.VotingPowerMultiplier[]\",\"name\":\"_votingPowerMultipliers\",\"type\":\"tuple[]\"}],\"name\":\"setStakingContractMultiplierBatch\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_feed\",\"type\":\"address\"}],\"name\":\"setStakingContractPriceFeed\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"stakingContract\",\"type\":\"address\"},{\"internalType\":\"enumIAvsGovernance.SharedSecurityProvider\",\"name\":\"sharedSecurityProvider\",\"type\":\"uint8\"}],\"internalType\":\"structIAvsGovernance.StakingContractInfo[]\",\"name\":\"_stakingContractsDetails\",\"type\":\"tuple[]\"}],\"name\":\"setSupportedStakingContracts\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIVetoSlasher\",\"name\":\"_vetoSlasher\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_resolver\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_hints\",\"type\":\"bytes\"}],\"name\":\"setSymbioticResolver\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"enumISlashingConfig.SlashingCondition\",\"name\":\"_slashingCondition\",\"type\":\"uint8\"}],\"name\":\"slashOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"}],\"name\":\"slashableStakeWeight\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_stakingContract\",\"type\":\"address\"}],\"name\":\"stakingContractToFeed\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stakingContracts\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_pausableFlow\",\"type\":\"bytes4\"}],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"votingPower\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"_stakingContracts\",\"type\":\"address[]\"}],\"name\":\"votingPowerPerStakingContracts\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"type\":\"function\",\"name\":\"DEFAULT_ADMIN_ROLE\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"avsDirectory\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"avsName\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"string\",\"internalType\":\"string\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"completeRewardsReceiverModification\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"depositERC20\",\"inputs\":[{\"name\":\"_amount\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"getDefaultStrategies\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address[]\",\"internalType\":\"address[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getIsAllowlisted\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getNumOfOperatorsLimit\",\"inputs\":[],\"outputs\":[{\"name\":\"numOfOperatorsLimitView\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getOperatorRestakedStrategies\",\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"address[]\",\"internalType\":\"address[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getRestakeableStrategies\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address[]\",\"internalType\":\"address[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getRewardsReceiver\",\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"getRoleAdmin\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"grantRole\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"hasRole\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"initialize\",\"inputs\":[{\"name\":\"_initializationParams\",\"type\":\"tuple\",\"internalType\":\"structIAvsGovernance.InitializationParams\",\"components\":[{\"name\":\"avsGovernanceMultisigOwner\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"operationsMultisig\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"communityMultisig\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"othenticRegistry\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"messageHandler\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"vault\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"avsDirectoryContract\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"allowlistSigner\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"avsName\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"blsAuthSingleton\",\"type\":\"address\",\"internalType\":\"address\"}]}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"isFlowPaused\",\"inputs\":[{\"name\":\"_pausableFlow\",\"type\":\"bytes4\",\"internalType\":\"bytes4\"}],\"outputs\":[{\"name\":\"_isPaused\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"isOperatorRegistered\",\"inputs\":[{\"name\":\"operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"maxEffectiveBalance\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"minSharesForStrategy\",\"inputs\":[{\"name\":\"_strategy\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"minVotingPower\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"numOfActiveOperators\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"numOfOperators\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"numOfShares\",\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"pause\",\"inputs\":[{\"name\":\"_pausableFlow\",\"type\":\"bytes4\",\"internalType\":\"bytes4\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"queueRewardsReceiverModification\",\"inputs\":[{\"name\":\"_newRewardsReceiver\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"registerAsAllowedOperator\",\"inputs\":[{\"name\":\"_blsKey\",\"type\":\"uint256[4]\",\"internalType\":\"uint256[4]\"},{\"name\":\"_authToken\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"_rewardsReceiver\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_operatorSignature\",\"type\":\"tuple\",\"internalType\":\"structISignatureUtils.SignatureWithSaltAndExpiry\",\"components\":[{\"name\":\"signature\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"salt\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"_blsRegistrationSignature\",\"type\":\"tuple\",\"internalType\":\"structBLSAuthLibrary.Signature\",\"components\":[{\"name\":\"signature\",\"type\":\"uint256[2]\",\"internalType\":\"uint256[2]\"}]}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"registerAsOperator\",\"inputs\":[{\"name\":\"_blsKey\",\"type\":\"uint256[4]\",\"internalType\":\"uint256[4]\"},{\"name\":\"_rewardsReceiver\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_operatorSignature\",\"type\":\"tuple\",\"internalType\":\"structISignatureUtils.SignatureWithSaltAndExpiry\",\"components\":[{\"name\":\"signature\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"salt\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"_blsRegistrationSignature\",\"type\":\"tuple\",\"internalType\":\"structBLSAuthLibrary.Signature\",\"components\":[{\"name\":\"signature\",\"type\":\"uint256[2]\",\"internalType\":\"uint256[2]\"}]}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"renounceRole\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"callerConfirmation\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"revokeRole\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setAllowlistSigner\",\"inputs\":[{\"name\":\"_allowlistSigner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setAvsGovernanceLogic\",\"inputs\":[{\"name\":\"_avsGovernanceLogic\",\"type\":\"address\",\"internalType\":\"contractIAvsGovernanceLogic\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setAvsGovernanceMultiplierSyncer\",\"inputs\":[{\"name\":\"_newAvsGovernanceMultiplierSyncer\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setAvsName\",\"inputs\":[{\"name\":\"_avsName\",\"type\":\"string\",\"internalType\":\"string\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setBLSAuthSingleton\",\"inputs\":[{\"name\":\"_blsAuthSingleton\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setIsAllowlisted\",\"inputs\":[{\"name\":\"_isAllowlisted\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setMaxEffectiveBalance\",\"inputs\":[{\"name\":\"_maxBalance\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setMinSharesForStrategy\",\"inputs\":[{\"name\":\"_strategy\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_minShares\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setMinVotingPower\",\"inputs\":[{\"name\":\"_minVotingPower\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setNumOfOperatorsLimit\",\"inputs\":[{\"name\":\"_newLimitOfNumOfOperators\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setOthenticRegistry\",\"inputs\":[{\"name\":\"_othenticRegistry\",\"type\":\"address\",\"internalType\":\"contractIOthenticRegistry\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setRewardsReceiverModificationDelay\",\"inputs\":[{\"name\":\"_rewardsReceiverModificationDelay\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setStrategyMultiplier\",\"inputs\":[{\"name\":\"_strategyMultiplier\",\"type\":\"tuple\",\"internalType\":\"structIAvsGovernance.StrategyMultiplier\",\"components\":[{\"name\":\"strategy\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"multiplier\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setStrategyMultiplierBatch\",\"inputs\":[{\"name\":\"_strategyMultipliers\",\"type\":\"tuple[]\",\"internalType\":\"structIAvsGovernance.StrategyMultiplier[]\",\"components\":[{\"name\":\"strategy\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"multiplier\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setSupportedStrategies\",\"inputs\":[{\"name\":\"_strategies\",\"type\":\"address[]\",\"internalType\":\"address[]\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"strategies\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address[]\",\"internalType\":\"address[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"strategyMultiplier\",\"inputs\":[{\"name\":\"_strategy\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"supportsInterface\",\"inputs\":[{\"name\":\"interfaceId\",\"type\":\"bytes4\",\"internalType\":\"bytes4\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"transferAvsGovernanceMultisig\",\"inputs\":[{\"name\":\"_newAvsGovernanceMultisig\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"transferMessageHandler\",\"inputs\":[{\"name\":\"_newMessageHandler\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"unpause\",\"inputs\":[{\"name\":\"_pausableFlow\",\"type\":\"bytes4\",\"internalType\":\"bytes4\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"unregisterAsOperator\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"updateAVSMetadataURI\",\"inputs\":[{\"name\":\"metadataURI\",\"type\":\"string\",\"internalType\":\"string\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"vault\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"votingPower\",\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"withdrawBatchRewards\",\"inputs\":[{\"name\":\"_operators\",\"type\":\"tuple[]\",\"internalType\":\"structIAvsGovernance.PaymentRequestMessage[]\",\"components\":[{\"name\":\"operator\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"feeToClaim\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"_lastPayedTask\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"withdrawRewards\",\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_lastPayedTask\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"_feeToClaim\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"event\",\"name\":\"BLSAuthSingletonSet\",\"inputs\":[{\"name\":\"blsAuthSingleton\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"FlowPaused\",\"inputs\":[{\"name\":\"_pausableFlow\",\"type\":\"bytes4\",\"indexed\":false,\"internalType\":\"bytes4\"},{\"name\":\"_pauser\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"FlowUnpaused\",\"inputs\":[{\"name\":\"_pausableFlowFlag\",\"type\":\"bytes4\",\"indexed\":false,\"internalType\":\"bytes4\"},{\"name\":\"_unpauser\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"Initialized\",\"inputs\":[{\"name\":\"version\",\"type\":\"uint64\",\"indexed\":false,\"internalType\":\"uint64\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"MaxEffectiveBalanceSet\",\"inputs\":[{\"name\":\"maxEffectiveBalance\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"MinSharesPerStrategySet\",\"inputs\":[{\"name\":\"strategy\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"},{\"name\":\"minShares\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"MinVotingPowerSet\",\"inputs\":[{\"name\":\"minVotingPower\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"OperatorRegistered\",\"inputs\":[{\"name\":\"operator\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"blsKey\",\"type\":\"uint256[4]\",\"indexed\":false,\"internalType\":\"uint256[4]\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"OperatorUnregistered\",\"inputs\":[{\"name\":\"operator\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"QueuedRewardsReceiverModification\",\"inputs\":[{\"name\":\"operator\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"},{\"name\":\"receiver\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"},{\"name\":\"delay\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"RoleAdminChanged\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"},{\"name\":\"previousAdminRole\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"},{\"name\":\"newAdminRole\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"RoleGranted\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"},{\"name\":\"account\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"sender\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"RoleRevoked\",\"inputs\":[{\"name\":\"role\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"},{\"name\":\"account\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"sender\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetAllowlistSigner\",\"inputs\":[{\"name\":\"allowlistSigner\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetAvsGovernanceLogic\",\"inputs\":[{\"name\":\"avsGovernanceLogic\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetAvsGovernanceMultiplierSyncer\",\"inputs\":[{\"name\":\"avsGovernanceMultiplierSyncer\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetAvsGovernanceMultisig\",\"inputs\":[{\"name\":\"newAvsGovernanceMultisig\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetAvsName\",\"inputs\":[{\"name\":\"avsName\",\"type\":\"string\",\"indexed\":false,\"internalType\":\"string\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetIsAllowlisted\",\"inputs\":[{\"name\":\"isAllowlisted\",\"type\":\"bool\",\"indexed\":false,\"internalType\":\"bool\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetMessageHandler\",\"inputs\":[{\"name\":\"newMessageHandler\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetNumOfOperatorsLimit\",\"inputs\":[{\"name\":\"newLimitOfNumOfOperators\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetOthenticRegistry\",\"inputs\":[{\"name\":\"othenticRegistry\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetRewardsReceiver\",\"inputs\":[{\"name\":\"operator\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"},{\"name\":\"receiver\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetRewardsReceiverModificationDelay\",\"inputs\":[{\"name\":\"modificationDelay\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetStrategyMultiplier\",\"inputs\":[{\"name\":\"strategy\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"},{\"name\":\"multiplier\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetSupportedStrategies\",\"inputs\":[{\"name\":\"strategies\",\"type\":\"address[]\",\"indexed\":false,\"internalType\":\"address[]\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"SetToken\",\"inputs\":[{\"name\":\"token\",\"type\":\"address\",\"indexed\":false,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"error\",\"name\":\"AccessControlBadConfirmation\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"AccessControlInvalidMultiplierSyncer\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"AccessControlUnauthorizedAccount\",\"inputs\":[{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"neededRole\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}]},{\"type\":\"error\",\"name\":\"AllowlistDisabled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"AllowlistEnabled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"ECDSAInvalidSignature\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"ECDSAInvalidSignatureLength\",\"inputs\":[{\"name\":\"length\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"type\":\"error\",\"name\":\"ECDSAInvalidSignatureS\",\"inputs\":[{\"name\":\"s\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}]},{\"type\":\"error\",\"name\":\"FlowIsCurrentlyPaused\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FlowIsCurrentlyUnpaused\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidAllowlistAuthToken\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidBlsRegistrationSignature\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidInitialization\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidMultiplierNotSet\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidRewardsReceiver\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidSlashingRate\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidStrategy\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"ModificationDelayNotPassed\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotEnoughVotingPower\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotInitializing\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NumOfActiveOperatorsIsGreaterThanNumOfOperatorLimit\",\"inputs\":[{\"name\":\"numOfOperatorsLimit\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"numOfActiveOperators\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"type\":\"error\",\"name\":\"NumOfOperatorsLimitReached\",\"inputs\":[{\"name\":\"numOfOperatorsLimit\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"type\":\"error\",\"name\":\"OperatorAlreadyRegistered\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OperatorNotRegistered\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"PauseFlowIsAlreadyPaused\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"ReentrancyGuardReentrantCall\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"Unauthorized\",\"inputs\":[{\"name\":\"message\",\"type\":\"string\",\"internalType\":\"string\"}]},{\"type\":\"error\",\"name\":\"UnpausingFlowIsAlreadyUnpaused\",\"inputs\":[]}]",
+	Bin: "0x60808060405234601557614a93908161001a8239f35b5f80fdfe6080806040526004361015610012575f80fd5b5f905f3560e01c90816301ffc9a7146130a157508063076400d5146130025780630986944214612d825780631b21ba7214612bf757806322609a4d146128e9578063248a9ca3146128b15780632f2ff15d14612866578063305df58a1461274d578063312c150b146126705780633256b4d1146124c257806333cfb7b7146124165780633425e8d81461234a57806336568abe1461230557806336fffde0146122da5780633aa83ec7146121e357806341b92a29146120c257806345a022fa146120475780634d07f65114611fa15780634ef1476e14611f27578063513c52ba14611eba57806355e4891814611e605780635e95cee214611dfe5780636a90780314611d385780636ade02da14611c495780636b1906f814611cf05780636b3aa72e14611cba57806376086c7014611c4e5780637897dec314611c495780637d38e92614611bf65780638987c76714611b445780638a70469a14611ad75780638f53bc5014611a7e57806391d1485414611a2857806393304a9d146113565780639d79e4a7146112cf5780639e965cc114611255578063a217fddf14611239578063a88171ee146111fb578063a98fb35514611178578063b525fa8814611145578063b79092fd146110e1578063bac1e94b14610fe9578063bc8be0c814610d44578063c07473f614610cfb578063c3814e5b14610ca2578063d547741f14610c4e578063d94a2e1d14610b4c578063d9f9027f14610aba578063e474def414610abf578063e481af9d14610aba578063e6474b0f14610979578063e86685d91461093e578063efd96978146108f1578063f251c9a6146108c6578063fab57b8f146102be5763fbfa77cf14610286575f80fd5b346102bb57806003193601126102bb57505f516020614a1e5f395f51905f52546040516001600160a01b039091168152602090f35b80fd5b50346102bb5760203660031901126102bb576004356001600160401b0381116108c2573681900360048201610140600319830112610750575f5160206149be5f395f51905f52549260ff8460401c1615936001600160401b038116801590816108ba575b60011490816108b0575b1590816108a7575b506108985767ffffffffffffffff1981166001175f5160206149be5f395f51905f52558461086c575b50610366614642565b6001600160a01b03610377836136e2565b1615158061084f575b80610832575b80610815575b806107f8575b806107db575b806107be575b806107a1575b1561075c576103b385926136e2565b906103c0602482016136e2565b6103cc604483016136e2565b6103d8608484016136e2565b956101048401359060221901811215610758578301916004830135926001600160401b038411610754576024019383360385136107545761064a92610124926104c1916104bb90816001600160a01b03610434606488016136e2565b169a61043e614642565b610447856139aa565b5061045181613930565b5061045b83613a4a565b50610464614642565b61046c614642565b61047581613aea565b5061047f85613aea565b5061048983613aea565b5061049381613b8a565b5061049d85613b8a565b506104a781613c2a565b506104b185613c2a565b506104bb83613c2a565b50613cca565b506104cb3361411a565b506104d4614642565b6104dc614642565b60015f51602061497e5f395f51905f52555f5160206148be5f395f51905f5280546001600160a01b038881166001600160a01b0319928316179092555f51602061487e5f395f51905f528054928b16929091169190911790555f51602061489e5f395f51905f529761054d906138b6565b506001600160a01b0361056260a483016136e2565b5f516020614a1e5f395f51905f528054919092166001600160a01b03166001600160a01b031990911617905561059a60e482016136e2565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11f80546001600160a01b0319166001600160a01b0392831617905562093a807f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1245561060760c483016136e2565b5f5160206149de5f395f51905f528054919092166001600160a01b03166001600160a01b031990911617905560645f5160206148de5f395f51905f5255016136e2565b5f51602061481e5f395f51905f5280546001600160a01b0319166001600160a01b03909216919091179055610680818387614238565b823b15610750576106a99284928360405180968195829462ee0ec160e61b8452600484016134cf565b03925af180156107455761072c575b5050806106c76106cd926145f1565b90613e11565b6106d45780f35b68ff0000000000000000195f5160206149be5f395f51905f5254165f5160206149be5f395f51905f52557fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2602060405160018152a180f35b816107369161317e565b61074157825f6106b8565b8280fd5b6040513d84823e3d90fd5b8380fd5b8680fd5b8580fd5b60405162461bcd60e51b815260206004820152601c60248201527f417673476f7665726e616e63653a20496e76616c696420696e707574000000006044820152606490fd5b506001600160a01b036107b660e483016136e2565b1615156103a4565b506001600160a01b036107d360c483016136e2565b16151561039e565b506001600160a01b036107f060a483016136e2565b161515610398565b506001600160a01b0361080d608483016136e2565b161515610392565b506001600160a01b0361082a606483016136e2565b16151561038c565b506001600160a01b03610847604483016136e2565b161515610386565b506001600160a01b03610864602483016136e2565b161515610380565b68ffffffffffffffffff191668010000000000000001175f5160206149be5f395f51905f52555f61035d565b63f92ee8a960e01b8652600486fd5b9050155f610334565b303b15915061032c565b869150610322565b5080fd5b50346102bb57806003193601126102bb575060205f5160206148de5f395f51905f5254604051908152f35b50346102bb5760203660031901126102bb5760043563ffffffff60e01b81168091036108c25760408260ff92602094525f51602061491e5f395f51905f5284522054166040519015158152f35b50346102bb57806003193601126102bb57506109756109695f51602061489e5f395f51905f526145f1565b60405191829182613255565b0390f35b50346102bb57806003193601126102bb57335f9081525f5160206147be5f395f51905f5260205260409020545f51602061489e5f395f51905f529015610aab57335f9081525f516020614a3e5f395f51905f5260205260409020600101544210610a9c57335f9081525f516020614a3e5f395f51905f526020526040902054610a0d916001600160a01b0390911690613783565b335f9081527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e125602052604090819020805460ff1916905551610a4e81613134565b8181526020808201838152335f9081525f516020614a3e5f395f51905f529092526040909120915182546001600160a01b0319166001600160a01b0391909116178255516001919091015580f35b638ce7a3f160e01b8252600482fd5b6325ec6c1f60e01b8252600482fd5b613328565b50346102bb5760203660031901126102bb577ffa4acc0aaeb2714e420e9c8339167ddef7bc66c0f94a0c5a7722de21dcb7508c6020610afc6130f4565b610b04613644565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11f80546001600160a01b0319166001600160a01b03929092169182179055604051908152a180f35b50346102bb5760203660031901126102bb576004356001600160401b0381116108c257366023820112156108c25780600401356001600160401b038111610741573660248260061b840101116107415790610ba5613575565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12c90835b83811015610c4a576001907f8ae53ffd0ebc018acb19342fba690554d49ae9a467a9606a38b49cb5ad775c818160061b8401610c2960446024830192013591610c11816136e2565b868060a01b03165f52876020528260405f20556136e2565b604080516001600160a01b039290921682526020820192909252a101610bc9565b8480f35b50346102bb5760403660031901126102bb57610c9e600435610c6e61310a565b90610c99610c94825f525f51602061493e5f395f51905f52602052600160405f20015490565b61369c565b6141af565b5080f35b50346102bb5760203660031901126102bb57610cbc6130f4565b905060018060a01b03165f527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12b602052602060405f2054604051908152f35b50346102bb5760203660031901126102bb57610d3c602091610d1b6130f4565b5f51602061489e5f395f51905f529150610d3482614382565b9290506144fe565b604051908152f35b50346102bb5760403660031901126102bb576004356001600160401b0381116108c257366023820112156108c257806004013590610d8182613311565b90610d8f604051928361317e565b82825260208201906024829460061b8201019036821161075857602401915b818310610fb15750505060243591610dc46135ff565b5f516020614a1e5f395f51905f52546001600160a01b031690610de56134f6565b507f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12693855b8451811015610fa657610e1d818661350e565b5180516001600160a01b0316908115610e82576001600160a01b038083165f90815260208a815260409091205492015160019493610e619389938892911690613eec565b15610e6d575b01610e0a565b876020610e7a838961350e565b510152610e67565b50505091509392505b60405191604083019060208085015251809152606083019490845b818110610f74578580610eee610f028888610eca828e03601f19810184528361317e565b604051938492631eb0352760e21b6020850152604060248501526064840190613297565b90604483015203601f19810183528261317e565b5f51602061487e5f395f51905f52546001600160a01b0316803b15610f705760405163104c8d4b60e31b8152602060048201529183918391829084908290610f4e906024830190613297565b03925af1801561074557610f5f5750f35b81610f699161317e565b6102bb5780f35b5050fd5b9091956020604082610f9b6001948b516020809160018060a01b0381511684520151910152565b019701929101610ea6565b509150939250610e8b565b6040833603126107585760206040918251610fcb81613134565b610fd486613120565b81528286013583820152815201920191610dae565b50346102bb5760203660031901126102bb576004356001600160e01b03198116808203610741578083525f51602061491e5f395f51905f5260205260ff604084205416156110d25761103a8161369c565b8083525f51602061491e5f395f51905f5260205260ff604084205416156110c35782525f51602061491e5f395f51905f5260209081526040808420805460ff1916905580516001600160e01b0319909316835233918301919091527fc7e56e17b0a6c4b467df6495e1eda1baecd7ba20604e80c1058ac06f4578d85e9190819081015b0390a180f35b635bfd2da760e11b8352600483fd5b6368c87f3360e11b8352600483fd5b50346102bb5760203660031901126102bb575f516020614a1e5f395f51905f525481906001600160a01b0316803b1561114257604051634bff5c9360e11b815233600480830191909152356024820152908290829081838160448101610f4e565b50fd5b50346102bb57806003193601126102bb5750602060ff5f5160206149de5f395f51905f525460a01c166040519015158152f35b50346102bb5760203660031901126102bb57806004356001600160401b038111611142576111aa9036906004016132e4565b906111b36135ba565b5f5160206149de5f395f51905f52546001600160a01b031691823b156111f657610f4e9284928360405180968195829463a98fb35560e01b8452600484016134cf565b505050fd5b50346102bb57806003193601126102bb575060207f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12a54604051908152f35b50346102bb57806003193601126102bb57602090604051908152f35b50346102bb5760203660031901126102bb576004358015158091036108c25760207f2dcb3282f9b7aa18e1bf7fa254c45f3e270e8f26d9a37ae590d5d8125b58d1b1916112a06135ba565b5f5160206149de5f395f51905f52805460ff60a01b191660a083901b60ff60a01b16179055604051908152a180f35b50346102bb5760203660031901126102bb576004356112ec6135ba565b5f51602061499e5f395f51905f525481811161134157506020817fc0dd1d82df4ae12576f7a7912395305cf73deae26c764dd74a945cd6ba81591b925f5160206148de5f395f51905f5255604051908152a180f35b63d2930ec560e01b8352600452602452604490fd5b50346102bb576101203660031901126102bb57366084116102bb576084356001600160401b0381116108c2576113909036906004016132e4565b60a4359291906001600160a01b0384168085036107505760c4356001600160401b03811161180b576113c69036906004016131e4565b9260403660e319011261180b57335f9081525f5160206147be5f395f51905f5260205260409020545f51602061489e5f395f51905f529390611a195761140a6136f6565b61141261374b565b60ff5f5160206149de5f395f51905f525460a01c1615611a0a579061143891369161319f565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11f5460408051306020820190815233928201929092526001600160a01b03909216926114d5926114cc929061149a81606081015b03601f19810183528261317e565b5190207f19457468657265756d205369676e6564204d6573736167653a0a3332000000008952601c52603c882061466d565b909291926146a7565b6001600160a01b0316036119fb57156119ed576114f28482613783565b6040516114fe81613163565b3661010312156107505760405161151481613134565b8036610124116107585760e4905b61012482106119dd57505081525f5160206148de5f395f51905f5254805f51602061499e5f395f51905f525410156119cb57505f51602061481e5f395f51905f5254604051633cf65e3b60e01b815291516001600160a01b0390911690829086600483015b600282106119b157505050610104816020933360448301523060648301526080600460848401375afa9081156119a6578491611987575b5015611978575f5160206148fe5f395f51905f52546001600160a01b0316801515949091906115f86115ef83614382565b909333906144fe565b915f5160206147de5f395f51905f525483101590816118a9575b501561189a5785611843575b6040516358cc5acb60e01b60208201526116438161148c846004873360248601613805565b5f51602061487e5f395f51905f52546001600160a01b031690813b156107545761168e8792839260405194858094819363104c8d4b60e31b8352602060048401526024830190613297565b03925af1801561183857908691611823575b50505f51602061499e5f395f51905f5254955f19871461180f5760018697015f51602061499e5f395f51905f525560018060a01b0333165f525f5160206147be5f395f51905f52602052600160405f20556117a6575b5050506040516080600482377f54bc9cf83c2eb0f2ad1abf6e4fab882964404622ba2df6b5a9356a18d3aac05560803392a25f5160206149de5f395f51905f52546001600160a01b0316803b15610f7057604051639926ee7d60e01b8152918391839182908490829061176d903360048401613351565b03925af1801561074557611791575b5060015f51602061497e5f395f51905f525580f35b8161179b9161317e565b6102bb57805f61177c565b823b1561180b576117d3926004868094604051968795869485936376c56c1b60e11b855233828601613805565b03925af19081156118005783916117eb575b806116f6565b816117f59161317e565b61114257815f6117e5565b6040513d85823e3d90fd5b8480fd5b634e487b7160e01b86526011600452602486fd5b8161182d9161317e565b61180b57845f6116a0565b6040513d88823e3d90fd5b823b1561180b5760405163094e7a3f60e41b815285818061186a8560048833828601613805565b038183885af1801561183857908691611885575b505061161e565b8161188f9161317e565b61180b57845f61187e565b631c33ce8d60e11b8552600485fd5b905060018060a01b035f5160206148be5f395f51905f52541660405180926330959fcb60e11b8252604482013360048401526040602484015281518091526020606484019201908a5b81811061194a5750505091818060209403915afa90811561183857869161191b575b505f611612565b61193d915060203d602011611943575b611935818361317e565b8101906137ed565b5f611914565b503d61192b565b825180516001600160a01b0316855260209081015181860152879550604090940193909201916001016118f2565b6314532dfd60e11b8352600483fd5b6119a0915060203d60201161194357611935818361317e565b5f6115be565b6040513d86823e3d90fd5b829350602080916001939451815201930191018492611587565b63c77b407760e01b8552600452602484fd5b8135815260209182019101611522565b62cc6ac760e01b8352600483fd5b63d2342ec760e01b8452600484fd5b632d35c8d360e01b8652600486fd5b6342ee68b560e01b8652600486fd5b50346102bb5760403660031901126102bb576040611a4461310a565b9160043581525f51602061493e5f395f51905f52602052209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b50346102bb5760203660031901126102bb57611a986130f4565b905060018060a01b03165f527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12c602052602060405f2054604051908152f35b50346102bb5760203660031901126102bb577f47c8c3268759fc47868c5e319217a2e85d47bd3935a4108debe246f6025fb88b6020600435611b176135ba565b807f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12455604051908152a180f35b50346102bb5760203660031901126102bb576004356001600160a01b038116908190036108c257611b736135ba565b6362250a9560e11b82525f51602061491e5f395f51905f52602052604082205460ff16611be7575f5160206148fe5f395f51905f5280546001600160a01b031916821790556040519081527f7c36ee80df183e227956a9f387a48d26bbf4d2f1526410493d11126de5a8942c90602090a180f35b63722fdba960e01b8252600482fd5b50346102bb5760203660031901126102bb576004356001600160401b0381116108c257611c2a611c469136906004016132e4565b90611c336135ba565b5f51602061489e5f395f51905f52614238565b80f35b6132bb565b50346102bb5760203660031901126102bb577ec6fb6db9c52d89a1eaf84e0470a3304db2086d0ac44d64ebf4ea35a905a7d06020600435611c8d6135ba565b807f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12a55604051908152a180f35b50346102bb57806003193601126102bb57505f5160206149de5f395f51905f52546040516001600160a01b039091168152602090f35b50346102bb5760203660031901126102bb57611d0a6130f4565b905060018060a01b03165f525f5160206147be5f395f51905f52602052602060405f20541515604051908152f35b50346102bb5760203660031901126102bb57611d9f9060205f51602061485e5f395f51905f52611d666130f4565b5f5160206148be5f395f51905f5254604051639004134760e01b81529586936001600160a01b0390921692849283929160048401613442565b03915afa908115611df25790611dbb575b602090604051908152f35b506020813d602011611dea575b81611dd56020938361317e565b81010312611de65760209051611db0565b5f80fd5b3d9150611dc8565b604051903d90823e3d90fd5b50346102bb5760203660031901126102bb57611e186130f4565b905060018060a01b03165f527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e126602052602060405f2060018060a01b03905416604051908152f35b50346102bb5760203660031901126102bb577f10203ddc048c86cf14172a6ea2565c805ce7320b22d6941b2eb396d0ee0779836020600435611ea06135ba565b805f5160206147de5f395f51905f5255604051908152a180f35b50346102bb5760203660031901126102bb577f024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a72226496020611ef76130f4565b611eff6135ba565b611f08336140a2565b50611f1281613930565b506040516001600160a01b039091168152a180f35b50346102bb5760203660031901126102bb577f4cbffdecf3b5e4b22bfb2bdec99a66f8fcf81e19b060682afd9645c729da14726020611f646130f4565b611f6c613644565b5f51602061481e5f395f51905f5280546001600160a01b0319166001600160a01b03929092169182179055604051908152a180f35b50346102bb5760203660031901126102bb577f997f84b541d7b68e210e6f50e3402b51d8411dbbc4d44ed81e508383126e4e946020611fde6130f4565b611fe6613644565b5f51602061487e5f395f51905f5254612007906001600160a01b031661402a565b50612011816138b6565b505f51602061487e5f395f51905f5280546001600160a01b0319166001600160a01b03929092169182179055604051908152a180f35b50346102bb5760203660031901126102bb576004356001600160a01b038116908190036108c25760207ff9855cc914fefc396bdeb5a4dcb97a2f6c75f4d6f00a8e71d6f9a40e474afe8d9161209a613644565b5f5160206148be5f395f51905f5280546001600160a01b03191682179055604051908152a180f35b50346102bb57806003193601126102bb5760405190807f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e123549061210482613497565b80855291600181169081156121bc5750600114612140575b6109758461212c8186038261317e565b604051918291602083526020830190613297565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12381527f426338f094e72a54b4785bcef70a30e76c5fb1ceb50028dfc7385f39cbf28add939250905b8082106121a25750909150810160200161212c8261211c565b919260018160209254838588010152019101909291612189565b60ff191660208087019190915292151560051b8501909201925061212c915083905061211c565b50346102bb5760203660031901126102bb576004356001600160e01b03198116808203610741578083525f51602061491e5f395f51905f5260205260ff6040842054166122cb576122338161369c565b8083525f51602061491e5f395f51905f5260205260ff6040842054166122bc5782525f51602061491e5f395f51905f5260209081526040808420805460ff1916600117905580516001600160e01b0319909316835233918301919091527f95c3658c5e0c74e20cf12db371b9b67d26e97a1937f6d2284f88cc44d036b4f69190819081016110bd565b63dfe10d7d60e01b8352600483fd5b63722fdba960e01b8352600483fd5b50346102bb57806003193601126102bb575060205f5160206147de5f395f51905f5254604051908152f35b50346102bb5760403660031901126102bb5761231f61310a565b336001600160a01b0382160361233b57610c9e906004356141af565b63334bd91960e11b8252600482fd5b50346102bb5760203660031901126102bb577fb73a70f24733a9265231de5807eae76d1740a9974b31a142ef9e243508987bbe60206123876130f4565b61238f6135ba565b7f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12d546123c3906001600160a01b0316613fb2565b506123cd81613837565b507f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12d80546001600160a01b0319166001600160a01b03929092169182179055604051908152a180f35b50346102bb5760203660031901126102bb5761247b815f51602061485e5f395f51905f526124426130f4565b5f5160206148be5f395f51905f5254604051630776843760e31b81529485936001600160a01b0390921692849283929160048401613442565b03915afa9081156107455782610975939261249f575b505060405191829182613255565b6124bb92503d8091833e6124b3818361317e565b8101906133b8565b5f80612491565b50346102bb5760603660031901126102bb57806124dd6130f4565b6024356044356124eb6135ff565b6001600160a01b0383165f9081527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1256020526040902054819060ff16156125c7575050604051630356129d60e11b60208201526001600160a01b03909216602483015260448201526064808201839052815261256860848261317e565b5f51602061487e5f395f51905f52546001600160a01b0316803b15610f705760405163104c8d4b60e31b81526020600482015291839183918290849082906125b4906024830190613297565b03925af1801561074557610f5f57505080f35b5f516020614a1e5f395f51905f52546001600160a01b038086165f9081527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e126602052604090205494956125689590949361262993831692909188911686613eec565b15612669575b604051630356129d60e11b60208201526001600160a01b03909216602483015260448201939093526064810192909252816084810161148c565b508361262f565b50346102bb5760203660031901126102bb57600435906001600160401b0382116102bb57366023830112156102bb5781600401356001600160401b0381116108c25760248160051b840101368111610741576126ca6135ba565b631bd8f8b560e11b83525f51602061491e5f395f51905f52602052604083205460ff166122cb575f51602061489e5f395f51905f529061270983613311565b92612717604051948561317e565b83526024602084019501945b8186106127355784611c468585613e11565b6020809161274288613120565b815201950194612723565b50346102bb5760403660031901126102bb576127676130f4565b906024356127736135ba565b5f51602061485e5f395f51905f52546001600160a01b03841693908390815b818110612823575b505015612814577f3a6c52328a7b3b726d0ec757d68f416b26ec2991ac4d4f95d450c504f5a0e52192935f527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12b6020528160405f20556110bd6040519283928360209093929193604081019460018060a01b031681520152565b632711b74d60e11b8352600483fd5b8661283b825f51602061485e5f395f51905f5261338f565b905460039190911b1c6001600160a01b03161461285a57600101612792565b50505060015f8061279a565b50346102bb5760403660031901126102bb57610c9e60043561288661310a565b906128ac610c94825f525f51602061493e5f395f51905f52602052600160405f20015490565b613d6a565b50346102bb5760203660031901126102bb576020610d3c6004355f525f51602061493e5f395f51905f52602052600160405f20015490565b50346102bb576101003660031901126102bb57366084116102bb57608435906001600160a01b0382168083036108c25760a4356001600160401b038111610741576129389036906004016131e4565b9060403660c319011261074157335f9081525f5160206147be5f395f51905f5260205260409020545f51602061489e5f395f51905f529190612be85761297c6136f6565b61298461374b565b60ff5f5160206149de5f395f51905f525460a01c16612bd957156119ed576129ac8482613783565b6040516129b881613163565b3660e31215610750576040516129cd81613134565b8036610104116107585760c4905b6101048210612bc957505081525f5160206148de5f395f51905f5254805f51602061499e5f395f51905f525410156119cb57505f51602061481e5f395f51905f5254604051633cf65e3b60e01b815291516001600160a01b0390911690829086600483015b60028210612baf57505050610104816020933360448301523060648301526080600460848401375afa9081156119a6578491612b90575b5015611978575f5160206148fe5f395f51905f52546001600160a01b031680151594909190612aa86115ef83614382565b915f5160206147de5f395f51905f52548310159081612af157501561189a5785611843576040516358cc5acb60e01b60208201526116438161148c846004873360248601613805565b905060018060a01b035f5160206148be5f395f51905f52541660405180926330959fcb60e11b8252604482013360048401526040602484015281518091526020606484019201908a5b818110612b625750505091818060209403915afa90811561183857869161191b57505f611612565b825180516001600160a01b031685526020908101518186015287955060409094019390920191600101612b3a565b612ba9915060203d60201161194357611935818361317e565b5f612a77565b829350602080916001939451815201930191018492612a40565b81358152602091820191016129db565b638a943acd60e01b8452600484fd5b6342ee68b560e01b8452600484fd5b50346102bb5760203660031901126102bb57612c116130f4565b335f9081525f5160206147be5f395f51905f52602052604090205415610aab5763d93c394b60e01b82525f51602061491e5f395f51905f52602052604082205460ff16611be7576001600160a01b03168015612d7457335f9081527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12560205260409020805460ff191660011790557f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1245442908101908110612d60577f0d8cfa10a3087b28d3c226ad9a37314860e7c3c0505a25a39e3cdefb3118a98a91606091604051612cfd81613134565b8281526020808201838152335f8181525f516020614a3e5f395f51905f528452604090819020945185546001600160a01b0319166001600160a01b039190911617855591516001949094019390935580519283529082019390935291820152a180f35b634e487b7160e01b83526011600452602483fd5b62cc6ac760e01b8252600482fd5b5034611de6575f366003190112611de657335f9081525f5160206147be5f395f51905f52602052604090205415612ff357612dbb6136f6565b612dc361374b565b5f5160206148fe5f395f51905f52546001600160a01b0316801515919082612f9f575b60405163edad0a1360e01b602082015233602482015260248152612e0b60448261317e565b5f51602061487e5f395f51905f52546001600160a01b031690813b1561075057612e568492839260405194858094819363104c8d4b60e31b8352602060048401526024830190613297565b03925af1801561180057908391612f8a575b50505f51602061499e5f395f51905f5254928315612d605782935f19015f51602061499e5f395f51905f525560018060a01b0333165f525f5160206147be5f395f51905f526020528260405f2055612f45575b50507f6f42117a557500c705ddf040a619d86f39101e6b74ac20d7b3e5943ba473fc7f6020604051338152a15f5160206149de5f395f51905f525481906001600160a01b0316803b15611142578180916024604051809481936351b27a6d60e11b83523360048401525af1801561074557611791575060015f51602061497e5f395f51905f525580f35b803b156111425781809160246040518094819363e9ecc1cb60e01b83523360048401525af180156107455715612ebb5781612f7f9161317e565b6102bb57805f612ebb565b81612f949161317e565b6108c257815f612e68565b803b15611de6576040516311c7e79960e21b81523360048201525f8160248183865af18015612fe857612fd3575b50612de6565b612fe09192505f9061317e565b5f905f612fcd565b6040513d5f823e3d90fd5b6325ec6c1f60e01b5f5260045ffd5b34611de6576040366003190112611de65761301b613575565b6004356024356001600160a01b0382168203611de6576001600160a01b03919091165f8181527f3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12c602090815260409182902084905581519283528201929092527f8ae53ffd0ebc018acb19342fba690554d49ae9a467a9606a38b49cb5ad775c819190a1005b34611de6576020366003190112611de6576004359063ffffffff60e01b8216809203611de657602091637965db0b60e01b81149081156130e3575b5015158152f35b6301ffc9a760e01b149050836130dc565b600435906001600160a01b0382168203611de657565b602435906001600160a01b0382168203611de657565b35906001600160a01b0382168203611de657565b604081019081106001600160401b0382111761314f57604052565b634e487b7160e01b5f52604160045260245ffd5b602081019081106001600160401b0382111761314f57604052565b90601f801991011681019081106001600160401b0382111761314f57604052565b9291926001600160401b03821161314f57604051916131c8601f8201601f19166020018461317e565b829481845281830111611de6578281602093845f960137010152565b919091606081840312611de65760405190606082018281106001600160401b0382111761314f57604052819381356001600160401b038111611de65782019181601f84011215611de65761324260409392836020869535910161319f565b8452602081013560208501520135910152565b60206040818301928281528451809452019201905f5b8181106132785750505090565b82516001600160a01b031684526020938401939092019160010161326b565b805180835260209291819084018484015e5f828201840152601f01601f1916010190565b34611de6575f366003190112611de65760205f51602061499e5f395f51905f5254604051908152f35b9181601f84011215611de6578235916001600160401b038311611de65760208381860195010111611de657565b6001600160401b03811161314f5760051b60200190565b34611de6575f366003190112611de6576109756109695f51602061485e5f395f51905f52613522565b9060018060a01b03168152604060208201526080604061337c845160608386015260a0850190613297565b9360208101516060850152015191015290565b80548210156133a4575f5260205f2001905f90565b634e487b7160e01b5f52603260045260245ffd5b602081830312611de6578051906001600160401b038211611de657019080601f83011215611de6578151906133ec82613311565b926133fa604051948561317e565b82845260208085019360051b820101918211611de657602001915b8183106134225750505090565b82516001600160a01b0381168103611de657815260209283019201613415565b606090604081019260018060a01b0316815260406020820152835480935201915f5260205f20905f5b8181106134785750505090565b82546001600160a01b031684526020909301926001928301920161346b565b90600182811c921680156134c5575b60208310146134b157565b634e487b7160e01b5f52602260045260245ffd5b91607f16916134a6565b90918060409360208452816020850152848401375f828201840152601f01601f1916010190565b6040519061350382613134565b5f6020838281520152565b80518210156133a45760209160051b010190565b90604051918281549182825260208201905f5260205f20925f5b8181106135535750506135519250038361317e565b565b84546001600160a01b031683526001948501948794506020909301920161353c565b335f9081525f5160206147fe5f395f51905f52602052604090205460ff161561359a57565b63e2517d3f60e01b5f9081523360045263ef0892d160e01b602452604490fd5b335f9081525f5160206149fe5f395f51905f52602052604090205460ff16156135df57565b63e2517d3f60e01b5f908152336004526378b4401360e11b602452604490fd5b335f9081525f51602061483e5f395f51905f52602052604090205460ff161561362457565b63e2517d3f60e01b5f90815233600452638a70a0eb60e01b602452604490fd5b335f9081527f274b5753bc2a873526e44bae648b363f47953a4f0c2234820809428fe7b7dafd602052604090205460ff161561367c57565b63e2517d3f60e01b5f9081523360045263d8a8b5c760e01b602452604490fd5b5f8181525f51602061493e5f395f51905f526020908152604080832033845290915290205460ff16156136cc5750565b63e2517d3f60e01b5f523360045260245260445ffd5b356001600160a01b0381168103611de65790565b63024b274760e61b5f525f51602061491e5f395f51905f526020527f6fea4dda5e9bec14cdaf5c3123c3f3d726de9276141f697f28abf1342e0bf5f55460ff1661373c57565b63722fdba960e01b5f5260045ffd5b60025f51602061497e5f395f51905f5254146137745760025f51602061497e5f395f51905f5255565b633ee5aeb560e01b5f5260045ffd5b335f818152600d92909201602090815260409283902080546001600160a01b0319166001600160a01b03909516948517905582519182528101929092527fe906feea2ef60b474e22b4169bdd4de6906a84cd448cbcee99593526fe87082d9190819081015b0390a1565b90816020910312611de657518015158103611de65790565b9260809060c0939695929660e086019760018060a01b03168652602086015260408501376001600160a01b0316910152565b6001600160a01b0381165f9081525f5160206147fe5f395f51905f52602052604090205460ff166138b1576001600160a01b03165f8181525f5160206147fe5f395f51905f5260205260408120805460ff1916600117905533919063ef0892d160e01b905f51602061479e5f395f51905f529080a4600190565b505f90565b6001600160a01b0381165f9081525f51602061483e5f395f51905f52602052604090205460ff166138b1576001600160a01b03165f8181525f51602061483e5f395f51905f5260205260408120805460ff19166001179055339190638a70a0eb60e01b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081525f5160206149fe5f395f51905f52602052604090205460ff166138b1576001600160a01b03165f8181525f5160206149fe5f395f51905f5260205260408120805460ff191660011790553391906378b4401360e11b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527f274b5753bc2a873526e44bae648b363f47953a4f0c2234820809428fe7b7dafd602052604090205460ff166138b1576001600160a01b03165f8181527f274b5753bc2a873526e44bae648b363f47953a4f0c2234820809428fe7b7dafd60205260408120805460ff1916600117905533919063d8a8b5c760e01b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527f55283b829f13bbb718097e9d9a0a5f887f18c6e64a14e5b6837b3d53eab0a8f3602052604090205460ff166138b1576001600160a01b03165f8181527f55283b829f13bbb718097e9d9a0a5f887f18c6e64a14e5b6837b3d53eab0a8f360205260408120805460ff1916600117905533919063d3e319af60e01b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527f05577d836c3af8e2cf1127dcd027858a1d8f3404907a19d463fc4a26a60be426602052604090205460ff166138b1576001600160a01b03165f8181527f05577d836c3af8e2cf1127dcd027858a1d8f3404907a19d463fc4a26a60be42660205260408120805460ff1916600117905533919063024b274760e61b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527f83fcafa020a3c9213bdc7a9147feab576ec07cc55f595b8fb0fb928f72fcf184602052604090205460ff166138b1576001600160a01b03165f8181527f83fcafa020a3c9213bdc7a9147feab576ec07cc55f595b8fb0fb928f72fcf18460205260408120805460ff1916600117905533919063d93c394b60e01b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527f3662b209663523262d9d456b8e64f3b7e6057f997cdc7568782ab5f831e15efc602052604090205460ff166138b1576001600160a01b03165f8181527f3662b209663523262d9d456b8e64f3b7e6057f997cdc7568782ab5f831e15efc60205260408120805460ff19166001179055339190631bd8f8b560e11b905f51602061479e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527ffec025993670f3cfe62fe0b8ba8699907af9264646da1759461a905da18f569c602052604090205460ff166138b1576001600160a01b03165f8181527ffec025993670f3cfe62fe0b8ba8699907af9264646da1759461a905da18f569c60205260408120805460ff191660011790553391906362250a9560e11b905f51602061479e5f395f51905f529080a4600190565b5f8181525f51602061493e5f395f51905f52602090815260408083206001600160a01b038616845290915290205460ff16613df5575f8181525f51602061493e5f395f51905f52602090815260408083206001600160a01b0395909516808452949091528120805460ff19166001179055339291905f51602061479e5f395f51905f529080a4600190565b50505f90565b818110613e06575050565b5f8155600101613dfb565b60090180545f82559092919080613ed2575b505f5b8151811015613e9d576001600160a01b03613e41828461350e565b5116908115613e8e578454916801000000000000000083101561314f57613e6f83600180950188558761338f565b819291549060031b91821b91858060a01b03901b191617905501613e26565b632711b74d60e11b5f5260045ffd5b507ff009a6ffded424f714e8904d643a1ea4479453188faf08a3996121996b76684f9192506137e89060405191829182613255565b613ee690845f5260205f2090810190613dfb565b5f613e23565b9293926001600160a01b03821615613f735750604051633256b4d160e01b81526001600160a01b039091166004820152602481019190915260448101929092526020908290815f81606481015b03926001600160a01b03165af1908115612fe8575f91613f57575090565b613f70915060203d60201161194357611935818361317e565b90565b604051633256b4d160e01b81526001600160a01b03909116600482015260248101929092525060448101929092526020908290815f8160648101613f39565b6001600160a01b0381165f9081525f5160206147fe5f395f51905f52602052604090205460ff16156138b1576001600160a01b03165f8181525f5160206147fe5f395f51905f5260205260408120805460ff1916905533919063ef0892d160e01b905f51602061495e5f395f51905f529080a4600190565b6001600160a01b0381165f9081525f51602061483e5f395f51905f52602052604090205460ff16156138b1576001600160a01b03165f8181525f51602061483e5f395f51905f5260205260408120805460ff19169055339190638a70a0eb60e01b905f51602061495e5f395f51905f529080a4600190565b6001600160a01b0381165f9081525f5160206149fe5f395f51905f52602052604090205460ff16156138b1576001600160a01b03165f8181525f5160206149fe5f395f51905f5260205260408120805460ff191690553391906378b4401360e11b905f51602061495e5f395f51905f529080a4600190565b6001600160a01b0381165f9081527fb7db2dd08fcb62d0c9e08c51941cae53c267786a0b75803fb7960902fc8ef97d602052604090205460ff16156138b1576001600160a01b03165f8181527fb7db2dd08fcb62d0c9e08c51941cae53c267786a0b75803fb7960902fc8ef97d60205260408120805460ff191690553391905f51602061495e5f395f51905f528180a4600190565b5f8181525f51602061493e5f395f51905f52602090815260408083206001600160a01b038616845290915290205460ff1615613df5575f8181525f51602061493e5f395f51905f52602090815260408083206001600160a01b0395909516808452949091528120805460ff19169055339291905f51602061495e5f395f51905f529080a4600190565b600a019291906001600160401b03821161314f576142568454613497565b601f8111614347575b505f93601f83116001146142c557827f7f63aacad63bc1693280450d5c3612ccd4efc53e46d69f3a537db102cd66290c94955f916142ba575b508360011b905f198560031b1c19161790555b6137e8604051928392836134cf565b90508201355f614298565b601f19831694815f5260205f20905f5b87811061432f5750847f7f63aacad63bc1693280450d5c3612ccd4efc53e46d69f3a537db102cd66290c969710614316575b5050600183811b0190556142ab565b8301355f19600386901b60f8161c191690555f80614307565b909160206001819285880135815501930191016142d5565b61437290855f5260205f20601f850160051c81019160208610614378575b601f0160051c0190613dfb565b5f61425f565b9091508190614365565b9061438f60098301613522565b9182519061439c82613311565b916143aa604051938461317e565b8083526143b9601f1991613311565b015f5b8181106144db5750508351936143d185613311565b946143df604051968761317e565b8086526143ee601f1991613311565b015f5b8181106144b85750505f5b81518110156144b1576001906001600160a01b0361441a828561350e565b5116828060a01b0381165f526012850160205260405f20546040519061443f82613134565b8282526020820152614451838861350e565b5261445c828761350e565b50828060a01b0381165f526013850160205260405f205480156144aa575b6040519161448783613134565b82526020820152614498828961350e565b526144a3818861350e565b50016143fc565b508261447a565b5050509190565b6020906040516144c781613134565b5f81525f8382015282828a010152016143f1565b6020906040516144ea81613134565b5f81525f83820152828287010152016143bc565b60118101546003909101546040805163f679e15f60e01b81526001600160a01b0394851660048201526024810191909152845160448201819052909492939091169184916064830191602001905f5b8181106145c35750505091818060209403915afa918215612fe8575f9261458f575b5080821180614586575b614581575090565b905090565b50801515614579565b9091506020813d6020116145bb575b816145ab6020938361317e565b81010312611de65751905f61456f565b3d915061459e565b825180516001600160a01b03168552602090810151818601528895506040909401939092019160010161454d565b600301546040516301753ab960e31b8152466004820152905f90829060249082906001600160a01b03165afa908115612fe8575f9161462e575090565b613f7091503d805f833e6124b3818361317e565b60ff5f5160206149be5f395f51905f525460401c161561465e57565b631afcd79f60e31b5f5260045ffd5b815191906041830361469d576146969250602082015190606060408401519301515f1a9061471b565b9192909190565b50505f9160029190565b600481101561470757806146b9575050565b600181036146d05763f645eedf60e01b5f5260045ffd5b600281036146eb575063fce698f760e01b5f5260045260245ffd5b6003146146f55750565b6335e2f38360e21b5f5260045260245ffd5b634e487b7160e01b5f52602160045260245ffd5b91907f7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a08411614792579160209360809260ff5f9560405194855216868401526040830152606082015282805260015afa15612fe8575f516001600160a01b0381161561478857905f905f90565b505f906001905f90565b5050505f916003919056fe2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1203e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1290b373776dcbf64ceb4d34b4e217820b0691f48f308d42843c6080fb1fac6bd243e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e12ed480ef4a5d78515f50ce9d1a72eb9abf0b7795388f968bf633429bfc14cfe40b3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1223e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11b3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1193e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11c3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e1283e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e121fe6065fb4e9872e2ad4479001655335380d83f70e163706cd65857449b84510002dd7bc7dec4dceedda775e58dd541e08a116c6c53815c0bd028192f7b626800f6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f003e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11af0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a003e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11eb8c1f5d3f58d95cae9dbd2762e9e87b212a41bbf0f42459bc1feb152e30e1cec3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e11d3e2bfe19d7b287e1320a5adb4ca1cb62f90c30e328e073ba40443179d690e127a26469706673582212200d6e51287b44df1aadf4e72810fca548d70ec295b503b42c7707f3811d3c63ac64736f6c634300081b0033",
 }
 
 // ContractAvsGovernanceABI is the input ABI used to generate the binding from.
 // Deprecated: Use ContractAvsGovernanceMetaData.ABI instead.
 var ContractAvsGovernanceABI = ContractAvsGovernanceMetaData.ABI
+
+// ContractAvsGovernanceBin is the compiled bytecode used for deploying new contracts.
+// Deprecated: Use ContractAvsGovernanceMetaData.Bin instead.
+var ContractAvsGovernanceBin = ContractAvsGovernanceMetaData.Bin
+
+// DeployContractAvsGovernance deploys a new Ethereum contract, binding an instance of ContractAvsGovernance to it.
+func DeployContractAvsGovernance(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *ContractAvsGovernance, error) {
+	parsed, err := ContractAvsGovernanceMetaData.GetAbi()
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	if parsed == nil {
+		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
+	}
+
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(ContractAvsGovernanceBin), backend)
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	return address, tx, &ContractAvsGovernance{ContractAvsGovernanceCaller: ContractAvsGovernanceCaller{contract: contract}, ContractAvsGovernanceTransactor: ContractAvsGovernanceTransactor{contract: contract}, ContractAvsGovernanceFilterer: ContractAvsGovernanceFilterer{contract: contract}}, nil
+}
 
 // ContractAvsGovernanceMethods is an auto generated interface around an Ethereum contract.
 type ContractAvsGovernanceMethods interface {
@@ -114,39 +109,23 @@ type ContractAvsGovernanceMethods interface {
 type ContractAvsGovernanceCalls interface {
 	DEFAULTADMINROLE(opts *bind.CallOpts) ([32]byte, error)
 
-	EXTENSIONIMPLEMENTATION(opts *bind.CallOpts) (common.Address, error)
-
-	AvsGovernanceLogic(opts *bind.CallOpts) (common.Address, error)
+	AvsDirectory(opts *bind.CallOpts) (common.Address, error)
 
 	AvsName(opts *bind.CallOpts) (string, error)
 
-	AvsTreasury(opts *bind.CallOpts) (common.Address, error)
+	GetDefaultStrategies(opts *bind.CallOpts) ([]common.Address, error)
 
 	GetIsAllowlisted(opts *bind.CallOpts) (bool, error)
 
-	GetIsOperatorEjected(opts *bind.CallOpts, _operator common.Address) (bool, error)
+	GetNumOfOperatorsLimit(opts *bind.CallOpts) (*big.Int, error)
 
 	GetOperatorRestakedStrategies(opts *bind.CallOpts, _operator common.Address) ([]common.Address, error)
 
-	GetPendingVetoSlashCount(opts *bind.CallOpts) (*big.Int, error)
-
-	GetPendingVetoSlashRequest(opts *bind.CallOpts, _index *big.Int) (IAvsGovernanceVetoSlashRequest, error)
-
-	GetPendingVetoSlashRequests(opts *bind.CallOpts) ([]IAvsGovernanceVetoSlashRequest, error)
-
 	GetRestakeableStrategies(opts *bind.CallOpts) ([]common.Address, error)
-
-	GetRestakeableVaults(opts *bind.CallOpts) ([]common.Address, error)
 
 	GetRewardsReceiver(opts *bind.CallOpts, _operator common.Address) (common.Address, error)
 
 	GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error)
-
-	GetSlashableStrategies(opts *bind.CallOpts) ([]common.Address, error)
-
-	GetSlashingConfig(opts *bind.CallOpts, _condition uint8) (IAvsGovernanceSlashingConfig, error)
-
-	GetStakingContractDetailsAndMultipliers(opts *bind.CallOpts) ([]IAvsGovernanceStakingContractDetails, []IAvsGovernanceVotingPowerMultiplier, error)
 
 	HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error)
 
@@ -156,89 +135,99 @@ type ContractAvsGovernanceCalls interface {
 
 	MaxEffectiveBalance(opts *bind.CallOpts) (*big.Int, error)
 
-	MinSlashableStakePerStakingContract(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error)
-
-	MinStakePerStakingContract(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error)
+	MinSharesForStrategy(opts *bind.CallOpts, _strategy common.Address) (*big.Int, error)
 
 	MinVotingPower(opts *bind.CallOpts) (*big.Int, error)
 
-	Multiplier(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error)
-
 	NumOfActiveOperators(opts *bind.CallOpts) (*big.Int, error)
 
-	P2pAuthenticationEnabled(opts *bind.CallOpts) (bool, error)
+	NumOfOperators(opts *bind.CallOpts) (*big.Int, error)
 
-	RedistributionManager(opts *bind.CallOpts) (common.Address, error)
+	NumOfShares(opts *bind.CallOpts, _operator common.Address) (*big.Int, error)
 
-	SlashableStakeWeight(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error)
+	Strategies(opts *bind.CallOpts) ([]common.Address, error)
 
-	StakingContractToFeed(opts *bind.CallOpts, _stakingContract common.Address) (common.Address, error)
-
-	StakingContracts(opts *bind.CallOpts) ([]common.Address, error)
+	StrategyMultiplier(opts *bind.CallOpts, _strategy common.Address) (*big.Int, error)
 
 	SupportsInterface(opts *bind.CallOpts, interfaceId [4]byte) (bool, error)
 
-	VotingPower(opts *bind.CallOpts, _operator common.Address) (*big.Int, error)
+	Vault(opts *bind.CallOpts) (common.Address, error)
 
-	VotingPowerPerStakingContracts(opts *bind.CallOpts, _operator common.Address, _stakingContracts []common.Address) (*big.Int, error)
+	VotingPower(opts *bind.CallOpts, _operator common.Address) (*big.Int, error)
 }
 
 // ContractAvsGovernanceTransacts is an auto generated interface that defines the transact methods available for an Ethereum contract.
 type ContractAvsGovernanceTransacts interface {
-	ApplyCustomSlashing(opts *bind.TransactOpts, _operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error)
-
 	CompleteRewardsReceiverModification(opts *bind.TransactOpts) (*types.Transaction, error)
 
-	ExecuteVetoSlashRequests(opts *bind.TransactOpts, _from *big.Int, _to *big.Int) (*types.Transaction, error)
+	DepositERC20(opts *bind.TransactOpts, _amount *big.Int) (*types.Transaction, error)
 
 	GrantRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error)
 
 	Initialize(opts *bind.TransactOpts, _initializationParams IAvsGovernanceInitializationParams) (*types.Transaction, error)
 
-	MigrateAvsToAllocationManager(opts *bind.TransactOpts, _metadataURI string) (*types.Transaction, error)
-
-	MigrateRedistributionManager(opts *bind.TransactOpts, _l1AvsFactory common.Address, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error)
-
-	Migration(opts *bind.TransactOpts) (*types.Transaction, error)
-
 	Pause(opts *bind.TransactOpts, _pausableFlow [4]byte) (*types.Transaction, error)
 
 	QueueRewardsReceiverModification(opts *bind.TransactOpts, _newRewardsReceiver common.Address) (*types.Transaction, error)
 
-	RegisterAvsToEigenLayer(opts *bind.TransactOpts, metadataURI string) (*types.Transaction, error)
+	RegisterAsAllowedOperator(opts *bind.TransactOpts, _blsKey [4]*big.Int, _authToken []byte, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error)
 
-	RegisterAvsToSymbiotic(opts *bind.TransactOpts) (*types.Transaction, error)
+	RegisterAsOperator(opts *bind.TransactOpts, _blsKey [4]*big.Int, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error)
 
 	RenounceRole(opts *bind.TransactOpts, role [32]byte, callerConfirmation common.Address) (*types.Transaction, error)
 
 	RevokeRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error)
 
+	SetAllowlistSigner(opts *bind.TransactOpts, _allowlistSigner common.Address) (*types.Transaction, error)
+
 	SetAvsGovernanceLogic(opts *bind.TransactOpts, _avsGovernanceLogic common.Address) (*types.Transaction, error)
+
+	SetAvsGovernanceMultiplierSyncer(opts *bind.TransactOpts, _newAvsGovernanceMultiplierSyncer common.Address) (*types.Transaction, error)
+
+	SetAvsName(opts *bind.TransactOpts, _avsName string) (*types.Transaction, error)
+
+	SetBLSAuthSingleton(opts *bind.TransactOpts, _blsAuthSingleton common.Address) (*types.Transaction, error)
 
 	SetIsAllowlisted(opts *bind.TransactOpts, _isAllowlisted bool) (*types.Transaction, error)
 
-	SetP2pAuthenticationEnabled(opts *bind.TransactOpts, _p2pAuthenticationEnabled bool) (*types.Transaction, error)
+	SetMaxEffectiveBalance(opts *bind.TransactOpts, _maxBalance *big.Int) (*types.Transaction, error)
 
-	SetStakingContractMultiplier(opts *bind.TransactOpts, _votingPowerMultiplier IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error)
+	SetMinSharesForStrategy(opts *bind.TransactOpts, _strategy common.Address, _minShares *big.Int) (*types.Transaction, error)
 
-	SetStakingContractMultiplierBatch(opts *bind.TransactOpts, _votingPowerMultipliers []IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error)
+	SetMinVotingPower(opts *bind.TransactOpts, _minVotingPower *big.Int) (*types.Transaction, error)
 
-	SetStakingContractPriceFeed(opts *bind.TransactOpts, _stakingContract common.Address, _feed common.Address) (*types.Transaction, error)
+	SetNumOfOperatorsLimit(opts *bind.TransactOpts, _newLimitOfNumOfOperators *big.Int) (*types.Transaction, error)
 
-	SetSupportedStakingContracts(opts *bind.TransactOpts, _stakingContractsDetails []IAvsGovernanceStakingContractInfo) (*types.Transaction, error)
+	SetOthenticRegistry(opts *bind.TransactOpts, _othenticRegistry common.Address) (*types.Transaction, error)
 
-	SetSymbioticResolver(opts *bind.TransactOpts, _vetoSlasher common.Address, _resolver common.Address, _hints []byte) (*types.Transaction, error)
+	SetRewardsReceiverModificationDelay(opts *bind.TransactOpts, _rewardsReceiverModificationDelay *big.Int) (*types.Transaction, error)
 
-	SlashOperator(opts *bind.TransactOpts, _operator common.Address, _slashingCondition uint8) (*types.Transaction, error)
+	SetStrategyMultiplier(opts *bind.TransactOpts, _strategyMultiplier IAvsGovernanceStrategyMultiplier) (*types.Transaction, error)
+
+	SetStrategyMultiplierBatch(opts *bind.TransactOpts, _strategyMultipliers []IAvsGovernanceStrategyMultiplier) (*types.Transaction, error)
+
+	SetSupportedStrategies(opts *bind.TransactOpts, _strategies []common.Address) (*types.Transaction, error)
+
+	TransferAvsGovernanceMultisig(opts *bind.TransactOpts, _newAvsGovernanceMultisig common.Address) (*types.Transaction, error)
+
+	TransferMessageHandler(opts *bind.TransactOpts, _newMessageHandler common.Address) (*types.Transaction, error)
 
 	Unpause(opts *bind.TransactOpts, _pausableFlow [4]byte) (*types.Transaction, error)
+
+	UnregisterAsOperator(opts *bind.TransactOpts) (*types.Transaction, error)
+
+	UpdateAVSMetadataURI(opts *bind.TransactOpts, metadataURI string) (*types.Transaction, error)
+
+	WithdrawBatchRewards(opts *bind.TransactOpts, _operators []IAvsGovernancePaymentRequestMessage, _lastPayedTask *big.Int) (*types.Transaction, error)
+
+	WithdrawRewards(opts *bind.TransactOpts, _operator common.Address, _lastPayedTask *big.Int, _feeToClaim *big.Int) (*types.Transaction, error)
 }
 
 // ContractAvsGovernanceFilterer is an auto generated interface that defines the log filtering methods available for an Ethereum contract.
 type ContractAvsGovernanceFilters interface {
-	FilterEjectOperatorFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceEjectOperatorFailedIterator, error)
-	WatchEjectOperatorFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceEjectOperatorFailed) (event.Subscription, error)
-	ParseEjectOperatorFailed(log types.Log) (*ContractAvsGovernanceEjectOperatorFailed, error)
+	FilterBLSAuthSingletonSet(opts *bind.FilterOpts) (*ContractAvsGovernanceBLSAuthSingletonSetIterator, error)
+	WatchBLSAuthSingletonSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceBLSAuthSingletonSet) (event.Subscription, error)
+	ParseBLSAuthSingletonSet(log types.Log) (*ContractAvsGovernanceBLSAuthSingletonSet, error)
 
 	FilterFlowPaused(opts *bind.FilterOpts) (*ContractAvsGovernanceFlowPausedIterator, error)
 	WatchFlowPaused(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceFlowPaused) (event.Subscription, error)
@@ -252,33 +241,29 @@ type ContractAvsGovernanceFilters interface {
 	WatchInitialized(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceInitialized) (event.Subscription, error)
 	ParseInitialized(log types.Log) (*ContractAvsGovernanceInitialized, error)
 
-	FilterInvalidStakingContractsForSlashing(opts *bind.FilterOpts) (*ContractAvsGovernanceInvalidStakingContractsForSlashingIterator, error)
-	WatchInvalidStakingContractsForSlashing(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceInvalidStakingContractsForSlashing) (event.Subscription, error)
-	ParseInvalidStakingContractsForSlashing(log types.Log) (*ContractAvsGovernanceInvalidStakingContractsForSlashing, error)
+	FilterMaxEffectiveBalanceSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMaxEffectiveBalanceSetIterator, error)
+	WatchMaxEffectiveBalanceSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMaxEffectiveBalanceSet) (event.Subscription, error)
+	ParseMaxEffectiveBalanceSet(log types.Log) (*ContractAvsGovernanceMaxEffectiveBalanceSet, error)
 
-	FilterMinSlashableStakePerStakingContractSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator, error)
-	WatchMinSlashableStakePerStakingContractSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinSlashableStakePerStakingContractSet) (event.Subscription, error)
-	ParseMinSlashableStakePerStakingContractSet(log types.Log) (*ContractAvsGovernanceMinSlashableStakePerStakingContractSet, error)
+	FilterMinSharesPerStrategySet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinSharesPerStrategySetIterator, error)
+	WatchMinSharesPerStrategySet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinSharesPerStrategySet) (event.Subscription, error)
+	ParseMinSharesPerStrategySet(log types.Log) (*ContractAvsGovernanceMinSharesPerStrategySet, error)
 
-	FilterMinStakePerStakingContractSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinStakePerStakingContractSetIterator, error)
-	WatchMinStakePerStakingContractSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinStakePerStakingContractSet) (event.Subscription, error)
-	ParseMinStakePerStakingContractSet(log types.Log) (*ContractAvsGovernanceMinStakePerStakingContractSet, error)
+	FilterMinVotingPowerSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinVotingPowerSetIterator, error)
+	WatchMinVotingPowerSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinVotingPowerSet) (event.Subscription, error)
+	ParseMinVotingPowerSet(log types.Log) (*ContractAvsGovernanceMinVotingPowerSet, error)
 
-	FilterOperatorSlashed(opts *bind.FilterOpts) (*ContractAvsGovernanceOperatorSlashedIterator, error)
-	WatchOperatorSlashed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorSlashed) (event.Subscription, error)
-	ParseOperatorSlashed(log types.Log) (*ContractAvsGovernanceOperatorSlashed, error)
+	FilterOperatorRegistered(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceOperatorRegisteredIterator, error)
+	WatchOperatorRegistered(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorRegistered, operator []common.Address) (event.Subscription, error)
+	ParseOperatorRegistered(log types.Log) (*ContractAvsGovernanceOperatorRegistered, error)
 
-	FilterPriceFeedSet(opts *bind.FilterOpts, stakingContract []common.Address) (*ContractAvsGovernancePriceFeedSetIterator, error)
-	WatchPriceFeedSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernancePriceFeedSet, stakingContract []common.Address) (event.Subscription, error)
-	ParsePriceFeedSet(log types.Log) (*ContractAvsGovernancePriceFeedSet, error)
+	FilterOperatorUnregistered(opts *bind.FilterOpts) (*ContractAvsGovernanceOperatorUnregisteredIterator, error)
+	WatchOperatorUnregistered(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorUnregistered) (event.Subscription, error)
+	ParseOperatorUnregistered(log types.Log) (*ContractAvsGovernanceOperatorUnregistered, error)
 
-	FilterQueuedRewardsReceiverModification(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceQueuedRewardsReceiverModificationIterator, error)
-	WatchQueuedRewardsReceiverModification(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceQueuedRewardsReceiverModification, operator []common.Address) (event.Subscription, error)
+	FilterQueuedRewardsReceiverModification(opts *bind.FilterOpts) (*ContractAvsGovernanceQueuedRewardsReceiverModificationIterator, error)
+	WatchQueuedRewardsReceiverModification(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceQueuedRewardsReceiverModification) (event.Subscription, error)
 	ParseQueuedRewardsReceiverModification(log types.Log) (*ContractAvsGovernanceQueuedRewardsReceiverModification, error)
-
-	FilterRedistributionFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceRedistributionFailedIterator, error)
-	WatchRedistributionFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceRedistributionFailed) (event.Subscription, error)
-	ParseRedistributionFailed(log types.Log) (*ContractAvsGovernanceRedistributionFailed, error)
 
 	FilterRoleAdminChanged(opts *bind.FilterOpts, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (*ContractAvsGovernanceRoleAdminChangedIterator, error)
 	WatchRoleAdminChanged(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceRoleAdminChanged, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (event.Subscription, error)
@@ -292,9 +277,21 @@ type ContractAvsGovernanceFilters interface {
 	WatchRoleRevoked(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceRoleRevoked, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error)
 	ParseRoleRevoked(log types.Log) (*ContractAvsGovernanceRoleRevoked, error)
 
+	FilterSetAllowlistSigner(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAllowlistSignerIterator, error)
+	WatchSetAllowlistSigner(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAllowlistSigner) (event.Subscription, error)
+	ParseSetAllowlistSigner(log types.Log) (*ContractAvsGovernanceSetAllowlistSigner, error)
+
 	FilterSetAvsGovernanceLogic(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsGovernanceLogicIterator, error)
 	WatchSetAvsGovernanceLogic(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsGovernanceLogic) (event.Subscription, error)
 	ParseSetAvsGovernanceLogic(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceLogic, error)
+
+	FilterSetAvsGovernanceMultiplierSyncer(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator, error)
+	WatchSetAvsGovernanceMultiplierSyncer(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer) (event.Subscription, error)
+	ParseSetAvsGovernanceMultiplierSyncer(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer, error)
+
+	FilterSetAvsGovernanceMultisig(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsGovernanceMultisigIterator, error)
+	WatchSetAvsGovernanceMultisig(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsGovernanceMultisig) (event.Subscription, error)
+	ParseSetAvsGovernanceMultisig(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceMultisig, error)
 
 	FilterSetAvsName(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsNameIterator, error)
 	WatchSetAvsName(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsName) (event.Subscription, error)
@@ -304,73 +301,37 @@ type ContractAvsGovernanceFilters interface {
 	WatchSetIsAllowlisted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetIsAllowlisted) (event.Subscription, error)
 	ParseSetIsAllowlisted(log types.Log) (*ContractAvsGovernanceSetIsAllowlisted, error)
 
-	FilterSetP2pAuthenticationEnabled(opts *bind.FilterOpts) (*ContractAvsGovernanceSetP2pAuthenticationEnabledIterator, error)
-	WatchSetP2pAuthenticationEnabled(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetP2pAuthenticationEnabled) (event.Subscription, error)
-	ParseSetP2pAuthenticationEnabled(log types.Log) (*ContractAvsGovernanceSetP2pAuthenticationEnabled, error)
+	FilterSetMessageHandler(opts *bind.FilterOpts) (*ContractAvsGovernanceSetMessageHandlerIterator, error)
+	WatchSetMessageHandler(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetMessageHandler) (event.Subscription, error)
+	ParseSetMessageHandler(log types.Log) (*ContractAvsGovernanceSetMessageHandler, error)
 
-	FilterSetRewardsReceiver(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceSetRewardsReceiverIterator, error)
-	WatchSetRewardsReceiver(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiver, operator []common.Address) (event.Subscription, error)
+	FilterSetNumOfOperatorsLimit(opts *bind.FilterOpts) (*ContractAvsGovernanceSetNumOfOperatorsLimitIterator, error)
+	WatchSetNumOfOperatorsLimit(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetNumOfOperatorsLimit) (event.Subscription, error)
+	ParseSetNumOfOperatorsLimit(log types.Log) (*ContractAvsGovernanceSetNumOfOperatorsLimit, error)
+
+	FilterSetOthenticRegistry(opts *bind.FilterOpts) (*ContractAvsGovernanceSetOthenticRegistryIterator, error)
+	WatchSetOthenticRegistry(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetOthenticRegistry) (event.Subscription, error)
+	ParseSetOthenticRegistry(log types.Log) (*ContractAvsGovernanceSetOthenticRegistry, error)
+
+	FilterSetRewardsReceiver(opts *bind.FilterOpts) (*ContractAvsGovernanceSetRewardsReceiverIterator, error)
+	WatchSetRewardsReceiver(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiver) (event.Subscription, error)
 	ParseSetRewardsReceiver(log types.Log) (*ContractAvsGovernanceSetRewardsReceiver, error)
 
-	FilterSetStakingContractMultiplier(opts *bind.FilterOpts) (*ContractAvsGovernanceSetStakingContractMultiplierIterator, error)
-	WatchSetStakingContractMultiplier(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetStakingContractMultiplier) (event.Subscription, error)
-	ParseSetStakingContractMultiplier(log types.Log) (*ContractAvsGovernanceSetStakingContractMultiplier, error)
+	FilterSetRewardsReceiverModificationDelay(opts *bind.FilterOpts) (*ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator, error)
+	WatchSetRewardsReceiverModificationDelay(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiverModificationDelay) (event.Subscription, error)
+	ParseSetRewardsReceiverModificationDelay(log types.Log) (*ContractAvsGovernanceSetRewardsReceiverModificationDelay, error)
+
+	FilterSetStrategyMultiplier(opts *bind.FilterOpts) (*ContractAvsGovernanceSetStrategyMultiplierIterator, error)
+	WatchSetStrategyMultiplier(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetStrategyMultiplier) (event.Subscription, error)
+	ParseSetStrategyMultiplier(log types.Log) (*ContractAvsGovernanceSetStrategyMultiplier, error)
+
+	FilterSetSupportedStrategies(opts *bind.FilterOpts) (*ContractAvsGovernanceSetSupportedStrategiesIterator, error)
+	WatchSetSupportedStrategies(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetSupportedStrategies) (event.Subscription, error)
+	ParseSetSupportedStrategies(log types.Log) (*ContractAvsGovernanceSetSupportedStrategies, error)
 
 	FilterSetToken(opts *bind.FilterOpts) (*ContractAvsGovernanceSetTokenIterator, error)
 	WatchSetToken(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetToken) (event.Subscription, error)
 	ParseSetToken(log types.Log) (*ContractAvsGovernanceSetToken, error)
-
-	FilterSlashedFundsRedistributed(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashedFundsRedistributedIterator, error)
-	WatchSlashedFundsRedistributed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashedFundsRedistributed) (event.Subscription, error)
-	ParseSlashedFundsRedistributed(log types.Log) (*ContractAvsGovernanceSlashedFundsRedistributed, error)
-
-	FilterSlashingConfigNotActivated(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingConfigNotActivatedIterator, error)
-	WatchSlashingConfigNotActivated(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingConfigNotActivated) (event.Subscription, error)
-	ParseSlashingConfigNotActivated(log types.Log) (*ContractAvsGovernanceSlashingConfigNotActivated, error)
-
-	FilterSlashingConfigNotFound(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingConfigNotFoundIterator, error)
-	WatchSlashingConfigNotFound(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingConfigNotFound) (event.Subscription, error)
-	ParseSlashingConfigNotFound(log types.Log) (*ContractAvsGovernanceSlashingConfigNotFound, error)
-
-	FilterSlashingFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingFailedIterator, error)
-	WatchSlashingFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingFailed) (event.Subscription, error)
-	ParseSlashingFailed(log types.Log) (*ContractAvsGovernanceSlashingFailed, error)
-
-	FilterSymbioticSlashingBypassedZeroAmount(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator, error)
-	WatchSymbioticSlashingBypassedZeroAmount(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount, vault []common.Address, operator []common.Address) (event.Subscription, error)
-	ParseSymbioticSlashingBypassedZeroAmount(log types.Log) (*ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount, error)
-
-	FilterSymbioticSlashingExecuted(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingExecutedIterator, error)
-	WatchSymbioticSlashingExecuted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingExecuted, vault []common.Address, operator []common.Address) (event.Subscription, error)
-	ParseSymbioticSlashingExecuted(log types.Log) (*ContractAvsGovernanceSymbioticSlashingExecuted, error)
-
-	FilterSymbioticSlashingReverted(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingRevertedIterator, error)
-	WatchSymbioticSlashingReverted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingReverted, vault []common.Address, operator []common.Address) (event.Subscription, error)
-	ParseSymbioticSlashingReverted(log types.Log) (*ContractAvsGovernanceSymbioticSlashingReverted, error)
-
-	FilterSymbioticSlashingSkipped(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingSkippedIterator, error)
-	WatchSymbioticSlashingSkipped(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingSkipped, vault []common.Address, operator []common.Address) (event.Subscription, error)
-	ParseSymbioticSlashingSkipped(log types.Log) (*ContractAvsGovernanceSymbioticSlashingSkipped, error)
-
-	FilterVetoSlashAlreadyCompleted(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashAlreadyCompletedIterator, error)
-	WatchVetoSlashAlreadyCompleted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashAlreadyCompleted, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error)
-	ParseVetoSlashAlreadyCompleted(log types.Log) (*ContractAvsGovernanceVetoSlashAlreadyCompleted, error)
-
-	FilterVetoSlashExecuted(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashExecutedIterator, error)
-	WatchVetoSlashExecuted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashExecuted, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error)
-	ParseVetoSlashExecuted(log types.Log) (*ContractAvsGovernanceVetoSlashExecuted, error)
-
-	FilterVetoSlashExecutionFailed(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashExecutionFailedIterator, error)
-	WatchVetoSlashExecutionFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashExecutionFailed, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error)
-	ParseVetoSlashExecutionFailed(log types.Log) (*ContractAvsGovernanceVetoSlashExecutionFailed, error)
-
-	FilterVetoSlashRequested(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int, operator []common.Address) (*ContractAvsGovernanceVetoSlashRequestedIterator, error)
-	WatchVetoSlashRequested(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashRequested, slasher []common.Address, slashIndex []*big.Int, operator []common.Address) (event.Subscription, error)
-	ParseVetoSlashRequested(log types.Log) (*ContractAvsGovernanceVetoSlashRequested, error)
-
-	FilterSetNewSupportedStakingContracts(opts *bind.FilterOpts) (*ContractAvsGovernanceSetNewSupportedStakingContractsIterator, error)
-	WatchSetNewSupportedStakingContracts(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetNewSupportedStakingContracts) (event.Subscription, error)
-	ParseSetNewSupportedStakingContracts(log types.Log) (*ContractAvsGovernanceSetNewSupportedStakingContracts, error)
 }
 
 // ContractAvsGovernance is an auto generated Go binding around an Ethereum contract.
@@ -558,12 +519,12 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) DEFAULTADMINRO
 	return _ContractAvsGovernance.Contract.DEFAULTADMINROLE(&_ContractAvsGovernance.CallOpts)
 }
 
-// EXTENSIONIMPLEMENTATION is a free data retrieval call binding the contract method 0x226def04.
+// AvsDirectory is a free data retrieval call binding the contract method 0x6b3aa72e.
 //
-// Solidity: function EXTENSION_IMPLEMENTATION() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) EXTENSIONIMPLEMENTATION(opts *bind.CallOpts) (common.Address, error) {
+// Solidity: function avsDirectory() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) AvsDirectory(opts *bind.CallOpts) (common.Address, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "EXTENSION_IMPLEMENTATION")
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "avsDirectory")
 
 	if err != nil {
 		return *new(common.Address), err
@@ -575,49 +536,18 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCaller) EXTENSIONIMPLEMENTATI
 
 }
 
-// EXTENSIONIMPLEMENTATION is a free data retrieval call binding the contract method 0x226def04.
+// AvsDirectory is a free data retrieval call binding the contract method 0x6b3aa72e.
 //
-// Solidity: function EXTENSION_IMPLEMENTATION() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) EXTENSIONIMPLEMENTATION() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.EXTENSIONIMPLEMENTATION(&_ContractAvsGovernance.CallOpts)
+// Solidity: function avsDirectory() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) AvsDirectory() (common.Address, error) {
+	return _ContractAvsGovernance.Contract.AvsDirectory(&_ContractAvsGovernance.CallOpts)
 }
 
-// EXTENSIONIMPLEMENTATION is a free data retrieval call binding the contract method 0x226def04.
+// AvsDirectory is a free data retrieval call binding the contract method 0x6b3aa72e.
 //
-// Solidity: function EXTENSION_IMPLEMENTATION() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) EXTENSIONIMPLEMENTATION() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.EXTENSIONIMPLEMENTATION(&_ContractAvsGovernance.CallOpts)
-}
-
-// AvsGovernanceLogic is a free data retrieval call binding the contract method 0x9e91c39e.
-//
-// Solidity: function avsGovernanceLogic() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) AvsGovernanceLogic(opts *bind.CallOpts) (common.Address, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "avsGovernanceLogic")
-
-	if err != nil {
-		return *new(common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-
-	return out0, err
-
-}
-
-// AvsGovernanceLogic is a free data retrieval call binding the contract method 0x9e91c39e.
-//
-// Solidity: function avsGovernanceLogic() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) AvsGovernanceLogic() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.AvsGovernanceLogic(&_ContractAvsGovernance.CallOpts)
-}
-
-// AvsGovernanceLogic is a free data retrieval call binding the contract method 0x9e91c39e.
-//
-// Solidity: function avsGovernanceLogic() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) AvsGovernanceLogic() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.AvsGovernanceLogic(&_ContractAvsGovernance.CallOpts)
+// Solidity: function avsDirectory() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) AvsDirectory() (common.Address, error) {
+	return _ContractAvsGovernance.Contract.AvsDirectory(&_ContractAvsGovernance.CallOpts)
 }
 
 // AvsName is a free data retrieval call binding the contract method 0x41b92a29.
@@ -651,35 +581,35 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) AvsName() (str
 	return _ContractAvsGovernance.Contract.AvsName(&_ContractAvsGovernance.CallOpts)
 }
 
-// AvsTreasury is a free data retrieval call binding the contract method 0x1246193e.
+// GetDefaultStrategies is a free data retrieval call binding the contract method 0xe86685d9.
 //
-// Solidity: function avsTreasury() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) AvsTreasury(opts *bind.CallOpts) (common.Address, error) {
+// Solidity: function getDefaultStrategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetDefaultStrategies(opts *bind.CallOpts) ([]common.Address, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "avsTreasury")
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "getDefaultStrategies")
 
 	if err != nil {
-		return *new(common.Address), err
+		return *new([]common.Address), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
 
 	return out0, err
 
 }
 
-// AvsTreasury is a free data retrieval call binding the contract method 0x1246193e.
+// GetDefaultStrategies is a free data retrieval call binding the contract method 0xe86685d9.
 //
-// Solidity: function avsTreasury() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) AvsTreasury() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.AvsTreasury(&_ContractAvsGovernance.CallOpts)
+// Solidity: function getDefaultStrategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetDefaultStrategies() ([]common.Address, error) {
+	return _ContractAvsGovernance.Contract.GetDefaultStrategies(&_ContractAvsGovernance.CallOpts)
 }
 
-// AvsTreasury is a free data retrieval call binding the contract method 0x1246193e.
+// GetDefaultStrategies is a free data retrieval call binding the contract method 0xe86685d9.
 //
-// Solidity: function avsTreasury() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) AvsTreasury() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.AvsTreasury(&_ContractAvsGovernance.CallOpts)
+// Solidity: function getDefaultStrategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetDefaultStrategies() ([]common.Address, error) {
+	return _ContractAvsGovernance.Contract.GetDefaultStrategies(&_ContractAvsGovernance.CallOpts)
 }
 
 // GetIsAllowlisted is a free data retrieval call binding the contract method 0xb525fa88.
@@ -713,35 +643,35 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetIsAllowlist
 	return _ContractAvsGovernance.Contract.GetIsAllowlisted(&_ContractAvsGovernance.CallOpts)
 }
 
-// GetIsOperatorEjected is a free data retrieval call binding the contract method 0x37d80e7d.
+// GetNumOfOperatorsLimit is a free data retrieval call binding the contract method 0xf251c9a6.
 //
-// Solidity: function getIsOperatorEjected(address _operator) view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetIsOperatorEjected(opts *bind.CallOpts, _operator common.Address) (bool, error) {
+// Solidity: function getNumOfOperatorsLimit() view returns(uint256 numOfOperatorsLimitView)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetNumOfOperatorsLimit(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getIsOperatorEjected", _operator)
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "getNumOfOperatorsLimit")
 
 	if err != nil {
-		return *new(bool), err
+		return *new(*big.Int), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
 
 }
 
-// GetIsOperatorEjected is a free data retrieval call binding the contract method 0x37d80e7d.
+// GetNumOfOperatorsLimit is a free data retrieval call binding the contract method 0xf251c9a6.
 //
-// Solidity: function getIsOperatorEjected(address _operator) view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetIsOperatorEjected(_operator common.Address) (bool, error) {
-	return _ContractAvsGovernance.Contract.GetIsOperatorEjected(&_ContractAvsGovernance.CallOpts, _operator)
+// Solidity: function getNumOfOperatorsLimit() view returns(uint256 numOfOperatorsLimitView)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetNumOfOperatorsLimit() (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.GetNumOfOperatorsLimit(&_ContractAvsGovernance.CallOpts)
 }
 
-// GetIsOperatorEjected is a free data retrieval call binding the contract method 0x37d80e7d.
+// GetNumOfOperatorsLimit is a free data retrieval call binding the contract method 0xf251c9a6.
 //
-// Solidity: function getIsOperatorEjected(address _operator) view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetIsOperatorEjected(_operator common.Address) (bool, error) {
-	return _ContractAvsGovernance.Contract.GetIsOperatorEjected(&_ContractAvsGovernance.CallOpts, _operator)
+// Solidity: function getNumOfOperatorsLimit() view returns(uint256 numOfOperatorsLimitView)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetNumOfOperatorsLimit() (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.GetNumOfOperatorsLimit(&_ContractAvsGovernance.CallOpts)
 }
 
 // GetOperatorRestakedStrategies is a free data retrieval call binding the contract method 0x33cfb7b7.
@@ -775,99 +705,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetOperatorRes
 	return _ContractAvsGovernance.Contract.GetOperatorRestakedStrategies(&_ContractAvsGovernance.CallOpts, _operator)
 }
 
-// GetPendingVetoSlashCount is a free data retrieval call binding the contract method 0xa889f180.
-//
-// Solidity: function getPendingVetoSlashCount() view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetPendingVetoSlashCount(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getPendingVetoSlashCount")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetPendingVetoSlashCount is a free data retrieval call binding the contract method 0xa889f180.
-//
-// Solidity: function getPendingVetoSlashCount() view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetPendingVetoSlashCount() (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashCount(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetPendingVetoSlashCount is a free data retrieval call binding the contract method 0xa889f180.
-//
-// Solidity: function getPendingVetoSlashCount() view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetPendingVetoSlashCount() (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashCount(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetPendingVetoSlashRequest is a free data retrieval call binding the contract method 0xb9b00a34.
-//
-// Solidity: function getPendingVetoSlashRequest(uint256 _index) view returns((address,uint256))
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetPendingVetoSlashRequest(opts *bind.CallOpts, _index *big.Int) (IAvsGovernanceVetoSlashRequest, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getPendingVetoSlashRequest", _index)
-
-	if err != nil {
-		return *new(IAvsGovernanceVetoSlashRequest), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(IAvsGovernanceVetoSlashRequest)).(*IAvsGovernanceVetoSlashRequest)
-
-	return out0, err
-
-}
-
-// GetPendingVetoSlashRequest is a free data retrieval call binding the contract method 0xb9b00a34.
-//
-// Solidity: function getPendingVetoSlashRequest(uint256 _index) view returns((address,uint256))
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetPendingVetoSlashRequest(_index *big.Int) (IAvsGovernanceVetoSlashRequest, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashRequest(&_ContractAvsGovernance.CallOpts, _index)
-}
-
-// GetPendingVetoSlashRequest is a free data retrieval call binding the contract method 0xb9b00a34.
-//
-// Solidity: function getPendingVetoSlashRequest(uint256 _index) view returns((address,uint256))
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetPendingVetoSlashRequest(_index *big.Int) (IAvsGovernanceVetoSlashRequest, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashRequest(&_ContractAvsGovernance.CallOpts, _index)
-}
-
-// GetPendingVetoSlashRequests is a free data retrieval call binding the contract method 0x7067c01f.
-//
-// Solidity: function getPendingVetoSlashRequests() view returns((address,uint256)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetPendingVetoSlashRequests(opts *bind.CallOpts) ([]IAvsGovernanceVetoSlashRequest, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getPendingVetoSlashRequests")
-
-	if err != nil {
-		return *new([]IAvsGovernanceVetoSlashRequest), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]IAvsGovernanceVetoSlashRequest)).(*[]IAvsGovernanceVetoSlashRequest)
-
-	return out0, err
-
-}
-
-// GetPendingVetoSlashRequests is a free data retrieval call binding the contract method 0x7067c01f.
-//
-// Solidity: function getPendingVetoSlashRequests() view returns((address,uint256)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetPendingVetoSlashRequests() ([]IAvsGovernanceVetoSlashRequest, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashRequests(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetPendingVetoSlashRequests is a free data retrieval call binding the contract method 0x7067c01f.
-//
-// Solidity: function getPendingVetoSlashRequests() view returns((address,uint256)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetPendingVetoSlashRequests() ([]IAvsGovernanceVetoSlashRequest, error) {
-	return _ContractAvsGovernance.Contract.GetPendingVetoSlashRequests(&_ContractAvsGovernance.CallOpts)
-}
-
 // GetRestakeableStrategies is a free data retrieval call binding the contract method 0xe481af9d.
 //
 // Solidity: function getRestakeableStrategies() view returns(address[])
@@ -897,37 +734,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetRestakeableStrate
 // Solidity: function getRestakeableStrategies() view returns(address[])
 func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetRestakeableStrategies() ([]common.Address, error) {
 	return _ContractAvsGovernance.Contract.GetRestakeableStrategies(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetRestakeableVaults is a free data retrieval call binding the contract method 0xdf098f1d.
-//
-// Solidity: function getRestakeableVaults() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetRestakeableVaults(opts *bind.CallOpts) ([]common.Address, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getRestakeableVaults")
-
-	if err != nil {
-		return *new([]common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
-
-	return out0, err
-
-}
-
-// GetRestakeableVaults is a free data retrieval call binding the contract method 0xdf098f1d.
-//
-// Solidity: function getRestakeableVaults() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetRestakeableVaults() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.GetRestakeableVaults(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetRestakeableVaults is a free data retrieval call binding the contract method 0xdf098f1d.
-//
-// Solidity: function getRestakeableVaults() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetRestakeableVaults() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.GetRestakeableVaults(&_ContractAvsGovernance.CallOpts)
 }
 
 // GetRewardsReceiver is a free data retrieval call binding the contract method 0x5e95cee2.
@@ -990,100 +796,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetRoleAdmin(role [3
 // Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
 func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
 	return _ContractAvsGovernance.Contract.GetRoleAdmin(&_ContractAvsGovernance.CallOpts, role)
-}
-
-// GetSlashableStrategies is a free data retrieval call binding the contract method 0x7b4a5917.
-//
-// Solidity: function getSlashableStrategies() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetSlashableStrategies(opts *bind.CallOpts) ([]common.Address, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getSlashableStrategies")
-
-	if err != nil {
-		return *new([]common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
-
-	return out0, err
-
-}
-
-// GetSlashableStrategies is a free data retrieval call binding the contract method 0x7b4a5917.
-//
-// Solidity: function getSlashableStrategies() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetSlashableStrategies() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.GetSlashableStrategies(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetSlashableStrategies is a free data retrieval call binding the contract method 0x7b4a5917.
-//
-// Solidity: function getSlashableStrategies() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetSlashableStrategies() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.GetSlashableStrategies(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetSlashingConfig is a free data retrieval call binding the contract method 0x0a0c5af7.
-//
-// Solidity: function getSlashingConfig(uint8 _condition) view returns((bool,bool,uint24))
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetSlashingConfig(opts *bind.CallOpts, _condition uint8) (IAvsGovernanceSlashingConfig, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getSlashingConfig", _condition)
-
-	if err != nil {
-		return *new(IAvsGovernanceSlashingConfig), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(IAvsGovernanceSlashingConfig)).(*IAvsGovernanceSlashingConfig)
-
-	return out0, err
-
-}
-
-// GetSlashingConfig is a free data retrieval call binding the contract method 0x0a0c5af7.
-//
-// Solidity: function getSlashingConfig(uint8 _condition) view returns((bool,bool,uint24))
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetSlashingConfig(_condition uint8) (IAvsGovernanceSlashingConfig, error) {
-	return _ContractAvsGovernance.Contract.GetSlashingConfig(&_ContractAvsGovernance.CallOpts, _condition)
-}
-
-// GetSlashingConfig is a free data retrieval call binding the contract method 0x0a0c5af7.
-//
-// Solidity: function getSlashingConfig(uint8 _condition) view returns((bool,bool,uint24))
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetSlashingConfig(_condition uint8) (IAvsGovernanceSlashingConfig, error) {
-	return _ContractAvsGovernance.Contract.GetSlashingConfig(&_ContractAvsGovernance.CallOpts, _condition)
-}
-
-// GetStakingContractDetailsAndMultipliers is a free data retrieval call binding the contract method 0xeb243a1c.
-//
-// Solidity: function getStakingContractDetailsAndMultipliers() view returns((address,uint256,uint256,uint8)[], (address,uint256,uint256,uint8)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) GetStakingContractDetailsAndMultipliers(opts *bind.CallOpts) ([]IAvsGovernanceStakingContractDetails, []IAvsGovernanceVotingPowerMultiplier, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "getStakingContractDetailsAndMultipliers")
-
-	if err != nil {
-		return *new([]IAvsGovernanceStakingContractDetails), *new([]IAvsGovernanceVotingPowerMultiplier), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]IAvsGovernanceStakingContractDetails)).(*[]IAvsGovernanceStakingContractDetails)
-	out1 := *abi.ConvertType(out[1], new([]IAvsGovernanceVotingPowerMultiplier)).(*[]IAvsGovernanceVotingPowerMultiplier)
-
-	return out0, out1, err
-
-}
-
-// GetStakingContractDetailsAndMultipliers is a free data retrieval call binding the contract method 0xeb243a1c.
-//
-// Solidity: function getStakingContractDetailsAndMultipliers() view returns((address,uint256,uint256,uint8)[], (address,uint256,uint256,uint8)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) GetStakingContractDetailsAndMultipliers() ([]IAvsGovernanceStakingContractDetails, []IAvsGovernanceVotingPowerMultiplier, error) {
-	return _ContractAvsGovernance.Contract.GetStakingContractDetailsAndMultipliers(&_ContractAvsGovernance.CallOpts)
-}
-
-// GetStakingContractDetailsAndMultipliers is a free data retrieval call binding the contract method 0xeb243a1c.
-//
-// Solidity: function getStakingContractDetailsAndMultipliers() view returns((address,uint256,uint256,uint8)[], (address,uint256,uint256,uint8)[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) GetStakingContractDetailsAndMultipliers() ([]IAvsGovernanceStakingContractDetails, []IAvsGovernanceVotingPowerMultiplier, error) {
-	return _ContractAvsGovernance.Contract.GetStakingContractDetailsAndMultipliers(&_ContractAvsGovernance.CallOpts)
 }
 
 // HasRole is a free data retrieval call binding the contract method 0x91d14854.
@@ -1210,12 +922,12 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) MaxEffectiveBa
 	return _ContractAvsGovernance.Contract.MaxEffectiveBalance(&_ContractAvsGovernance.CallOpts)
 }
 
-// MinSlashableStakePerStakingContract is a free data retrieval call binding the contract method 0x2860b259.
+// MinSharesForStrategy is a free data retrieval call binding the contract method 0xc3814e5b.
 //
-// Solidity: function minSlashableStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) MinSlashableStakePerStakingContract(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error) {
+// Solidity: function minSharesForStrategy(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) MinSharesForStrategy(opts *bind.CallOpts, _strategy common.Address) (*big.Int, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "minSlashableStakePerStakingContract", _stakingContract)
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "minSharesForStrategy", _strategy)
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -1227,49 +939,18 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCaller) MinSlashableStakePerS
 
 }
 
-// MinSlashableStakePerStakingContract is a free data retrieval call binding the contract method 0x2860b259.
+// MinSharesForStrategy is a free data retrieval call binding the contract method 0xc3814e5b.
 //
-// Solidity: function minSlashableStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) MinSlashableStakePerStakingContract(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.MinSlashableStakePerStakingContract(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function minSharesForStrategy(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) MinSharesForStrategy(_strategy common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.MinSharesForStrategy(&_ContractAvsGovernance.CallOpts, _strategy)
 }
 
-// MinSlashableStakePerStakingContract is a free data retrieval call binding the contract method 0x2860b259.
+// MinSharesForStrategy is a free data retrieval call binding the contract method 0xc3814e5b.
 //
-// Solidity: function minSlashableStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) MinSlashableStakePerStakingContract(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.MinSlashableStakePerStakingContract(&_ContractAvsGovernance.CallOpts, _stakingContract)
-}
-
-// MinStakePerStakingContract is a free data retrieval call binding the contract method 0x88160c4c.
-//
-// Solidity: function minStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) MinStakePerStakingContract(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "minStakePerStakingContract", _stakingContract)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// MinStakePerStakingContract is a free data retrieval call binding the contract method 0x88160c4c.
-//
-// Solidity: function minStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) MinStakePerStakingContract(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.MinStakePerStakingContract(&_ContractAvsGovernance.CallOpts, _stakingContract)
-}
-
-// MinStakePerStakingContract is a free data retrieval call binding the contract method 0x88160c4c.
-//
-// Solidity: function minStakePerStakingContract(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) MinStakePerStakingContract(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.MinStakePerStakingContract(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function minSharesForStrategy(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) MinSharesForStrategy(_strategy common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.MinSharesForStrategy(&_ContractAvsGovernance.CallOpts, _strategy)
 }
 
 // MinVotingPower is a free data retrieval call binding the contract method 0x36fffde0.
@@ -1303,37 +984,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) MinVotingPower
 	return _ContractAvsGovernance.Contract.MinVotingPower(&_ContractAvsGovernance.CallOpts)
 }
 
-// Multiplier is a free data retrieval call binding the contract method 0xa9b3f8b7.
-//
-// Solidity: function multiplier(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) Multiplier(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "multiplier", _stakingContract)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// Multiplier is a free data retrieval call binding the contract method 0xa9b3f8b7.
-//
-// Solidity: function multiplier(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) Multiplier(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.Multiplier(&_ContractAvsGovernance.CallOpts, _stakingContract)
-}
-
-// Multiplier is a free data retrieval call binding the contract method 0xa9b3f8b7.
-//
-// Solidity: function multiplier(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) Multiplier(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.Multiplier(&_ContractAvsGovernance.CallOpts, _stakingContract)
-}
-
 // NumOfActiveOperators is a free data retrieval call binding the contract method 0x7897dec3.
 //
 // Solidity: function numOfActiveOperators() view returns(uint256)
@@ -1365,74 +1015,12 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) NumOfActiveOpe
 	return _ContractAvsGovernance.Contract.NumOfActiveOperators(&_ContractAvsGovernance.CallOpts)
 }
 
-// P2pAuthenticationEnabled is a free data retrieval call binding the contract method 0xcab1a5ef.
+// NumOfOperators is a free data retrieval call binding the contract method 0x6ade02da.
 //
-// Solidity: function p2pAuthenticationEnabled() view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) P2pAuthenticationEnabled(opts *bind.CallOpts) (bool, error) {
+// Solidity: function numOfOperators() view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) NumOfOperators(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "p2pAuthenticationEnabled")
-
-	if err != nil {
-		return *new(bool), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
-
-	return out0, err
-
-}
-
-// P2pAuthenticationEnabled is a free data retrieval call binding the contract method 0xcab1a5ef.
-//
-// Solidity: function p2pAuthenticationEnabled() view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) P2pAuthenticationEnabled() (bool, error) {
-	return _ContractAvsGovernance.Contract.P2pAuthenticationEnabled(&_ContractAvsGovernance.CallOpts)
-}
-
-// P2pAuthenticationEnabled is a free data retrieval call binding the contract method 0xcab1a5ef.
-//
-// Solidity: function p2pAuthenticationEnabled() view returns(bool)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) P2pAuthenticationEnabled() (bool, error) {
-	return _ContractAvsGovernance.Contract.P2pAuthenticationEnabled(&_ContractAvsGovernance.CallOpts)
-}
-
-// RedistributionManager is a free data retrieval call binding the contract method 0x56e25cf8.
-//
-// Solidity: function redistributionManager() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) RedistributionManager(opts *bind.CallOpts) (common.Address, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "redistributionManager")
-
-	if err != nil {
-		return *new(common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-
-	return out0, err
-
-}
-
-// RedistributionManager is a free data retrieval call binding the contract method 0x56e25cf8.
-//
-// Solidity: function redistributionManager() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) RedistributionManager() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.RedistributionManager(&_ContractAvsGovernance.CallOpts)
-}
-
-// RedistributionManager is a free data retrieval call binding the contract method 0x56e25cf8.
-//
-// Solidity: function redistributionManager() view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) RedistributionManager() (common.Address, error) {
-	return _ContractAvsGovernance.Contract.RedistributionManager(&_ContractAvsGovernance.CallOpts)
-}
-
-// SlashableStakeWeight is a free data retrieval call binding the contract method 0x26f1cda7.
-//
-// Solidity: function slashableStakeWeight(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) SlashableStakeWeight(opts *bind.CallOpts, _stakingContract common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "slashableStakeWeight", _stakingContract)
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "numOfOperators")
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -1444,57 +1032,57 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCaller) SlashableStakeWeight(
 
 }
 
-// SlashableStakeWeight is a free data retrieval call binding the contract method 0x26f1cda7.
+// NumOfOperators is a free data retrieval call binding the contract method 0x6ade02da.
 //
-// Solidity: function slashableStakeWeight(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SlashableStakeWeight(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.SlashableStakeWeight(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function numOfOperators() view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) NumOfOperators() (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.NumOfOperators(&_ContractAvsGovernance.CallOpts)
 }
 
-// SlashableStakeWeight is a free data retrieval call binding the contract method 0x26f1cda7.
+// NumOfOperators is a free data retrieval call binding the contract method 0x6ade02da.
 //
-// Solidity: function slashableStakeWeight(address _stakingContract) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) SlashableStakeWeight(_stakingContract common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.SlashableStakeWeight(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function numOfOperators() view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) NumOfOperators() (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.NumOfOperators(&_ContractAvsGovernance.CallOpts)
 }
 
-// StakingContractToFeed is a free data retrieval call binding the contract method 0xbce2c28d.
+// NumOfShares is a free data retrieval call binding the contract method 0x6a907803.
 //
-// Solidity: function stakingContractToFeed(address _stakingContract) view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) StakingContractToFeed(opts *bind.CallOpts, _stakingContract common.Address) (common.Address, error) {
+// Solidity: function numOfShares(address _operator) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) NumOfShares(opts *bind.CallOpts, _operator common.Address) (*big.Int, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "stakingContractToFeed", _stakingContract)
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "numOfShares", _operator)
 
 	if err != nil {
-		return *new(common.Address), err
+		return *new(*big.Int), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
 
 }
 
-// StakingContractToFeed is a free data retrieval call binding the contract method 0xbce2c28d.
+// NumOfShares is a free data retrieval call binding the contract method 0x6a907803.
 //
-// Solidity: function stakingContractToFeed(address _stakingContract) view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) StakingContractToFeed(_stakingContract common.Address) (common.Address, error) {
-	return _ContractAvsGovernance.Contract.StakingContractToFeed(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function numOfShares(address _operator) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) NumOfShares(_operator common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.NumOfShares(&_ContractAvsGovernance.CallOpts, _operator)
 }
 
-// StakingContractToFeed is a free data retrieval call binding the contract method 0xbce2c28d.
+// NumOfShares is a free data retrieval call binding the contract method 0x6a907803.
 //
-// Solidity: function stakingContractToFeed(address _stakingContract) view returns(address)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) StakingContractToFeed(_stakingContract common.Address) (common.Address, error) {
-	return _ContractAvsGovernance.Contract.StakingContractToFeed(&_ContractAvsGovernance.CallOpts, _stakingContract)
+// Solidity: function numOfShares(address _operator) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) NumOfShares(_operator common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.NumOfShares(&_ContractAvsGovernance.CallOpts, _operator)
 }
 
-// StakingContracts is a free data retrieval call binding the contract method 0x560d5484.
+// Strategies is a free data retrieval call binding the contract method 0xd9f9027f.
 //
-// Solidity: function stakingContracts() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) StakingContracts(opts *bind.CallOpts) ([]common.Address, error) {
+// Solidity: function strategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) Strategies(opts *bind.CallOpts) ([]common.Address, error) {
 	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "stakingContracts")
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "strategies")
 
 	if err != nil {
 		return *new([]common.Address), err
@@ -1506,18 +1094,49 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCaller) StakingContracts(opts
 
 }
 
-// StakingContracts is a free data retrieval call binding the contract method 0x560d5484.
+// Strategies is a free data retrieval call binding the contract method 0xd9f9027f.
 //
-// Solidity: function stakingContracts() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) StakingContracts() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.StakingContracts(&_ContractAvsGovernance.CallOpts)
+// Solidity: function strategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) Strategies() ([]common.Address, error) {
+	return _ContractAvsGovernance.Contract.Strategies(&_ContractAvsGovernance.CallOpts)
 }
 
-// StakingContracts is a free data retrieval call binding the contract method 0x560d5484.
+// Strategies is a free data retrieval call binding the contract method 0xd9f9027f.
 //
-// Solidity: function stakingContracts() view returns(address[])
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) StakingContracts() ([]common.Address, error) {
-	return _ContractAvsGovernance.Contract.StakingContracts(&_ContractAvsGovernance.CallOpts)
+// Solidity: function strategies() view returns(address[])
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) Strategies() ([]common.Address, error) {
+	return _ContractAvsGovernance.Contract.Strategies(&_ContractAvsGovernance.CallOpts)
+}
+
+// StrategyMultiplier is a free data retrieval call binding the contract method 0x8f53bc50.
+//
+// Solidity: function strategyMultiplier(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) StrategyMultiplier(opts *bind.CallOpts, _strategy common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "strategyMultiplier", _strategy)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// StrategyMultiplier is a free data retrieval call binding the contract method 0x8f53bc50.
+//
+// Solidity: function strategyMultiplier(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) StrategyMultiplier(_strategy common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.StrategyMultiplier(&_ContractAvsGovernance.CallOpts, _strategy)
+}
+
+// StrategyMultiplier is a free data retrieval call binding the contract method 0x8f53bc50.
+//
+// Solidity: function strategyMultiplier(address _strategy) view returns(uint256)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) StrategyMultiplier(_strategy common.Address) (*big.Int, error) {
+	return _ContractAvsGovernance.Contract.StrategyMultiplier(&_ContractAvsGovernance.CallOpts, _strategy)
 }
 
 // SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
@@ -1551,6 +1170,37 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) SupportsInterf
 	return _ContractAvsGovernance.Contract.SupportsInterface(&_ContractAvsGovernance.CallOpts, interfaceId)
 }
 
+// Vault is a free data retrieval call binding the contract method 0xfbfa77cf.
+//
+// Solidity: function vault() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceCaller) Vault(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _ContractAvsGovernance.contract.Call(opts, &out, "vault")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Vault is a free data retrieval call binding the contract method 0xfbfa77cf.
+//
+// Solidity: function vault() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) Vault() (common.Address, error) {
+	return _ContractAvsGovernance.Contract.Vault(&_ContractAvsGovernance.CallOpts)
+}
+
+// Vault is a free data retrieval call binding the contract method 0xfbfa77cf.
+//
+// Solidity: function vault() view returns(address)
+func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) Vault() (common.Address, error) {
+	return _ContractAvsGovernance.Contract.Vault(&_ContractAvsGovernance.CallOpts)
+}
+
 // VotingPower is a free data retrieval call binding the contract method 0xc07473f6.
 //
 // Solidity: function votingPower(address _operator) view returns(uint256)
@@ -1582,58 +1232,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) VotingPower(_o
 	return _ContractAvsGovernance.Contract.VotingPower(&_ContractAvsGovernance.CallOpts, _operator)
 }
 
-// VotingPowerPerStakingContracts is a free data retrieval call binding the contract method 0xcbd969c9.
-//
-// Solidity: function votingPowerPerStakingContracts(address _operator, address[] _stakingContracts) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCaller) VotingPowerPerStakingContracts(opts *bind.CallOpts, _operator common.Address, _stakingContracts []common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractAvsGovernance.contract.Call(opts, &out, "votingPowerPerStakingContracts", _operator, _stakingContracts)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// VotingPowerPerStakingContracts is a free data retrieval call binding the contract method 0xcbd969c9.
-//
-// Solidity: function votingPowerPerStakingContracts(address _operator, address[] _stakingContracts) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) VotingPowerPerStakingContracts(_operator common.Address, _stakingContracts []common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.VotingPowerPerStakingContracts(&_ContractAvsGovernance.CallOpts, _operator, _stakingContracts)
-}
-
-// VotingPowerPerStakingContracts is a free data retrieval call binding the contract method 0xcbd969c9.
-//
-// Solidity: function votingPowerPerStakingContracts(address _operator, address[] _stakingContracts) view returns(uint256)
-func (_ContractAvsGovernance *ContractAvsGovernanceCallerSession) VotingPowerPerStakingContracts(_operator common.Address, _stakingContracts []common.Address) (*big.Int, error) {
-	return _ContractAvsGovernance.Contract.VotingPowerPerStakingContracts(&_ContractAvsGovernance.CallOpts, _operator, _stakingContracts)
-}
-
-// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
-//
-// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) ApplyCustomSlashing(opts *bind.TransactOpts, _operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "applyCustomSlashing", _operator, _slashingStakingContractInfos)
-}
-
-// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
-//
-// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) ApplyCustomSlashing(_operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.ApplyCustomSlashing(&_ContractAvsGovernance.TransactOpts, _operator, _slashingStakingContractInfos)
-}
-
-// ApplyCustomSlashing is a paid mutator transaction binding the contract method 0x24f8c18b.
-//
-// Solidity: function applyCustomSlashing(address _operator, (address,uint8,uint256)[] _slashingStakingContractInfos) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) ApplyCustomSlashing(_operator common.Address, _slashingStakingContractInfos []ISlashingConfigSlashingStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.ApplyCustomSlashing(&_ContractAvsGovernance.TransactOpts, _operator, _slashingStakingContractInfos)
-}
-
 // CompleteRewardsReceiverModification is a paid mutator transaction binding the contract method 0xe6474b0f.
 //
 // Solidity: function completeRewardsReceiverModification() returns()
@@ -1655,25 +1253,25 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) CompleteRe
 	return _ContractAvsGovernance.Contract.CompleteRewardsReceiverModification(&_ContractAvsGovernance.TransactOpts)
 }
 
-// ExecuteVetoSlashRequests is a paid mutator transaction binding the contract method 0xe9dbe87f.
+// DepositERC20 is a paid mutator transaction binding the contract method 0xb79092fd.
 //
-// Solidity: function executeVetoSlashRequests(uint256 _from, uint256 _to) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) ExecuteVetoSlashRequests(opts *bind.TransactOpts, _from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "executeVetoSlashRequests", _from, _to)
+// Solidity: function depositERC20(uint256 _amount) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) DepositERC20(opts *bind.TransactOpts, _amount *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "depositERC20", _amount)
 }
 
-// ExecuteVetoSlashRequests is a paid mutator transaction binding the contract method 0xe9dbe87f.
+// DepositERC20 is a paid mutator transaction binding the contract method 0xb79092fd.
 //
-// Solidity: function executeVetoSlashRequests(uint256 _from, uint256 _to) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) ExecuteVetoSlashRequests(_from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.ExecuteVetoSlashRequests(&_ContractAvsGovernance.TransactOpts, _from, _to)
+// Solidity: function depositERC20(uint256 _amount) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) DepositERC20(_amount *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.DepositERC20(&_ContractAvsGovernance.TransactOpts, _amount)
 }
 
-// ExecuteVetoSlashRequests is a paid mutator transaction binding the contract method 0xe9dbe87f.
+// DepositERC20 is a paid mutator transaction binding the contract method 0xb79092fd.
 //
-// Solidity: function executeVetoSlashRequests(uint256 _from, uint256 _to) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) ExecuteVetoSlashRequests(_from *big.Int, _to *big.Int) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.ExecuteVetoSlashRequests(&_ContractAvsGovernance.TransactOpts, _from, _to)
+// Solidity: function depositERC20(uint256 _amount) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) DepositERC20(_amount *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.DepositERC20(&_ContractAvsGovernance.TransactOpts, _amount)
 }
 
 // GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
@@ -1697,88 +1295,25 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) GrantRole(
 	return _ContractAvsGovernance.Contract.GrantRole(&_ContractAvsGovernance.TransactOpts, role, account)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xba3bf212.
+// Initialize is a paid mutator transaction binding the contract method 0xfab57b8f.
 //
-// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address,address) _initializationParams) returns()
+// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address) _initializationParams) returns()
 func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) Initialize(opts *bind.TransactOpts, _initializationParams IAvsGovernanceInitializationParams) (*types.Transaction, error) {
 	return _ContractAvsGovernance.contract.Transact(opts, "initialize", _initializationParams)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xba3bf212.
+// Initialize is a paid mutator transaction binding the contract method 0xfab57b8f.
 //
-// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address,address) _initializationParams) returns()
+// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address) _initializationParams) returns()
 func (_ContractAvsGovernance *ContractAvsGovernanceSession) Initialize(_initializationParams IAvsGovernanceInitializationParams) (*types.Transaction, error) {
 	return _ContractAvsGovernance.Contract.Initialize(&_ContractAvsGovernance.TransactOpts, _initializationParams)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xba3bf212.
+// Initialize is a paid mutator transaction binding the contract method 0xfab57b8f.
 //
-// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address,address) _initializationParams) returns()
+// Solidity: function initialize((address,address,address,address,address,address,address,address,string,address) _initializationParams) returns()
 func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) Initialize(_initializationParams IAvsGovernanceInitializationParams) (*types.Transaction, error) {
 	return _ContractAvsGovernance.Contract.Initialize(&_ContractAvsGovernance.TransactOpts, _initializationParams)
-}
-
-// MigrateAvsToAllocationManager is a paid mutator transaction binding the contract method 0x7cfd4974.
-//
-// Solidity: function migrateAvsToAllocationManager(string _metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) MigrateAvsToAllocationManager(opts *bind.TransactOpts, _metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "migrateAvsToAllocationManager", _metadataURI)
-}
-
-// MigrateAvsToAllocationManager is a paid mutator transaction binding the contract method 0x7cfd4974.
-//
-// Solidity: function migrateAvsToAllocationManager(string _metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) MigrateAvsToAllocationManager(_metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.MigrateAvsToAllocationManager(&_ContractAvsGovernance.TransactOpts, _metadataURI)
-}
-
-// MigrateAvsToAllocationManager is a paid mutator transaction binding the contract method 0x7cfd4974.
-//
-// Solidity: function migrateAvsToAllocationManager(string _metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) MigrateAvsToAllocationManager(_metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.MigrateAvsToAllocationManager(&_ContractAvsGovernance.TransactOpts, _metadataURI)
-}
-
-// MigrateRedistributionManager is a paid mutator transaction binding the contract method 0x35391c12.
-//
-// Solidity: function migrateRedistributionManager(address _l1AvsFactory, address _avsGovernanceMultisigOwner) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) MigrateRedistributionManager(opts *bind.TransactOpts, _l1AvsFactory common.Address, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "migrateRedistributionManager", _l1AvsFactory, _avsGovernanceMultisigOwner)
-}
-
-// MigrateRedistributionManager is a paid mutator transaction binding the contract method 0x35391c12.
-//
-// Solidity: function migrateRedistributionManager(address _l1AvsFactory, address _avsGovernanceMultisigOwner) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) MigrateRedistributionManager(_l1AvsFactory common.Address, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.MigrateRedistributionManager(&_ContractAvsGovernance.TransactOpts, _l1AvsFactory, _avsGovernanceMultisigOwner)
-}
-
-// MigrateRedistributionManager is a paid mutator transaction binding the contract method 0x35391c12.
-//
-// Solidity: function migrateRedistributionManager(address _l1AvsFactory, address _avsGovernanceMultisigOwner) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) MigrateRedistributionManager(_l1AvsFactory common.Address, _avsGovernanceMultisigOwner common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.MigrateRedistributionManager(&_ContractAvsGovernance.TransactOpts, _l1AvsFactory, _avsGovernanceMultisigOwner)
-}
-
-// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
-//
-// Solidity: function migration() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) Migration(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "migration")
-}
-
-// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
-//
-// Solidity: function migration() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) Migration() (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.Migration(&_ContractAvsGovernance.TransactOpts)
-}
-
-// Migration is a paid mutator transaction binding the contract method 0x1705a3bd.
-//
-// Solidity: function migration() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) Migration() (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.Migration(&_ContractAvsGovernance.TransactOpts)
 }
 
 // Pause is a paid mutator transaction binding the contract method 0x3aa83ec7.
@@ -1823,46 +1358,46 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) QueueRewar
 	return _ContractAvsGovernance.Contract.QueueRewardsReceiverModification(&_ContractAvsGovernance.TransactOpts, _newRewardsReceiver)
 }
 
-// RegisterAvsToEigenLayer is a paid mutator transaction binding the contract method 0x851bb725.
+// RegisterAsAllowedOperator is a paid mutator transaction binding the contract method 0x93304a9d.
 //
-// Solidity: function registerAvsToEigenLayer(string metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) RegisterAvsToEigenLayer(opts *bind.TransactOpts, metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "registerAvsToEigenLayer", metadataURI)
+// Solidity: function registerAsAllowedOperator(uint256[4] _blsKey, bytes _authToken, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) RegisterAsAllowedOperator(opts *bind.TransactOpts, _blsKey [4]*big.Int, _authToken []byte, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "registerAsAllowedOperator", _blsKey, _authToken, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
-// RegisterAvsToEigenLayer is a paid mutator transaction binding the contract method 0x851bb725.
+// RegisterAsAllowedOperator is a paid mutator transaction binding the contract method 0x93304a9d.
 //
-// Solidity: function registerAvsToEigenLayer(string metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) RegisterAvsToEigenLayer(metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.RegisterAvsToEigenLayer(&_ContractAvsGovernance.TransactOpts, metadataURI)
+// Solidity: function registerAsAllowedOperator(uint256[4] _blsKey, bytes _authToken, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) RegisterAsAllowedOperator(_blsKey [4]*big.Int, _authToken []byte, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.RegisterAsAllowedOperator(&_ContractAvsGovernance.TransactOpts, _blsKey, _authToken, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
-// RegisterAvsToEigenLayer is a paid mutator transaction binding the contract method 0x851bb725.
+// RegisterAsAllowedOperator is a paid mutator transaction binding the contract method 0x93304a9d.
 //
-// Solidity: function registerAvsToEigenLayer(string metadataURI) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) RegisterAvsToEigenLayer(metadataURI string) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.RegisterAvsToEigenLayer(&_ContractAvsGovernance.TransactOpts, metadataURI)
+// Solidity: function registerAsAllowedOperator(uint256[4] _blsKey, bytes _authToken, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) RegisterAsAllowedOperator(_blsKey [4]*big.Int, _authToken []byte, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.RegisterAsAllowedOperator(&_ContractAvsGovernance.TransactOpts, _blsKey, _authToken, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
-// RegisterAvsToSymbiotic is a paid mutator transaction binding the contract method 0xaa0dadf0.
+// RegisterAsOperator is a paid mutator transaction binding the contract method 0x22609a4d.
 //
-// Solidity: function registerAvsToSymbiotic() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) RegisterAvsToSymbiotic(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "registerAvsToSymbiotic")
+// Solidity: function registerAsOperator(uint256[4] _blsKey, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) RegisterAsOperator(opts *bind.TransactOpts, _blsKey [4]*big.Int, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "registerAsOperator", _blsKey, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
-// RegisterAvsToSymbiotic is a paid mutator transaction binding the contract method 0xaa0dadf0.
+// RegisterAsOperator is a paid mutator transaction binding the contract method 0x22609a4d.
 //
-// Solidity: function registerAvsToSymbiotic() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) RegisterAvsToSymbiotic() (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.RegisterAvsToSymbiotic(&_ContractAvsGovernance.TransactOpts)
+// Solidity: function registerAsOperator(uint256[4] _blsKey, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) RegisterAsOperator(_blsKey [4]*big.Int, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.RegisterAsOperator(&_ContractAvsGovernance.TransactOpts, _blsKey, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
-// RegisterAvsToSymbiotic is a paid mutator transaction binding the contract method 0xaa0dadf0.
+// RegisterAsOperator is a paid mutator transaction binding the contract method 0x22609a4d.
 //
-// Solidity: function registerAvsToSymbiotic() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) RegisterAvsToSymbiotic() (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.RegisterAvsToSymbiotic(&_ContractAvsGovernance.TransactOpts)
+// Solidity: function registerAsOperator(uint256[4] _blsKey, address _rewardsReceiver, (bytes,bytes32,uint256) _operatorSignature, (uint256[2]) _blsRegistrationSignature) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) RegisterAsOperator(_blsKey [4]*big.Int, _rewardsReceiver common.Address, _operatorSignature ISignatureUtilsSignatureWithSaltAndExpiry, _blsRegistrationSignature BLSAuthLibrarySignature) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.RegisterAsOperator(&_ContractAvsGovernance.TransactOpts, _blsKey, _rewardsReceiver, _operatorSignature, _blsRegistrationSignature)
 }
 
 // RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
@@ -1907,6 +1442,27 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) RevokeRole
 	return _ContractAvsGovernance.Contract.RevokeRole(&_ContractAvsGovernance.TransactOpts, role, account)
 }
 
+// SetAllowlistSigner is a paid mutator transaction binding the contract method 0xe474def4.
+//
+// Solidity: function setAllowlistSigner(address _allowlistSigner) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetAllowlistSigner(opts *bind.TransactOpts, _allowlistSigner common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setAllowlistSigner", _allowlistSigner)
+}
+
+// SetAllowlistSigner is a paid mutator transaction binding the contract method 0xe474def4.
+//
+// Solidity: function setAllowlistSigner(address _allowlistSigner) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetAllowlistSigner(_allowlistSigner common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAllowlistSigner(&_ContractAvsGovernance.TransactOpts, _allowlistSigner)
+}
+
+// SetAllowlistSigner is a paid mutator transaction binding the contract method 0xe474def4.
+//
+// Solidity: function setAllowlistSigner(address _allowlistSigner) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetAllowlistSigner(_allowlistSigner common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAllowlistSigner(&_ContractAvsGovernance.TransactOpts, _allowlistSigner)
+}
+
 // SetAvsGovernanceLogic is a paid mutator transaction binding the contract method 0x8987c767.
 //
 // Solidity: function setAvsGovernanceLogic(address _avsGovernanceLogic) returns()
@@ -1926,6 +1482,69 @@ func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetAvsGovernanceLogi
 // Solidity: function setAvsGovernanceLogic(address _avsGovernanceLogic) returns()
 func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetAvsGovernanceLogic(_avsGovernanceLogic common.Address) (*types.Transaction, error) {
 	return _ContractAvsGovernance.Contract.SetAvsGovernanceLogic(&_ContractAvsGovernance.TransactOpts, _avsGovernanceLogic)
+}
+
+// SetAvsGovernanceMultiplierSyncer is a paid mutator transaction binding the contract method 0x3425e8d8.
+//
+// Solidity: function setAvsGovernanceMultiplierSyncer(address _newAvsGovernanceMultiplierSyncer) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetAvsGovernanceMultiplierSyncer(opts *bind.TransactOpts, _newAvsGovernanceMultiplierSyncer common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setAvsGovernanceMultiplierSyncer", _newAvsGovernanceMultiplierSyncer)
+}
+
+// SetAvsGovernanceMultiplierSyncer is a paid mutator transaction binding the contract method 0x3425e8d8.
+//
+// Solidity: function setAvsGovernanceMultiplierSyncer(address _newAvsGovernanceMultiplierSyncer) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetAvsGovernanceMultiplierSyncer(_newAvsGovernanceMultiplierSyncer common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAvsGovernanceMultiplierSyncer(&_ContractAvsGovernance.TransactOpts, _newAvsGovernanceMultiplierSyncer)
+}
+
+// SetAvsGovernanceMultiplierSyncer is a paid mutator transaction binding the contract method 0x3425e8d8.
+//
+// Solidity: function setAvsGovernanceMultiplierSyncer(address _newAvsGovernanceMultiplierSyncer) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetAvsGovernanceMultiplierSyncer(_newAvsGovernanceMultiplierSyncer common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAvsGovernanceMultiplierSyncer(&_ContractAvsGovernance.TransactOpts, _newAvsGovernanceMultiplierSyncer)
+}
+
+// SetAvsName is a paid mutator transaction binding the contract method 0x7d38e926.
+//
+// Solidity: function setAvsName(string _avsName) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetAvsName(opts *bind.TransactOpts, _avsName string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setAvsName", _avsName)
+}
+
+// SetAvsName is a paid mutator transaction binding the contract method 0x7d38e926.
+//
+// Solidity: function setAvsName(string _avsName) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetAvsName(_avsName string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAvsName(&_ContractAvsGovernance.TransactOpts, _avsName)
+}
+
+// SetAvsName is a paid mutator transaction binding the contract method 0x7d38e926.
+//
+// Solidity: function setAvsName(string _avsName) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetAvsName(_avsName string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetAvsName(&_ContractAvsGovernance.TransactOpts, _avsName)
+}
+
+// SetBLSAuthSingleton is a paid mutator transaction binding the contract method 0x4ef1476e.
+//
+// Solidity: function setBLSAuthSingleton(address _blsAuthSingleton) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetBLSAuthSingleton(opts *bind.TransactOpts, _blsAuthSingleton common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setBLSAuthSingleton", _blsAuthSingleton)
+}
+
+// SetBLSAuthSingleton is a paid mutator transaction binding the contract method 0x4ef1476e.
+//
+// Solidity: function setBLSAuthSingleton(address _blsAuthSingleton) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetBLSAuthSingleton(_blsAuthSingleton common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetBLSAuthSingleton(&_ContractAvsGovernance.TransactOpts, _blsAuthSingleton)
+}
+
+// SetBLSAuthSingleton is a paid mutator transaction binding the contract method 0x4ef1476e.
+//
+// Solidity: function setBLSAuthSingleton(address _blsAuthSingleton) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetBLSAuthSingleton(_blsAuthSingleton common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetBLSAuthSingleton(&_ContractAvsGovernance.TransactOpts, _blsAuthSingleton)
 }
 
 // SetIsAllowlisted is a paid mutator transaction binding the contract method 0x9e965cc1.
@@ -1949,151 +1568,235 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetIsAllow
 	return _ContractAvsGovernance.Contract.SetIsAllowlisted(&_ContractAvsGovernance.TransactOpts, _isAllowlisted)
 }
 
-// SetP2pAuthenticationEnabled is a paid mutator transaction binding the contract method 0xc7a93c6f.
+// SetMaxEffectiveBalance is a paid mutator transaction binding the contract method 0x76086c70.
 //
-// Solidity: function setP2pAuthenticationEnabled(bool _p2pAuthenticationEnabled) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetP2pAuthenticationEnabled(opts *bind.TransactOpts, _p2pAuthenticationEnabled bool) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setP2pAuthenticationEnabled", _p2pAuthenticationEnabled)
+// Solidity: function setMaxEffectiveBalance(uint256 _maxBalance) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetMaxEffectiveBalance(opts *bind.TransactOpts, _maxBalance *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setMaxEffectiveBalance", _maxBalance)
 }
 
-// SetP2pAuthenticationEnabled is a paid mutator transaction binding the contract method 0xc7a93c6f.
+// SetMaxEffectiveBalance is a paid mutator transaction binding the contract method 0x76086c70.
 //
-// Solidity: function setP2pAuthenticationEnabled(bool _p2pAuthenticationEnabled) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetP2pAuthenticationEnabled(_p2pAuthenticationEnabled bool) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetP2pAuthenticationEnabled(&_ContractAvsGovernance.TransactOpts, _p2pAuthenticationEnabled)
+// Solidity: function setMaxEffectiveBalance(uint256 _maxBalance) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetMaxEffectiveBalance(_maxBalance *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMaxEffectiveBalance(&_ContractAvsGovernance.TransactOpts, _maxBalance)
 }
 
-// SetP2pAuthenticationEnabled is a paid mutator transaction binding the contract method 0xc7a93c6f.
+// SetMaxEffectiveBalance is a paid mutator transaction binding the contract method 0x76086c70.
 //
-// Solidity: function setP2pAuthenticationEnabled(bool _p2pAuthenticationEnabled) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetP2pAuthenticationEnabled(_p2pAuthenticationEnabled bool) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetP2pAuthenticationEnabled(&_ContractAvsGovernance.TransactOpts, _p2pAuthenticationEnabled)
+// Solidity: function setMaxEffectiveBalance(uint256 _maxBalance) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetMaxEffectiveBalance(_maxBalance *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMaxEffectiveBalance(&_ContractAvsGovernance.TransactOpts, _maxBalance)
 }
 
-// SetStakingContractMultiplier is a paid mutator transaction binding the contract method 0x2ba09e51.
+// SetMinSharesForStrategy is a paid mutator transaction binding the contract method 0x305df58a.
 //
-// Solidity: function setStakingContractMultiplier((address,uint256,uint256,uint8) _votingPowerMultiplier) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetStakingContractMultiplier(opts *bind.TransactOpts, _votingPowerMultiplier IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setStakingContractMultiplier", _votingPowerMultiplier)
+// Solidity: function setMinSharesForStrategy(address _strategy, uint256 _minShares) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetMinSharesForStrategy(opts *bind.TransactOpts, _strategy common.Address, _minShares *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setMinSharesForStrategy", _strategy, _minShares)
 }
 
-// SetStakingContractMultiplier is a paid mutator transaction binding the contract method 0x2ba09e51.
+// SetMinSharesForStrategy is a paid mutator transaction binding the contract method 0x305df58a.
 //
-// Solidity: function setStakingContractMultiplier((address,uint256,uint256,uint8) _votingPowerMultiplier) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetStakingContractMultiplier(_votingPowerMultiplier IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractMultiplier(&_ContractAvsGovernance.TransactOpts, _votingPowerMultiplier)
+// Solidity: function setMinSharesForStrategy(address _strategy, uint256 _minShares) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetMinSharesForStrategy(_strategy common.Address, _minShares *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMinSharesForStrategy(&_ContractAvsGovernance.TransactOpts, _strategy, _minShares)
 }
 
-// SetStakingContractMultiplier is a paid mutator transaction binding the contract method 0x2ba09e51.
+// SetMinSharesForStrategy is a paid mutator transaction binding the contract method 0x305df58a.
 //
-// Solidity: function setStakingContractMultiplier((address,uint256,uint256,uint8) _votingPowerMultiplier) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetStakingContractMultiplier(_votingPowerMultiplier IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractMultiplier(&_ContractAvsGovernance.TransactOpts, _votingPowerMultiplier)
+// Solidity: function setMinSharesForStrategy(address _strategy, uint256 _minShares) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetMinSharesForStrategy(_strategy common.Address, _minShares *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMinSharesForStrategy(&_ContractAvsGovernance.TransactOpts, _strategy, _minShares)
 }
 
-// SetStakingContractMultiplierBatch is a paid mutator transaction binding the contract method 0x94643671.
+// SetMinVotingPower is a paid mutator transaction binding the contract method 0x55e48918.
 //
-// Solidity: function setStakingContractMultiplierBatch((address,uint256,uint256,uint8)[] _votingPowerMultipliers) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetStakingContractMultiplierBatch(opts *bind.TransactOpts, _votingPowerMultipliers []IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setStakingContractMultiplierBatch", _votingPowerMultipliers)
+// Solidity: function setMinVotingPower(uint256 _minVotingPower) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetMinVotingPower(opts *bind.TransactOpts, _minVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setMinVotingPower", _minVotingPower)
 }
 
-// SetStakingContractMultiplierBatch is a paid mutator transaction binding the contract method 0x94643671.
+// SetMinVotingPower is a paid mutator transaction binding the contract method 0x55e48918.
 //
-// Solidity: function setStakingContractMultiplierBatch((address,uint256,uint256,uint8)[] _votingPowerMultipliers) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetStakingContractMultiplierBatch(_votingPowerMultipliers []IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractMultiplierBatch(&_ContractAvsGovernance.TransactOpts, _votingPowerMultipliers)
+// Solidity: function setMinVotingPower(uint256 _minVotingPower) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetMinVotingPower(_minVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMinVotingPower(&_ContractAvsGovernance.TransactOpts, _minVotingPower)
 }
 
-// SetStakingContractMultiplierBatch is a paid mutator transaction binding the contract method 0x94643671.
+// SetMinVotingPower is a paid mutator transaction binding the contract method 0x55e48918.
 //
-// Solidity: function setStakingContractMultiplierBatch((address,uint256,uint256,uint8)[] _votingPowerMultipliers) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetStakingContractMultiplierBatch(_votingPowerMultipliers []IAvsGovernanceVotingPowerMultiplier) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractMultiplierBatch(&_ContractAvsGovernance.TransactOpts, _votingPowerMultipliers)
+// Solidity: function setMinVotingPower(uint256 _minVotingPower) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetMinVotingPower(_minVotingPower *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetMinVotingPower(&_ContractAvsGovernance.TransactOpts, _minVotingPower)
 }
 
-// SetStakingContractPriceFeed is a paid mutator transaction binding the contract method 0xf19b7b79.
+// SetNumOfOperatorsLimit is a paid mutator transaction binding the contract method 0x9d79e4a7.
 //
-// Solidity: function setStakingContractPriceFeed(address _stakingContract, address _feed) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetStakingContractPriceFeed(opts *bind.TransactOpts, _stakingContract common.Address, _feed common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setStakingContractPriceFeed", _stakingContract, _feed)
+// Solidity: function setNumOfOperatorsLimit(uint256 _newLimitOfNumOfOperators) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetNumOfOperatorsLimit(opts *bind.TransactOpts, _newLimitOfNumOfOperators *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setNumOfOperatorsLimit", _newLimitOfNumOfOperators)
 }
 
-// SetStakingContractPriceFeed is a paid mutator transaction binding the contract method 0xf19b7b79.
+// SetNumOfOperatorsLimit is a paid mutator transaction binding the contract method 0x9d79e4a7.
 //
-// Solidity: function setStakingContractPriceFeed(address _stakingContract, address _feed) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetStakingContractPriceFeed(_stakingContract common.Address, _feed common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractPriceFeed(&_ContractAvsGovernance.TransactOpts, _stakingContract, _feed)
+// Solidity: function setNumOfOperatorsLimit(uint256 _newLimitOfNumOfOperators) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetNumOfOperatorsLimit(_newLimitOfNumOfOperators *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetNumOfOperatorsLimit(&_ContractAvsGovernance.TransactOpts, _newLimitOfNumOfOperators)
 }
 
-// SetStakingContractPriceFeed is a paid mutator transaction binding the contract method 0xf19b7b79.
+// SetNumOfOperatorsLimit is a paid mutator transaction binding the contract method 0x9d79e4a7.
 //
-// Solidity: function setStakingContractPriceFeed(address _stakingContract, address _feed) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetStakingContractPriceFeed(_stakingContract common.Address, _feed common.Address) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetStakingContractPriceFeed(&_ContractAvsGovernance.TransactOpts, _stakingContract, _feed)
+// Solidity: function setNumOfOperatorsLimit(uint256 _newLimitOfNumOfOperators) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetNumOfOperatorsLimit(_newLimitOfNumOfOperators *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetNumOfOperatorsLimit(&_ContractAvsGovernance.TransactOpts, _newLimitOfNumOfOperators)
 }
 
-// SetSupportedStakingContracts is a paid mutator transaction binding the contract method 0x1dd2f74b.
+// SetOthenticRegistry is a paid mutator transaction binding the contract method 0x45a022fa.
 //
-// Solidity: function setSupportedStakingContracts((address,uint8)[] _stakingContractsDetails) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetSupportedStakingContracts(opts *bind.TransactOpts, _stakingContractsDetails []IAvsGovernanceStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setSupportedStakingContracts", _stakingContractsDetails)
+// Solidity: function setOthenticRegistry(address _othenticRegistry) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetOthenticRegistry(opts *bind.TransactOpts, _othenticRegistry common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setOthenticRegistry", _othenticRegistry)
 }
 
-// SetSupportedStakingContracts is a paid mutator transaction binding the contract method 0x1dd2f74b.
+// SetOthenticRegistry is a paid mutator transaction binding the contract method 0x45a022fa.
 //
-// Solidity: function setSupportedStakingContracts((address,uint8)[] _stakingContractsDetails) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetSupportedStakingContracts(_stakingContractsDetails []IAvsGovernanceStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetSupportedStakingContracts(&_ContractAvsGovernance.TransactOpts, _stakingContractsDetails)
+// Solidity: function setOthenticRegistry(address _othenticRegistry) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetOthenticRegistry(_othenticRegistry common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetOthenticRegistry(&_ContractAvsGovernance.TransactOpts, _othenticRegistry)
 }
 
-// SetSupportedStakingContracts is a paid mutator transaction binding the contract method 0x1dd2f74b.
+// SetOthenticRegistry is a paid mutator transaction binding the contract method 0x45a022fa.
 //
-// Solidity: function setSupportedStakingContracts((address,uint8)[] _stakingContractsDetails) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetSupportedStakingContracts(_stakingContractsDetails []IAvsGovernanceStakingContractInfo) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetSupportedStakingContracts(&_ContractAvsGovernance.TransactOpts, _stakingContractsDetails)
+// Solidity: function setOthenticRegistry(address _othenticRegistry) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetOthenticRegistry(_othenticRegistry common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetOthenticRegistry(&_ContractAvsGovernance.TransactOpts, _othenticRegistry)
 }
 
-// SetSymbioticResolver is a paid mutator transaction binding the contract method 0x438c20a1.
+// SetRewardsReceiverModificationDelay is a paid mutator transaction binding the contract method 0x8a70469a.
 //
-// Solidity: function setSymbioticResolver(address _vetoSlasher, address _resolver, bytes _hints) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetSymbioticResolver(opts *bind.TransactOpts, _vetoSlasher common.Address, _resolver common.Address, _hints []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "setSymbioticResolver", _vetoSlasher, _resolver, _hints)
+// Solidity: function setRewardsReceiverModificationDelay(uint256 _rewardsReceiverModificationDelay) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetRewardsReceiverModificationDelay(opts *bind.TransactOpts, _rewardsReceiverModificationDelay *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setRewardsReceiverModificationDelay", _rewardsReceiverModificationDelay)
 }
 
-// SetSymbioticResolver is a paid mutator transaction binding the contract method 0x438c20a1.
+// SetRewardsReceiverModificationDelay is a paid mutator transaction binding the contract method 0x8a70469a.
 //
-// Solidity: function setSymbioticResolver(address _vetoSlasher, address _resolver, bytes _hints) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetSymbioticResolver(_vetoSlasher common.Address, _resolver common.Address, _hints []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetSymbioticResolver(&_ContractAvsGovernance.TransactOpts, _vetoSlasher, _resolver, _hints)
+// Solidity: function setRewardsReceiverModificationDelay(uint256 _rewardsReceiverModificationDelay) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetRewardsReceiverModificationDelay(_rewardsReceiverModificationDelay *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetRewardsReceiverModificationDelay(&_ContractAvsGovernance.TransactOpts, _rewardsReceiverModificationDelay)
 }
 
-// SetSymbioticResolver is a paid mutator transaction binding the contract method 0x438c20a1.
+// SetRewardsReceiverModificationDelay is a paid mutator transaction binding the contract method 0x8a70469a.
 //
-// Solidity: function setSymbioticResolver(address _vetoSlasher, address _resolver, bytes _hints) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetSymbioticResolver(_vetoSlasher common.Address, _resolver common.Address, _hints []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SetSymbioticResolver(&_ContractAvsGovernance.TransactOpts, _vetoSlasher, _resolver, _hints)
+// Solidity: function setRewardsReceiverModificationDelay(uint256 _rewardsReceiverModificationDelay) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetRewardsReceiverModificationDelay(_rewardsReceiverModificationDelay *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetRewardsReceiverModificationDelay(&_ContractAvsGovernance.TransactOpts, _rewardsReceiverModificationDelay)
 }
 
-// SlashOperator is a paid mutator transaction binding the contract method 0x7f166721.
+// SetStrategyMultiplier is a paid mutator transaction binding the contract method 0x076400d5.
 //
-// Solidity: function slashOperator(address _operator, uint8 _slashingCondition) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SlashOperator(opts *bind.TransactOpts, _operator common.Address, _slashingCondition uint8) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.Transact(opts, "slashOperator", _operator, _slashingCondition)
+// Solidity: function setStrategyMultiplier((address,uint256) _strategyMultiplier) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetStrategyMultiplier(opts *bind.TransactOpts, _strategyMultiplier IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setStrategyMultiplier", _strategyMultiplier)
 }
 
-// SlashOperator is a paid mutator transaction binding the contract method 0x7f166721.
+// SetStrategyMultiplier is a paid mutator transaction binding the contract method 0x076400d5.
 //
-// Solidity: function slashOperator(address _operator, uint8 _slashingCondition) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) SlashOperator(_operator common.Address, _slashingCondition uint8) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SlashOperator(&_ContractAvsGovernance.TransactOpts, _operator, _slashingCondition)
+// Solidity: function setStrategyMultiplier((address,uint256) _strategyMultiplier) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetStrategyMultiplier(_strategyMultiplier IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetStrategyMultiplier(&_ContractAvsGovernance.TransactOpts, _strategyMultiplier)
 }
 
-// SlashOperator is a paid mutator transaction binding the contract method 0x7f166721.
+// SetStrategyMultiplier is a paid mutator transaction binding the contract method 0x076400d5.
 //
-// Solidity: function slashOperator(address _operator, uint8 _slashingCondition) returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SlashOperator(_operator common.Address, _slashingCondition uint8) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.SlashOperator(&_ContractAvsGovernance.TransactOpts, _operator, _slashingCondition)
+// Solidity: function setStrategyMultiplier((address,uint256) _strategyMultiplier) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetStrategyMultiplier(_strategyMultiplier IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetStrategyMultiplier(&_ContractAvsGovernance.TransactOpts, _strategyMultiplier)
+}
+
+// SetStrategyMultiplierBatch is a paid mutator transaction binding the contract method 0xd94a2e1d.
+//
+// Solidity: function setStrategyMultiplierBatch((address,uint256)[] _strategyMultipliers) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetStrategyMultiplierBatch(opts *bind.TransactOpts, _strategyMultipliers []IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setStrategyMultiplierBatch", _strategyMultipliers)
+}
+
+// SetStrategyMultiplierBatch is a paid mutator transaction binding the contract method 0xd94a2e1d.
+//
+// Solidity: function setStrategyMultiplierBatch((address,uint256)[] _strategyMultipliers) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetStrategyMultiplierBatch(_strategyMultipliers []IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetStrategyMultiplierBatch(&_ContractAvsGovernance.TransactOpts, _strategyMultipliers)
+}
+
+// SetStrategyMultiplierBatch is a paid mutator transaction binding the contract method 0xd94a2e1d.
+//
+// Solidity: function setStrategyMultiplierBatch((address,uint256)[] _strategyMultipliers) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetStrategyMultiplierBatch(_strategyMultipliers []IAvsGovernanceStrategyMultiplier) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetStrategyMultiplierBatch(&_ContractAvsGovernance.TransactOpts, _strategyMultipliers)
+}
+
+// SetSupportedStrategies is a paid mutator transaction binding the contract method 0x312c150b.
+//
+// Solidity: function setSupportedStrategies(address[] _strategies) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) SetSupportedStrategies(opts *bind.TransactOpts, _strategies []common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "setSupportedStrategies", _strategies)
+}
+
+// SetSupportedStrategies is a paid mutator transaction binding the contract method 0x312c150b.
+//
+// Solidity: function setSupportedStrategies(address[] _strategies) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) SetSupportedStrategies(_strategies []common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetSupportedStrategies(&_ContractAvsGovernance.TransactOpts, _strategies)
+}
+
+// SetSupportedStrategies is a paid mutator transaction binding the contract method 0x312c150b.
+//
+// Solidity: function setSupportedStrategies(address[] _strategies) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) SetSupportedStrategies(_strategies []common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.SetSupportedStrategies(&_ContractAvsGovernance.TransactOpts, _strategies)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) TransferAvsGovernanceMultisig(opts *bind.TransactOpts, _newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "transferAvsGovernanceMultisig", _newAvsGovernanceMultisig)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) TransferAvsGovernanceMultisig(_newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.TransferAvsGovernanceMultisig(&_ContractAvsGovernance.TransactOpts, _newAvsGovernanceMultisig)
+}
+
+// TransferAvsGovernanceMultisig is a paid mutator transaction binding the contract method 0x513c52ba.
+//
+// Solidity: function transferAvsGovernanceMultisig(address _newAvsGovernanceMultisig) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) TransferAvsGovernanceMultisig(_newAvsGovernanceMultisig common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.TransferAvsGovernanceMultisig(&_ContractAvsGovernance.TransactOpts, _newAvsGovernanceMultisig)
+}
+
+// TransferMessageHandler is a paid mutator transaction binding the contract method 0x4d07f651.
+//
+// Solidity: function transferMessageHandler(address _newMessageHandler) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) TransferMessageHandler(opts *bind.TransactOpts, _newMessageHandler common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "transferMessageHandler", _newMessageHandler)
+}
+
+// TransferMessageHandler is a paid mutator transaction binding the contract method 0x4d07f651.
+//
+// Solidity: function transferMessageHandler(address _newMessageHandler) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) TransferMessageHandler(_newMessageHandler common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.TransferMessageHandler(&_ContractAvsGovernance.TransactOpts, _newMessageHandler)
+}
+
+// TransferMessageHandler is a paid mutator transaction binding the contract method 0x4d07f651.
+//
+// Solidity: function transferMessageHandler(address _newMessageHandler) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) TransferMessageHandler(_newMessageHandler common.Address) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.TransferMessageHandler(&_ContractAvsGovernance.TransactOpts, _newMessageHandler)
 }
 
 // Unpause is a paid mutator transaction binding the contract method 0xbac1e94b.
@@ -2117,30 +1820,93 @@ func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) Unpause(_p
 	return _ContractAvsGovernance.Contract.Unpause(&_ContractAvsGovernance.TransactOpts, _pausableFlow)
 }
 
-// Fallback is a paid mutator transaction binding the contract fallback function.
+// UnregisterAsOperator is a paid mutator transaction binding the contract method 0x09869442.
 //
-// Solidity: fallback() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) Fallback(opts *bind.TransactOpts, calldata []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.contract.RawTransact(opts, calldata)
+// Solidity: function unregisterAsOperator() returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) UnregisterAsOperator(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "unregisterAsOperator")
 }
 
-// Fallback is a paid mutator transaction binding the contract fallback function.
+// UnregisterAsOperator is a paid mutator transaction binding the contract method 0x09869442.
 //
-// Solidity: fallback() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceSession) Fallback(calldata []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.Fallback(&_ContractAvsGovernance.TransactOpts, calldata)
+// Solidity: function unregisterAsOperator() returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) UnregisterAsOperator() (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.UnregisterAsOperator(&_ContractAvsGovernance.TransactOpts)
 }
 
-// Fallback is a paid mutator transaction binding the contract fallback function.
+// UnregisterAsOperator is a paid mutator transaction binding the contract method 0x09869442.
 //
-// Solidity: fallback() returns()
-func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) Fallback(calldata []byte) (*types.Transaction, error) {
-	return _ContractAvsGovernance.Contract.Fallback(&_ContractAvsGovernance.TransactOpts, calldata)
+// Solidity: function unregisterAsOperator() returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) UnregisterAsOperator() (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.UnregisterAsOperator(&_ContractAvsGovernance.TransactOpts)
 }
 
-// ContractAvsGovernanceEjectOperatorFailedIterator is returned from FilterEjectOperatorFailed and is used to iterate over the raw logs and unpacked data for EjectOperatorFailed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceEjectOperatorFailedIterator struct {
-	Event *ContractAvsGovernanceEjectOperatorFailed // Event containing the contract specifics and raw log
+// UpdateAVSMetadataURI is a paid mutator transaction binding the contract method 0xa98fb355.
+//
+// Solidity: function updateAVSMetadataURI(string metadataURI) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) UpdateAVSMetadataURI(opts *bind.TransactOpts, metadataURI string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "updateAVSMetadataURI", metadataURI)
+}
+
+// UpdateAVSMetadataURI is a paid mutator transaction binding the contract method 0xa98fb355.
+//
+// Solidity: function updateAVSMetadataURI(string metadataURI) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) UpdateAVSMetadataURI(metadataURI string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.UpdateAVSMetadataURI(&_ContractAvsGovernance.TransactOpts, metadataURI)
+}
+
+// UpdateAVSMetadataURI is a paid mutator transaction binding the contract method 0xa98fb355.
+//
+// Solidity: function updateAVSMetadataURI(string metadataURI) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) UpdateAVSMetadataURI(metadataURI string) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.UpdateAVSMetadataURI(&_ContractAvsGovernance.TransactOpts, metadataURI)
+}
+
+// WithdrawBatchRewards is a paid mutator transaction binding the contract method 0xbc8be0c8.
+//
+// Solidity: function withdrawBatchRewards((address,uint256)[] _operators, uint256 _lastPayedTask) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) WithdrawBatchRewards(opts *bind.TransactOpts, _operators []IAvsGovernancePaymentRequestMessage, _lastPayedTask *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "withdrawBatchRewards", _operators, _lastPayedTask)
+}
+
+// WithdrawBatchRewards is a paid mutator transaction binding the contract method 0xbc8be0c8.
+//
+// Solidity: function withdrawBatchRewards((address,uint256)[] _operators, uint256 _lastPayedTask) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) WithdrawBatchRewards(_operators []IAvsGovernancePaymentRequestMessage, _lastPayedTask *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.WithdrawBatchRewards(&_ContractAvsGovernance.TransactOpts, _operators, _lastPayedTask)
+}
+
+// WithdrawBatchRewards is a paid mutator transaction binding the contract method 0xbc8be0c8.
+//
+// Solidity: function withdrawBatchRewards((address,uint256)[] _operators, uint256 _lastPayedTask) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) WithdrawBatchRewards(_operators []IAvsGovernancePaymentRequestMessage, _lastPayedTask *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.WithdrawBatchRewards(&_ContractAvsGovernance.TransactOpts, _operators, _lastPayedTask)
+}
+
+// WithdrawRewards is a paid mutator transaction binding the contract method 0x3256b4d1.
+//
+// Solidity: function withdrawRewards(address _operator, uint256 _lastPayedTask, uint256 _feeToClaim) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactor) WithdrawRewards(opts *bind.TransactOpts, _operator common.Address, _lastPayedTask *big.Int, _feeToClaim *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.contract.Transact(opts, "withdrawRewards", _operator, _lastPayedTask, _feeToClaim)
+}
+
+// WithdrawRewards is a paid mutator transaction binding the contract method 0x3256b4d1.
+//
+// Solidity: function withdrawRewards(address _operator, uint256 _lastPayedTask, uint256 _feeToClaim) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceSession) WithdrawRewards(_operator common.Address, _lastPayedTask *big.Int, _feeToClaim *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.WithdrawRewards(&_ContractAvsGovernance.TransactOpts, _operator, _lastPayedTask, _feeToClaim)
+}
+
+// WithdrawRewards is a paid mutator transaction binding the contract method 0x3256b4d1.
+//
+// Solidity: function withdrawRewards(address _operator, uint256 _lastPayedTask, uint256 _feeToClaim) returns()
+func (_ContractAvsGovernance *ContractAvsGovernanceTransactorSession) WithdrawRewards(_operator common.Address, _lastPayedTask *big.Int, _feeToClaim *big.Int) (*types.Transaction, error) {
+	return _ContractAvsGovernance.Contract.WithdrawRewards(&_ContractAvsGovernance.TransactOpts, _operator, _lastPayedTask, _feeToClaim)
+}
+
+// ContractAvsGovernanceBLSAuthSingletonSetIterator is returned from FilterBLSAuthSingletonSet and is used to iterate over the raw logs and unpacked data for BLSAuthSingletonSet events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceBLSAuthSingletonSetIterator struct {
+	Event *ContractAvsGovernanceBLSAuthSingletonSet // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2154,7 +1920,7 @@ type ContractAvsGovernanceEjectOperatorFailedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Next() bool {
+func (it *ContractAvsGovernanceBLSAuthSingletonSetIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2163,7 +1929,7 @@ func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceEjectOperatorFailed)
+			it.Event = new(ContractAvsGovernanceBLSAuthSingletonSet)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2178,7 +1944,7 @@ func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceEjectOperatorFailed)
+		it.Event = new(ContractAvsGovernanceBLSAuthSingletonSet)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -2194,42 +1960,41 @@ func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Error() error {
+func (it *ContractAvsGovernanceBLSAuthSingletonSetIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceEjectOperatorFailedIterator) Close() error {
+func (it *ContractAvsGovernanceBLSAuthSingletonSetIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceEjectOperatorFailed represents a EjectOperatorFailed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceEjectOperatorFailed struct {
-	Operator common.Address
-	Data     []byte
-	Raw      types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceBLSAuthSingletonSet represents a BLSAuthSingletonSet event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceBLSAuthSingletonSet struct {
+	BlsAuthSingleton common.Address
+	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterEjectOperatorFailed is a free log retrieval operation binding the contract event 0x23b717cc29cc815f01bb575983e2bc61f85927ab73ed7169c7c3e62b31429965.
+// FilterBLSAuthSingletonSet is a free log retrieval operation binding the contract event 0x4cbffdecf3b5e4b22bfb2bdec99a66f8fcf81e19b060682afd9645c729da1472.
 //
-// Solidity: event EjectOperatorFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterEjectOperatorFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceEjectOperatorFailedIterator, error) {
+// Solidity: event BLSAuthSingletonSet(address blsAuthSingleton)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterBLSAuthSingletonSet(opts *bind.FilterOpts) (*ContractAvsGovernanceBLSAuthSingletonSetIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "EjectOperatorFailed")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "BLSAuthSingletonSet")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceEjectOperatorFailedIterator{contract: _ContractAvsGovernance.contract, event: "EjectOperatorFailed", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceBLSAuthSingletonSetIterator{contract: _ContractAvsGovernance.contract, event: "BLSAuthSingletonSet", logs: logs, sub: sub}, nil
 }
 
-// WatchEjectOperatorFailed is a free log subscription operation binding the contract event 0x23b717cc29cc815f01bb575983e2bc61f85927ab73ed7169c7c3e62b31429965.
+// WatchBLSAuthSingletonSet is a free log subscription operation binding the contract event 0x4cbffdecf3b5e4b22bfb2bdec99a66f8fcf81e19b060682afd9645c729da1472.
 //
-// Solidity: event EjectOperatorFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchEjectOperatorFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceEjectOperatorFailed) (event.Subscription, error) {
+// Solidity: event BLSAuthSingletonSet(address blsAuthSingleton)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchBLSAuthSingletonSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceBLSAuthSingletonSet) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "EjectOperatorFailed")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "BLSAuthSingletonSet")
 	if err != nil {
 		return nil, err
 	}
@@ -2239,8 +2004,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchEjectOperatorF
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceEjectOperatorFailed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "EjectOperatorFailed", log); err != nil {
+				event := new(ContractAvsGovernanceBLSAuthSingletonSet)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "BLSAuthSingletonSet", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2261,12 +2026,12 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchEjectOperatorF
 	}), nil
 }
 
-// ParseEjectOperatorFailed is a log parse operation binding the contract event 0x23b717cc29cc815f01bb575983e2bc61f85927ab73ed7169c7c3e62b31429965.
+// ParseBLSAuthSingletonSet is a log parse operation binding the contract event 0x4cbffdecf3b5e4b22bfb2bdec99a66f8fcf81e19b060682afd9645c729da1472.
 //
-// Solidity: event EjectOperatorFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseEjectOperatorFailed(log types.Log) (*ContractAvsGovernanceEjectOperatorFailed, error) {
-	event := new(ContractAvsGovernanceEjectOperatorFailed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "EjectOperatorFailed", log); err != nil {
+// Solidity: event BLSAuthSingletonSet(address blsAuthSingleton)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseBLSAuthSingletonSet(log types.Log) (*ContractAvsGovernanceBLSAuthSingletonSet, error) {
+	event := new(ContractAvsGovernanceBLSAuthSingletonSet)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "BLSAuthSingletonSet", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -2677,9 +2442,9 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseInitialized(lo
 	return event, nil
 }
 
-// ContractAvsGovernanceInvalidStakingContractsForSlashingIterator is returned from FilterInvalidStakingContractsForSlashing and is used to iterate over the raw logs and unpacked data for InvalidStakingContractsForSlashing events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceInvalidStakingContractsForSlashingIterator struct {
-	Event *ContractAvsGovernanceInvalidStakingContractsForSlashing // Event containing the contract specifics and raw log
+// ContractAvsGovernanceMaxEffectiveBalanceSetIterator is returned from FilterMaxEffectiveBalanceSet and is used to iterate over the raw logs and unpacked data for MaxEffectiveBalanceSet events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMaxEffectiveBalanceSetIterator struct {
+	Event *ContractAvsGovernanceMaxEffectiveBalanceSet // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2693,7 +2458,7 @@ type ContractAvsGovernanceInvalidStakingContractsForSlashingIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Next() bool {
+func (it *ContractAvsGovernanceMaxEffectiveBalanceSetIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2702,7 +2467,7 @@ func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Next(
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceInvalidStakingContractsForSlashing)
+			it.Event = new(ContractAvsGovernanceMaxEffectiveBalanceSet)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2717,7 +2482,7 @@ func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Next(
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceInvalidStakingContractsForSlashing)
+		it.Event = new(ContractAvsGovernanceMaxEffectiveBalanceSet)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -2733,40 +2498,41 @@ func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Next(
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Error() error {
+func (it *ContractAvsGovernanceMaxEffectiveBalanceSetIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceInvalidStakingContractsForSlashingIterator) Close() error {
+func (it *ContractAvsGovernanceMaxEffectiveBalanceSetIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceInvalidStakingContractsForSlashing represents a InvalidStakingContractsForSlashing event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceInvalidStakingContractsForSlashing struct {
-	Raw types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceMaxEffectiveBalanceSet represents a MaxEffectiveBalanceSet event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMaxEffectiveBalanceSet struct {
+	MaxEffectiveBalance *big.Int
+	Raw                 types.Log // Blockchain specific contextual infos
 }
 
-// FilterInvalidStakingContractsForSlashing is a free log retrieval operation binding the contract event 0xe37900f24e06ac44ab1396d92b2242d16769efc0cd66a368423719d9c1015fea.
+// FilterMaxEffectiveBalanceSet is a free log retrieval operation binding the contract event 0x00c6fb6db9c52d89a1eaf84e0470a3304db2086d0ac44d64ebf4ea35a905a7d0.
 //
-// Solidity: event InvalidStakingContractsForSlashing()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterInvalidStakingContractsForSlashing(opts *bind.FilterOpts) (*ContractAvsGovernanceInvalidStakingContractsForSlashingIterator, error) {
+// Solidity: event MaxEffectiveBalanceSet(uint256 maxEffectiveBalance)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterMaxEffectiveBalanceSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMaxEffectiveBalanceSetIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "InvalidStakingContractsForSlashing")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "MaxEffectiveBalanceSet")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceInvalidStakingContractsForSlashingIterator{contract: _ContractAvsGovernance.contract, event: "InvalidStakingContractsForSlashing", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceMaxEffectiveBalanceSetIterator{contract: _ContractAvsGovernance.contract, event: "MaxEffectiveBalanceSet", logs: logs, sub: sub}, nil
 }
 
-// WatchInvalidStakingContractsForSlashing is a free log subscription operation binding the contract event 0xe37900f24e06ac44ab1396d92b2242d16769efc0cd66a368423719d9c1015fea.
+// WatchMaxEffectiveBalanceSet is a free log subscription operation binding the contract event 0x00c6fb6db9c52d89a1eaf84e0470a3304db2086d0ac44d64ebf4ea35a905a7d0.
 //
-// Solidity: event InvalidStakingContractsForSlashing()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchInvalidStakingContractsForSlashing(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceInvalidStakingContractsForSlashing) (event.Subscription, error) {
+// Solidity: event MaxEffectiveBalanceSet(uint256 maxEffectiveBalance)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMaxEffectiveBalanceSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMaxEffectiveBalanceSet) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "InvalidStakingContractsForSlashing")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "MaxEffectiveBalanceSet")
 	if err != nil {
 		return nil, err
 	}
@@ -2776,8 +2542,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchInvalidStaking
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceInvalidStakingContractsForSlashing)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "InvalidStakingContractsForSlashing", log); err != nil {
+				event := new(ContractAvsGovernanceMaxEffectiveBalanceSet)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "MaxEffectiveBalanceSet", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2798,21 +2564,21 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchInvalidStaking
 	}), nil
 }
 
-// ParseInvalidStakingContractsForSlashing is a log parse operation binding the contract event 0xe37900f24e06ac44ab1396d92b2242d16769efc0cd66a368423719d9c1015fea.
+// ParseMaxEffectiveBalanceSet is a log parse operation binding the contract event 0x00c6fb6db9c52d89a1eaf84e0470a3304db2086d0ac44d64ebf4ea35a905a7d0.
 //
-// Solidity: event InvalidStakingContractsForSlashing()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseInvalidStakingContractsForSlashing(log types.Log) (*ContractAvsGovernanceInvalidStakingContractsForSlashing, error) {
-	event := new(ContractAvsGovernanceInvalidStakingContractsForSlashing)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "InvalidStakingContractsForSlashing", log); err != nil {
+// Solidity: event MaxEffectiveBalanceSet(uint256 maxEffectiveBalance)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseMaxEffectiveBalanceSet(log types.Log) (*ContractAvsGovernanceMaxEffectiveBalanceSet, error) {
+	event := new(ContractAvsGovernanceMaxEffectiveBalanceSet)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "MaxEffectiveBalanceSet", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator is returned from FilterMinSlashableStakePerStakingContractSet and is used to iterate over the raw logs and unpacked data for MinSlashableStakePerStakingContractSet events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator struct {
-	Event *ContractAvsGovernanceMinSlashableStakePerStakingContractSet // Event containing the contract specifics and raw log
+// ContractAvsGovernanceMinSharesPerStrategySetIterator is returned from FilterMinSharesPerStrategySet and is used to iterate over the raw logs and unpacked data for MinSharesPerStrategySet events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMinSharesPerStrategySetIterator struct {
+	Event *ContractAvsGovernanceMinSharesPerStrategySet // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2826,7 +2592,7 @@ type ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator struct 
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) Next() bool {
+func (it *ContractAvsGovernanceMinSharesPerStrategySetIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2835,7 +2601,7 @@ func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) N
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceMinSlashableStakePerStakingContractSet)
+			it.Event = new(ContractAvsGovernanceMinSharesPerStrategySet)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2850,7 +2616,7 @@ func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) N
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceMinSlashableStakePerStakingContractSet)
+		it.Event = new(ContractAvsGovernanceMinSharesPerStrategySet)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -2866,42 +2632,42 @@ func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) N
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) Error() error {
+func (it *ContractAvsGovernanceMinSharesPerStrategySetIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator) Close() error {
+func (it *ContractAvsGovernanceMinSharesPerStrategySetIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceMinSlashableStakePerStakingContractSet represents a MinSlashableStakePerStakingContractSet event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceMinSlashableStakePerStakingContractSet struct {
-	StakingContract   common.Address
-	MinSlashableStake *big.Int
-	Raw               types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceMinSharesPerStrategySet represents a MinSharesPerStrategySet event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMinSharesPerStrategySet struct {
+	Strategy  common.Address
+	MinShares *big.Int
+	Raw       types.Log // Blockchain specific contextual infos
 }
 
-// FilterMinSlashableStakePerStakingContractSet is a free log retrieval operation binding the contract event 0xc57761e5f61d8780398fffb71ecce8e2c362424f54cd9a9afee479a82b3c1cc2.
+// FilterMinSharesPerStrategySet is a free log retrieval operation binding the contract event 0x3a6c52328a7b3b726d0ec757d68f416b26ec2991ac4d4f95d450c504f5a0e521.
 //
-// Solidity: event MinSlashableStakePerStakingContractSet(address stakingContract, uint256 minSlashableStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterMinSlashableStakePerStakingContractSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator, error) {
+// Solidity: event MinSharesPerStrategySet(address strategy, uint256 minShares)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterMinSharesPerStrategySet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinSharesPerStrategySetIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "MinSlashableStakePerStakingContractSet")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "MinSharesPerStrategySet")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceMinSlashableStakePerStakingContractSetIterator{contract: _ContractAvsGovernance.contract, event: "MinSlashableStakePerStakingContractSet", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceMinSharesPerStrategySetIterator{contract: _ContractAvsGovernance.contract, event: "MinSharesPerStrategySet", logs: logs, sub: sub}, nil
 }
 
-// WatchMinSlashableStakePerStakingContractSet is a free log subscription operation binding the contract event 0xc57761e5f61d8780398fffb71ecce8e2c362424f54cd9a9afee479a82b3c1cc2.
+// WatchMinSharesPerStrategySet is a free log subscription operation binding the contract event 0x3a6c52328a7b3b726d0ec757d68f416b26ec2991ac4d4f95d450c504f5a0e521.
 //
-// Solidity: event MinSlashableStakePerStakingContractSet(address stakingContract, uint256 minSlashableStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinSlashableStakePerStakingContractSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinSlashableStakePerStakingContractSet) (event.Subscription, error) {
+// Solidity: event MinSharesPerStrategySet(address strategy, uint256 minShares)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinSharesPerStrategySet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinSharesPerStrategySet) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "MinSlashableStakePerStakingContractSet")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "MinSharesPerStrategySet")
 	if err != nil {
 		return nil, err
 	}
@@ -2911,8 +2677,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinSlashableSt
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceMinSlashableStakePerStakingContractSet)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinSlashableStakePerStakingContractSet", log); err != nil {
+				event := new(ContractAvsGovernanceMinSharesPerStrategySet)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinSharesPerStrategySet", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2933,21 +2699,21 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinSlashableSt
 	}), nil
 }
 
-// ParseMinSlashableStakePerStakingContractSet is a log parse operation binding the contract event 0xc57761e5f61d8780398fffb71ecce8e2c362424f54cd9a9afee479a82b3c1cc2.
+// ParseMinSharesPerStrategySet is a log parse operation binding the contract event 0x3a6c52328a7b3b726d0ec757d68f416b26ec2991ac4d4f95d450c504f5a0e521.
 //
-// Solidity: event MinSlashableStakePerStakingContractSet(address stakingContract, uint256 minSlashableStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseMinSlashableStakePerStakingContractSet(log types.Log) (*ContractAvsGovernanceMinSlashableStakePerStakingContractSet, error) {
-	event := new(ContractAvsGovernanceMinSlashableStakePerStakingContractSet)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinSlashableStakePerStakingContractSet", log); err != nil {
+// Solidity: event MinSharesPerStrategySet(address strategy, uint256 minShares)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseMinSharesPerStrategySet(log types.Log) (*ContractAvsGovernanceMinSharesPerStrategySet, error) {
+	event := new(ContractAvsGovernanceMinSharesPerStrategySet)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinSharesPerStrategySet", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// ContractAvsGovernanceMinStakePerStakingContractSetIterator is returned from FilterMinStakePerStakingContractSet and is used to iterate over the raw logs and unpacked data for MinStakePerStakingContractSet events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceMinStakePerStakingContractSetIterator struct {
-	Event *ContractAvsGovernanceMinStakePerStakingContractSet // Event containing the contract specifics and raw log
+// ContractAvsGovernanceMinVotingPowerSetIterator is returned from FilterMinVotingPowerSet and is used to iterate over the raw logs and unpacked data for MinVotingPowerSet events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMinVotingPowerSetIterator struct {
+	Event *ContractAvsGovernanceMinVotingPowerSet // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -2961,7 +2727,7 @@ type ContractAvsGovernanceMinStakePerStakingContractSetIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Next() bool {
+func (it *ContractAvsGovernanceMinVotingPowerSetIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -2970,7 +2736,7 @@ func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Next() boo
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceMinStakePerStakingContractSet)
+			it.Event = new(ContractAvsGovernanceMinVotingPowerSet)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -2985,7 +2751,7 @@ func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Next() boo
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceMinStakePerStakingContractSet)
+		it.Event = new(ContractAvsGovernanceMinVotingPowerSet)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -3001,42 +2767,41 @@ func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Next() boo
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Error() error {
+func (it *ContractAvsGovernanceMinVotingPowerSetIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceMinStakePerStakingContractSetIterator) Close() error {
+func (it *ContractAvsGovernanceMinVotingPowerSetIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceMinStakePerStakingContractSet represents a MinStakePerStakingContractSet event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceMinStakePerStakingContractSet struct {
-	StakingContract common.Address
-	MinStake        *big.Int
-	Raw             types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceMinVotingPowerSet represents a MinVotingPowerSet event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceMinVotingPowerSet struct {
+	MinVotingPower *big.Int
+	Raw            types.Log // Blockchain specific contextual infos
 }
 
-// FilterMinStakePerStakingContractSet is a free log retrieval operation binding the contract event 0xd0fb069b8b4156af8735f9d96d43dc06680897ecd16849e5f66f32beb4f60e26.
+// FilterMinVotingPowerSet is a free log retrieval operation binding the contract event 0x10203ddc048c86cf14172a6ea2565c805ce7320b22d6941b2eb396d0ee077983.
 //
-// Solidity: event MinStakePerStakingContractSet(address stakingContract, uint256 minStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterMinStakePerStakingContractSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinStakePerStakingContractSetIterator, error) {
+// Solidity: event MinVotingPowerSet(uint256 minVotingPower)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterMinVotingPowerSet(opts *bind.FilterOpts) (*ContractAvsGovernanceMinVotingPowerSetIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "MinStakePerStakingContractSet")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "MinVotingPowerSet")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceMinStakePerStakingContractSetIterator{contract: _ContractAvsGovernance.contract, event: "MinStakePerStakingContractSet", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceMinVotingPowerSetIterator{contract: _ContractAvsGovernance.contract, event: "MinVotingPowerSet", logs: logs, sub: sub}, nil
 }
 
-// WatchMinStakePerStakingContractSet is a free log subscription operation binding the contract event 0xd0fb069b8b4156af8735f9d96d43dc06680897ecd16849e5f66f32beb4f60e26.
+// WatchMinVotingPowerSet is a free log subscription operation binding the contract event 0x10203ddc048c86cf14172a6ea2565c805ce7320b22d6941b2eb396d0ee077983.
 //
-// Solidity: event MinStakePerStakingContractSet(address stakingContract, uint256 minStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinStakePerStakingContractSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinStakePerStakingContractSet) (event.Subscription, error) {
+// Solidity: event MinVotingPowerSet(uint256 minVotingPower)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinVotingPowerSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceMinVotingPowerSet) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "MinStakePerStakingContractSet")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "MinVotingPowerSet")
 	if err != nil {
 		return nil, err
 	}
@@ -3046,8 +2811,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinStakePerSta
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceMinStakePerStakingContractSet)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinStakePerStakingContractSet", log); err != nil {
+				event := new(ContractAvsGovernanceMinVotingPowerSet)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinVotingPowerSet", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -3068,21 +2833,21 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchMinStakePerSta
 	}), nil
 }
 
-// ParseMinStakePerStakingContractSet is a log parse operation binding the contract event 0xd0fb069b8b4156af8735f9d96d43dc06680897ecd16849e5f66f32beb4f60e26.
+// ParseMinVotingPowerSet is a log parse operation binding the contract event 0x10203ddc048c86cf14172a6ea2565c805ce7320b22d6941b2eb396d0ee077983.
 //
-// Solidity: event MinStakePerStakingContractSet(address stakingContract, uint256 minStake)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseMinStakePerStakingContractSet(log types.Log) (*ContractAvsGovernanceMinStakePerStakingContractSet, error) {
-	event := new(ContractAvsGovernanceMinStakePerStakingContractSet)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinStakePerStakingContractSet", log); err != nil {
+// Solidity: event MinVotingPowerSet(uint256 minVotingPower)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseMinVotingPowerSet(log types.Log) (*ContractAvsGovernanceMinVotingPowerSet, error) {
+	event := new(ContractAvsGovernanceMinVotingPowerSet)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "MinVotingPowerSet", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// ContractAvsGovernanceOperatorSlashedIterator is returned from FilterOperatorSlashed and is used to iterate over the raw logs and unpacked data for OperatorSlashed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceOperatorSlashedIterator struct {
-	Event *ContractAvsGovernanceOperatorSlashed // Event containing the contract specifics and raw log
+// ContractAvsGovernanceOperatorRegisteredIterator is returned from FilterOperatorRegistered and is used to iterate over the raw logs and unpacked data for OperatorRegistered events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceOperatorRegisteredIterator struct {
+	Event *ContractAvsGovernanceOperatorRegistered // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -3096,7 +2861,7 @@ type ContractAvsGovernanceOperatorSlashedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceOperatorSlashedIterator) Next() bool {
+func (it *ContractAvsGovernanceOperatorRegisteredIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -3105,7 +2870,7 @@ func (it *ContractAvsGovernanceOperatorSlashedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceOperatorSlashed)
+			it.Event = new(ContractAvsGovernanceOperatorRegistered)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -3120,7 +2885,7 @@ func (it *ContractAvsGovernanceOperatorSlashedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceOperatorSlashed)
+		it.Event = new(ContractAvsGovernanceOperatorRegistered)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -3136,42 +2901,52 @@ func (it *ContractAvsGovernanceOperatorSlashedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceOperatorSlashedIterator) Error() error {
+func (it *ContractAvsGovernanceOperatorRegisteredIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceOperatorSlashedIterator) Close() error {
+func (it *ContractAvsGovernanceOperatorRegisteredIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceOperatorSlashed represents a OperatorSlashed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceOperatorSlashed struct {
+// ContractAvsGovernanceOperatorRegistered represents a OperatorRegistered event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceOperatorRegistered struct {
 	Operator common.Address
-	SlashId  *big.Int
+	BlsKey   [4]*big.Int
 	Raw      types.Log // Blockchain specific contextual infos
 }
 
-// FilterOperatorSlashed is a free log retrieval operation binding the contract event 0xa005d3b8f5c8149659f2afc06ed99732d5891377a370a723669418ca1ca29ced.
+// FilterOperatorRegistered is a free log retrieval operation binding the contract event 0x54bc9cf83c2eb0f2ad1abf6e4fab882964404622ba2df6b5a9356a18d3aac055.
 //
-// Solidity: event OperatorSlashed(address operator, uint256 slashId)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterOperatorSlashed(opts *bind.FilterOpts) (*ContractAvsGovernanceOperatorSlashedIterator, error) {
+// Solidity: event OperatorRegistered(address indexed operator, uint256[4] blsKey)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterOperatorRegistered(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceOperatorRegisteredIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "OperatorSlashed")
+	var operatorRule []interface{}
+	for _, operatorItem := range operator {
+		operatorRule = append(operatorRule, operatorItem)
+	}
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "OperatorRegistered", operatorRule)
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceOperatorSlashedIterator{contract: _ContractAvsGovernance.contract, event: "OperatorSlashed", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceOperatorRegisteredIterator{contract: _ContractAvsGovernance.contract, event: "OperatorRegistered", logs: logs, sub: sub}, nil
 }
 
-// WatchOperatorSlashed is a free log subscription operation binding the contract event 0xa005d3b8f5c8149659f2afc06ed99732d5891377a370a723669418ca1ca29ced.
+// WatchOperatorRegistered is a free log subscription operation binding the contract event 0x54bc9cf83c2eb0f2ad1abf6e4fab882964404622ba2df6b5a9356a18d3aac055.
 //
-// Solidity: event OperatorSlashed(address operator, uint256 slashId)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchOperatorSlashed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorSlashed) (event.Subscription, error) {
+// Solidity: event OperatorRegistered(address indexed operator, uint256[4] blsKey)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchOperatorRegistered(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorRegistered, operator []common.Address) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "OperatorSlashed")
+	var operatorRule []interface{}
+	for _, operatorItem := range operator {
+		operatorRule = append(operatorRule, operatorItem)
+	}
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "OperatorRegistered", operatorRule)
 	if err != nil {
 		return nil, err
 	}
@@ -3181,8 +2956,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchOperatorSlashe
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceOperatorSlashed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorSlashed", log); err != nil {
+				event := new(ContractAvsGovernanceOperatorRegistered)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorRegistered", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -3203,21 +2978,21 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchOperatorSlashe
 	}), nil
 }
 
-// ParseOperatorSlashed is a log parse operation binding the contract event 0xa005d3b8f5c8149659f2afc06ed99732d5891377a370a723669418ca1ca29ced.
+// ParseOperatorRegistered is a log parse operation binding the contract event 0x54bc9cf83c2eb0f2ad1abf6e4fab882964404622ba2df6b5a9356a18d3aac055.
 //
-// Solidity: event OperatorSlashed(address operator, uint256 slashId)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseOperatorSlashed(log types.Log) (*ContractAvsGovernanceOperatorSlashed, error) {
-	event := new(ContractAvsGovernanceOperatorSlashed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorSlashed", log); err != nil {
+// Solidity: event OperatorRegistered(address indexed operator, uint256[4] blsKey)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseOperatorRegistered(log types.Log) (*ContractAvsGovernanceOperatorRegistered, error) {
+	event := new(ContractAvsGovernanceOperatorRegistered)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorRegistered", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// ContractAvsGovernancePriceFeedSetIterator is returned from FilterPriceFeedSet and is used to iterate over the raw logs and unpacked data for PriceFeedSet events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernancePriceFeedSetIterator struct {
-	Event *ContractAvsGovernancePriceFeedSet // Event containing the contract specifics and raw log
+// ContractAvsGovernanceOperatorUnregisteredIterator is returned from FilterOperatorUnregistered and is used to iterate over the raw logs and unpacked data for OperatorUnregistered events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceOperatorUnregisteredIterator struct {
+	Event *ContractAvsGovernanceOperatorUnregistered // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -3231,7 +3006,7 @@ type ContractAvsGovernancePriceFeedSetIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernancePriceFeedSetIterator) Next() bool {
+func (it *ContractAvsGovernanceOperatorUnregisteredIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -3240,7 +3015,7 @@ func (it *ContractAvsGovernancePriceFeedSetIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernancePriceFeedSet)
+			it.Event = new(ContractAvsGovernanceOperatorUnregistered)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -3255,7 +3030,7 @@ func (it *ContractAvsGovernancePriceFeedSetIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernancePriceFeedSet)
+		it.Event = new(ContractAvsGovernanceOperatorUnregistered)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -3271,52 +3046,41 @@ func (it *ContractAvsGovernancePriceFeedSetIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernancePriceFeedSetIterator) Error() error {
+func (it *ContractAvsGovernanceOperatorUnregisteredIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernancePriceFeedSetIterator) Close() error {
+func (it *ContractAvsGovernanceOperatorUnregisteredIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernancePriceFeedSet represents a PriceFeedSet event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernancePriceFeedSet struct {
-	StakingContract common.Address
-	Feed            common.Address
-	Raw             types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceOperatorUnregistered represents a OperatorUnregistered event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceOperatorUnregistered struct {
+	Operator common.Address
+	Raw      types.Log // Blockchain specific contextual infos
 }
 
-// FilterPriceFeedSet is a free log retrieval operation binding the contract event 0xd2d8394cf7549a5ddbc2ba3dd7b2de8d53c891472d1f2907008ed6a10045fdae.
+// FilterOperatorUnregistered is a free log retrieval operation binding the contract event 0x6f42117a557500c705ddf040a619d86f39101e6b74ac20d7b3e5943ba473fc7f.
 //
-// Solidity: event PriceFeedSet(address indexed stakingContract, address feed)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterPriceFeedSet(opts *bind.FilterOpts, stakingContract []common.Address) (*ContractAvsGovernancePriceFeedSetIterator, error) {
+// Solidity: event OperatorUnregistered(address operator)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterOperatorUnregistered(opts *bind.FilterOpts) (*ContractAvsGovernanceOperatorUnregisteredIterator, error) {
 
-	var stakingContractRule []interface{}
-	for _, stakingContractItem := range stakingContract {
-		stakingContractRule = append(stakingContractRule, stakingContractItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "PriceFeedSet", stakingContractRule)
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "OperatorUnregistered")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernancePriceFeedSetIterator{contract: _ContractAvsGovernance.contract, event: "PriceFeedSet", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceOperatorUnregisteredIterator{contract: _ContractAvsGovernance.contract, event: "OperatorUnregistered", logs: logs, sub: sub}, nil
 }
 
-// WatchPriceFeedSet is a free log subscription operation binding the contract event 0xd2d8394cf7549a5ddbc2ba3dd7b2de8d53c891472d1f2907008ed6a10045fdae.
+// WatchOperatorUnregistered is a free log subscription operation binding the contract event 0x6f42117a557500c705ddf040a619d86f39101e6b74ac20d7b3e5943ba473fc7f.
 //
-// Solidity: event PriceFeedSet(address indexed stakingContract, address feed)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchPriceFeedSet(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernancePriceFeedSet, stakingContract []common.Address) (event.Subscription, error) {
+// Solidity: event OperatorUnregistered(address operator)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchOperatorUnregistered(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceOperatorUnregistered) (event.Subscription, error) {
 
-	var stakingContractRule []interface{}
-	for _, stakingContractItem := range stakingContract {
-		stakingContractRule = append(stakingContractRule, stakingContractItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "PriceFeedSet", stakingContractRule)
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "OperatorUnregistered")
 	if err != nil {
 		return nil, err
 	}
@@ -3326,8 +3090,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchPriceFeedSet(o
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernancePriceFeedSet)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "PriceFeedSet", log); err != nil {
+				event := new(ContractAvsGovernanceOperatorUnregistered)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorUnregistered", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -3348,12 +3112,12 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchPriceFeedSet(o
 	}), nil
 }
 
-// ParsePriceFeedSet is a log parse operation binding the contract event 0xd2d8394cf7549a5ddbc2ba3dd7b2de8d53c891472d1f2907008ed6a10045fdae.
+// ParseOperatorUnregistered is a log parse operation binding the contract event 0x6f42117a557500c705ddf040a619d86f39101e6b74ac20d7b3e5943ba473fc7f.
 //
-// Solidity: event PriceFeedSet(address indexed stakingContract, address feed)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParsePriceFeedSet(log types.Log) (*ContractAvsGovernancePriceFeedSet, error) {
-	event := new(ContractAvsGovernancePriceFeedSet)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "PriceFeedSet", log); err != nil {
+// Solidity: event OperatorUnregistered(address operator)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseOperatorUnregistered(log types.Log) (*ContractAvsGovernanceOperatorUnregistered, error) {
+	event := new(ContractAvsGovernanceOperatorUnregistered)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "OperatorUnregistered", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -3437,15 +3201,10 @@ type ContractAvsGovernanceQueuedRewardsReceiverModification struct {
 
 // FilterQueuedRewardsReceiverModification is a free log retrieval operation binding the contract event 0x0d8cfa10a3087b28d3c226ad9a37314860e7c3c0505a25a39e3cdefb3118a98a.
 //
-// Solidity: event QueuedRewardsReceiverModification(address indexed operator, address receiver, uint256 delay)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterQueuedRewardsReceiverModification(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceQueuedRewardsReceiverModificationIterator, error) {
+// Solidity: event QueuedRewardsReceiverModification(address operator, address receiver, uint256 delay)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterQueuedRewardsReceiverModification(opts *bind.FilterOpts) (*ContractAvsGovernanceQueuedRewardsReceiverModificationIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "QueuedRewardsReceiverModification", operatorRule)
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "QueuedRewardsReceiverModification")
 	if err != nil {
 		return nil, err
 	}
@@ -3454,15 +3213,10 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterQueuedRewards
 
 // WatchQueuedRewardsReceiverModification is a free log subscription operation binding the contract event 0x0d8cfa10a3087b28d3c226ad9a37314860e7c3c0505a25a39e3cdefb3118a98a.
 //
-// Solidity: event QueuedRewardsReceiverModification(address indexed operator, address receiver, uint256 delay)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchQueuedRewardsReceiverModification(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceQueuedRewardsReceiverModification, operator []common.Address) (event.Subscription, error) {
+// Solidity: event QueuedRewardsReceiverModification(address operator, address receiver, uint256 delay)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchQueuedRewardsReceiverModification(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceQueuedRewardsReceiverModification) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "QueuedRewardsReceiverModification", operatorRule)
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "QueuedRewardsReceiverModification")
 	if err != nil {
 		return nil, err
 	}
@@ -3496,145 +3250,10 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchQueuedRewardsR
 
 // ParseQueuedRewardsReceiverModification is a log parse operation binding the contract event 0x0d8cfa10a3087b28d3c226ad9a37314860e7c3c0505a25a39e3cdefb3118a98a.
 //
-// Solidity: event QueuedRewardsReceiverModification(address indexed operator, address receiver, uint256 delay)
+// Solidity: event QueuedRewardsReceiverModification(address operator, address receiver, uint256 delay)
 func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseQueuedRewardsReceiverModification(log types.Log) (*ContractAvsGovernanceQueuedRewardsReceiverModification, error) {
 	event := new(ContractAvsGovernanceQueuedRewardsReceiverModification)
 	if err := _ContractAvsGovernance.contract.UnpackLog(event, "QueuedRewardsReceiverModification", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceRedistributionFailedIterator is returned from FilterRedistributionFailed and is used to iterate over the raw logs and unpacked data for RedistributionFailed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceRedistributionFailedIterator struct {
-	Event *ContractAvsGovernanceRedistributionFailed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceRedistributionFailedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceRedistributionFailed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceRedistributionFailed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceRedistributionFailedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceRedistributionFailedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceRedistributionFailed represents a RedistributionFailed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceRedistributionFailed struct {
-	SlashId *big.Int
-	Data    []byte
-	Raw     types.Log // Blockchain specific contextual infos
-}
-
-// FilterRedistributionFailed is a free log retrieval operation binding the contract event 0x4283421d385d485c84e22eb466412b3f5fc0c64892d3a5b909c3395c23b766ba.
-//
-// Solidity: event RedistributionFailed(uint256 slashId, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterRedistributionFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceRedistributionFailedIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "RedistributionFailed")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceRedistributionFailedIterator{contract: _ContractAvsGovernance.contract, event: "RedistributionFailed", logs: logs, sub: sub}, nil
-}
-
-// WatchRedistributionFailed is a free log subscription operation binding the contract event 0x4283421d385d485c84e22eb466412b3f5fc0c64892d3a5b909c3395c23b766ba.
-//
-// Solidity: event RedistributionFailed(uint256 slashId, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchRedistributionFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceRedistributionFailed) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "RedistributionFailed")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceRedistributionFailed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "RedistributionFailed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRedistributionFailed is a log parse operation binding the contract event 0x4283421d385d485c84e22eb466412b3f5fc0c64892d3a5b909c3395c23b766ba.
-//
-// Solidity: event RedistributionFailed(uint256 slashId, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseRedistributionFailed(log types.Log) (*ContractAvsGovernanceRedistributionFailed, error) {
-	event := new(ContractAvsGovernanceRedistributionFailed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "RedistributionFailed", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -4127,6 +3746,140 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseRoleRevoked(lo
 	return event, nil
 }
 
+// ContractAvsGovernanceSetAllowlistSignerIterator is returned from FilterSetAllowlistSigner and is used to iterate over the raw logs and unpacked data for SetAllowlistSigner events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAllowlistSignerIterator struct {
+	Event *ContractAvsGovernanceSetAllowlistSigner // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetAllowlistSignerIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetAllowlistSigner)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetAllowlistSigner)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetAllowlistSignerIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetAllowlistSignerIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetAllowlistSigner represents a SetAllowlistSigner event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAllowlistSigner struct {
+	AllowlistSigner common.Address
+	Raw             types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetAllowlistSigner is a free log retrieval operation binding the contract event 0xfa4acc0aaeb2714e420e9c8339167ddef7bc66c0f94a0c5a7722de21dcb7508c.
+//
+// Solidity: event SetAllowlistSigner(address allowlistSigner)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetAllowlistSigner(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAllowlistSignerIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetAllowlistSigner")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetAllowlistSignerIterator{contract: _ContractAvsGovernance.contract, event: "SetAllowlistSigner", logs: logs, sub: sub}, nil
+}
+
+// WatchSetAllowlistSigner is a free log subscription operation binding the contract event 0xfa4acc0aaeb2714e420e9c8339167ddef7bc66c0f94a0c5a7722de21dcb7508c.
+//
+// Solidity: event SetAllowlistSigner(address allowlistSigner)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetAllowlistSigner(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAllowlistSigner) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetAllowlistSigner")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetAllowlistSigner)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAllowlistSigner", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetAllowlistSigner is a log parse operation binding the contract event 0xfa4acc0aaeb2714e420e9c8339167ddef7bc66c0f94a0c5a7722de21dcb7508c.
+//
+// Solidity: event SetAllowlistSigner(address allowlistSigner)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetAllowlistSigner(log types.Log) (*ContractAvsGovernanceSetAllowlistSigner, error) {
+	event := new(ContractAvsGovernanceSetAllowlistSigner)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAllowlistSigner", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // ContractAvsGovernanceSetAvsGovernanceLogicIterator is returned from FilterSetAvsGovernanceLogic and is used to iterate over the raw logs and unpacked data for SetAvsGovernanceLogic events raised by the ContractAvsGovernance contract.
 type ContractAvsGovernanceSetAvsGovernanceLogicIterator struct {
 	Event *ContractAvsGovernanceSetAvsGovernanceLogic // Event containing the contract specifics and raw log
@@ -4255,6 +4008,274 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetAvsGovernan
 func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetAvsGovernanceLogic(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceLogic, error) {
 	event := new(ContractAvsGovernanceSetAvsGovernanceLogic)
 	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAvsGovernanceLogic", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator is returned from FilterSetAvsGovernanceMultiplierSyncer and is used to iterate over the raw logs and unpacked data for SetAvsGovernanceMultiplierSyncer events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator struct {
+	Event *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer represents a SetAvsGovernanceMultiplierSyncer event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer struct {
+	AvsGovernanceMultiplierSyncer common.Address
+	Raw                           types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetAvsGovernanceMultiplierSyncer is a free log retrieval operation binding the contract event 0xb73a70f24733a9265231de5807eae76d1740a9974b31a142ef9e243508987bbe.
+//
+// Solidity: event SetAvsGovernanceMultiplierSyncer(address avsGovernanceMultiplierSyncer)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetAvsGovernanceMultiplierSyncer(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetAvsGovernanceMultiplierSyncer")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetAvsGovernanceMultiplierSyncerIterator{contract: _ContractAvsGovernance.contract, event: "SetAvsGovernanceMultiplierSyncer", logs: logs, sub: sub}, nil
+}
+
+// WatchSetAvsGovernanceMultiplierSyncer is a free log subscription operation binding the contract event 0xb73a70f24733a9265231de5807eae76d1740a9974b31a142ef9e243508987bbe.
+//
+// Solidity: event SetAvsGovernanceMultiplierSyncer(address avsGovernanceMultiplierSyncer)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetAvsGovernanceMultiplierSyncer(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetAvsGovernanceMultiplierSyncer")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAvsGovernanceMultiplierSyncer", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetAvsGovernanceMultiplierSyncer is a log parse operation binding the contract event 0xb73a70f24733a9265231de5807eae76d1740a9974b31a142ef9e243508987bbe.
+//
+// Solidity: event SetAvsGovernanceMultiplierSyncer(address avsGovernanceMultiplierSyncer)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetAvsGovernanceMultiplierSyncer(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer, error) {
+	event := new(ContractAvsGovernanceSetAvsGovernanceMultiplierSyncer)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAvsGovernanceMultiplierSyncer", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetAvsGovernanceMultisigIterator is returned from FilterSetAvsGovernanceMultisig and is used to iterate over the raw logs and unpacked data for SetAvsGovernanceMultisig events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAvsGovernanceMultisigIterator struct {
+	Event *ContractAvsGovernanceSetAvsGovernanceMultisig // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultisigIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetAvsGovernanceMultisig)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetAvsGovernanceMultisig)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultisigIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetAvsGovernanceMultisigIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetAvsGovernanceMultisig represents a SetAvsGovernanceMultisig event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetAvsGovernanceMultisig struct {
+	NewAvsGovernanceMultisig common.Address
+	Raw                      types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetAvsGovernanceMultisig is a free log retrieval operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetAvsGovernanceMultisig(opts *bind.FilterOpts) (*ContractAvsGovernanceSetAvsGovernanceMultisigIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetAvsGovernanceMultisig")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetAvsGovernanceMultisigIterator{contract: _ContractAvsGovernance.contract, event: "SetAvsGovernanceMultisig", logs: logs, sub: sub}, nil
+}
+
+// WatchSetAvsGovernanceMultisig is a free log subscription operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetAvsGovernanceMultisig(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetAvsGovernanceMultisig) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetAvsGovernanceMultisig")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetAvsGovernanceMultisig)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAvsGovernanceMultisig", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetAvsGovernanceMultisig is a log parse operation binding the contract event 0x024e98b7d808a3ddb028252dc95dfdcb165a0ca59fcff8984b4fecf9a7222649.
+//
+// Solidity: event SetAvsGovernanceMultisig(address newAvsGovernanceMultisig)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetAvsGovernanceMultisig(log types.Log) (*ContractAvsGovernanceSetAvsGovernanceMultisig, error) {
+	event := new(ContractAvsGovernanceSetAvsGovernanceMultisig)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetAvsGovernanceMultisig", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -4529,9 +4550,9 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetIsAllowlist
 	return event, nil
 }
 
-// ContractAvsGovernanceSetP2pAuthenticationEnabledIterator is returned from FilterSetP2pAuthenticationEnabled and is used to iterate over the raw logs and unpacked data for SetP2pAuthenticationEnabled events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetP2pAuthenticationEnabledIterator struct {
-	Event *ContractAvsGovernanceSetP2pAuthenticationEnabled // Event containing the contract specifics and raw log
+// ContractAvsGovernanceSetMessageHandlerIterator is returned from FilterSetMessageHandler and is used to iterate over the raw logs and unpacked data for SetMessageHandler events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetMessageHandlerIterator struct {
+	Event *ContractAvsGovernanceSetMessageHandler // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -4545,7 +4566,7 @@ type ContractAvsGovernanceSetP2pAuthenticationEnabledIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Next() bool {
+func (it *ContractAvsGovernanceSetMessageHandlerIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -4554,7 +4575,7 @@ func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Next() bool 
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSetP2pAuthenticationEnabled)
+			it.Event = new(ContractAvsGovernanceSetMessageHandler)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -4569,7 +4590,7 @@ func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Next() bool 
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSetP2pAuthenticationEnabled)
+		it.Event = new(ContractAvsGovernanceSetMessageHandler)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -4585,41 +4606,41 @@ func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Next() bool 
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Error() error {
+func (it *ContractAvsGovernanceSetMessageHandlerIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceSetP2pAuthenticationEnabledIterator) Close() error {
+func (it *ContractAvsGovernanceSetMessageHandlerIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceSetP2pAuthenticationEnabled represents a SetP2pAuthenticationEnabled event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetP2pAuthenticationEnabled struct {
-	IsEnabled bool
-	Raw       types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceSetMessageHandler represents a SetMessageHandler event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetMessageHandler struct {
+	NewMessageHandler common.Address
+	Raw               types.Log // Blockchain specific contextual infos
 }
 
-// FilterSetP2pAuthenticationEnabled is a free log retrieval operation binding the contract event 0x476bc7159a4e42477e0aa2e2e9709c55cb469b547976f91002b8db00bbd9b2f6.
+// FilterSetMessageHandler is a free log retrieval operation binding the contract event 0x997f84b541d7b68e210e6f50e3402b51d8411dbbc4d44ed81e508383126e4e94.
 //
-// Solidity: event SetP2pAuthenticationEnabled(bool _isEnabled)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetP2pAuthenticationEnabled(opts *bind.FilterOpts) (*ContractAvsGovernanceSetP2pAuthenticationEnabledIterator, error) {
+// Solidity: event SetMessageHandler(address newMessageHandler)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetMessageHandler(opts *bind.FilterOpts) (*ContractAvsGovernanceSetMessageHandlerIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetP2pAuthenticationEnabled")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetMessageHandler")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceSetP2pAuthenticationEnabledIterator{contract: _ContractAvsGovernance.contract, event: "SetP2pAuthenticationEnabled", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceSetMessageHandlerIterator{contract: _ContractAvsGovernance.contract, event: "SetMessageHandler", logs: logs, sub: sub}, nil
 }
 
-// WatchSetP2pAuthenticationEnabled is a free log subscription operation binding the contract event 0x476bc7159a4e42477e0aa2e2e9709c55cb469b547976f91002b8db00bbd9b2f6.
+// WatchSetMessageHandler is a free log subscription operation binding the contract event 0x997f84b541d7b68e210e6f50e3402b51d8411dbbc4d44ed81e508383126e4e94.
 //
-// Solidity: event SetP2pAuthenticationEnabled(bool _isEnabled)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetP2pAuthenticationEnabled(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetP2pAuthenticationEnabled) (event.Subscription, error) {
+// Solidity: event SetMessageHandler(address newMessageHandler)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetMessageHandler(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetMessageHandler) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetP2pAuthenticationEnabled")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetMessageHandler")
 	if err != nil {
 		return nil, err
 	}
@@ -4629,8 +4650,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetP2pAuthenti
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSetP2pAuthenticationEnabled)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetP2pAuthenticationEnabled", log); err != nil {
+				event := new(ContractAvsGovernanceSetMessageHandler)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetMessageHandler", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -4651,12 +4672,280 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetP2pAuthenti
 	}), nil
 }
 
-// ParseSetP2pAuthenticationEnabled is a log parse operation binding the contract event 0x476bc7159a4e42477e0aa2e2e9709c55cb469b547976f91002b8db00bbd9b2f6.
+// ParseSetMessageHandler is a log parse operation binding the contract event 0x997f84b541d7b68e210e6f50e3402b51d8411dbbc4d44ed81e508383126e4e94.
 //
-// Solidity: event SetP2pAuthenticationEnabled(bool _isEnabled)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetP2pAuthenticationEnabled(log types.Log) (*ContractAvsGovernanceSetP2pAuthenticationEnabled, error) {
-	event := new(ContractAvsGovernanceSetP2pAuthenticationEnabled)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetP2pAuthenticationEnabled", log); err != nil {
+// Solidity: event SetMessageHandler(address newMessageHandler)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetMessageHandler(log types.Log) (*ContractAvsGovernanceSetMessageHandler, error) {
+	event := new(ContractAvsGovernanceSetMessageHandler)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetMessageHandler", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetNumOfOperatorsLimitIterator is returned from FilterSetNumOfOperatorsLimit and is used to iterate over the raw logs and unpacked data for SetNumOfOperatorsLimit events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetNumOfOperatorsLimitIterator struct {
+	Event *ContractAvsGovernanceSetNumOfOperatorsLimit // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetNumOfOperatorsLimitIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetNumOfOperatorsLimit)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetNumOfOperatorsLimit)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetNumOfOperatorsLimitIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetNumOfOperatorsLimitIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetNumOfOperatorsLimit represents a SetNumOfOperatorsLimit event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetNumOfOperatorsLimit struct {
+	NewLimitOfNumOfOperators *big.Int
+	Raw                      types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetNumOfOperatorsLimit is a free log retrieval operation binding the contract event 0xc0dd1d82df4ae12576f7a7912395305cf73deae26c764dd74a945cd6ba81591b.
+//
+// Solidity: event SetNumOfOperatorsLimit(uint256 newLimitOfNumOfOperators)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetNumOfOperatorsLimit(opts *bind.FilterOpts) (*ContractAvsGovernanceSetNumOfOperatorsLimitIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetNumOfOperatorsLimit")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetNumOfOperatorsLimitIterator{contract: _ContractAvsGovernance.contract, event: "SetNumOfOperatorsLimit", logs: logs, sub: sub}, nil
+}
+
+// WatchSetNumOfOperatorsLimit is a free log subscription operation binding the contract event 0xc0dd1d82df4ae12576f7a7912395305cf73deae26c764dd74a945cd6ba81591b.
+//
+// Solidity: event SetNumOfOperatorsLimit(uint256 newLimitOfNumOfOperators)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetNumOfOperatorsLimit(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetNumOfOperatorsLimit) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetNumOfOperatorsLimit")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetNumOfOperatorsLimit)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetNumOfOperatorsLimit", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetNumOfOperatorsLimit is a log parse operation binding the contract event 0xc0dd1d82df4ae12576f7a7912395305cf73deae26c764dd74a945cd6ba81591b.
+//
+// Solidity: event SetNumOfOperatorsLimit(uint256 newLimitOfNumOfOperators)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetNumOfOperatorsLimit(log types.Log) (*ContractAvsGovernanceSetNumOfOperatorsLimit, error) {
+	event := new(ContractAvsGovernanceSetNumOfOperatorsLimit)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetNumOfOperatorsLimit", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetOthenticRegistryIterator is returned from FilterSetOthenticRegistry and is used to iterate over the raw logs and unpacked data for SetOthenticRegistry events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetOthenticRegistryIterator struct {
+	Event *ContractAvsGovernanceSetOthenticRegistry // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetOthenticRegistryIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetOthenticRegistry)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetOthenticRegistry)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetOthenticRegistryIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetOthenticRegistryIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetOthenticRegistry represents a SetOthenticRegistry event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetOthenticRegistry struct {
+	OthenticRegistry common.Address
+	Raw              types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetOthenticRegistry is a free log retrieval operation binding the contract event 0xf9855cc914fefc396bdeb5a4dcb97a2f6c75f4d6f00a8e71d6f9a40e474afe8d.
+//
+// Solidity: event SetOthenticRegistry(address othenticRegistry)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetOthenticRegistry(opts *bind.FilterOpts) (*ContractAvsGovernanceSetOthenticRegistryIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetOthenticRegistry")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetOthenticRegistryIterator{contract: _ContractAvsGovernance.contract, event: "SetOthenticRegistry", logs: logs, sub: sub}, nil
+}
+
+// WatchSetOthenticRegistry is a free log subscription operation binding the contract event 0xf9855cc914fefc396bdeb5a4dcb97a2f6c75f4d6f00a8e71d6f9a40e474afe8d.
+//
+// Solidity: event SetOthenticRegistry(address othenticRegistry)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetOthenticRegistry(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetOthenticRegistry) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetOthenticRegistry")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetOthenticRegistry)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetOthenticRegistry", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetOthenticRegistry is a log parse operation binding the contract event 0xf9855cc914fefc396bdeb5a4dcb97a2f6c75f4d6f00a8e71d6f9a40e474afe8d.
+//
+// Solidity: event SetOthenticRegistry(address othenticRegistry)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetOthenticRegistry(log types.Log) (*ContractAvsGovernanceSetOthenticRegistry, error) {
+	event := new(ContractAvsGovernanceSetOthenticRegistry)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetOthenticRegistry", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -4739,15 +5028,10 @@ type ContractAvsGovernanceSetRewardsReceiver struct {
 
 // FilterSetRewardsReceiver is a free log retrieval operation binding the contract event 0xe906feea2ef60b474e22b4169bdd4de6906a84cd448cbcee99593526fe87082d.
 //
-// Solidity: event SetRewardsReceiver(address indexed operator, address receiver)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetRewardsReceiver(opts *bind.FilterOpts, operator []common.Address) (*ContractAvsGovernanceSetRewardsReceiverIterator, error) {
+// Solidity: event SetRewardsReceiver(address operator, address receiver)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetRewardsReceiver(opts *bind.FilterOpts) (*ContractAvsGovernanceSetRewardsReceiverIterator, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetRewardsReceiver", operatorRule)
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetRewardsReceiver")
 	if err != nil {
 		return nil, err
 	}
@@ -4756,15 +5040,10 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetRewardsRec
 
 // WatchSetRewardsReceiver is a free log subscription operation binding the contract event 0xe906feea2ef60b474e22b4169bdd4de6906a84cd448cbcee99593526fe87082d.
 //
-// Solidity: event SetRewardsReceiver(address indexed operator, address receiver)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetRewardsReceiver(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiver, operator []common.Address) (event.Subscription, error) {
+// Solidity: event SetRewardsReceiver(address operator, address receiver)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetRewardsReceiver(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiver) (event.Subscription, error) {
 
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetRewardsReceiver", operatorRule)
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetRewardsReceiver")
 	if err != nil {
 		return nil, err
 	}
@@ -4798,7 +5077,7 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetRewardsRece
 
 // ParseSetRewardsReceiver is a log parse operation binding the contract event 0xe906feea2ef60b474e22b4169bdd4de6906a84cd448cbcee99593526fe87082d.
 //
-// Solidity: event SetRewardsReceiver(address indexed operator, address receiver)
+// Solidity: event SetRewardsReceiver(address operator, address receiver)
 func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetRewardsReceiver(log types.Log) (*ContractAvsGovernanceSetRewardsReceiver, error) {
 	event := new(ContractAvsGovernanceSetRewardsReceiver)
 	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetRewardsReceiver", log); err != nil {
@@ -4808,9 +5087,9 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetRewardsRece
 	return event, nil
 }
 
-// ContractAvsGovernanceSetStakingContractMultiplierIterator is returned from FilterSetStakingContractMultiplier and is used to iterate over the raw logs and unpacked data for SetStakingContractMultiplier events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetStakingContractMultiplierIterator struct {
-	Event *ContractAvsGovernanceSetStakingContractMultiplier // Event containing the contract specifics and raw log
+// ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator is returned from FilterSetRewardsReceiverModificationDelay and is used to iterate over the raw logs and unpacked data for SetRewardsReceiverModificationDelay events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator struct {
+	Event *ContractAvsGovernanceSetRewardsReceiverModificationDelay // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -4824,7 +5103,7 @@ type ContractAvsGovernanceSetStakingContractMultiplierIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Next() bool {
+func (it *ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -4833,7 +5112,7 @@ func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Next() bool
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSetStakingContractMultiplier)
+			it.Event = new(ContractAvsGovernanceSetRewardsReceiverModificationDelay)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -4848,7 +5127,7 @@ func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Next() bool
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSetStakingContractMultiplier)
+		it.Event = new(ContractAvsGovernanceSetRewardsReceiverModificationDelay)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -4864,43 +5143,41 @@ func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Next() bool
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Error() error {
+func (it *ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *ContractAvsGovernanceSetStakingContractMultiplierIterator) Close() error {
+func (it *ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// ContractAvsGovernanceSetStakingContractMultiplier represents a SetStakingContractMultiplier event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetStakingContractMultiplier struct {
-	StakingContract           common.Address
-	StakingContractMultiplier *big.Int
-	SlashableStakeWeight      *big.Int
-	Raw                       types.Log // Blockchain specific contextual infos
+// ContractAvsGovernanceSetRewardsReceiverModificationDelay represents a SetRewardsReceiverModificationDelay event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetRewardsReceiverModificationDelay struct {
+	ModificationDelay *big.Int
+	Raw               types.Log // Blockchain specific contextual infos
 }
 
-// FilterSetStakingContractMultiplier is a free log retrieval operation binding the contract event 0x844cd4418680d8a9b7047e4a287bf70ed3de8cdde22a6f1745ded1985972d7ad.
+// FilterSetRewardsReceiverModificationDelay is a free log retrieval operation binding the contract event 0x47c8c3268759fc47868c5e319217a2e85d47bd3935a4108debe246f6025fb88b.
 //
-// Solidity: event SetStakingContractMultiplier(address stakingContract, uint256 stakingContractMultiplier, uint256 slashableStakeWeight)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetStakingContractMultiplier(opts *bind.FilterOpts) (*ContractAvsGovernanceSetStakingContractMultiplierIterator, error) {
+// Solidity: event SetRewardsReceiverModificationDelay(uint256 modificationDelay)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetRewardsReceiverModificationDelay(opts *bind.FilterOpts) (*ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetStakingContractMultiplier")
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetRewardsReceiverModificationDelay")
 	if err != nil {
 		return nil, err
 	}
-	return &ContractAvsGovernanceSetStakingContractMultiplierIterator{contract: _ContractAvsGovernance.contract, event: "SetStakingContractMultiplier", logs: logs, sub: sub}, nil
+	return &ContractAvsGovernanceSetRewardsReceiverModificationDelayIterator{contract: _ContractAvsGovernance.contract, event: "SetRewardsReceiverModificationDelay", logs: logs, sub: sub}, nil
 }
 
-// WatchSetStakingContractMultiplier is a free log subscription operation binding the contract event 0x844cd4418680d8a9b7047e4a287bf70ed3de8cdde22a6f1745ded1985972d7ad.
+// WatchSetRewardsReceiverModificationDelay is a free log subscription operation binding the contract event 0x47c8c3268759fc47868c5e319217a2e85d47bd3935a4108debe246f6025fb88b.
 //
-// Solidity: event SetStakingContractMultiplier(address stakingContract, uint256 stakingContractMultiplier, uint256 slashableStakeWeight)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetStakingContractMultiplier(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetStakingContractMultiplier) (event.Subscription, error) {
+// Solidity: event SetRewardsReceiverModificationDelay(uint256 modificationDelay)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetRewardsReceiverModificationDelay(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetRewardsReceiverModificationDelay) (event.Subscription, error) {
 
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetStakingContractMultiplier")
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetRewardsReceiverModificationDelay")
 	if err != nil {
 		return nil, err
 	}
@@ -4910,8 +5187,8 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetStakingCont
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSetStakingContractMultiplier)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetStakingContractMultiplier", log); err != nil {
+				event := new(ContractAvsGovernanceSetRewardsReceiverModificationDelay)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetRewardsReceiverModificationDelay", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -4932,12 +5209,281 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetStakingCont
 	}), nil
 }
 
-// ParseSetStakingContractMultiplier is a log parse operation binding the contract event 0x844cd4418680d8a9b7047e4a287bf70ed3de8cdde22a6f1745ded1985972d7ad.
+// ParseSetRewardsReceiverModificationDelay is a log parse operation binding the contract event 0x47c8c3268759fc47868c5e319217a2e85d47bd3935a4108debe246f6025fb88b.
 //
-// Solidity: event SetStakingContractMultiplier(address stakingContract, uint256 stakingContractMultiplier, uint256 slashableStakeWeight)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetStakingContractMultiplier(log types.Log) (*ContractAvsGovernanceSetStakingContractMultiplier, error) {
-	event := new(ContractAvsGovernanceSetStakingContractMultiplier)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetStakingContractMultiplier", log); err != nil {
+// Solidity: event SetRewardsReceiverModificationDelay(uint256 modificationDelay)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetRewardsReceiverModificationDelay(log types.Log) (*ContractAvsGovernanceSetRewardsReceiverModificationDelay, error) {
+	event := new(ContractAvsGovernanceSetRewardsReceiverModificationDelay)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetRewardsReceiverModificationDelay", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetStrategyMultiplierIterator is returned from FilterSetStrategyMultiplier and is used to iterate over the raw logs and unpacked data for SetStrategyMultiplier events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetStrategyMultiplierIterator struct {
+	Event *ContractAvsGovernanceSetStrategyMultiplier // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetStrategyMultiplierIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetStrategyMultiplier)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetStrategyMultiplier)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetStrategyMultiplierIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetStrategyMultiplierIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetStrategyMultiplier represents a SetStrategyMultiplier event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetStrategyMultiplier struct {
+	Strategy   common.Address
+	Multiplier *big.Int
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetStrategyMultiplier is a free log retrieval operation binding the contract event 0x8ae53ffd0ebc018acb19342fba690554d49ae9a467a9606a38b49cb5ad775c81.
+//
+// Solidity: event SetStrategyMultiplier(address strategy, uint256 multiplier)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetStrategyMultiplier(opts *bind.FilterOpts) (*ContractAvsGovernanceSetStrategyMultiplierIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetStrategyMultiplier")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetStrategyMultiplierIterator{contract: _ContractAvsGovernance.contract, event: "SetStrategyMultiplier", logs: logs, sub: sub}, nil
+}
+
+// WatchSetStrategyMultiplier is a free log subscription operation binding the contract event 0x8ae53ffd0ebc018acb19342fba690554d49ae9a467a9606a38b49cb5ad775c81.
+//
+// Solidity: event SetStrategyMultiplier(address strategy, uint256 multiplier)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetStrategyMultiplier(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetStrategyMultiplier) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetStrategyMultiplier")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetStrategyMultiplier)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetStrategyMultiplier", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetStrategyMultiplier is a log parse operation binding the contract event 0x8ae53ffd0ebc018acb19342fba690554d49ae9a467a9606a38b49cb5ad775c81.
+//
+// Solidity: event SetStrategyMultiplier(address strategy, uint256 multiplier)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetStrategyMultiplier(log types.Log) (*ContractAvsGovernanceSetStrategyMultiplier, error) {
+	event := new(ContractAvsGovernanceSetStrategyMultiplier)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetStrategyMultiplier", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractAvsGovernanceSetSupportedStrategiesIterator is returned from FilterSetSupportedStrategies and is used to iterate over the raw logs and unpacked data for SetSupportedStrategies events raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetSupportedStrategiesIterator struct {
+	Event *ContractAvsGovernanceSetSupportedStrategies // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractAvsGovernanceSetSupportedStrategiesIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractAvsGovernanceSetSupportedStrategies)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractAvsGovernanceSetSupportedStrategies)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractAvsGovernanceSetSupportedStrategiesIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractAvsGovernanceSetSupportedStrategiesIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractAvsGovernanceSetSupportedStrategies represents a SetSupportedStrategies event raised by the ContractAvsGovernance contract.
+type ContractAvsGovernanceSetSupportedStrategies struct {
+	Strategies []common.Address
+	Raw        types.Log // Blockchain specific contextual infos
+}
+
+// FilterSetSupportedStrategies is a free log retrieval operation binding the contract event 0xf009a6ffded424f714e8904d643a1ea4479453188faf08a3996121996b76684f.
+//
+// Solidity: event SetSupportedStrategies(address[] strategies)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetSupportedStrategies(opts *bind.FilterOpts) (*ContractAvsGovernanceSetSupportedStrategiesIterator, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SetSupportedStrategies")
+	if err != nil {
+		return nil, err
+	}
+	return &ContractAvsGovernanceSetSupportedStrategiesIterator{contract: _ContractAvsGovernance.contract, event: "SetSupportedStrategies", logs: logs, sub: sub}, nil
+}
+
+// WatchSetSupportedStrategies is a free log subscription operation binding the contract event 0xf009a6ffded424f714e8904d643a1ea4479453188faf08a3996121996b76684f.
+//
+// Solidity: event SetSupportedStrategies(address[] strategies)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetSupportedStrategies(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetSupportedStrategies) (event.Subscription, error) {
+
+	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SetSupportedStrategies")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractAvsGovernanceSetSupportedStrategies)
+				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetSupportedStrategies", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseSetSupportedStrategies is a log parse operation binding the contract event 0xf009a6ffded424f714e8904d643a1ea4479453188faf08a3996121996b76684f.
+//
+// Solidity: event SetSupportedStrategies(address[] strategies)
+func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetSupportedStrategies(log types.Log) (*ContractAvsGovernanceSetSupportedStrategies, error) {
+	event := new(ContractAvsGovernanceSetSupportedStrategies)
+	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetSupportedStrategies", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -5072,1914 +5618,6 @@ func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetToken(opts 
 func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetToken(log types.Log) (*ContractAvsGovernanceSetToken, error) {
 	event := new(ContractAvsGovernanceSetToken)
 	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SetToken", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSlashedFundsRedistributedIterator is returned from FilterSlashedFundsRedistributed and is used to iterate over the raw logs and unpacked data for SlashedFundsRedistributed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashedFundsRedistributedIterator struct {
-	Event *ContractAvsGovernanceSlashedFundsRedistributed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSlashedFundsRedistributedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSlashedFundsRedistributed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSlashedFundsRedistributed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSlashedFundsRedistributedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSlashedFundsRedistributedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSlashedFundsRedistributed represents a SlashedFundsRedistributed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashedFundsRedistributed struct {
-	SlashId      *big.Int
-	SlashDetails IRedistributionManagerSlashDetails
-	Raw          types.Log // Blockchain specific contextual infos
-}
-
-// FilterSlashedFundsRedistributed is a free log retrieval operation binding the contract event 0x377c736dc81d58fe7ce282712d1e86c28d818a97761ff330dab5bcef76d4665c.
-//
-// Solidity: event SlashedFundsRedistributed(uint256 slashId, (address,address[],uint256[],uint8) slashDetails)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSlashedFundsRedistributed(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashedFundsRedistributedIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SlashedFundsRedistributed")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSlashedFundsRedistributedIterator{contract: _ContractAvsGovernance.contract, event: "SlashedFundsRedistributed", logs: logs, sub: sub}, nil
-}
-
-// WatchSlashedFundsRedistributed is a free log subscription operation binding the contract event 0x377c736dc81d58fe7ce282712d1e86c28d818a97761ff330dab5bcef76d4665c.
-//
-// Solidity: event SlashedFundsRedistributed(uint256 slashId, (address,address[],uint256[],uint8) slashDetails)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSlashedFundsRedistributed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashedFundsRedistributed) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SlashedFundsRedistributed")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSlashedFundsRedistributed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashedFundsRedistributed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSlashedFundsRedistributed is a log parse operation binding the contract event 0x377c736dc81d58fe7ce282712d1e86c28d818a97761ff330dab5bcef76d4665c.
-//
-// Solidity: event SlashedFundsRedistributed(uint256 slashId, (address,address[],uint256[],uint8) slashDetails)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSlashedFundsRedistributed(log types.Log) (*ContractAvsGovernanceSlashedFundsRedistributed, error) {
-	event := new(ContractAvsGovernanceSlashedFundsRedistributed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashedFundsRedistributed", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSlashingConfigNotActivatedIterator is returned from FilterSlashingConfigNotActivated and is used to iterate over the raw logs and unpacked data for SlashingConfigNotActivated events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingConfigNotActivatedIterator struct {
-	Event *ContractAvsGovernanceSlashingConfigNotActivated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSlashingConfigNotActivatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSlashingConfigNotActivated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSlashingConfigNotActivated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSlashingConfigNotActivatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSlashingConfigNotActivatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSlashingConfigNotActivated represents a SlashingConfigNotActivated event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingConfigNotActivated struct {
-	Raw types.Log // Blockchain specific contextual infos
-}
-
-// FilterSlashingConfigNotActivated is a free log retrieval operation binding the contract event 0x296f51dbc0c5bb583ca31a4c06f2e70635fa00cfefb8ae2a8e3076f78932d765.
-//
-// Solidity: event SlashingConfigNotActivated()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSlashingConfigNotActivated(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingConfigNotActivatedIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SlashingConfigNotActivated")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSlashingConfigNotActivatedIterator{contract: _ContractAvsGovernance.contract, event: "SlashingConfigNotActivated", logs: logs, sub: sub}, nil
-}
-
-// WatchSlashingConfigNotActivated is a free log subscription operation binding the contract event 0x296f51dbc0c5bb583ca31a4c06f2e70635fa00cfefb8ae2a8e3076f78932d765.
-//
-// Solidity: event SlashingConfigNotActivated()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSlashingConfigNotActivated(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingConfigNotActivated) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SlashingConfigNotActivated")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSlashingConfigNotActivated)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingConfigNotActivated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSlashingConfigNotActivated is a log parse operation binding the contract event 0x296f51dbc0c5bb583ca31a4c06f2e70635fa00cfefb8ae2a8e3076f78932d765.
-//
-// Solidity: event SlashingConfigNotActivated()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSlashingConfigNotActivated(log types.Log) (*ContractAvsGovernanceSlashingConfigNotActivated, error) {
-	event := new(ContractAvsGovernanceSlashingConfigNotActivated)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingConfigNotActivated", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSlashingConfigNotFoundIterator is returned from FilterSlashingConfigNotFound and is used to iterate over the raw logs and unpacked data for SlashingConfigNotFound events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingConfigNotFoundIterator struct {
-	Event *ContractAvsGovernanceSlashingConfigNotFound // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSlashingConfigNotFoundIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSlashingConfigNotFound)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSlashingConfigNotFound)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSlashingConfigNotFoundIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSlashingConfigNotFoundIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSlashingConfigNotFound represents a SlashingConfigNotFound event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingConfigNotFound struct {
-	Raw types.Log // Blockchain specific contextual infos
-}
-
-// FilterSlashingConfigNotFound is a free log retrieval operation binding the contract event 0x98d3bac35198400c534ef9af74b08e628bb1dc6d37292e1c188599208b3a4de5.
-//
-// Solidity: event SlashingConfigNotFound()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSlashingConfigNotFound(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingConfigNotFoundIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SlashingConfigNotFound")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSlashingConfigNotFoundIterator{contract: _ContractAvsGovernance.contract, event: "SlashingConfigNotFound", logs: logs, sub: sub}, nil
-}
-
-// WatchSlashingConfigNotFound is a free log subscription operation binding the contract event 0x98d3bac35198400c534ef9af74b08e628bb1dc6d37292e1c188599208b3a4de5.
-//
-// Solidity: event SlashingConfigNotFound()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSlashingConfigNotFound(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingConfigNotFound) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SlashingConfigNotFound")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSlashingConfigNotFound)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingConfigNotFound", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSlashingConfigNotFound is a log parse operation binding the contract event 0x98d3bac35198400c534ef9af74b08e628bb1dc6d37292e1c188599208b3a4de5.
-//
-// Solidity: event SlashingConfigNotFound()
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSlashingConfigNotFound(log types.Log) (*ContractAvsGovernanceSlashingConfigNotFound, error) {
-	event := new(ContractAvsGovernanceSlashingConfigNotFound)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingConfigNotFound", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSlashingFailedIterator is returned from FilterSlashingFailed and is used to iterate over the raw logs and unpacked data for SlashingFailed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingFailedIterator struct {
-	Event *ContractAvsGovernanceSlashingFailed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSlashingFailedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSlashingFailed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSlashingFailed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSlashingFailedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSlashingFailedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSlashingFailed represents a SlashingFailed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSlashingFailed struct {
-	Operator common.Address
-	Data     []byte
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterSlashingFailed is a free log retrieval operation binding the contract event 0x17ea47b379a2daf87a43d9fe6e50400125dff97424a6a7686eca528970fffc0f.
-//
-// Solidity: event SlashingFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSlashingFailed(opts *bind.FilterOpts) (*ContractAvsGovernanceSlashingFailedIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SlashingFailed")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSlashingFailedIterator{contract: _ContractAvsGovernance.contract, event: "SlashingFailed", logs: logs, sub: sub}, nil
-}
-
-// WatchSlashingFailed is a free log subscription operation binding the contract event 0x17ea47b379a2daf87a43d9fe6e50400125dff97424a6a7686eca528970fffc0f.
-//
-// Solidity: event SlashingFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSlashingFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSlashingFailed) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SlashingFailed")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSlashingFailed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingFailed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSlashingFailed is a log parse operation binding the contract event 0x17ea47b379a2daf87a43d9fe6e50400125dff97424a6a7686eca528970fffc0f.
-//
-// Solidity: event SlashingFailed(address operator, bytes data)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSlashingFailed(log types.Log) (*ContractAvsGovernanceSlashingFailed, error) {
-	event := new(ContractAvsGovernanceSlashingFailed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SlashingFailed", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator is returned from FilterSymbioticSlashingBypassedZeroAmount and is used to iterate over the raw logs and unpacked data for SymbioticSlashingBypassedZeroAmount events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator struct {
-	Event *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount represents a SymbioticSlashingBypassedZeroAmount event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount struct {
-	Vault    common.Address
-	Operator common.Address
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterSymbioticSlashingBypassedZeroAmount is a free log retrieval operation binding the contract event 0x5c5bd80f7b5442cf8fa1109fd5e73f37ab66780749ff0f7eaa9b5f137e6a0829.
-//
-// Solidity: event SymbioticSlashingBypassedZeroAmount(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSymbioticSlashingBypassedZeroAmount(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SymbioticSlashingBypassedZeroAmount", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSymbioticSlashingBypassedZeroAmountIterator{contract: _ContractAvsGovernance.contract, event: "SymbioticSlashingBypassedZeroAmount", logs: logs, sub: sub}, nil
-}
-
-// WatchSymbioticSlashingBypassedZeroAmount is a free log subscription operation binding the contract event 0x5c5bd80f7b5442cf8fa1109fd5e73f37ab66780749ff0f7eaa9b5f137e6a0829.
-//
-// Solidity: event SymbioticSlashingBypassedZeroAmount(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSymbioticSlashingBypassedZeroAmount(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount, vault []common.Address, operator []common.Address) (event.Subscription, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SymbioticSlashingBypassedZeroAmount", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingBypassedZeroAmount", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSymbioticSlashingBypassedZeroAmount is a log parse operation binding the contract event 0x5c5bd80f7b5442cf8fa1109fd5e73f37ab66780749ff0f7eaa9b5f137e6a0829.
-//
-// Solidity: event SymbioticSlashingBypassedZeroAmount(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSymbioticSlashingBypassedZeroAmount(log types.Log) (*ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount, error) {
-	event := new(ContractAvsGovernanceSymbioticSlashingBypassedZeroAmount)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingBypassedZeroAmount", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingExecutedIterator is returned from FilterSymbioticSlashingExecuted and is used to iterate over the raw logs and unpacked data for SymbioticSlashingExecuted events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingExecutedIterator struct {
-	Event *ContractAvsGovernanceSymbioticSlashingExecuted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSymbioticSlashingExecutedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSymbioticSlashingExecuted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSymbioticSlashingExecuted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSymbioticSlashingExecutedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSymbioticSlashingExecutedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingExecuted represents a SymbioticSlashingExecuted event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingExecuted struct {
-	Vault       common.Address
-	Operator    common.Address
-	SlashAmount *big.Int
-	Raw         types.Log // Blockchain specific contextual infos
-}
-
-// FilterSymbioticSlashingExecuted is a free log retrieval operation binding the contract event 0x1ced844fcb8e184656bb631d13776c817857483d8cbd2fb7fa07d6c933a76a81.
-//
-// Solidity: event SymbioticSlashingExecuted(address indexed vault, address indexed operator, uint256 slashAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSymbioticSlashingExecuted(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingExecutedIterator, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SymbioticSlashingExecuted", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSymbioticSlashingExecutedIterator{contract: _ContractAvsGovernance.contract, event: "SymbioticSlashingExecuted", logs: logs, sub: sub}, nil
-}
-
-// WatchSymbioticSlashingExecuted is a free log subscription operation binding the contract event 0x1ced844fcb8e184656bb631d13776c817857483d8cbd2fb7fa07d6c933a76a81.
-//
-// Solidity: event SymbioticSlashingExecuted(address indexed vault, address indexed operator, uint256 slashAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSymbioticSlashingExecuted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingExecuted, vault []common.Address, operator []common.Address) (event.Subscription, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SymbioticSlashingExecuted", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSymbioticSlashingExecuted)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingExecuted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSymbioticSlashingExecuted is a log parse operation binding the contract event 0x1ced844fcb8e184656bb631d13776c817857483d8cbd2fb7fa07d6c933a76a81.
-//
-// Solidity: event SymbioticSlashingExecuted(address indexed vault, address indexed operator, uint256 slashAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSymbioticSlashingExecuted(log types.Log) (*ContractAvsGovernanceSymbioticSlashingExecuted, error) {
-	event := new(ContractAvsGovernanceSymbioticSlashingExecuted)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingExecuted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingRevertedIterator is returned from FilterSymbioticSlashingReverted and is used to iterate over the raw logs and unpacked data for SymbioticSlashingReverted events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingRevertedIterator struct {
-	Event *ContractAvsGovernanceSymbioticSlashingReverted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSymbioticSlashingRevertedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSymbioticSlashingReverted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSymbioticSlashingReverted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSymbioticSlashingRevertedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSymbioticSlashingRevertedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingReverted represents a SymbioticSlashingReverted event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingReverted struct {
-	Vault       common.Address
-	Operator    common.Address
-	SlashAmount *big.Int
-	RevertData  []byte
-	Raw         types.Log // Blockchain specific contextual infos
-}
-
-// FilterSymbioticSlashingReverted is a free log retrieval operation binding the contract event 0x2f745c06290fbdf2aeccacf7710029e14576b679b64a3391ee3572311987cf88.
-//
-// Solidity: event SymbioticSlashingReverted(address indexed vault, address indexed operator, uint256 slashAmount, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSymbioticSlashingReverted(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingRevertedIterator, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SymbioticSlashingReverted", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSymbioticSlashingRevertedIterator{contract: _ContractAvsGovernance.contract, event: "SymbioticSlashingReverted", logs: logs, sub: sub}, nil
-}
-
-// WatchSymbioticSlashingReverted is a free log subscription operation binding the contract event 0x2f745c06290fbdf2aeccacf7710029e14576b679b64a3391ee3572311987cf88.
-//
-// Solidity: event SymbioticSlashingReverted(address indexed vault, address indexed operator, uint256 slashAmount, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSymbioticSlashingReverted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingReverted, vault []common.Address, operator []common.Address) (event.Subscription, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SymbioticSlashingReverted", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSymbioticSlashingReverted)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingReverted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSymbioticSlashingReverted is a log parse operation binding the contract event 0x2f745c06290fbdf2aeccacf7710029e14576b679b64a3391ee3572311987cf88.
-//
-// Solidity: event SymbioticSlashingReverted(address indexed vault, address indexed operator, uint256 slashAmount, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSymbioticSlashingReverted(log types.Log) (*ContractAvsGovernanceSymbioticSlashingReverted, error) {
-	event := new(ContractAvsGovernanceSymbioticSlashingReverted)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingReverted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingSkippedIterator is returned from FilterSymbioticSlashingSkipped and is used to iterate over the raw logs and unpacked data for SymbioticSlashingSkipped events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingSkippedIterator struct {
-	Event *ContractAvsGovernanceSymbioticSlashingSkipped // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSymbioticSlashingSkippedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSymbioticSlashingSkipped)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSymbioticSlashingSkipped)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSymbioticSlashingSkippedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSymbioticSlashingSkippedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSymbioticSlashingSkipped represents a SymbioticSlashingSkipped event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSymbioticSlashingSkipped struct {
-	Vault    common.Address
-	Operator common.Address
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterSymbioticSlashingSkipped is a free log retrieval operation binding the contract event 0x70201f2c2fc9df79327ee453894afca19249c6be2c7ee4dce5f7be735d981027.
-//
-// Solidity: event SymbioticSlashingSkipped(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSymbioticSlashingSkipped(opts *bind.FilterOpts, vault []common.Address, operator []common.Address) (*ContractAvsGovernanceSymbioticSlashingSkippedIterator, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "SymbioticSlashingSkipped", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSymbioticSlashingSkippedIterator{contract: _ContractAvsGovernance.contract, event: "SymbioticSlashingSkipped", logs: logs, sub: sub}, nil
-}
-
-// WatchSymbioticSlashingSkipped is a free log subscription operation binding the contract event 0x70201f2c2fc9df79327ee453894afca19249c6be2c7ee4dce5f7be735d981027.
-//
-// Solidity: event SymbioticSlashingSkipped(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSymbioticSlashingSkipped(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSymbioticSlashingSkipped, vault []common.Address, operator []common.Address) (event.Subscription, error) {
-
-	var vaultRule []interface{}
-	for _, vaultItem := range vault {
-		vaultRule = append(vaultRule, vaultItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "SymbioticSlashingSkipped", vaultRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSymbioticSlashingSkipped)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingSkipped", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSymbioticSlashingSkipped is a log parse operation binding the contract event 0x70201f2c2fc9df79327ee453894afca19249c6be2c7ee4dce5f7be735d981027.
-//
-// Solidity: event SymbioticSlashingSkipped(address indexed vault, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSymbioticSlashingSkipped(log types.Log) (*ContractAvsGovernanceSymbioticSlashingSkipped, error) {
-	event := new(ContractAvsGovernanceSymbioticSlashingSkipped)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "SymbioticSlashingSkipped", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceVetoSlashAlreadyCompletedIterator is returned from FilterVetoSlashAlreadyCompleted and is used to iterate over the raw logs and unpacked data for VetoSlashAlreadyCompleted events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashAlreadyCompletedIterator struct {
-	Event *ContractAvsGovernanceVetoSlashAlreadyCompleted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceVetoSlashAlreadyCompletedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceVetoSlashAlreadyCompleted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceVetoSlashAlreadyCompleted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceVetoSlashAlreadyCompletedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceVetoSlashAlreadyCompletedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceVetoSlashAlreadyCompleted represents a VetoSlashAlreadyCompleted event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashAlreadyCompleted struct {
-	Slasher    common.Address
-	SlashIndex *big.Int
-	Raw        types.Log // Blockchain specific contextual infos
-}
-
-// FilterVetoSlashAlreadyCompleted is a free log retrieval operation binding the contract event 0x41f5d5d07d79ca6c17b25e703ceca8de971893b69031d4ca0b033de1c6bb6b01.
-//
-// Solidity: event VetoSlashAlreadyCompleted(address indexed slasher, uint256 indexed slashIndex)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterVetoSlashAlreadyCompleted(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashAlreadyCompletedIterator, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "VetoSlashAlreadyCompleted", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceVetoSlashAlreadyCompletedIterator{contract: _ContractAvsGovernance.contract, event: "VetoSlashAlreadyCompleted", logs: logs, sub: sub}, nil
-}
-
-// WatchVetoSlashAlreadyCompleted is a free log subscription operation binding the contract event 0x41f5d5d07d79ca6c17b25e703ceca8de971893b69031d4ca0b033de1c6bb6b01.
-//
-// Solidity: event VetoSlashAlreadyCompleted(address indexed slasher, uint256 indexed slashIndex)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchVetoSlashAlreadyCompleted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashAlreadyCompleted, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "VetoSlashAlreadyCompleted", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceVetoSlashAlreadyCompleted)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashAlreadyCompleted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseVetoSlashAlreadyCompleted is a log parse operation binding the contract event 0x41f5d5d07d79ca6c17b25e703ceca8de971893b69031d4ca0b033de1c6bb6b01.
-//
-// Solidity: event VetoSlashAlreadyCompleted(address indexed slasher, uint256 indexed slashIndex)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseVetoSlashAlreadyCompleted(log types.Log) (*ContractAvsGovernanceVetoSlashAlreadyCompleted, error) {
-	event := new(ContractAvsGovernanceVetoSlashAlreadyCompleted)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashAlreadyCompleted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceVetoSlashExecutedIterator is returned from FilterVetoSlashExecuted and is used to iterate over the raw logs and unpacked data for VetoSlashExecuted events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashExecutedIterator struct {
-	Event *ContractAvsGovernanceVetoSlashExecuted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceVetoSlashExecutedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceVetoSlashExecuted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceVetoSlashExecuted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceVetoSlashExecutedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceVetoSlashExecutedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceVetoSlashExecuted represents a VetoSlashExecuted event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashExecuted struct {
-	Slasher       common.Address
-	SlashIndex    *big.Int
-	SlashedAmount *big.Int
-	Raw           types.Log // Blockchain specific contextual infos
-}
-
-// FilterVetoSlashExecuted is a free log retrieval operation binding the contract event 0x4f50a2e4f91995f76aef55cac74ffac2c72c4de8b344e5209d50e5a655a4ad27.
-//
-// Solidity: event VetoSlashExecuted(address indexed slasher, uint256 indexed slashIndex, uint256 slashedAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterVetoSlashExecuted(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashExecutedIterator, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "VetoSlashExecuted", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceVetoSlashExecutedIterator{contract: _ContractAvsGovernance.contract, event: "VetoSlashExecuted", logs: logs, sub: sub}, nil
-}
-
-// WatchVetoSlashExecuted is a free log subscription operation binding the contract event 0x4f50a2e4f91995f76aef55cac74ffac2c72c4de8b344e5209d50e5a655a4ad27.
-//
-// Solidity: event VetoSlashExecuted(address indexed slasher, uint256 indexed slashIndex, uint256 slashedAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchVetoSlashExecuted(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashExecuted, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "VetoSlashExecuted", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceVetoSlashExecuted)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashExecuted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseVetoSlashExecuted is a log parse operation binding the contract event 0x4f50a2e4f91995f76aef55cac74ffac2c72c4de8b344e5209d50e5a655a4ad27.
-//
-// Solidity: event VetoSlashExecuted(address indexed slasher, uint256 indexed slashIndex, uint256 slashedAmount)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseVetoSlashExecuted(log types.Log) (*ContractAvsGovernanceVetoSlashExecuted, error) {
-	event := new(ContractAvsGovernanceVetoSlashExecuted)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashExecuted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceVetoSlashExecutionFailedIterator is returned from FilterVetoSlashExecutionFailed and is used to iterate over the raw logs and unpacked data for VetoSlashExecutionFailed events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashExecutionFailedIterator struct {
-	Event *ContractAvsGovernanceVetoSlashExecutionFailed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceVetoSlashExecutionFailedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceVetoSlashExecutionFailed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceVetoSlashExecutionFailed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceVetoSlashExecutionFailedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceVetoSlashExecutionFailedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceVetoSlashExecutionFailed represents a VetoSlashExecutionFailed event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashExecutionFailed struct {
-	Slasher    common.Address
-	SlashIndex *big.Int
-	RevertData []byte
-	Raw        types.Log // Blockchain specific contextual infos
-}
-
-// FilterVetoSlashExecutionFailed is a free log retrieval operation binding the contract event 0x047efda7bcf14d7e1b38d333153ef235e3f39987459657e0d082b903006f6d8a.
-//
-// Solidity: event VetoSlashExecutionFailed(address indexed slasher, uint256 indexed slashIndex, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterVetoSlashExecutionFailed(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int) (*ContractAvsGovernanceVetoSlashExecutionFailedIterator, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "VetoSlashExecutionFailed", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceVetoSlashExecutionFailedIterator{contract: _ContractAvsGovernance.contract, event: "VetoSlashExecutionFailed", logs: logs, sub: sub}, nil
-}
-
-// WatchVetoSlashExecutionFailed is a free log subscription operation binding the contract event 0x047efda7bcf14d7e1b38d333153ef235e3f39987459657e0d082b903006f6d8a.
-//
-// Solidity: event VetoSlashExecutionFailed(address indexed slasher, uint256 indexed slashIndex, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchVetoSlashExecutionFailed(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashExecutionFailed, slasher []common.Address, slashIndex []*big.Int) (event.Subscription, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "VetoSlashExecutionFailed", slasherRule, slashIndexRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceVetoSlashExecutionFailed)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashExecutionFailed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseVetoSlashExecutionFailed is a log parse operation binding the contract event 0x047efda7bcf14d7e1b38d333153ef235e3f39987459657e0d082b903006f6d8a.
-//
-// Solidity: event VetoSlashExecutionFailed(address indexed slasher, uint256 indexed slashIndex, bytes revertData)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseVetoSlashExecutionFailed(log types.Log) (*ContractAvsGovernanceVetoSlashExecutionFailed, error) {
-	event := new(ContractAvsGovernanceVetoSlashExecutionFailed)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashExecutionFailed", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceVetoSlashRequestedIterator is returned from FilterVetoSlashRequested and is used to iterate over the raw logs and unpacked data for VetoSlashRequested events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashRequestedIterator struct {
-	Event *ContractAvsGovernanceVetoSlashRequested // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceVetoSlashRequestedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceVetoSlashRequested)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceVetoSlashRequested)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceVetoSlashRequestedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceVetoSlashRequestedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceVetoSlashRequested represents a VetoSlashRequested event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceVetoSlashRequested struct {
-	Slasher    common.Address
-	SlashIndex *big.Int
-	Operator   common.Address
-	Raw        types.Log // Blockchain specific contextual infos
-}
-
-// FilterVetoSlashRequested is a free log retrieval operation binding the contract event 0x431852c863b55b9e746d12bb87e301e9119145835594f62eaa2aaceab5938cbc.
-//
-// Solidity: event VetoSlashRequested(address indexed slasher, uint256 indexed slashIndex, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterVetoSlashRequested(opts *bind.FilterOpts, slasher []common.Address, slashIndex []*big.Int, operator []common.Address) (*ContractAvsGovernanceVetoSlashRequestedIterator, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "VetoSlashRequested", slasherRule, slashIndexRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceVetoSlashRequestedIterator{contract: _ContractAvsGovernance.contract, event: "VetoSlashRequested", logs: logs, sub: sub}, nil
-}
-
-// WatchVetoSlashRequested is a free log subscription operation binding the contract event 0x431852c863b55b9e746d12bb87e301e9119145835594f62eaa2aaceab5938cbc.
-//
-// Solidity: event VetoSlashRequested(address indexed slasher, uint256 indexed slashIndex, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchVetoSlashRequested(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceVetoSlashRequested, slasher []common.Address, slashIndex []*big.Int, operator []common.Address) (event.Subscription, error) {
-
-	var slasherRule []interface{}
-	for _, slasherItem := range slasher {
-		slasherRule = append(slasherRule, slasherItem)
-	}
-	var slashIndexRule []interface{}
-	for _, slashIndexItem := range slashIndex {
-		slashIndexRule = append(slashIndexRule, slashIndexItem)
-	}
-	var operatorRule []interface{}
-	for _, operatorItem := range operator {
-		operatorRule = append(operatorRule, operatorItem)
-	}
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "VetoSlashRequested", slasherRule, slashIndexRule, operatorRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceVetoSlashRequested)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashRequested", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseVetoSlashRequested is a log parse operation binding the contract event 0x431852c863b55b9e746d12bb87e301e9119145835594f62eaa2aaceab5938cbc.
-//
-// Solidity: event VetoSlashRequested(address indexed slasher, uint256 indexed slashIndex, address indexed operator)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseVetoSlashRequested(log types.Log) (*ContractAvsGovernanceVetoSlashRequested, error) {
-	event := new(ContractAvsGovernanceVetoSlashRequested)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "VetoSlashRequested", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractAvsGovernanceSetNewSupportedStakingContractsIterator is returned from FilterSetNewSupportedStakingContracts and is used to iterate over the raw logs and unpacked data for SetNewSupportedStakingContracts events raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetNewSupportedStakingContractsIterator struct {
-	Event *ContractAvsGovernanceSetNewSupportedStakingContracts // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractAvsGovernanceSetNewSupportedStakingContractsIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractAvsGovernanceSetNewSupportedStakingContracts)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractAvsGovernanceSetNewSupportedStakingContracts)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractAvsGovernanceSetNewSupportedStakingContractsIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractAvsGovernanceSetNewSupportedStakingContractsIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractAvsGovernanceSetNewSupportedStakingContracts represents a SetNewSupportedStakingContracts event raised by the ContractAvsGovernance contract.
-type ContractAvsGovernanceSetNewSupportedStakingContracts struct {
-	StakingContracts []common.Address
-	Raw              types.Log // Blockchain specific contextual infos
-}
-
-// FilterSetNewSupportedStakingContracts is a free log retrieval operation binding the contract event 0xdc9dd92c894ed28df4cdf880b63e1f5d6a6a32870a392e08c13ddfe18488caea.
-//
-// Solidity: event setNewSupportedStakingContracts(address[] stakingContracts)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) FilterSetNewSupportedStakingContracts(opts *bind.FilterOpts) (*ContractAvsGovernanceSetNewSupportedStakingContractsIterator, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.FilterLogs(opts, "setNewSupportedStakingContracts")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractAvsGovernanceSetNewSupportedStakingContractsIterator{contract: _ContractAvsGovernance.contract, event: "setNewSupportedStakingContracts", logs: logs, sub: sub}, nil
-}
-
-// WatchSetNewSupportedStakingContracts is a free log subscription operation binding the contract event 0xdc9dd92c894ed28df4cdf880b63e1f5d6a6a32870a392e08c13ddfe18488caea.
-//
-// Solidity: event setNewSupportedStakingContracts(address[] stakingContracts)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) WatchSetNewSupportedStakingContracts(opts *bind.WatchOpts, sink chan<- *ContractAvsGovernanceSetNewSupportedStakingContracts) (event.Subscription, error) {
-
-	logs, sub, err := _ContractAvsGovernance.contract.WatchLogs(opts, "setNewSupportedStakingContracts")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractAvsGovernanceSetNewSupportedStakingContracts)
-				if err := _ContractAvsGovernance.contract.UnpackLog(event, "setNewSupportedStakingContracts", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseSetNewSupportedStakingContracts is a log parse operation binding the contract event 0xdc9dd92c894ed28df4cdf880b63e1f5d6a6a32870a392e08c13ddfe18488caea.
-//
-// Solidity: event setNewSupportedStakingContracts(address[] stakingContracts)
-func (_ContractAvsGovernance *ContractAvsGovernanceFilterer) ParseSetNewSupportedStakingContracts(log types.Log) (*ContractAvsGovernanceSetNewSupportedStakingContracts, error) {
-	event := new(ContractAvsGovernanceSetNewSupportedStakingContracts)
-	if err := _ContractAvsGovernance.contract.UnpackLog(event, "setNewSupportedStakingContracts", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

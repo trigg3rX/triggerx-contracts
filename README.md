@@ -149,3 +149,9 @@ forge script script/deploy/5_deployAvsGovernanceLogic.s.sol:DeployAvsGovernanceL
 - [ ] The TaskExecution address has the "operator" role on each chain's GasRegistry.
 - [ ] The AVSGovernanceLogic, TaskExecutionHub and the MessageHandlers (from Othentic stack) have deposits on them for LayerZero message passing.
 - [ ] The keepers have updated the configuration to execute actions on the new chain.
+
+## Generating Bindings
+
+```bash
+go run ./bindings/generate-bindings.go
+```
