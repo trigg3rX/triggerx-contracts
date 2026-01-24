@@ -31,12 +31,34 @@ var (
 
 // ContractTriggerGasRegistryMetaData contains all meta data concerning the ContractTriggerGasRegistry contract.
 var ContractTriggerGasRegistryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"}],\"name\":\"AddressEmptyCode\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"ERC1967InvalidImplementation\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ERC1967NonPayable\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FailedCall\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UUPSUnauthorizedCallContext\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"slot\",\"type\":\"bytes32\"}],\"name\":\"UUPSUnsupportedProxiableUUID\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"ETHWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"RewardClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGBalanceDeducted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"TGBalanceRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tgPerEth\",\"type\":\"uint256\"}],\"name\":\"TGPerETHUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"ethAmount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tgAmount\",\"type\":\"uint256\"}],\"name\":\"TGPurchased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGRefunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"keeper\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TGTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"TaskFeeClaimed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"TG_PER_ETH\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"UPGRADE_INTERFACE_VERSION\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balances\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"ethSpent\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"TGbalance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"users\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"ethSpentAmounts\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"tgBalances\",\"type\":\"uint256[]\"}],\"name\":\"batchMigrateUsers\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tgAmount\",\"type\":\"uint256\"}],\"name\":\"claimETHForTG\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tgAmount\",\"type\":\"uint256\"}],\"name\":\"deductTGBalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"ethSpent\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"tgBalance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"initialOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_operator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_tgPerEth\",\"type\":\"uint256\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"operatorRole\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"ethAmount\",\"type\":\"uint256\"}],\"name\":\"purchaseTG\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_operatorRole\",\"type\":\"address\"}],\"name\":\"setOperator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tgPerEth\",\"type\":\"uint256\"}],\"name\":\"setTGPerETH\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"}],\"name\":\"withdrawETH\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"type\":\"constructor\",\"inputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"UPGRADE_INTERFACE_VERSION\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"string\",\"internalType\":\"string\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"balances\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"batchMigrateUsers\",\"inputs\":[{\"name\":\"users\",\"type\":\"address[]\",\"internalType\":\"address[]\"},{\"name\":\"ethAmounts\",\"type\":\"uint256[]\",\"internalType\":\"uint256[]\"}],\"outputs\":[],\"stateMutability\":\"payable\"},{\"type\":\"function\",\"name\":\"deductETHBalance\",\"inputs\":[{\"name\":\"user\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"ethAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"depositETH\",\"inputs\":[{\"name\":\"ethAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"payable\"},{\"type\":\"function\",\"name\":\"getBalance\",\"inputs\":[{\"name\":\"user\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"ethAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"initialize\",\"inputs\":[{\"name\":\"initialOwner\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_operator\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"operatorRole\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"owner\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"proxiableUUID\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"renounceOwnership\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"setOperator\",\"inputs\":[{\"name\":\"_operatorRole\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"totalDeductedBalance\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"transferOwnership\",\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"upgradeToAndCall\",\"inputs\":[{\"name\":\"newImplementation\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"data\",\"type\":\"bytes\",\"internalType\":\"bytes\"}],\"outputs\":[],\"stateMutability\":\"payable\"},{\"type\":\"function\",\"name\":\"withdrawETH\",\"inputs\":[{\"name\":\"amount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"reason\",\"type\":\"string\",\"internalType\":\"string\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"withdrawETHBalance\",\"inputs\":[{\"name\":\"ethAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"event\",\"name\":\"ETHBalanceDeducted\",\"inputs\":[{\"name\":\"user\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"ETHDeposited\",\"inputs\":[{\"name\":\"user\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"ethAmount\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"ETHWithdrawn\",\"inputs\":[{\"name\":\"owner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"amount\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"},{\"name\":\"reason\",\"type\":\"string\",\"indexed\":false,\"internalType\":\"string\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"Initialized\",\"inputs\":[{\"name\":\"version\",\"type\":\"uint64\",\"indexed\":false,\"internalType\":\"uint64\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"OwnershipTransferred\",\"inputs\":[{\"name\":\"previousOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"newOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"Upgraded\",\"inputs\":[{\"name\":\"implementation\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"error\",\"name\":\"AddressEmptyCode\",\"inputs\":[{\"name\":\"target\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"ERC1967InvalidImplementation\",\"inputs\":[{\"name\":\"implementation\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"ERC1967NonPayable\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FailedCall\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidInitialization\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotInitializing\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OwnableInvalidOwner\",\"inputs\":[{\"name\":\"owner\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"OwnableUnauthorizedAccount\",\"inputs\":[{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"ReentrancyGuardReentrantCall\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"UUPSUnauthorizedCallContext\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"UUPSUnsupportedProxiableUUID\",\"inputs\":[{\"name\":\"slot\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}]}]",
+	Bin: "0x60a080604052346100c257306080525f5160206112585f395f51905f525460ff8160401c166100b3576002600160401b03196001600160401b03821601610060575b60405161119190816100c7823960805181818161084901526108ec0152f35b6001600160401b0319166001600160401b039081175f5160206112585f395f51905f525581527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d290602090a15f80610041565b63f92ee8a960e01b5f5260045ffd5b5f80fdfe60806040526004361015610011575f80fd5b5f3560e01c8063176c510614610ca157806327e235e3146100d457806347503b3d14610c79578063485cc95514610a7c5780634f1ef2861461089d57806352d1902d146108375780635358fbda1461073b578063715018a6146106d45780638da5cb5b146106a0578063a3c4c129146104e4578063ad3cb1cc14610499578063b3ab15fb14610408578063cc11362214610252578063f1cc931014610235578063f2fde38b1461020a578063f7c786041461010f5763f8b2cb4f146100d4575f80fd5b3461010b57602036600319011261010b576001600160a01b036100f5610d1c565b165f525f602052602060405f2054604051908152f35b5f80fd5b3461010b57604036600319011261010b57610128610d1c565b60015460243591906001600160a01b031633036101b95760018060a01b031690815f525f60205261015f8160405f20541015610e53565b8061016657005b60207fcb86089062e14afd83ae7cdae0be8f14e3cc48bcb2dd2b09bf2e56c2fdee8fee91835f525f825260405f2061019f828254610e9f565b90556101ad81600254610f31565b600255604051908152a2005b60405162461bcd60e51b8152602060048201526024808201527f4f6e6c79206f70657261746f722063616e2063616c6c20746869732066756e636044820152633a34b7b760e11b6064820152608490fd5b3461010b57602036600319011261010b57610233610226610d1c565b61022e61101f565b610f76565b005b3461010b575f36600319011261010b576020600254604051908152f35b3461010b57604036600319011261010b5760043560243567ffffffffffffffff811161010b573660238201121561010b57610297903690602481600401359101610d84565b61029f61101f565b6102a7610fe7565b6102b2821515610e0f565b600254908183116103b05747831161036b576102ef837f68fc7e0340ad067ed9d1bcd121870cf25bd80b18a94d133b8bec22f4ea86b48593610e9f565b6002556103215f8080808760018060a01b035f5160206110dc5f395f51905f5254165af161031b610ec0565b50610eef565b60018060a01b035f5160206110dc5f395f51905f525416926103556040519283928352604060208401526040830190610deb565b0390a260015f51602061111c5f395f51905f5255005b60405162461bcd60e51b815260206004820152601d60248201527f496e73756666696369656e7420636f6e74726163742062616c616e63650000006044820152606490fd5b60405162461bcd60e51b815260206004820152602a60248201527f43616e6e6f74207769746864726177206d6f7265207468616e2064656475637460448201526965642062616c616e636560b01b6064820152608490fd5b3461010b57602036600319011261010b57610421610d1c565b61042961101f565b6001600160a01b03168015610454576bffffffffffffffffffffffff60a01b60015416176001555f80f35b60405162461bcd60e51b815260206004820152601c60248201527f4f70657261746f722063616e6e6f7420626520302061646472657373000000006044820152606490fd5b3461010b575f36600319011261010b576104e06040516104ba604082610d32565b60058152640352e302e360dc1b6020820152604051918291602083526020830190610deb565b0390f35b604036600319011261010b5760043567ffffffffffffffff811161010b57610510903690600401610dba565b9060243567ffffffffffffffff811161010b57610531903690600401610dba565b61053961101f565b808403610669579291905f935f935b8085106105c35785341061055857005b60405162461bcd60e51b815260206004820152603a60248201527f53656e7420455448206d7573742062652067726561746572207468616e206f7260448201527f20657175616c20746f20746f74616c2045544820616d6f756e740000000000006064820152608490fd5b90919293946106116001916105d9888688610f3e565b35838060a01b036105f36105ee8b888c610f3e565b610f62565b165f525f60205260405f205561060a888688610f3e565b3590610f31565b956106206105ee828589610f3e565b7f6c703791f399558807424f489ccd811c72b4ff0b74af547264fad7c646776df0602061064e84888a610f3e565b3592604051938452858060a01b031692a20193929190610548565b60405162461bcd60e51b815260206004820152600f60248201526e098cadccee8d040dad2e6dac2e8c6d608b1b6044820152606490fd5b3461010b575f36600319011261010b575f5160206110dc5f395f51905f52546040516001600160a01b039091168152602090f35b3461010b575f36600319011261010b576106ec61101f565b5f5160206110dc5f395f51905f5280546001600160a01b031981169091555f906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a3005b602036600319011261010b57600435610752610fe7565b80156107fb578034036107b657335f525f60205260405f20610775828254610f31565b90556040519081527f6c703791f399558807424f489ccd811c72b4ff0b74af547264fad7c646776df060203392a260015f51602061111c5f395f51905f5255005b60405162461bcd60e51b815260206004820152601a60248201527f53656e7420455448206d757374206d6174636820616d6f756e740000000000006044820152606490fd5b60405162461bcd60e51b8152602060048201526014602482015273086c2dcdcdee840c8cae0dee6d2e84060408aa8960631b6044820152606490fd5b3461010b575f36600319011261010b577f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316300361088e5760206040515f5160206110fc5f395f51905f528152f35b63703e46dd60e11b5f5260045ffd5b604036600319011261010b576108b1610d1c565b60243567ffffffffffffffff811161010b573660238201121561010b576108e2903690602481600401359101610d84565b6001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016308114908115610a5a575b5061088e5761092461101f565b6040516352d1902d60e01b81526001600160a01b0383169290602081600481875afa5f9181610a26575b506109665783634c9c8ce360e01b5f5260045260245ffd5b805f5160206110fc5f395f51905f52859203610a145750813b15610a02575f5160206110fc5f395f51905f5280546001600160a01b031916821790557fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b5f80a28151156109ea575f8083602061023395519101845af46109e4610ec0565b9161107d565b5050346109f357005b63b398979f60e01b5f5260045ffd5b634c9c8ce360e01b5f5260045260245ffd5b632a87526960e21b5f5260045260245ffd5b9091506020813d602011610a52575b81610a4260209383610d32565b8101031261010b5751908561094e565b3d9150610a35565b5f5160206110fc5f395f51905f52546001600160a01b03161415905083610917565b3461010b57604036600319011261010b57610a95610d1c565b6024356001600160a01b0381169081900361010b575f51602061113c5f395f51905f52549160ff8360401c16159267ffffffffffffffff811680159081610c71575b6001149081610c67575b159081610c5e575b50610c4f5767ffffffffffffffff1981166001175f51602061113c5f395f51905f525583610c23575b506001600160a01b03811615610bd457610b5790610b2e611052565b610b36611052565b60015f51602061111c5f395f51905f5255610b4f611052565b61022e611052565b610b5f611052565b6bffffffffffffffffffffffff60a01b6001541617600155610b7d57005b68ff0000000000000000195f51602061113c5f395f51905f5254165f51602061113c5f395f51905f52557fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2602060405160018152a1005b60405162461bcd60e51b815260206004820152602160248201527f496e697469616c206f776e65722063616e6e6f742062652030206164647265736044820152607360f81b6064820152608490fd5b68ffffffffffffffffff191668010000000000000001175f51602061113c5f395f51905f525583610b12565b63f92ee8a960e01b5f5260045ffd5b90501585610ae9565b303b159150610ae1565b859150610ad7565b3461010b575f36600319011261010b576001546040516001600160a01b039091168152602090f35b3461010b57602036600319011261010b57610d095f808080600435610cc4610fe7565b610ccf811515610e0f565b33825281602052610ce68160408420541015610e53565b3382528160205260408220610cfc828254610e9f565b9055335af161031b610ec0565b60015f51602061111c5f395f51905f5255005b600435906001600160a01b038216820361010b57565b90601f8019910116810190811067ffffffffffffffff821117610d5457604052565b634e487b7160e01b5f52604160045260245ffd5b67ffffffffffffffff8111610d5457601f01601f191660200190565b929192610d9082610d68565b91610d9e6040519384610d32565b82948184528183011161010b578281602093845f960137010152565b9181601f8401121561010b5782359167ffffffffffffffff831161010b576020808501948460051b01011161010b57565b805180835260209291819084018484015e5f828201840152601f01601f1916010190565b15610e1657565b60405162461bcd60e51b8152602060048201526015602482015274086c2dcdcdee840eed2e8d0c8e4c2ee4060408aa89605b1b6044820152606490fd5b15610e5a57565b60405162461bcd60e51b815260206004820152601860248201527f496e73756666696369656e74204554482062616c616e636500000000000000006044820152606490fd5b91908203918211610eac57565b634e487b7160e01b5f52601160045260245ffd5b3d15610eea573d90610ed182610d68565b91610edf6040519384610d32565b82523d5f602084013e565b606090565b15610ef657565b60405162461bcd60e51b8152602060048201526013602482015272115512081d1c985b9cd9995c8819985a5b1959606a1b6044820152606490fd5b91908201809211610eac57565b9190811015610f4e5760051b0190565b634e487b7160e01b5f52603260045260245ffd5b356001600160a01b038116810361010b5790565b6001600160a01b03168015610fd4575f5160206110dc5f395f51905f5280546001600160a01b0319811683179091556001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a3565b631e4fbdf760e01b5f525f60045260245ffd5b60025f51602061111c5f395f51905f5254146110105760025f51602061111c5f395f51905f5255565b633ee5aeb560e01b5f5260045ffd5b5f5160206110dc5f395f51905f52546001600160a01b0316330361103f57565b63118cdaa760e01b5f523360045260245ffd5b60ff5f51602061113c5f395f51905f525460401c161561106e57565b631afcd79f60e31b5f5260045ffd5b906110a1575080511561109257805190602001fd5b63d6bda27560e01b5f5260045ffd5b815115806110d2575b6110b2575090565b639996b31560e01b5f9081526001600160a01b0391909116600452602490fd5b50803b156110aa56fe9016d09d72d40fdae2fd8ceac6b6234c7706214fd39c1cd1e609a0528c199300360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f00f0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00a2646970667358221220c78ee5f63e37a6855c29bf6d6cc19e2ff83c3de8be6fcc26559a14c4c745cedb64736f6c634300081b0033f0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00",
 }
 
 // ContractTriggerGasRegistryABI is the input ABI used to generate the binding from.
 // Deprecated: Use ContractTriggerGasRegistryMetaData.ABI instead.
 var ContractTriggerGasRegistryABI = ContractTriggerGasRegistryMetaData.ABI
+
+// ContractTriggerGasRegistryBin is the compiled bytecode used for deploying new contracts.
+// Deprecated: Use ContractTriggerGasRegistryMetaData.Bin instead.
+var ContractTriggerGasRegistryBin = ContractTriggerGasRegistryMetaData.Bin
+
+// DeployContractTriggerGasRegistry deploys a new Ethereum contract, binding an instance of ContractTriggerGasRegistry to it.
+func DeployContractTriggerGasRegistry(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *ContractTriggerGasRegistry, error) {
+	parsed, err := ContractTriggerGasRegistryMetaData.GetAbi()
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	if parsed == nil {
+		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
+	}
+
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(ContractTriggerGasRegistryBin), backend)
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	return address, tx, &ContractTriggerGasRegistry{ContractTriggerGasRegistryCaller: ContractTriggerGasRegistryCaller{contract: contract}, ContractTriggerGasRegistryTransactor: ContractTriggerGasRegistryTransactor{contract: contract}, ContractTriggerGasRegistryFilterer: ContractTriggerGasRegistryFilterer{contract: contract}}, nil
+}
 
 // ContractTriggerGasRegistryMethods is an auto generated interface around an Ethereum contract.
 type ContractTriggerGasRegistryMethods interface {
@@ -47,54 +69,54 @@ type ContractTriggerGasRegistryMethods interface {
 
 // ContractTriggerGasRegistryCalls is an auto generated interface that defines the call methods available for an Ethereum contract.
 type ContractTriggerGasRegistryCalls interface {
-	TGPERETH(opts *bind.CallOpts) (*big.Int, error)
-
 	UPGRADEINTERFACEVERSION(opts *bind.CallOpts) (string, error)
 
-	Balances(opts *bind.CallOpts, arg0 common.Address) (struct {
-		EthSpent  *big.Int
-		TGbalance *big.Int
-	}, error)
+	Balances(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error)
 
-	GetBalance(opts *bind.CallOpts, user common.Address) (struct {
-		EthSpent  *big.Int
-		TgBalance *big.Int
-	}, error)
+	GetBalance(opts *bind.CallOpts, user common.Address) (*big.Int, error)
 
 	OperatorRole(opts *bind.CallOpts) (common.Address, error)
 
 	Owner(opts *bind.CallOpts) (common.Address, error)
 
 	ProxiableUUID(opts *bind.CallOpts) ([32]byte, error)
+
+	TotalDeductedBalance(opts *bind.CallOpts) (*big.Int, error)
 }
 
 // ContractTriggerGasRegistryTransacts is an auto generated interface that defines the transact methods available for an Ethereum contract.
 type ContractTriggerGasRegistryTransacts interface {
-	BatchMigrateUsers(opts *bind.TransactOpts, users []common.Address, ethSpentAmounts []*big.Int, tgBalances []*big.Int) (*types.Transaction, error)
+	BatchMigrateUsers(opts *bind.TransactOpts, users []common.Address, ethAmounts []*big.Int) (*types.Transaction, error)
 
-	ClaimETHForTG(opts *bind.TransactOpts, tgAmount *big.Int) (*types.Transaction, error)
+	DeductETHBalance(opts *bind.TransactOpts, user common.Address, ethAmount *big.Int) (*types.Transaction, error)
 
-	DeductTGBalance(opts *bind.TransactOpts, user common.Address, tgAmount *big.Int) (*types.Transaction, error)
+	DepositETH(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error)
 
-	Initialize(opts *bind.TransactOpts, initialOwner common.Address, _operator common.Address, _tgPerEth *big.Int) (*types.Transaction, error)
-
-	PurchaseTG(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error)
+	Initialize(opts *bind.TransactOpts, initialOwner common.Address, _operator common.Address) (*types.Transaction, error)
 
 	RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error)
 
 	SetOperator(opts *bind.TransactOpts, _operatorRole common.Address) (*types.Transaction, error)
-
-	SetTGPerETH(opts *bind.TransactOpts, _tgPerEth *big.Int) (*types.Transaction, error)
 
 	TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error)
 
 	UpgradeToAndCall(opts *bind.TransactOpts, newImplementation common.Address, data []byte) (*types.Transaction, error)
 
 	WithdrawETH(opts *bind.TransactOpts, amount *big.Int, reason string) (*types.Transaction, error)
+
+	WithdrawETHBalance(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error)
 }
 
 // ContractTriggerGasRegistryFilterer is an auto generated interface that defines the log filtering methods available for an Ethereum contract.
 type ContractTriggerGasRegistryFilters interface {
+	FilterETHBalanceDeducted(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryETHBalanceDeductedIterator, error)
+	WatchETHBalanceDeducted(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryETHBalanceDeducted, user []common.Address) (event.Subscription, error)
+	ParseETHBalanceDeducted(log types.Log) (*ContractTriggerGasRegistryETHBalanceDeducted, error)
+
+	FilterETHDeposited(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryETHDepositedIterator, error)
+	WatchETHDeposited(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryETHDeposited, user []common.Address) (event.Subscription, error)
+	ParseETHDeposited(log types.Log) (*ContractTriggerGasRegistryETHDeposited, error)
+
 	FilterETHWithdrawn(opts *bind.FilterOpts, owner []common.Address) (*ContractTriggerGasRegistryETHWithdrawnIterator, error)
 	WatchETHWithdrawn(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryETHWithdrawn, owner []common.Address) (event.Subscription, error)
 	ParseETHWithdrawn(log types.Log) (*ContractTriggerGasRegistryETHWithdrawn, error)
@@ -106,42 +128,6 @@ type ContractTriggerGasRegistryFilters interface {
 	FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*ContractTriggerGasRegistryOwnershipTransferredIterator, error)
 	WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error)
 	ParseOwnershipTransferred(log types.Log) (*ContractTriggerGasRegistryOwnershipTransferred, error)
-
-	FilterRewardClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryRewardClaimedIterator, error)
-	WatchRewardClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryRewardClaimed, user []common.Address) (event.Subscription, error)
-	ParseRewardClaimed(log types.Log) (*ContractTriggerGasRegistryRewardClaimed, error)
-
-	FilterTGBalanceDeducted(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGBalanceDeductedIterator, error)
-	WatchTGBalanceDeducted(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGBalanceDeducted, user []common.Address) (event.Subscription, error)
-	ParseTGBalanceDeducted(log types.Log) (*ContractTriggerGasRegistryTGBalanceDeducted, error)
-
-	FilterTGBalanceRemoved(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGBalanceRemovedIterator, error)
-	WatchTGBalanceRemoved(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGBalanceRemoved, user []common.Address) (event.Subscription, error)
-	ParseTGBalanceRemoved(log types.Log) (*ContractTriggerGasRegistryTGBalanceRemoved, error)
-
-	FilterTGClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGClaimedIterator, error)
-	WatchTGClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGClaimed, user []common.Address) (event.Subscription, error)
-	ParseTGClaimed(log types.Log) (*ContractTriggerGasRegistryTGClaimed, error)
-
-	FilterTGPerETHUpdated(opts *bind.FilterOpts) (*ContractTriggerGasRegistryTGPerETHUpdatedIterator, error)
-	WatchTGPerETHUpdated(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGPerETHUpdated) (event.Subscription, error)
-	ParseTGPerETHUpdated(log types.Log) (*ContractTriggerGasRegistryTGPerETHUpdated, error)
-
-	FilterTGPurchased(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGPurchasedIterator, error)
-	WatchTGPurchased(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGPurchased, user []common.Address) (event.Subscription, error)
-	ParseTGPurchased(log types.Log) (*ContractTriggerGasRegistryTGPurchased, error)
-
-	FilterTGRefunded(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGRefundedIterator, error)
-	WatchTGRefunded(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGRefunded, user []common.Address) (event.Subscription, error)
-	ParseTGRefunded(log types.Log) (*ContractTriggerGasRegistryTGRefunded, error)
-
-	FilterTGTransferred(opts *bind.FilterOpts, user []common.Address, keeper []common.Address) (*ContractTriggerGasRegistryTGTransferredIterator, error)
-	WatchTGTransferred(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGTransferred, user []common.Address, keeper []common.Address) (event.Subscription, error)
-	ParseTGTransferred(log types.Log) (*ContractTriggerGasRegistryTGTransferred, error)
-
-	FilterTaskFeeClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTaskFeeClaimedIterator, error)
-	WatchTaskFeeClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTaskFeeClaimed, user []common.Address) (event.Subscription, error)
-	ParseTaskFeeClaimed(log types.Log) (*ContractTriggerGasRegistryTaskFeeClaimed, error)
 
 	FilterUpgraded(opts *bind.FilterOpts, implementation []common.Address) (*ContractTriggerGasRegistryUpgradedIterator, error)
 	WatchUpgraded(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryUpgraded, implementation []common.Address) (event.Subscription, error)
@@ -302,37 +288,6 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorRaw) Tran
 	return _ContractTriggerGasRegistry.Contract.contract.Transact(opts, method, params...)
 }
 
-// TGPERETH is a free data retrieval call binding the contract method 0x989c6f6a.
-//
-// Solidity: function TG_PER_ETH() view returns(uint256)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) TGPERETH(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _ContractTriggerGasRegistry.contract.Call(opts, &out, "TG_PER_ETH")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// TGPERETH is a free data retrieval call binding the contract method 0x989c6f6a.
-//
-// Solidity: function TG_PER_ETH() view returns(uint256)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) TGPERETH() (*big.Int, error) {
-	return _ContractTriggerGasRegistry.Contract.TGPERETH(&_ContractTriggerGasRegistry.CallOpts)
-}
-
-// TGPERETH is a free data retrieval call binding the contract method 0x989c6f6a.
-//
-// Solidity: function TG_PER_ETH() view returns(uint256)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) TGPERETH() (*big.Int, error) {
-	return _ContractTriggerGasRegistry.Contract.TGPERETH(&_ContractTriggerGasRegistry.CallOpts)
-}
-
 // UPGRADEINTERFACEVERSION is a free data retrieval call binding the contract method 0xad3cb1cc.
 //
 // Solidity: function UPGRADE_INTERFACE_VERSION() view returns(string)
@@ -366,91 +321,63 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) UPGR
 
 // Balances is a free data retrieval call binding the contract method 0x27e235e3.
 //
-// Solidity: function balances(address ) view returns(uint256 ethSpent, uint256 TGbalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) Balances(opts *bind.CallOpts, arg0 common.Address) (struct {
-	EthSpent  *big.Int
-	TGbalance *big.Int
-}, error) {
+// Solidity: function balances(address ) view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) Balances(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
 	var out []interface{}
 	err := _ContractTriggerGasRegistry.contract.Call(opts, &out, "balances", arg0)
 
-	outstruct := new(struct {
-		EthSpent  *big.Int
-		TGbalance *big.Int
-	})
 	if err != nil {
-		return *outstruct, err
+		return *new(*big.Int), err
 	}
 
-	outstruct.EthSpent = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-	outstruct.TGbalance = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
-	return *outstruct, err
+	return out0, err
 
 }
 
 // Balances is a free data retrieval call binding the contract method 0x27e235e3.
 //
-// Solidity: function balances(address ) view returns(uint256 ethSpent, uint256 TGbalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) Balances(arg0 common.Address) (struct {
-	EthSpent  *big.Int
-	TGbalance *big.Int
-}, error) {
+// Solidity: function balances(address ) view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) Balances(arg0 common.Address) (*big.Int, error) {
 	return _ContractTriggerGasRegistry.Contract.Balances(&_ContractTriggerGasRegistry.CallOpts, arg0)
 }
 
 // Balances is a free data retrieval call binding the contract method 0x27e235e3.
 //
-// Solidity: function balances(address ) view returns(uint256 ethSpent, uint256 TGbalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) Balances(arg0 common.Address) (struct {
-	EthSpent  *big.Int
-	TGbalance *big.Int
-}, error) {
+// Solidity: function balances(address ) view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) Balances(arg0 common.Address) (*big.Int, error) {
 	return _ContractTriggerGasRegistry.Contract.Balances(&_ContractTriggerGasRegistry.CallOpts, arg0)
 }
 
 // GetBalance is a free data retrieval call binding the contract method 0xf8b2cb4f.
 //
-// Solidity: function getBalance(address user) view returns(uint256 ethSpent, uint256 tgBalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) GetBalance(opts *bind.CallOpts, user common.Address) (struct {
-	EthSpent  *big.Int
-	TgBalance *big.Int
-}, error) {
+// Solidity: function getBalance(address user) view returns(uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) GetBalance(opts *bind.CallOpts, user common.Address) (*big.Int, error) {
 	var out []interface{}
 	err := _ContractTriggerGasRegistry.contract.Call(opts, &out, "getBalance", user)
 
-	outstruct := new(struct {
-		EthSpent  *big.Int
-		TgBalance *big.Int
-	})
 	if err != nil {
-		return *outstruct, err
+		return *new(*big.Int), err
 	}
 
-	outstruct.EthSpent = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-	outstruct.TgBalance = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
-	return *outstruct, err
+	return out0, err
 
 }
 
 // GetBalance is a free data retrieval call binding the contract method 0xf8b2cb4f.
 //
-// Solidity: function getBalance(address user) view returns(uint256 ethSpent, uint256 tgBalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) GetBalance(user common.Address) (struct {
-	EthSpent  *big.Int
-	TgBalance *big.Int
-}, error) {
+// Solidity: function getBalance(address user) view returns(uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) GetBalance(user common.Address) (*big.Int, error) {
 	return _ContractTriggerGasRegistry.Contract.GetBalance(&_ContractTriggerGasRegistry.CallOpts, user)
 }
 
 // GetBalance is a free data retrieval call binding the contract method 0xf8b2cb4f.
 //
-// Solidity: function getBalance(address user) view returns(uint256 ethSpent, uint256 tgBalance)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) GetBalance(user common.Address) (struct {
-	EthSpent  *big.Int
-	TgBalance *big.Int
-}, error) {
+// Solidity: function getBalance(address user) view returns(uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) GetBalance(user common.Address) (*big.Int, error) {
 	return _ContractTriggerGasRegistry.Contract.GetBalance(&_ContractTriggerGasRegistry.CallOpts, user)
 }
 
@@ -547,109 +474,119 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) Prox
 	return _ContractTriggerGasRegistry.Contract.ProxiableUUID(&_ContractTriggerGasRegistry.CallOpts)
 }
 
-// BatchMigrateUsers is a paid mutator transaction binding the contract method 0x8d7872d1.
+// TotalDeductedBalance is a free data retrieval call binding the contract method 0xf1cc9310.
 //
-// Solidity: function batchMigrateUsers(address[] users, uint256[] ethSpentAmounts, uint256[] tgBalances) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) BatchMigrateUsers(opts *bind.TransactOpts, users []common.Address, ethSpentAmounts []*big.Int, tgBalances []*big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "batchMigrateUsers", users, ethSpentAmounts, tgBalances)
+// Solidity: function totalDeductedBalance() view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCaller) TotalDeductedBalance(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _ContractTriggerGasRegistry.contract.Call(opts, &out, "totalDeductedBalance")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
-// BatchMigrateUsers is a paid mutator transaction binding the contract method 0x8d7872d1.
+// TotalDeductedBalance is a free data retrieval call binding the contract method 0xf1cc9310.
 //
-// Solidity: function batchMigrateUsers(address[] users, uint256[] ethSpentAmounts, uint256[] tgBalances) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) BatchMigrateUsers(users []common.Address, ethSpentAmounts []*big.Int, tgBalances []*big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.BatchMigrateUsers(&_ContractTriggerGasRegistry.TransactOpts, users, ethSpentAmounts, tgBalances)
+// Solidity: function totalDeductedBalance() view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) TotalDeductedBalance() (*big.Int, error) {
+	return _ContractTriggerGasRegistry.Contract.TotalDeductedBalance(&_ContractTriggerGasRegistry.CallOpts)
 }
 
-// BatchMigrateUsers is a paid mutator transaction binding the contract method 0x8d7872d1.
+// TotalDeductedBalance is a free data retrieval call binding the contract method 0xf1cc9310.
 //
-// Solidity: function batchMigrateUsers(address[] users, uint256[] ethSpentAmounts, uint256[] tgBalances) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) BatchMigrateUsers(users []common.Address, ethSpentAmounts []*big.Int, tgBalances []*big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.BatchMigrateUsers(&_ContractTriggerGasRegistry.TransactOpts, users, ethSpentAmounts, tgBalances)
+// Solidity: function totalDeductedBalance() view returns(uint256)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryCallerSession) TotalDeductedBalance() (*big.Int, error) {
+	return _ContractTriggerGasRegistry.Contract.TotalDeductedBalance(&_ContractTriggerGasRegistry.CallOpts)
 }
 
-// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
+// BatchMigrateUsers is a paid mutator transaction binding the contract method 0xa3c4c129.
 //
-// Solidity: function claimETHForTG(uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) ClaimETHForTG(opts *bind.TransactOpts, tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "claimETHForTG", tgAmount)
+// Solidity: function batchMigrateUsers(address[] users, uint256[] ethAmounts) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) BatchMigrateUsers(opts *bind.TransactOpts, users []common.Address, ethAmounts []*big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.contract.Transact(opts, "batchMigrateUsers", users, ethAmounts)
 }
 
-// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
+// BatchMigrateUsers is a paid mutator transaction binding the contract method 0xa3c4c129.
 //
-// Solidity: function claimETHForTG(uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) ClaimETHForTG(tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.ClaimETHForTG(&_ContractTriggerGasRegistry.TransactOpts, tgAmount)
+// Solidity: function batchMigrateUsers(address[] users, uint256[] ethAmounts) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) BatchMigrateUsers(users []common.Address, ethAmounts []*big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.BatchMigrateUsers(&_ContractTriggerGasRegistry.TransactOpts, users, ethAmounts)
 }
 
-// ClaimETHForTG is a paid mutator transaction binding the contract method 0x168d6c50.
+// BatchMigrateUsers is a paid mutator transaction binding the contract method 0xa3c4c129.
 //
-// Solidity: function claimETHForTG(uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) ClaimETHForTG(tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.ClaimETHForTG(&_ContractTriggerGasRegistry.TransactOpts, tgAmount)
+// Solidity: function batchMigrateUsers(address[] users, uint256[] ethAmounts) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) BatchMigrateUsers(users []common.Address, ethAmounts []*big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.BatchMigrateUsers(&_ContractTriggerGasRegistry.TransactOpts, users, ethAmounts)
 }
 
-// DeductTGBalance is a paid mutator transaction binding the contract method 0x79dd15ff.
+// DeductETHBalance is a paid mutator transaction binding the contract method 0xf7c78604.
 //
-// Solidity: function deductTGBalance(address user, uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) DeductTGBalance(opts *bind.TransactOpts, user common.Address, tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "deductTGBalance", user, tgAmount)
+// Solidity: function deductETHBalance(address user, uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) DeductETHBalance(opts *bind.TransactOpts, user common.Address, ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.contract.Transact(opts, "deductETHBalance", user, ethAmount)
 }
 
-// DeductTGBalance is a paid mutator transaction binding the contract method 0x79dd15ff.
+// DeductETHBalance is a paid mutator transaction binding the contract method 0xf7c78604.
 //
-// Solidity: function deductTGBalance(address user, uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) DeductTGBalance(user common.Address, tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.DeductTGBalance(&_ContractTriggerGasRegistry.TransactOpts, user, tgAmount)
+// Solidity: function deductETHBalance(address user, uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) DeductETHBalance(user common.Address, ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.DeductETHBalance(&_ContractTriggerGasRegistry.TransactOpts, user, ethAmount)
 }
 
-// DeductTGBalance is a paid mutator transaction binding the contract method 0x79dd15ff.
+// DeductETHBalance is a paid mutator transaction binding the contract method 0xf7c78604.
 //
-// Solidity: function deductTGBalance(address user, uint256 tgAmount) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) DeductTGBalance(user common.Address, tgAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.DeductTGBalance(&_ContractTriggerGasRegistry.TransactOpts, user, tgAmount)
+// Solidity: function deductETHBalance(address user, uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) DeductETHBalance(user common.Address, ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.DeductETHBalance(&_ContractTriggerGasRegistry.TransactOpts, user, ethAmount)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x1794bb3c.
+// DepositETH is a paid mutator transaction binding the contract method 0x5358fbda.
 //
-// Solidity: function initialize(address initialOwner, address _operator, uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) Initialize(opts *bind.TransactOpts, initialOwner common.Address, _operator common.Address, _tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "initialize", initialOwner, _operator, _tgPerEth)
+// Solidity: function depositETH(uint256 ethAmount) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) DepositETH(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.contract.Transact(opts, "depositETH", ethAmount)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x1794bb3c.
+// DepositETH is a paid mutator transaction binding the contract method 0x5358fbda.
 //
-// Solidity: function initialize(address initialOwner, address _operator, uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) Initialize(initialOwner common.Address, _operator common.Address, _tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.Initialize(&_ContractTriggerGasRegistry.TransactOpts, initialOwner, _operator, _tgPerEth)
+// Solidity: function depositETH(uint256 ethAmount) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) DepositETH(ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.DepositETH(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x1794bb3c.
+// DepositETH is a paid mutator transaction binding the contract method 0x5358fbda.
 //
-// Solidity: function initialize(address initialOwner, address _operator, uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) Initialize(initialOwner common.Address, _operator common.Address, _tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.Initialize(&_ContractTriggerGasRegistry.TransactOpts, initialOwner, _operator, _tgPerEth)
+// Solidity: function depositETH(uint256 ethAmount) payable returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) DepositETH(ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.DepositETH(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
 }
 
-// PurchaseTG is a paid mutator transaction binding the contract method 0x50caaf90.
+// Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function purchaseTG(uint256 ethAmount) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) PurchaseTG(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "purchaseTG", ethAmount)
+// Solidity: function initialize(address initialOwner, address _operator) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) Initialize(opts *bind.TransactOpts, initialOwner common.Address, _operator common.Address) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.contract.Transact(opts, "initialize", initialOwner, _operator)
 }
 
-// PurchaseTG is a paid mutator transaction binding the contract method 0x50caaf90.
+// Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function purchaseTG(uint256 ethAmount) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) PurchaseTG(ethAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.PurchaseTG(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
+// Solidity: function initialize(address initialOwner, address _operator) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) Initialize(initialOwner common.Address, _operator common.Address) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.Initialize(&_ContractTriggerGasRegistry.TransactOpts, initialOwner, _operator)
 }
 
-// PurchaseTG is a paid mutator transaction binding the contract method 0x50caaf90.
+// Initialize is a paid mutator transaction binding the contract method 0x485cc955.
 //
-// Solidity: function purchaseTG(uint256 ethAmount) payable returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) PurchaseTG(ethAmount *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.PurchaseTG(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
+// Solidity: function initialize(address initialOwner, address _operator) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) Initialize(initialOwner common.Address, _operator common.Address) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.Initialize(&_ContractTriggerGasRegistry.TransactOpts, initialOwner, _operator)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -692,27 +629,6 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) SetOperato
 // Solidity: function setOperator(address _operatorRole) returns()
 func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) SetOperator(_operatorRole common.Address) (*types.Transaction, error) {
 	return _ContractTriggerGasRegistry.Contract.SetOperator(&_ContractTriggerGasRegistry.TransactOpts, _operatorRole)
-}
-
-// SetTGPerETH is a paid mutator transaction binding the contract method 0xd0737b7a.
-//
-// Solidity: function setTGPerETH(uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) SetTGPerETH(opts *bind.TransactOpts, _tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.contract.Transact(opts, "setTGPerETH", _tgPerEth)
-}
-
-// SetTGPerETH is a paid mutator transaction binding the contract method 0xd0737b7a.
-//
-// Solidity: function setTGPerETH(uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) SetTGPerETH(_tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.SetTGPerETH(&_ContractTriggerGasRegistry.TransactOpts, _tgPerEth)
-}
-
-// SetTGPerETH is a paid mutator transaction binding the contract method 0xd0737b7a.
-//
-// Solidity: function setTGPerETH(uint256 _tgPerEth) returns()
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) SetTGPerETH(_tgPerEth *big.Int) (*types.Transaction, error) {
-	return _ContractTriggerGasRegistry.Contract.SetTGPerETH(&_ContractTriggerGasRegistry.TransactOpts, _tgPerEth)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
@@ -776,6 +692,317 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) WithdrawET
 // Solidity: function withdrawETH(uint256 amount, string reason) returns()
 func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) WithdrawETH(amount *big.Int, reason string) (*types.Transaction, error) {
 	return _ContractTriggerGasRegistry.Contract.WithdrawETH(&_ContractTriggerGasRegistry.TransactOpts, amount, reason)
+}
+
+// WithdrawETHBalance is a paid mutator transaction binding the contract method 0x176c5106.
+//
+// Solidity: function withdrawETHBalance(uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactor) WithdrawETHBalance(opts *bind.TransactOpts, ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.contract.Transact(opts, "withdrawETHBalance", ethAmount)
+}
+
+// WithdrawETHBalance is a paid mutator transaction binding the contract method 0x176c5106.
+//
+// Solidity: function withdrawETHBalance(uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistrySession) WithdrawETHBalance(ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.WithdrawETHBalance(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
+}
+
+// WithdrawETHBalance is a paid mutator transaction binding the contract method 0x176c5106.
+//
+// Solidity: function withdrawETHBalance(uint256 ethAmount) returns()
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryTransactorSession) WithdrawETHBalance(ethAmount *big.Int) (*types.Transaction, error) {
+	return _ContractTriggerGasRegistry.Contract.WithdrawETHBalance(&_ContractTriggerGasRegistry.TransactOpts, ethAmount)
+}
+
+// ContractTriggerGasRegistryETHBalanceDeductedIterator is returned from FilterETHBalanceDeducted and is used to iterate over the raw logs and unpacked data for ETHBalanceDeducted events raised by the ContractTriggerGasRegistry contract.
+type ContractTriggerGasRegistryETHBalanceDeductedIterator struct {
+	Event *ContractTriggerGasRegistryETHBalanceDeducted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractTriggerGasRegistryETHBalanceDeductedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractTriggerGasRegistryETHBalanceDeducted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractTriggerGasRegistryETHBalanceDeducted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractTriggerGasRegistryETHBalanceDeductedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractTriggerGasRegistryETHBalanceDeductedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractTriggerGasRegistryETHBalanceDeducted represents a ETHBalanceDeducted event raised by the ContractTriggerGasRegistry contract.
+type ContractTriggerGasRegistryETHBalanceDeducted struct {
+	User   common.Address
+	Amount *big.Int
+	Raw    types.Log // Blockchain specific contextual infos
+}
+
+// FilterETHBalanceDeducted is a free log retrieval operation binding the contract event 0xcb86089062e14afd83ae7cdae0be8f14e3cc48bcb2dd2b09bf2e56c2fdee8fee.
+//
+// Solidity: event ETHBalanceDeducted(address indexed user, uint256 amount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterETHBalanceDeducted(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryETHBalanceDeductedIterator, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+
+	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "ETHBalanceDeducted", userRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractTriggerGasRegistryETHBalanceDeductedIterator{contract: _ContractTriggerGasRegistry.contract, event: "ETHBalanceDeducted", logs: logs, sub: sub}, nil
+}
+
+// WatchETHBalanceDeducted is a free log subscription operation binding the contract event 0xcb86089062e14afd83ae7cdae0be8f14e3cc48bcb2dd2b09bf2e56c2fdee8fee.
+//
+// Solidity: event ETHBalanceDeducted(address indexed user, uint256 amount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchETHBalanceDeducted(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryETHBalanceDeducted, user []common.Address) (event.Subscription, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+
+	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "ETHBalanceDeducted", userRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractTriggerGasRegistryETHBalanceDeducted)
+				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "ETHBalanceDeducted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseETHBalanceDeducted is a log parse operation binding the contract event 0xcb86089062e14afd83ae7cdae0be8f14e3cc48bcb2dd2b09bf2e56c2fdee8fee.
+//
+// Solidity: event ETHBalanceDeducted(address indexed user, uint256 amount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseETHBalanceDeducted(log types.Log) (*ContractTriggerGasRegistryETHBalanceDeducted, error) {
+	event := new(ContractTriggerGasRegistryETHBalanceDeducted)
+	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "ETHBalanceDeducted", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ContractTriggerGasRegistryETHDepositedIterator is returned from FilterETHDeposited and is used to iterate over the raw logs and unpacked data for ETHDeposited events raised by the ContractTriggerGasRegistry contract.
+type ContractTriggerGasRegistryETHDepositedIterator struct {
+	Event *ContractTriggerGasRegistryETHDeposited // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ContractTriggerGasRegistryETHDepositedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ContractTriggerGasRegistryETHDeposited)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ContractTriggerGasRegistryETHDeposited)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ContractTriggerGasRegistryETHDepositedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ContractTriggerGasRegistryETHDepositedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ContractTriggerGasRegistryETHDeposited represents a ETHDeposited event raised by the ContractTriggerGasRegistry contract.
+type ContractTriggerGasRegistryETHDeposited struct {
+	User      common.Address
+	EthAmount *big.Int
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterETHDeposited is a free log retrieval operation binding the contract event 0x6c703791f399558807424f489ccd811c72b4ff0b74af547264fad7c646776df0.
+//
+// Solidity: event ETHDeposited(address indexed user, uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterETHDeposited(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryETHDepositedIterator, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+
+	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "ETHDeposited", userRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ContractTriggerGasRegistryETHDepositedIterator{contract: _ContractTriggerGasRegistry.contract, event: "ETHDeposited", logs: logs, sub: sub}, nil
+}
+
+// WatchETHDeposited is a free log subscription operation binding the contract event 0x6c703791f399558807424f489ccd811c72b4ff0b74af547264fad7c646776df0.
+//
+// Solidity: event ETHDeposited(address indexed user, uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchETHDeposited(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryETHDeposited, user []common.Address) (event.Subscription, error) {
+
+	var userRule []interface{}
+	for _, userItem := range user {
+		userRule = append(userRule, userItem)
+	}
+
+	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "ETHDeposited", userRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ContractTriggerGasRegistryETHDeposited)
+				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "ETHDeposited", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseETHDeposited is a log parse operation binding the contract event 0x6c703791f399558807424f489ccd811c72b4ff0b74af547264fad7c646776df0.
+//
+// Solidity: event ETHDeposited(address indexed user, uint256 ethAmount)
+func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseETHDeposited(log types.Log) (*ContractTriggerGasRegistryETHDeposited, error) {
+	event := new(ContractTriggerGasRegistryETHDeposited)
+	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "ETHDeposited", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // ContractTriggerGasRegistryETHWithdrawnIterator is returned from FilterETHWithdrawn and is used to iterate over the raw logs and unpacked data for ETHWithdrawn events raised by the ContractTriggerGasRegistry contract.
@@ -1205,1311 +1432,6 @@ func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchOwne
 func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseOwnershipTransferred(log types.Log) (*ContractTriggerGasRegistryOwnershipTransferred, error) {
 	event := new(ContractTriggerGasRegistryOwnershipTransferred)
 	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryRewardClaimedIterator is returned from FilterRewardClaimed and is used to iterate over the raw logs and unpacked data for RewardClaimed events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryRewardClaimedIterator struct {
-	Event *ContractTriggerGasRegistryRewardClaimed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryRewardClaimedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryRewardClaimed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryRewardClaimed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryRewardClaimedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryRewardClaimedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryRewardClaimed represents a RewardClaimed event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryRewardClaimed struct {
-	User   common.Address
-	Reward *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterRewardClaimed is a free log retrieval operation binding the contract event 0x106f923f993c2149d49b4255ff723acafa1f2d94393f561d3eda32ae348f7241.
-//
-// Solidity: event RewardClaimed(address indexed user, uint256 reward)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterRewardClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryRewardClaimedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "RewardClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryRewardClaimedIterator{contract: _ContractTriggerGasRegistry.contract, event: "RewardClaimed", logs: logs, sub: sub}, nil
-}
-
-// WatchRewardClaimed is a free log subscription operation binding the contract event 0x106f923f993c2149d49b4255ff723acafa1f2d94393f561d3eda32ae348f7241.
-//
-// Solidity: event RewardClaimed(address indexed user, uint256 reward)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchRewardClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryRewardClaimed, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "RewardClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryRewardClaimed)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "RewardClaimed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRewardClaimed is a log parse operation binding the contract event 0x106f923f993c2149d49b4255ff723acafa1f2d94393f561d3eda32ae348f7241.
-//
-// Solidity: event RewardClaimed(address indexed user, uint256 reward)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseRewardClaimed(log types.Log) (*ContractTriggerGasRegistryRewardClaimed, error) {
-	event := new(ContractTriggerGasRegistryRewardClaimed)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "RewardClaimed", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGBalanceDeductedIterator is returned from FilterTGBalanceDeducted and is used to iterate over the raw logs and unpacked data for TGBalanceDeducted events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGBalanceDeductedIterator struct {
-	Event *ContractTriggerGasRegistryTGBalanceDeducted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGBalanceDeductedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGBalanceDeducted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGBalanceDeducted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGBalanceDeductedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGBalanceDeductedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGBalanceDeducted represents a TGBalanceDeducted event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGBalanceDeducted struct {
-	User   common.Address
-	Amount *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGBalanceDeducted is a free log retrieval operation binding the contract event 0xef70e6d79855d76ed5d6ba11f8368a48ca19a9f11ffed71aa53caab2cf8c16a4.
-//
-// Solidity: event TGBalanceDeducted(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGBalanceDeducted(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGBalanceDeductedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGBalanceDeducted", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGBalanceDeductedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGBalanceDeducted", logs: logs, sub: sub}, nil
-}
-
-// WatchTGBalanceDeducted is a free log subscription operation binding the contract event 0xef70e6d79855d76ed5d6ba11f8368a48ca19a9f11ffed71aa53caab2cf8c16a4.
-//
-// Solidity: event TGBalanceDeducted(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGBalanceDeducted(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGBalanceDeducted, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGBalanceDeducted", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGBalanceDeducted)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGBalanceDeducted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGBalanceDeducted is a log parse operation binding the contract event 0xef70e6d79855d76ed5d6ba11f8368a48ca19a9f11ffed71aa53caab2cf8c16a4.
-//
-// Solidity: event TGBalanceDeducted(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGBalanceDeducted(log types.Log) (*ContractTriggerGasRegistryTGBalanceDeducted, error) {
-	event := new(ContractTriggerGasRegistryTGBalanceDeducted)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGBalanceDeducted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGBalanceRemovedIterator is returned from FilterTGBalanceRemoved and is used to iterate over the raw logs and unpacked data for TGBalanceRemoved events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGBalanceRemovedIterator struct {
-	Event *ContractTriggerGasRegistryTGBalanceRemoved // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGBalanceRemovedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGBalanceRemoved)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGBalanceRemoved)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGBalanceRemovedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGBalanceRemovedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGBalanceRemoved represents a TGBalanceRemoved event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGBalanceRemoved struct {
-	User   common.Address
-	Amount *big.Int
-	Reason string
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGBalanceRemoved is a free log retrieval operation binding the contract event 0x5bb4e07063f2bc366c9a7d34efca7a39d411136e9a6af6a211676ab7d74fd8e0.
-//
-// Solidity: event TGBalanceRemoved(address indexed user, uint256 amount, string reason)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGBalanceRemoved(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGBalanceRemovedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGBalanceRemoved", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGBalanceRemovedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGBalanceRemoved", logs: logs, sub: sub}, nil
-}
-
-// WatchTGBalanceRemoved is a free log subscription operation binding the contract event 0x5bb4e07063f2bc366c9a7d34efca7a39d411136e9a6af6a211676ab7d74fd8e0.
-//
-// Solidity: event TGBalanceRemoved(address indexed user, uint256 amount, string reason)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGBalanceRemoved(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGBalanceRemoved, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGBalanceRemoved", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGBalanceRemoved)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGBalanceRemoved", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGBalanceRemoved is a log parse operation binding the contract event 0x5bb4e07063f2bc366c9a7d34efca7a39d411136e9a6af6a211676ab7d74fd8e0.
-//
-// Solidity: event TGBalanceRemoved(address indexed user, uint256 amount, string reason)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGBalanceRemoved(log types.Log) (*ContractTriggerGasRegistryTGBalanceRemoved, error) {
-	event := new(ContractTriggerGasRegistryTGBalanceRemoved)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGBalanceRemoved", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGClaimedIterator is returned from FilterTGClaimed and is used to iterate over the raw logs and unpacked data for TGClaimed events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGClaimedIterator struct {
-	Event *ContractTriggerGasRegistryTGClaimed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGClaimedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGClaimed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGClaimed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGClaimedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGClaimedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGClaimed represents a TGClaimed event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGClaimed struct {
-	User   common.Address
-	Amount *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGClaimed is a free log retrieval operation binding the contract event 0xbddee7230372ecc0cb1780b66efe6d1461ee2a8e5b70239f3ec20a7d85f0e928.
-//
-// Solidity: event TGClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGClaimedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGClaimedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGClaimed", logs: logs, sub: sub}, nil
-}
-
-// WatchTGClaimed is a free log subscription operation binding the contract event 0xbddee7230372ecc0cb1780b66efe6d1461ee2a8e5b70239f3ec20a7d85f0e928.
-//
-// Solidity: event TGClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGClaimed, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGClaimed)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGClaimed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGClaimed is a log parse operation binding the contract event 0xbddee7230372ecc0cb1780b66efe6d1461ee2a8e5b70239f3ec20a7d85f0e928.
-//
-// Solidity: event TGClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGClaimed(log types.Log) (*ContractTriggerGasRegistryTGClaimed, error) {
-	event := new(ContractTriggerGasRegistryTGClaimed)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGClaimed", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGPerETHUpdatedIterator is returned from FilterTGPerETHUpdated and is used to iterate over the raw logs and unpacked data for TGPerETHUpdated events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGPerETHUpdatedIterator struct {
-	Event *ContractTriggerGasRegistryTGPerETHUpdated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGPerETHUpdatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGPerETHUpdated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGPerETHUpdated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGPerETHUpdatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGPerETHUpdatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGPerETHUpdated represents a TGPerETHUpdated event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGPerETHUpdated struct {
-	TgPerEth *big.Int
-	Raw      types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGPerETHUpdated is a free log retrieval operation binding the contract event 0x18652b6a656730019776361074bff5dbd2c837755a539e612061263f50b83457.
-//
-// Solidity: event TGPerETHUpdated(uint256 tgPerEth)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGPerETHUpdated(opts *bind.FilterOpts) (*ContractTriggerGasRegistryTGPerETHUpdatedIterator, error) {
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGPerETHUpdated")
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGPerETHUpdatedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGPerETHUpdated", logs: logs, sub: sub}, nil
-}
-
-// WatchTGPerETHUpdated is a free log subscription operation binding the contract event 0x18652b6a656730019776361074bff5dbd2c837755a539e612061263f50b83457.
-//
-// Solidity: event TGPerETHUpdated(uint256 tgPerEth)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGPerETHUpdated(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGPerETHUpdated) (event.Subscription, error) {
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGPerETHUpdated")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGPerETHUpdated)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGPerETHUpdated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGPerETHUpdated is a log parse operation binding the contract event 0x18652b6a656730019776361074bff5dbd2c837755a539e612061263f50b83457.
-//
-// Solidity: event TGPerETHUpdated(uint256 tgPerEth)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGPerETHUpdated(log types.Log) (*ContractTriggerGasRegistryTGPerETHUpdated, error) {
-	event := new(ContractTriggerGasRegistryTGPerETHUpdated)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGPerETHUpdated", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGPurchasedIterator is returned from FilterTGPurchased and is used to iterate over the raw logs and unpacked data for TGPurchased events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGPurchasedIterator struct {
-	Event *ContractTriggerGasRegistryTGPurchased // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGPurchasedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGPurchased)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGPurchased)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGPurchasedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGPurchasedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGPurchased represents a TGPurchased event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGPurchased struct {
-	User      common.Address
-	EthAmount *big.Int
-	TgAmount  *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGPurchased is a free log retrieval operation binding the contract event 0xd29e7684851e87b600fbe9f3d04a3adda696b6768e9bde3c3ae69143b4efa2b5.
-//
-// Solidity: event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGPurchased(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGPurchasedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGPurchased", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGPurchasedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGPurchased", logs: logs, sub: sub}, nil
-}
-
-// WatchTGPurchased is a free log subscription operation binding the contract event 0xd29e7684851e87b600fbe9f3d04a3adda696b6768e9bde3c3ae69143b4efa2b5.
-//
-// Solidity: event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGPurchased(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGPurchased, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGPurchased", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGPurchased)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGPurchased", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGPurchased is a log parse operation binding the contract event 0xd29e7684851e87b600fbe9f3d04a3adda696b6768e9bde3c3ae69143b4efa2b5.
-//
-// Solidity: event TGPurchased(address indexed user, uint256 ethAmount, uint256 tgAmount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGPurchased(log types.Log) (*ContractTriggerGasRegistryTGPurchased, error) {
-	event := new(ContractTriggerGasRegistryTGPurchased)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGPurchased", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGRefundedIterator is returned from FilterTGRefunded and is used to iterate over the raw logs and unpacked data for TGRefunded events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGRefundedIterator struct {
-	Event *ContractTriggerGasRegistryTGRefunded // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGRefundedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGRefunded)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGRefunded)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGRefundedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGRefundedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGRefunded represents a TGRefunded event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGRefunded struct {
-	User   common.Address
-	Amount *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGRefunded is a free log retrieval operation binding the contract event 0x0ec18e13bc6adfe1239be0ea7ec72bd748b32f99a9fa97d32268b5a04a73c62f.
-//
-// Solidity: event TGRefunded(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGRefunded(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTGRefundedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGRefunded", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGRefundedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGRefunded", logs: logs, sub: sub}, nil
-}
-
-// WatchTGRefunded is a free log subscription operation binding the contract event 0x0ec18e13bc6adfe1239be0ea7ec72bd748b32f99a9fa97d32268b5a04a73c62f.
-//
-// Solidity: event TGRefunded(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGRefunded(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGRefunded, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGRefunded", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGRefunded)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGRefunded", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGRefunded is a log parse operation binding the contract event 0x0ec18e13bc6adfe1239be0ea7ec72bd748b32f99a9fa97d32268b5a04a73c62f.
-//
-// Solidity: event TGRefunded(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGRefunded(log types.Log) (*ContractTriggerGasRegistryTGRefunded, error) {
-	event := new(ContractTriggerGasRegistryTGRefunded)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGRefunded", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTGTransferredIterator is returned from FilterTGTransferred and is used to iterate over the raw logs and unpacked data for TGTransferred events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGTransferredIterator struct {
-	Event *ContractTriggerGasRegistryTGTransferred // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTGTransferredIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTGTransferred)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTGTransferred)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTGTransferredIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTGTransferredIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTGTransferred represents a TGTransferred event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTGTransferred struct {
-	User   common.Address
-	Keeper common.Address
-	Amount *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTGTransferred is a free log retrieval operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
-//
-// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTGTransferred(opts *bind.FilterOpts, user []common.Address, keeper []common.Address) (*ContractTriggerGasRegistryTGTransferredIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-	var keeperRule []interface{}
-	for _, keeperItem := range keeper {
-		keeperRule = append(keeperRule, keeperItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TGTransferred", userRule, keeperRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTGTransferredIterator{contract: _ContractTriggerGasRegistry.contract, event: "TGTransferred", logs: logs, sub: sub}, nil
-}
-
-// WatchTGTransferred is a free log subscription operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
-//
-// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTGTransferred(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTGTransferred, user []common.Address, keeper []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-	var keeperRule []interface{}
-	for _, keeperItem := range keeper {
-		keeperRule = append(keeperRule, keeperItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TGTransferred", userRule, keeperRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTGTransferred)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGTransferred", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTGTransferred is a log parse operation binding the contract event 0xa613b7e352cf78a30d92dbc93071265034f43edbeb7833b8d8713a3b4f323670.
-//
-// Solidity: event TGTransferred(address indexed user, address indexed keeper, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTGTransferred(log types.Log) (*ContractTriggerGasRegistryTGTransferred, error) {
-	event := new(ContractTriggerGasRegistryTGTransferred)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TGTransferred", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// ContractTriggerGasRegistryTaskFeeClaimedIterator is returned from FilterTaskFeeClaimed and is used to iterate over the raw logs and unpacked data for TaskFeeClaimed events raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTaskFeeClaimedIterator struct {
-	Event *ContractTriggerGasRegistryTaskFeeClaimed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *ContractTriggerGasRegistryTaskFeeClaimedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(ContractTriggerGasRegistryTaskFeeClaimed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(ContractTriggerGasRegistryTaskFeeClaimed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *ContractTriggerGasRegistryTaskFeeClaimedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *ContractTriggerGasRegistryTaskFeeClaimedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// ContractTriggerGasRegistryTaskFeeClaimed represents a TaskFeeClaimed event raised by the ContractTriggerGasRegistry contract.
-type ContractTriggerGasRegistryTaskFeeClaimed struct {
-	User   common.Address
-	Amount *big.Int
-	Raw    types.Log // Blockchain specific contextual infos
-}
-
-// FilterTaskFeeClaimed is a free log retrieval operation binding the contract event 0xae8ecfb3533b83d346a9f325b0e61ccdd5a8d8aaa0fa2dbfcbea06121120da40.
-//
-// Solidity: event TaskFeeClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) FilterTaskFeeClaimed(opts *bind.FilterOpts, user []common.Address) (*ContractTriggerGasRegistryTaskFeeClaimedIterator, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.FilterLogs(opts, "TaskFeeClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return &ContractTriggerGasRegistryTaskFeeClaimedIterator{contract: _ContractTriggerGasRegistry.contract, event: "TaskFeeClaimed", logs: logs, sub: sub}, nil
-}
-
-// WatchTaskFeeClaimed is a free log subscription operation binding the contract event 0xae8ecfb3533b83d346a9f325b0e61ccdd5a8d8aaa0fa2dbfcbea06121120da40.
-//
-// Solidity: event TaskFeeClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) WatchTaskFeeClaimed(opts *bind.WatchOpts, sink chan<- *ContractTriggerGasRegistryTaskFeeClaimed, user []common.Address) (event.Subscription, error) {
-
-	var userRule []interface{}
-	for _, userItem := range user {
-		userRule = append(userRule, userItem)
-	}
-
-	logs, sub, err := _ContractTriggerGasRegistry.contract.WatchLogs(opts, "TaskFeeClaimed", userRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(ContractTriggerGasRegistryTaskFeeClaimed)
-				if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TaskFeeClaimed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTaskFeeClaimed is a log parse operation binding the contract event 0xae8ecfb3533b83d346a9f325b0e61ccdd5a8d8aaa0fa2dbfcbea06121120da40.
-//
-// Solidity: event TaskFeeClaimed(address indexed user, uint256 amount)
-func (_ContractTriggerGasRegistry *ContractTriggerGasRegistryFilterer) ParseTaskFeeClaimed(log types.Log) (*ContractTriggerGasRegistryTaskFeeClaimed, error) {
-	event := new(ContractTriggerGasRegistryTaskFeeClaimed)
-	if err := _ContractTriggerGasRegistry.contract.UnpackLog(event, "TaskFeeClaimed", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
