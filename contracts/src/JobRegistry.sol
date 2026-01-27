@@ -24,6 +24,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         bytes32 jobHash;
         uint256 lastUpdatedAt;
         bool isActive;
+        uint256 expiresAt;
     }
 
     // Events
@@ -96,7 +97,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     ) external returns (uint256 jobId) {
         if (bytes(jobName).length == 0) revert EmptyJobName();
         // For JobType 7, targetContract is optional; for all other job types it is required
-        if (jobType != 7 && targetContract == address(0)) revert InvalidTargetContract();
+        if (jobType != 7 && targetContract == address(0))
+            revert InvalidTargetContract();
 
         // Validate data based on jobType
         _validateJobData(jobType, data);
@@ -113,7 +115,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
             jobOwner: msg.sender,
             jobHash: jobHash,
             lastUpdatedAt: block.timestamp,
-            isActive: true
+            isActive: true,
+            expiresAt: block.timestamp + timeFrame
         });
 
         _jobs[jobId] = newJob;
@@ -165,7 +168,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
         if (bytes(newJobName).length == 0) revert EmptyJobName();
         // For JobType 7, targetContract is optional; for all other job types it is required
-        if (jobType != 7 && targetContract == address(0)) revert InvalidTargetContract();
+        if (jobType != 7 && targetContract == address(0))
+            revert InvalidTargetContract();
 
         // Validate data based on jobType
         _validateJobData(jobType, newData);
@@ -268,6 +272,11 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         if (job.jobOwner == address(0)) {
             revert JobNotFound(jobId);
         }
+
+        // Ensure isActive reflects true status (manual deletion or expiration)
+        if (job.isActive && block.timestamp > job.expiresAt) {
+            job.isActive = false;
+        }
     }
 
     /**
@@ -276,7 +285,9 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
      * @param jobCounter The counter of the job
      * @return job The job details
      */
-    function getJobByCounter(uint256 jobCounter) external view returns (Job memory job) {
+    function getJobByCounter(
+        uint256 jobCounter
+    ) external pure returns (Job memory) {
         // NOTE: After the timestamp packing upgrade, this function cannot reliably
         // look up jobs because the timestamp component is unknown.
         // It is kept for interface compatibility but will always revert.
@@ -314,9 +325,10 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         uint256[] memory allJobIds = _userJobIds[user];
         uint256 activeCount = 0;
 
-        // Count active jobs
+        // Count active jobs (not deleted and not expired)
         for (uint256 i = 0; i < allJobIds.length; i++) {
-            if (_jobs[allJobIds[i]].isActive) {
+            Job memory job = _jobs[allJobIds[i]];
+            if (job.isActive && block.timestamp <= job.expiresAt) {
                 activeCount++;
             }
         }
@@ -325,7 +337,8 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         activeJobIds = new uint256[](activeCount);
         uint256 currentIndex = 0;
         for (uint256 i = 0; i < allJobIds.length; i++) {
-            if (_jobs[allJobIds[i]].isActive) {
+            Job memory job = _jobs[allJobIds[i]];
+            if (job.isActive && block.timestamp <= job.expiresAt) {
                 activeJobIds[currentIndex] = allJobIds[i];
                 currentIndex++;
             }
@@ -333,7 +346,7 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     }
 
     /**
-     * @dev Check if a job is active
+     * @dev Check if a job is active (not deleted and not expired)
      * @param jobId The ID of the job
      * @return isActive True if the job is active, false otherwise
      */
@@ -342,7 +355,22 @@ contract JobRegistry is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         if (job.jobOwner == address(0)) {
             revert JobNotFound(jobId);
         }
-        return job.isActive;
+        return job.isActive && block.timestamp <= job.expiresAt;
+    }
+
+    /**
+     * @dev Get the expiration timestamp of a job
+     * @param jobId The ID of the job
+     * @return expiresAt The timestamp when the job expires
+     */
+    function getJobExpiresAt(
+        uint256 jobId
+    ) external view returns (uint256 expiresAt) {
+        Job memory job = _jobs[jobId];
+        if (job.jobOwner == address(0)) {
+            revert JobNotFound(jobId);
+        }
+        return job.expiresAt;
     }
 
     /**

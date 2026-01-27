@@ -58,8 +58,11 @@ contract TaskExecutionHub is
     IJobRegistry public jobRegistry;
     ITriggerGasRegistry public triggerGasRegistry;
 
-    /// @notice The authorized dispatcher address for signature verification
-    address public dispatcher;
+    /// @notice The authorized taskDispatcher address for signature verification
+    address public taskDispatcher;
+
+    /// @notice The TriggerXSafeModule address for jobOwner validation
+    address public triggerXSafeModule;
 
     // ----------------------------------
     // -------------  Events ------------
@@ -84,15 +87,27 @@ contract TaskExecutionHub is
     event FeeUsed(uint32 dstEid, uint256 fee);
     event GasConfigUpdated(uint128 gas, uint128 value);
     event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
-    event DispatcherUpdated(
-        address indexed oldDispatcher,
-        address indexed newDispatcher
+    event TaskDispatcherUpdated(
+        address indexed oldTaskDispatcher,
+        address indexed newTaskDispatcher
+    );
+    event TriggerXSafeModuleUpdated(
+        address indexed oldModule,
+        address indexed newModule
     );
     event MessageFailed(
         uint32 indexed dstEid,
         bytes32 indexed guid,
         bytes reason
     );
+
+    // Custom errors for gas optimization
+    error SignatureExpired();
+    error JobNotFound();
+    error TaskDispatcherNotSet();
+    error InvalidSignature();
+    error InvalidSafeModuleCalldata();
+    error JobOwnerMismatch(address passed, address expected);
 
     enum ActionType {
         REGISTER,
@@ -163,13 +178,13 @@ contract TaskExecutionHub is
     // ---------------------------------------------------------------------
 
     /**
-     * @notice Execute a function call with dispatcher signature verification
+     * @notice Execute a function call with taskDispatcher signature verification
      * @param jobId The ID of the job to execute
      * @param ethAmount The amount of ETH to deduct from the job owner
      * @param target The address of the target contract
      * @param data The calldata for the function call
      * @param deadline The signature expiration timestamp
-     * @param signature The dispatcher's signature authorizing this execution
+     * @param signature The taskDispatcher's signature authorizing this execution
      */
     function executeFunction(
         uint256 jobId,
@@ -179,33 +194,65 @@ contract TaskExecutionHub is
         uint256 deadline,
         bytes calldata signature
     ) external payable onlyKeeper nonReentrant {
-        // 1. Deadline check
-        require(block.timestamp <= deadline, "Signature expired");
+        if (block.timestamp > deadline) revert SignatureExpired();
 
-        // 2. Signature verification
-        require(dispatcher != address(0), "Dispatcher not set");
-        bytes32 hash = keccak256(
-            abi.encodePacked(
-                jobId,
-                target,
-                keccak256(data),
-                deadline,
-                msg.sender,
-                block.chainid
-            )
-        );
-        bytes32 ethSignedHash = MessageHashUtils.toEthSignedMessageHash(hash);
-        require(
-            ECDSA.recover(ethSignedHash, signature) == dispatcher,
-            "Invalid signature"
-        );
-
+        _verifyTaskDispatcherSignature(jobId, target, deadline, signature);
         address jobOwner = jobRegistry.getJobOwner(jobId);
-        require(jobOwner != address(0), "Job not found");
+        if (jobOwner == address(0)) revert JobNotFound();
 
         triggerGasRegistry.deductETHBalance(jobOwner, ethAmount);
 
+        address _safeModule = triggerXSafeModule;
+        if (target == _safeModule && _safeModule != address(0)) {
+            _validateSafeModuleCalldata(data, jobOwner);
+        }
+
         _executeFunction(target, data);
+    }
+
+    /**
+     * @notice Verifies the taskDispatcher signature
+     * @dev Security-critical: Ensures only authorized task dispatcher can approve executions
+     */
+    function _verifyTaskDispatcherSignature(
+        uint256 jobId,
+        address target,
+        uint256 deadline,
+        bytes calldata signature
+    ) internal view {
+        if (taskDispatcher == address(0)) revert TaskDispatcherNotSet();
+        bytes32 hash = keccak256(
+            abi.encode(jobId, target, deadline, msg.sender, block.chainid)
+        );
+        bytes32 ethSignedHash = MessageHashUtils.toEthSignedMessageHash(hash);
+        if (ECDSA.recover(ethSignedHash, signature) != taskDispatcher) {
+            revert InvalidSignature();
+        }
+    }
+
+    /**
+     * @notice Validates jobOwner in Safe module calldata matches the actual job owner
+     * @dev Security-critical: Prevents unauthorized Safe wallet execution
+     * @dev Calldata format: selector (4) + safeAddress (32) + actionTarget (32) +
+     *      actionValue (32) + actionData offset (32) + operation (32) + jobOwner (32)
+     *      jobOwner is at offset 4 + 5*32 = 164
+     */
+    function _validateSafeModuleCalldata(
+        bytes calldata data,
+        address expectedJobOwner
+    ) internal pure {
+        // Minimum: 4 bytes selector + 6 params * 32 bytes = 196 bytes
+        if (data.length < 196) revert InvalidSafeModuleCalldata();
+
+        address passedJobOwner;
+        assembly {
+            // jobOwner is the 6th parameter (index 5), at offset 4 + 5*32 = 164
+            passedJobOwner := calldataload(add(data.offset, 164))
+        }
+
+        if (passedJobOwner != expectedJobOwner) {
+            revert JobOwnerMismatch(passedJobOwner, expectedJobOwner);
+        }
     }
 
     function _executeFunction(
@@ -366,11 +413,22 @@ contract TaskExecutionHub is
         jobRegistry = IJobRegistry(_jobRegistryAddress);
     }
 
-    function setDispatcher(address _dispatcher) external onlyOwner {
-        require(_dispatcher != address(0), "Invalid dispatcher address");
-        address oldDispatcher = dispatcher;
-        dispatcher = _dispatcher;
-        emit DispatcherUpdated(oldDispatcher, _dispatcher);
+    function setTaskDispatcher(address _taskDispatcher) external onlyOwner {
+        require(
+            _taskDispatcher != address(0),
+            "Invalid taskDispatcher address"
+        );
+        address oldTaskDispatcher = taskDispatcher;
+        taskDispatcher = _taskDispatcher;
+        emit TaskDispatcherUpdated(oldTaskDispatcher, _taskDispatcher);
+    }
+
+    function setTriggerXSafeModule(
+        address _triggerXSafeModule
+    ) external onlyOwner {
+        address oldModule = triggerXSafeModule;
+        triggerXSafeModule = _triggerXSafeModule;
+        emit TriggerXSafeModuleUpdated(oldModule, _triggerXSafeModule);
     }
 
     function setTriggerGasRegistry(

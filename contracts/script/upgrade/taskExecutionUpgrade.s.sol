@@ -15,7 +15,7 @@ contract TaskExecutionUpgrade is Script {
     address payable TASK_EXECUTION_HUB_PROXY = payable(vm.envAddress("TASK_EXECUTION_PROXY"));
     
     // Salt for deterministic deployment
-    bytes32 constant IMPL_SALT = keccak256(abi.encodePacked("put_your_salt_here"));
+    // bytes32 constant IMPL_SALT = keccak256(abi.encodePacked(""));
     
     struct ContractState {
         address implementation;
@@ -33,16 +33,17 @@ contract TaskExecutionUpgrade is Script {
         upgradeTaskExecutionHub(deployerPrivateKey, deployer);
 
         // Upgrade TaskExecutionSpoke on multiple chains
-        upgradeTaskExecutionSpokeOnChain("ARB_RPC", "MAINNET", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
-        // upgradeTaskExecutionSpokeOnChain("SEPOLIA_RPC_URL", "SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
-        // upgradeTaskExecutionSpokeOnChain("OPSEPOLIA_RPC", "OP SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
-        // upgradeTaskExecutionSpokeOnChain("ARB_SEPOLIA_RPC", "ARBITRUM SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        // upgradeTaskExecutionSpokeOnChain("ARB_RPC", "MAINNET", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        upgradeTaskExecutionSpokeOnChain("SEPOLIA_RPC_URL", "SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        upgradeTaskExecutionSpokeOnChain("OPSEPOLIA_RPC", "OP SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
+        upgradeTaskExecutionSpokeOnChain("ARB_SEPOLIA_RPC", "ARBITRUM SEPOLIA", TASK_EXECUTION_HUB_PROXY, deployerPrivateKey);
     }
 
     function upgradeTaskExecutionHub(uint256 deployerPrivateKey, address deployer) internal {
         address payable proxy = TASK_EXECUTION_HUB_PROXY;
 
-        vm.createSelectFork(vm.envString("BASE_RPC"));
+        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        // vm.createSelectFork(vm.envString("BASE_RPC"));
         vm.startBroadcast(deployerPrivateKey);
 
         
@@ -60,17 +61,18 @@ contract TaskExecutionUpgrade is Script {
         address lzEndpoint = address(TaskExecutionHub(proxy).endpoint());
         address delegate = TaskExecutionHub(proxy).owner(); // Use current owner as delegate
         
-        bytes memory implementationCode = abi.encodePacked(
-            type(TaskExecutionHub).creationCode,
-            abi.encode(lzEndpoint, delegate)
-        );
+        // bytes memory implementationCode = abi.encodePacked(
+        //     type(TaskExecutionHub).creationCode,
+        //     abi.encode(lzEndpoint, delegate)
+        // );
         
-        address newImplementation = CREATE3.deployDeterministic(implementationCode, IMPL_SALT);
+        // address newImplementation = CREATE3.deployDeterministic(implementationCode, IMPL_SALT);
+        address newImplementation = address(new TaskExecutionHub(lzEndpoint, delegate));
         console.log("\n=== PERFORMING TASKEXECUTIONHUB UPGRADE ON BASE SEPOLIA ===");
         console.log("Deploying new implementation to:", newImplementation);
         
         // STEP 3: Perform upgrade
-        // TaskExecutionHub(proxy).upgradeToAndCall(newImplementation, "");
+        TaskExecutionHub(proxy).upgradeToAndCall(newImplementation, "");
 
         vm.stopBroadcast();
 
@@ -190,16 +192,18 @@ contract TaskExecutionUpgrade is Script {
         // Deploy new implementation using CREATE3
         address lzEndpoint = address(spoke.endpoint());
         
-        bytes memory implementationCode = abi.encodePacked(
-            type(TaskExecutionSpoke).creationCode,
-            abi.encode(lzEndpoint, owner)
-        );
+        // bytes memory implementationCode = abi.encodePacked(
+        //     type(TaskExecutionSpoke).creationCode,
+        //     abi.encode(lzEndpoint, owner)
+        // );
         
-        address newImplementation = CREATE3.deployDeterministic(implementationCode, IMPL_SALT);
-        console.log("Deploying new TaskExecutionSpoke implementation to:", newImplementation);
+        // address newImplementation = CREATE3.deployDeterministic(implementationCode, IMPL_SALT);
+        // console.log("Deploying new TaskExecutionSpoke implementation to:", newImplementation);
+
+        address newImplementation = address(new TaskExecutionSpoke(lzEndpoint, owner));
         
         // Perform upgrade
-        // spoke.upgradeToAndCall(newImplementation, "");
+        spoke.upgradeToAndCall(newImplementation, "");
         
         // Verify upgrade
         address newImpl = getImplementation(spokeProxy);
