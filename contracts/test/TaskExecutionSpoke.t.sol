@@ -47,21 +47,14 @@ contract ProxySpokeTest is Test {
     uint256 public taskDispatcherPK =
         0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
-    uint32 public constant SRC_EID = 10121; // L1 or Hub chain ID
+    uint32 public constant SRC_EID = 10_121; // L1 or Hub chain ID
 
     event KeeperUpdated(TaskExecutionSpoke.ActionType action, address keeper);
     event FunctionExecuted(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value
+        address indexed keeper, address indexed target, bytes data, uint256 value
     );
     event FunctionExecutionFailed(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value,
-        bytes result
+        address indexed keeper, address indexed target, bytes data, uint256 value, bytes result
     );
 
     // Helper to create signature params
@@ -72,16 +65,10 @@ contract ProxySpokeTest is Test {
         address keeper
     ) internal view returns (uint256 deadline, bytes memory signature) {
         deadline = block.timestamp + 1 hours;
-        bytes32 hash = keccak256(
-            abi.encode(jobId, target, deadline, keeper, block.chainid)
-        );
-        bytes32 ethSignedHash = keccak256(
-            abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
-        );
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(
-            taskDispatcherPK,
-            ethSignedHash
-        );
+        bytes32 hash = keccak256(abi.encode(jobId, target, deadline, keeper, block.chainid));
+        bytes32 ethSignedHash =
+            keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(taskDispatcherPK, ethSignedHash);
         signature = abi.encodePacked(r, s, v);
     }
 
@@ -156,20 +143,11 @@ contract ProxySpokeTest is Test {
         vm.expectEmit(true, true, true, true);
         emit FunctionExecuted(keeper1, target, data, value);
 
-        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
-            jobId,
-            target,
-            data,
-            keeper1
-        );
+        (uint256 deadline, bytes memory signature) =
+            _dummySignatureParams(jobId, target, data, keeper1);
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction{value: value}(
-            jobId,
-            ethAmount,
-            target,
-            data,
-            deadline,
-            signature
+            jobId, ethAmount, target, data, deadline, signature
         );
     }
 
@@ -183,22 +161,11 @@ contract ProxySpokeTest is Test {
         mockJobRegistry.setJobOwner(jobId, jobOwner);
         mockTriggerGasRegistry.setBalance(jobOwner, 1 ether);
 
-        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
-            jobId,
-            target,
-            data,
-            randomUser
-        );
+        (uint256 deadline, bytes memory signature) =
+            _dummySignatureParams(jobId, target, data, randomUser);
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(randomUser);
-        taskExecutionSpoke.executeFunction(
-            jobId,
-            ethAmount,
-            target,
-            data,
-            deadline,
-            signature
-        );
+        taskExecutionSpoke.executeFunction(jobId, ethAmount, target, data, deadline, signature);
     }
 
     function test_ExecuteFunction_Failure() public {
@@ -217,48 +184,25 @@ contract ProxySpokeTest is Test {
         vm.expectEmit(true, true, true, true);
         emit FunctionExecutionFailed(keeper1, target, data, 0, hex"");
 
-        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
-            jobId,
-            target,
-            data,
-            keeper1
-        );
+        (uint256 deadline, bytes memory signature) =
+            _dummySignatureParams(jobId, target, data, keeper1);
         vm.prank(keeper1);
-        taskExecutionSpoke.executeFunction(
-            jobId,
-            ethAmount,
-            target,
-            data,
-            deadline,
-            signature
-        );
+        taskExecutionSpoke.executeFunction(jobId, ethAmount, target, data, deadline, signature);
     }
 
     function test_LzReceive_Register() public {
         // Simulate a message from TaskExecutionHub to register a new keeper
-        bytes memory payload = abi.encode(
-            TaskExecutionSpoke.ActionType.REGISTER,
-            keeper2
-        );
+        bytes memory payload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
 
         // Create Origin struct directly with the 3 required fields
-        Origin memory origin = Origin({
-            srcEid: SRC_EID,
-            sender: bytes32(uint256(uint160(address(0x1)))),
-            nonce: 1
-        });
+        Origin memory origin =
+            Origin({srcEid: SRC_EID, sender: bytes32(uint256(uint160(address(0x1)))), nonce: 1});
 
         vm.expectEmit(true, false, false, false);
         emit KeeperUpdated(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
 
         // Call our exposed function to test _lzReceive
-        taskExecutionSpoke.exposed_lzReceive(
-            origin,
-            bytes32(0),
-            payload,
-            address(0),
-            bytes("")
-        );
+        taskExecutionSpoke.exposed_lzReceive(origin, bytes32(0), payload, address(0), bytes(""));
 
         // Verify keeper was registered
         assertTrue(taskExecutionSpoke.isKeeper(keeper2));
@@ -266,42 +210,26 @@ contract ProxySpokeTest is Test {
 
     function test_LzReceive_Unregister() public {
         // First register keeper2
-        bytes memory registerPayload = abi.encode(
-            TaskExecutionSpoke.ActionType.REGISTER,
-            keeper2
-        );
+        bytes memory registerPayload = abi.encode(TaskExecutionSpoke.ActionType.REGISTER, keeper2);
 
-        Origin memory origin = Origin({
-            srcEid: SRC_EID,
-            sender: bytes32(uint256(uint160(address(0x1)))),
-            nonce: 1
-        });
+        Origin memory origin =
+            Origin({srcEid: SRC_EID, sender: bytes32(uint256(uint160(address(0x1)))), nonce: 1});
 
         taskExecutionSpoke.exposed_lzReceive(
-            origin,
-            bytes32(0),
-            registerPayload,
-            address(0),
-            bytes("")
+            origin, bytes32(0), registerPayload, address(0), bytes("")
         );
 
         assertTrue(taskExecutionSpoke.isKeeper(keeper2));
 
         // Now unregister
-        bytes memory unregisterPayload = abi.encode(
-            TaskExecutionSpoke.ActionType.UNREGISTER,
-            keeper2
-        );
+        bytes memory unregisterPayload =
+            abi.encode(TaskExecutionSpoke.ActionType.UNREGISTER, keeper2);
 
         vm.expectEmit(true, false, false, false);
         emit KeeperUpdated(TaskExecutionSpoke.ActionType.UNREGISTER, keeper2);
 
         taskExecutionSpoke.exposed_lzReceive(
-            origin,
-            bytes32(0),
-            unregisterPayload,
-            address(0),
-            bytes("")
+            origin, bytes32(0), unregisterPayload, address(0), bytes("")
         );
 
         // Verify keeper was unregistered

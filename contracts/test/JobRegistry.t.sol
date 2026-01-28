@@ -21,39 +21,23 @@ contract JobRegistryTest is Test {
     bytes constant JOB_DATA = abi.encode(uint256(300)); // 5 minutes timeInterval for JobType 1
 
     event JobCreated(
-        uint256 indexed jobId,
-        address indexed jobOwner,
-        bytes32 jobHash,
-        uint256 timestamp
+        uint256 indexed jobId, address indexed jobOwner, bytes32 jobHash, uint256 timestamp
     );
 
     event JobUpdated(
-        uint256 indexed jobId,
-        address indexed jobOwner,
-        bytes32 newJobHash,
-        uint256 timestamp
+        uint256 indexed jobId, address indexed jobOwner, bytes32 newJobHash, uint256 timestamp
     );
 
-    event JobDeleted(
-        uint256 indexed jobId,
-        address indexed jobOwner,
-        uint256 timestamp
-    );
+    event JobDeleted(uint256 indexed jobId, address indexed jobOwner, uint256 timestamp);
 
     function setUp() public {
         // Deploy implementation
         implementation = new JobRegistry();
 
         // Deploy proxy with initialization
-        bytes memory initData = abi.encodeWithSelector(
-            JobRegistry.initialize.selector,
-            owner
-        );
+        bytes memory initData = abi.encodeWithSelector(JobRegistry.initialize.selector, owner);
 
-        ERC1967Proxy proxy = new ERC1967Proxy(
-            address(implementation),
-            initData
-        );
+        ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
 
         jobRegistry = JobRegistry(address(proxy));
     }
@@ -67,10 +51,7 @@ contract JobRegistryTest is Test {
         // Deploy new implementation
         JobRegistry newImpl = new JobRegistry();
 
-        bytes memory initData = abi.encodeWithSelector(
-            JobRegistry.initialize.selector,
-            address(0)
-        );
+        bytes memory initData = abi.encodeWithSelector(JobRegistry.initialize.selector, address(0));
 
         vm.expectRevert(JobRegistry.InvalidJobParameters.selector);
         new ERC1967Proxy(address(newImpl), initData);
@@ -79,26 +60,12 @@ contract JobRegistryTest is Test {
     function test_CreateJob() public {
         vm.startPrank(user1);
 
-        uint256 expectedJobId = PackedJobIdLib.pack(
-            block.chainid,
-            block.timestamp,
-            1
-        );
+        uint256 expectedJobId = PackedJobIdLib.pack(block.chainid, block.timestamp, 1);
         vm.expectEmit(true, true, false, true);
-        emit JobCreated(
-            expectedJobId,
-            user1,
-            _calculateJobHash(),
-            block.timestamp
-        );
+        emit JobCreated(expectedJobId, user1, _calculateJobHash(), block.timestamp);
 
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         assertEq(jobId, expectedJobId);
         assertEq(jobRegistry.getJobCounter(), 1);
@@ -107,7 +74,6 @@ contract JobRegistryTest is Test {
         assertEq(job.jobId, jobId);
         assertEq(job.jobOwner, user1);
         assertEq(job.jobHash, _calculateJobHash());
-        assertEq(job.lastUpdatedAt, block.timestamp);
         assertTrue(job.isActive);
 
         uint256[] memory userJobs = jobRegistry.getUserJobIds(user1);
@@ -121,13 +87,7 @@ contract JobRegistryTest is Test {
         vm.startPrank(user1);
 
         vm.expectRevert(JobRegistry.EmptyJobName.selector);
-        jobRegistry.createJob(
-            "",
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        jobRegistry.createJob("", JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         vm.stopPrank();
     }
@@ -136,13 +96,7 @@ contract JobRegistryTest is Test {
         vm.startPrank(user1);
 
         vm.expectRevert(JobRegistry.InvalidTargetContract.selector);
-        jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            address(0),
-            JOB_DATA
-        );
+        jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, address(0), JOB_DATA);
 
         vm.stopPrank();
     }
@@ -150,27 +104,15 @@ contract JobRegistryTest is Test {
     function test_UpdateJob() public {
         // Create job first
         vm.startPrank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         // Update job
         string memory newJobName = "Updated Job";
         uint256 newTimeFrame = TIME_FRAME + 3600;
         bytes memory newData = abi.encode(uint256(600)); // 10 minutes timeInterval
-        bytes32 newJobHash = keccak256(
-            abi.encode(
-                newJobName,
-                JOB_TYPE,
-                newTimeFrame,
-                targetContract,
-                newData
-            )
-        );
+        bytes32 newJobHash =
+            keccak256(abi.encode(newJobName, JOB_TYPE, newTimeFrame, targetContract, newData));
 
         vm.expectEmit(true, true, false, true);
         emit JobUpdated(jobId, user1, newJobHash, block.timestamp);
@@ -189,7 +131,6 @@ contract JobRegistryTest is Test {
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
         assertEq(job.jobHash, newJobHash);
-        assertEq(job.lastUpdatedAt, block.timestamp);
 
         vm.stopPrank();
     }
@@ -197,9 +138,7 @@ contract JobRegistryTest is Test {
     function test_UpdateJob_RevertIfJobNotFound() public {
         vm.startPrank(user1);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(JobRegistry.JobNotFound.selector, 999)
-        );
+        vm.expectRevert(abi.encodeWithSelector(JobRegistry.JobNotFound.selector, 999));
         jobRegistry.updateJob(
             999, // jobId (non-existent)
             JOB_NAME, // oldJobName
@@ -218,24 +157,15 @@ contract JobRegistryTest is Test {
     function test_UpdateJob_RevertIfNotOwner() public {
         // Create job as user1
         vm.prank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         // Try to update as user2
         vm.startPrank(user2);
 
         bytes memory newData = abi.encode(uint256(600)); // 10 minutes timeInterval
         vm.expectRevert(
-            abi.encodeWithSelector(
-                JobRegistry.UnauthorizedJobAccess.selector,
-                jobId,
-                user2
-            )
+            abi.encodeWithSelector(JobRegistry.UnauthorizedJobAccess.selector, jobId, user2)
         );
         jobRegistry.updateJob(
             jobId, // jobId
@@ -255,13 +185,8 @@ contract JobRegistryTest is Test {
     function test_DeleteJob() public {
         // Create job first
         vm.startPrank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         assertTrue(jobRegistry.isJobActive(jobId));
 
@@ -281,22 +206,12 @@ contract JobRegistryTest is Test {
     function test_DeleteJob_RevertIfAlreadyInactive() public {
         // Create and delete job first
         vm.startPrank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
         jobRegistry.deleteJob(jobId);
 
         // Try to delete again
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                JobRegistry.JobAlreadyInactive.selector,
-                jobId
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(JobRegistry.JobAlreadyInactive.selector, jobId));
         jobRegistry.deleteJob(jobId);
 
         vm.stopPrank();
@@ -306,29 +221,14 @@ contract JobRegistryTest is Test {
         vm.startPrank(user1);
 
         // Create multiple jobs
-        uint256 jobId1 = jobRegistry.createJob(
-            "Job 1",
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId1 =
+            jobRegistry.createJob("Job 1", JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
-        uint256 jobId2 = jobRegistry.createJob(
-            "Job 2",
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId2 =
+            jobRegistry.createJob("Job 2", JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
-        uint256 jobId3 = jobRegistry.createJob(
-            "Job 3",
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId3 =
+            jobRegistry.createJob("Job 3", JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         // Delete one job
         jobRegistry.deleteJob(jobId2);
@@ -347,13 +247,8 @@ contract JobRegistryTest is Test {
     function test_GetJobHash() public {
         vm.startPrank(user1);
 
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         bytes32 expectedHash = _calculateJobHash();
         bytes32 actualHash = jobRegistry.getJob(jobId).jobHash;
@@ -365,13 +260,8 @@ contract JobRegistryTest is Test {
     function test_GetJobOwner() public {
         vm.startPrank(user1);
 
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         address jobOwner = jobRegistry.getJobOwner(jobId);
         assertEq(jobOwner, user1);
@@ -392,13 +282,8 @@ contract JobRegistryTest is Test {
         // JobType 1 requires uint256 timeInterval (first 32 bytes)
         bytes memory validData = abi.encode(uint256(300)); // 5 minutes
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 1",
-            1,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 1", 1, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -411,13 +296,7 @@ contract JobRegistryTest is Test {
         bytes memory invalidData = abi.encode(uint256(0));
 
         vm.expectRevert(JobRegistry.MissingTimeInterval.selector);
-        jobRegistry.createJob(
-            "Job Type 1",
-            1,
-            TIME_FRAME,
-            targetContract,
-            invalidData
-        );
+        jobRegistry.createJob("Job Type 1", 1, TIME_FRAME, targetContract, invalidData);
 
         vm.stopPrank();
     }
@@ -429,13 +308,7 @@ contract JobRegistryTest is Test {
         bytes memory insufficientData = "0x1234"; // Less than 32 bytes
 
         vm.expectRevert(JobRegistry.MissingTimeInterval.selector);
-        jobRegistry.createJob(
-            "Job Type 1",
-            1,
-            TIME_FRAME,
-            targetContract,
-            insufficientData
-        );
+        jobRegistry.createJob("Job Type 1", 1, TIME_FRAME, targetContract, insufficientData);
 
         vm.stopPrank();
     }
@@ -447,13 +320,8 @@ contract JobRegistryTest is Test {
         bytes32 ipfsHash = keccak256(abi.encodePacked("test-ipfs-hash"));
         bytes memory validData = abi.encode(uint256(600), ipfsHash); // 10 minutes + ipfsHash
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 2",
-            2,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 2", 2, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -466,13 +334,7 @@ contract JobRegistryTest is Test {
         bytes memory invalidData = abi.encode(uint256(600), bytes32(0));
 
         vm.expectRevert(JobRegistry.MissingIpfsHash.selector);
-        jobRegistry.createJob(
-            "Job Type 2",
-            2,
-            TIME_FRAME,
-            targetContract,
-            invalidData
-        );
+        jobRegistry.createJob("Job Type 2", 2, TIME_FRAME, targetContract, invalidData);
 
         vm.stopPrank();
     }
@@ -484,13 +346,7 @@ contract JobRegistryTest is Test {
         bytes memory insufficientData = abi.encode(uint256(600)); // Only timeInterval, no ipfsHash
 
         vm.expectRevert(JobRegistry.MissingIpfsHash.selector);
-        jobRegistry.createJob(
-            "Job Type 2",
-            2,
-            TIME_FRAME,
-            targetContract,
-            insufficientData
-        );
+        jobRegistry.createJob("Job Type 2", 2, TIME_FRAME, targetContract, insufficientData);
 
         vm.stopPrank();
     }
@@ -501,13 +357,8 @@ contract JobRegistryTest is Test {
         // JobType 3 requires bool recurringJob (first 32 bytes)
         bytes memory validData = abi.encode(true);
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 3",
-            3,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 3", 3, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -520,13 +371,7 @@ contract JobRegistryTest is Test {
         bytes memory insufficientData = "0x1234"; // Less than 32 bytes
 
         vm.expectRevert(JobRegistry.InvalidJobData.selector);
-        jobRegistry.createJob(
-            "Job Type 3",
-            3,
-            TIME_FRAME,
-            targetContract,
-            insufficientData
-        );
+        jobRegistry.createJob("Job Type 3", 3, TIME_FRAME, targetContract, insufficientData);
 
         vm.stopPrank();
     }
@@ -538,13 +383,8 @@ contract JobRegistryTest is Test {
         bytes32 ipfsHash = keccak256(abi.encodePacked("test-ipfs-hash"));
         bytes memory validData = abi.encode(true, ipfsHash);
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 4",
-            4,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 4", 4, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -557,13 +397,7 @@ contract JobRegistryTest is Test {
         bytes memory invalidData = abi.encode(true, bytes32(0));
 
         vm.expectRevert(JobRegistry.MissingIpfsHash.selector);
-        jobRegistry.createJob(
-            "Job Type 4",
-            4,
-            TIME_FRAME,
-            targetContract,
-            invalidData
-        );
+        jobRegistry.createJob("Job Type 4", 4, TIME_FRAME, targetContract, invalidData);
 
         vm.stopPrank();
     }
@@ -575,21 +409,14 @@ contract JobRegistryTest is Test {
         bytes32 ipfsHash = keccak256(abi.encodePacked("test-ipfs-hash"));
         bytes memory validData = abi.encode(false, ipfsHash);
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 6",
-            6,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 6", 6, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
     }
 
-    function test_CreateJob_JobType7_ValidTimeIntervalAndIpfsHash_NoTargetContract()
-        public
-    {
+    function test_CreateJob_JobType7_ValidTimeIntervalAndIpfsHash_NoTargetContract() public {
         vm.startPrank(user1);
 
         // JobType 7 requires uint256 timeInterval + bytes32 ipfsHash, but targetContract is optional
@@ -616,13 +443,7 @@ contract JobRegistryTest is Test {
         bytes memory invalidData = abi.encode(uint256(0), ipfsHash);
 
         vm.expectRevert(JobRegistry.MissingTimeInterval.selector);
-        jobRegistry.createJob(
-            "Job Type 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            invalidData
-        );
+        jobRegistry.createJob("Job Type 7", 7, TIME_FRAME, address(0), invalidData);
 
         vm.stopPrank();
     }
@@ -634,13 +455,7 @@ contract JobRegistryTest is Test {
         bytes memory invalidData = abi.encode(uint256(600), bytes32(0));
 
         vm.expectRevert(JobRegistry.MissingIpfsHash.selector);
-        jobRegistry.createJob(
-            "Job Type 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            invalidData
-        );
+        jobRegistry.createJob("Job Type 7", 7, TIME_FRAME, address(0), invalidData);
 
         vm.stopPrank();
     }
@@ -651,13 +466,8 @@ contract JobRegistryTest is Test {
         // JobType 5 requires only bool recurringJob (no ipfsHash)
         bytes memory validData = abi.encode(false);
 
-        uint256 jobId = jobRegistry.createJob(
-            "Job Type 5",
-            5,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Job Type 5", 5, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -670,13 +480,8 @@ contract JobRegistryTest is Test {
 
         // Create job with valid data
         bytes memory oldData = abi.encode(uint256(300));
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 1, TIME_FRAME, targetContract, oldData);
 
         // Update with new valid timeInterval
         bytes memory newData = abi.encode(uint256(600));
@@ -693,7 +498,6 @@ contract JobRegistryTest is Test {
         );
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
-        assertEq(job.lastUpdatedAt, block.timestamp);
         vm.stopPrank();
     }
 
@@ -702,13 +506,8 @@ contract JobRegistryTest is Test {
 
         // Create job with valid data
         bytes memory oldData = abi.encode(uint256(300));
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 1, TIME_FRAME, targetContract, oldData);
 
         // Try to update with invalid timeInterval (zero)
         bytes memory newData = abi.encode(uint256(0));
@@ -734,13 +533,8 @@ contract JobRegistryTest is Test {
         // Create job with valid data
         bytes32 oldIpfsHash = keccak256(abi.encodePacked("old-ipfs-hash"));
         bytes memory oldData = abi.encode(uint256(300), oldIpfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            2,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 2, TIME_FRAME, targetContract, oldData);
 
         // Update with new valid timeInterval (same ipfsHash)
         bytes memory newData = abi.encode(uint256(600), oldIpfsHash);
@@ -757,7 +551,6 @@ contract JobRegistryTest is Test {
         );
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
-        assertEq(job.lastUpdatedAt, block.timestamp);
         vm.stopPrank();
     }
 
@@ -767,13 +560,8 @@ contract JobRegistryTest is Test {
         // Create job with valid data
         bytes32 oldIpfsHash = keccak256(abi.encodePacked("old-ipfs-hash"));
         bytes memory oldData = abi.encode(uint256(300), oldIpfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            2,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 2, TIME_FRAME, targetContract, oldData);
 
         // Try to update with missing ipfsHash
         bytes memory newData = abi.encode(uint256(600), bytes32(0));
@@ -798,13 +586,8 @@ contract JobRegistryTest is Test {
 
         // Create job with valid data
         bytes memory oldData = abi.encode(true);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            3,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 3, TIME_FRAME, targetContract, oldData);
 
         // Update with new valid recurringJob
         bytes memory newData = abi.encode(false);
@@ -821,7 +604,6 @@ contract JobRegistryTest is Test {
         );
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
-        assertEq(job.lastUpdatedAt, block.timestamp);
         vm.stopPrank();
     }
 
@@ -831,13 +613,8 @@ contract JobRegistryTest is Test {
         // Create job with valid data
         bytes32 oldIpfsHash = keccak256(abi.encodePacked("old-ipfs-hash"));
         bytes memory oldData = abi.encode(true, oldIpfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            4,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 4, TIME_FRAME, targetContract, oldData);
 
         // Update with new valid recurringJob (same ipfsHash)
         bytes memory newData = abi.encode(false, oldIpfsHash);
@@ -854,25 +631,16 @@ contract JobRegistryTest is Test {
         );
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
-        assertEq(job.lastUpdatedAt, block.timestamp);
         vm.stopPrank();
     }
 
-    function test_UpdateJob_JobType7_ValidTimeIntervalAndIpfsHash_NoTargetContract()
-        public
-    {
+    function test_UpdateJob_JobType7_ValidTimeIntervalAndIpfsHash_NoTargetContract() public {
         vm.startPrank(user1);
 
         // Create job with valid JobType 7 data
         bytes32 ipfsHash = keccak256(abi.encodePacked("jobtype7-ipfs-hash"));
         bytes memory oldData = abi.encode(uint256(300), ipfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            oldData
-        );
+        uint256 jobId = jobRegistry.createJob("Original Job 7", 7, TIME_FRAME, address(0), oldData);
 
         // Update with new valid timeInterval (same ipfsHash)
         bytes memory newData = abi.encode(uint256(600), ipfsHash);
@@ -889,7 +657,6 @@ contract JobRegistryTest is Test {
         );
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
-        assertEq(job.lastUpdatedAt, block.timestamp);
         vm.stopPrank();
     }
 
@@ -898,13 +665,7 @@ contract JobRegistryTest is Test {
 
         bytes32 ipfsHash = keccak256(abi.encodePacked("jobtype7-ipfs-hash"));
         bytes memory oldData = abi.encode(uint256(300), ipfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            oldData
-        );
+        uint256 jobId = jobRegistry.createJob("Original Job 7", 7, TIME_FRAME, address(0), oldData);
 
         // Try to update with invalid timeInterval (zero)
         bytes memory newData = abi.encode(uint256(0), ipfsHash);
@@ -929,13 +690,7 @@ contract JobRegistryTest is Test {
 
         bytes32 ipfsHash = keccak256(abi.encodePacked("jobtype7-ipfs-hash"));
         bytes memory oldData = abi.encode(uint256(300), ipfsHash);
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            oldData
-        );
+        uint256 jobId = jobRegistry.createJob("Original Job 7", 7, TIME_FRAME, address(0), oldData);
 
         // Try to update with missing ipfsHash
         bytes memory newData = abi.encode(uint256(600), bytes32(0));
@@ -960,13 +715,8 @@ contract JobRegistryTest is Test {
 
         // Create job with valid data
         bytes memory oldData = abi.encode(uint256(300));
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 1, TIME_FRAME, targetContract, oldData);
 
         // Try to update with wrong old values
         bytes memory newData = abi.encode(uint256(600));
@@ -991,13 +741,8 @@ contract JobRegistryTest is Test {
 
         // Create job with valid data
         bytes memory oldData = abi.encode(uint256(300));
-        uint256 jobId = jobRegistry.createJob(
-            "Original Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            oldData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Original Job", 1, TIME_FRAME, targetContract, oldData);
 
         // Try to update with empty job name
         bytes memory newData = abi.encode(uint256(600));
@@ -1026,11 +771,7 @@ contract JobRegistryTest is Test {
         bytes memory validData = abi.encode(type(uint256).max);
 
         uint256 jobId = jobRegistry.createJob(
-            "Max Time Interval Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            validData
+            "Max Time Interval Job", 1, TIME_FRAME, targetContract, validData
         );
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
@@ -1044,11 +785,7 @@ contract JobRegistryTest is Test {
         bytes memory validData = abi.encode(uint256(1));
 
         uint256 jobId = jobRegistry.createJob(
-            "Min Time Interval Job",
-            1,
-            TIME_FRAME,
-            targetContract,
-            validData
+            "Min Time Interval Job", 1, TIME_FRAME, targetContract, validData
         );
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
@@ -1060,19 +797,12 @@ contract JobRegistryTest is Test {
 
         // Test with complex ipfsHash
         bytes32 complexIpfsHash = keccak256(
-            abi.encodePacked(
-                "very-long-complex-ipfs-hash-with-special-characters-!@#$%^&*()"
-            )
+            abi.encodePacked("very-long-complex-ipfs-hash-with-special-characters-!@#$%^&*()")
         );
         bytes memory validData = abi.encode(uint256(300), complexIpfsHash);
 
-        uint256 jobId = jobRegistry.createJob(
-            "Complex IPFS Job",
-            2,
-            TIME_FRAME,
-            targetContract,
-            validData
-        );
+        uint256 jobId =
+            jobRegistry.createJob("Complex IPFS Job", 2, TIME_FRAME, targetContract, validData);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId), 1);
         vm.stopPrank();
@@ -1086,73 +816,31 @@ contract JobRegistryTest is Test {
 
         // JobType 1
         bytes memory data1 = abi.encode(uint256(100));
-        uint256 jobId1 = jobRegistry.createJob(
-            "Job Type 1",
-            1,
-            TIME_FRAME,
-            targetContract,
-            data1
-        );
+        uint256 jobId1 = jobRegistry.createJob("Job Type 1", 1, TIME_FRAME, targetContract, data1);
 
         // JobType 2
         bytes memory data2 = abi.encode(uint256(200), ipfsHash);
-        uint256 jobId2 = jobRegistry.createJob(
-            "Job Type 2",
-            2,
-            TIME_FRAME,
-            targetContract,
-            data2
-        );
+        uint256 jobId2 = jobRegistry.createJob("Job Type 2", 2, TIME_FRAME, targetContract, data2);
 
         // JobType 3
         bytes memory data3 = abi.encode(true);
-        uint256 jobId3 = jobRegistry.createJob(
-            "Job Type 3",
-            3,
-            TIME_FRAME,
-            targetContract,
-            data3
-        );
+        uint256 jobId3 = jobRegistry.createJob("Job Type 3", 3, TIME_FRAME, targetContract, data3);
 
         // JobType 4
         bytes memory data4 = abi.encode(false, ipfsHash);
-        uint256 jobId4 = jobRegistry.createJob(
-            "Job Type 4",
-            4,
-            TIME_FRAME,
-            targetContract,
-            data4
-        );
+        uint256 jobId4 = jobRegistry.createJob("Job Type 4", 4, TIME_FRAME, targetContract, data4);
 
         // JobType 5
         bytes memory data5 = abi.encode(true);
-        uint256 jobId5 = jobRegistry.createJob(
-            "Job Type 5",
-            5,
-            TIME_FRAME,
-            targetContract,
-            data5
-        );
+        uint256 jobId5 = jobRegistry.createJob("Job Type 5", 5, TIME_FRAME, targetContract, data5);
 
         // JobType 6
         bytes memory data6 = abi.encode(false, ipfsHash);
-        uint256 jobId6 = jobRegistry.createJob(
-            "Job Type 6",
-            6,
-            TIME_FRAME,
-            targetContract,
-            data6
-        );
+        uint256 jobId6 = jobRegistry.createJob("Job Type 6", 6, TIME_FRAME, targetContract, data6);
 
         // JobType 7 (targetContract optional, so we pass address(0))
         bytes memory data7 = abi.encode(uint256(700), ipfsHash);
-        uint256 jobId7 = jobRegistry.createJob(
-            "Job Type 7",
-            7,
-            TIME_FRAME,
-            address(0),
-            data7
-        );
+        uint256 jobId7 = jobRegistry.createJob("Job Type 7", 7, TIME_FRAME, address(0), data7);
 
         assertEq(PackedJobIdLib.getJobCounter(jobId1), 1);
         assertEq(PackedJobIdLib.getJobCounter(jobId2), 2);
@@ -1190,24 +878,15 @@ contract JobRegistryTest is Test {
     function test_MultipleUsersCanCreateJobs() public {
         // User1 creates job
         vm.prank(user1);
-        uint256 jobId1 = jobRegistry.createJob(
-            "User1 Job",
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId1 =
+            jobRegistry.createJob("User1 Job", JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         // User2 creates job
         vm.prank(user2);
         bytes32 ipfsHash = keccak256(abi.encodePacked("user2-ipfs-hash"));
         bytes memory jobData2 = abi.encode(uint256(300), ipfsHash); // timeInterval + ipfsHash for JobType 2
         uint256 jobId2 = jobRegistry.createJob(
-            "User2 Job",
-            JOB_TYPE + uint8(1),
-            TIME_FRAME,
-            targetContract,
-            jobData2
+            "User2 Job", JOB_TYPE + uint8(1), TIME_FRAME, targetContract, jobData2
         );
 
         assertEq(PackedJobIdLib.getJobCounter(jobId1), 1);
@@ -1233,31 +912,13 @@ contract JobRegistryTest is Test {
 
     // Helper function to calculate job hash
     function _calculateJobHash() internal view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    JOB_NAME,
-                    JOB_TYPE,
-                    TIME_FRAME,
-                    targetContract,
-                    JOB_DATA
-                )
-            );
+        return keccak256(abi.encode(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA));
     }
 
     function _calculateJobHash(
         string memory jobName
     ) internal view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    jobName,
-                    JOB_TYPE,
-                    TIME_FRAME,
-                    targetContract,
-                    JOB_DATA
-                )
-            );
+        return keccak256(abi.encode(jobName, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA));
     }
 
     // Helper function to calculate job hash with custom data
@@ -1265,10 +926,7 @@ contract JobRegistryTest is Test {
         string memory jobName,
         bytes memory data
     ) internal view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(jobName, JOB_TYPE, TIME_FRAME, targetContract, data)
-            );
+        return keccak256(abi.encode(jobName, JOB_TYPE, TIME_FRAME, targetContract, data));
     }
 
     // ========== Job Expiration Tests ==========
@@ -1313,13 +971,8 @@ contract JobRegistryTest is Test {
     function test_GetJobExpiresAt() public {
         vm.startPrank(user1);
         uint256 creationTime = block.timestamp;
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         uint256 expiresAt = jobRegistry.getJobExpiresAt(jobId);
         assertEq(expiresAt, creationTime + TIME_FRAME);
@@ -1331,27 +984,9 @@ contract JobRegistryTest is Test {
         vm.startPrank(user1);
 
         // Create 3 jobs with different timeframes
-        jobRegistry.createJob(
-            "Job 1h",
-            JOB_TYPE,
-            3600,
-            targetContract,
-            JOB_DATA
-        );
-        uint256 jobId2 = jobRegistry.createJob(
-            "Job 2h",
-            JOB_TYPE,
-            7200,
-            targetContract,
-            JOB_DATA
-        );
-        uint256 jobId3 = jobRegistry.createJob(
-            "Job 3h",
-            JOB_TYPE,
-            10800,
-            targetContract,
-            JOB_DATA
-        );
+        jobRegistry.createJob("Job 1h", JOB_TYPE, 3600, targetContract, JOB_DATA);
+        uint256 jobId2 = jobRegistry.createJob("Job 2h", JOB_TYPE, 7200, targetContract, JOB_DATA);
+        uint256 jobId3 = jobRegistry.createJob("Job 3h", JOB_TYPE, 10_800, targetContract, JOB_DATA);
 
         // All 3 should be active initially
         uint256[] memory activeJobs = jobRegistry.getUserActiveJobIds(user1);
@@ -1376,13 +1011,8 @@ contract JobRegistryTest is Test {
     function test_Job_ExpiresAt_StoredCorrectly() public {
         vm.startPrank(user1);
         uint256 creationTime = block.timestamp;
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         JobRegistry.Job memory job = jobRegistry.getJob(jobId);
         assertEq(job.expiresAt, creationTime + TIME_FRAME);
@@ -1393,13 +1023,8 @@ contract JobRegistryTest is Test {
     function test_DeletedJob_IsInactiveAfterExpiration() public {
         // Verify that if a job is deleted, it is inactive even after expiration time
         vm.startPrank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         jobRegistry.deleteJob(jobId);
 
@@ -1413,13 +1038,8 @@ contract JobRegistryTest is Test {
 
     function test_GetJob_ReflectsExpirationInStruct() public {
         vm.startPrank(user1);
-        uint256 jobId = jobRegistry.createJob(
-            JOB_NAME,
-            JOB_TYPE,
-            TIME_FRAME,
-            targetContract,
-            JOB_DATA
-        );
+        uint256 jobId =
+            jobRegistry.createJob(JOB_NAME, JOB_TYPE, TIME_FRAME, targetContract, JOB_DATA);
 
         // Initially active
         assertTrue(jobRegistry.getJob(jobId).isActive);

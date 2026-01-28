@@ -2,24 +2,29 @@
 pragma solidity ^0.8.26;
 
 import {Initializable} from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import {
+    ReentrancyGuardUpgradeable
+} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {OApp, MessagingFee, Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import {OAppOptionsType3} from "@layerzero-v2/oapp/contracts/oapp/libs/OAppOptionsType3.sol";
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
-import {MessageHashUtils} from "@openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
+import {
+    MessageHashUtils
+} from "@openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IJobRegistry {
-    function getJobOwner(uint256 jobId) external view returns (address);
-
-    function unpackJobId(
+    function getJobOwner(
         uint256 jobId
-    ) external view returns (uint256 chainId, uint256 jobCounter);
+    ) external view returns (address);
 }
 
 interface ITriggerGasRegistry {
-    function deductETHBalance(address user, uint256 ethAmount) external;
+    function deductETHBalance(
+        address user,
+        uint256 ethAmount
+    ) external;
 }
 
 /**
@@ -72,34 +77,19 @@ contract TaskExecutionHub is
     event KeeperUnregistered(address indexed keeper);
     event BroadcastSent(ActionType action, address keeper, uint32 dstEid);
     event FunctionExecuted(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value
+        address indexed keeper, address indexed target, bytes data, uint256 value
     );
     event FunctionExecutionFailed(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value,
-        bytes result
+        address indexed keeper, address indexed target, bytes data, uint256 value, bytes result
     );
     event FeeUsed(uint32 dstEid, uint256 fee);
     event GasConfigUpdated(uint128 gas, uint128 value);
     event LowBalanceAlert(uint256 currentBalance, uint256 threshold);
     event TaskDispatcherUpdated(
-        address indexed oldTaskDispatcher,
-        address indexed newTaskDispatcher
+        address indexed oldTaskDispatcher, address indexed newTaskDispatcher
     );
-    event TriggerXSafeModuleUpdated(
-        address indexed oldModule,
-        address indexed newModule
-    );
-    event MessageFailed(
-        uint32 indexed dstEid,
-        bytes32 indexed guid,
-        bytes reason
-    );
+    event TriggerXSafeModuleUpdated(address indexed oldModule, address indexed newModule);
+    event MessageFailed(uint32 indexed dstEid, bytes32 indexed guid, bytes reason);
 
     // Custom errors for gas optimization
     error SignatureExpired();
@@ -221,9 +211,7 @@ contract TaskExecutionHub is
         bytes calldata signature
     ) internal view {
         if (taskDispatcher == address(0)) revert TaskDispatcherNotSet();
-        bytes32 hash = keccak256(
-            abi.encode(jobId, target, deadline, msg.sender, block.chainid)
-        );
+        bytes32 hash = keccak256(abi.encode(jobId, target, deadline, msg.sender, block.chainid));
         bytes32 ethSignedHash = MessageHashUtils.toEthSignedMessageHash(hash);
         if (ECDSA.recover(ethSignedHash, signature) != taskDispatcher) {
             revert InvalidSignature();
@@ -259,20 +247,12 @@ contract TaskExecutionHub is
         address target,
         bytes memory callData
     ) internal returns (bytes memory) {
-        (bool success, bytes memory result) = target.call{value: msg.value}(
-            callData
-        );
+        (bool success, bytes memory result) = target.call{value: msg.value}(callData);
 
         if (success) {
             emit FunctionExecuted(msg.sender, target, callData, msg.value);
         } else {
-            emit FunctionExecutionFailed(
-                msg.sender,
-                target,
-                callData,
-                msg.value,
-                result
-            );
+            emit FunctionExecutionFailed(msg.sender, target, callData, msg.value, result);
         }
         return result;
     }
@@ -283,19 +263,19 @@ contract TaskExecutionHub is
 
     function _lzReceive(
         Origin calldata _origin,
-        bytes32 /*_guid*/,
+        bytes32,
+        /*_guid*/
         bytes calldata _payload,
-        address /*_executor*/,
+        address,
+        /*_executor*/
         bytes calldata /*extraData*/
     ) internal override nonReentrant {
-        if (address(this).balance < 3e15)
+        if (address(this).balance < 3e15) {
             emit LowBalanceAlert(address(this).balance, 3e15);
+        }
 
         require(_origin.srcEid == srcEid, "Invalid source chain");
-        (ActionType action, address keeper) = abi.decode(
-            _payload,
-            (ActionType, address)
-        );
+        (ActionType action, address keeper) = abi.decode(_payload, (ActionType, address));
 
         if (action == ActionType.REGISTER) {
             isKeeper[keeper] = true;
@@ -315,7 +295,10 @@ contract TaskExecutionHub is
     // ---------------------------------------------------------------------
 
     // slither-disable-next-line calls-loop,reentrancy-events
-    function _batchBroadcast(ActionType action, address keeper) internal {
+    function _batchBroadcast(
+        ActionType action,
+        address keeper
+    ) internal {
         bytes memory payload = abi.encode(action, keeper);
         uint256 totalUsed = 0;
         uint256 initialValue = address(this).balance;
@@ -323,23 +306,14 @@ contract TaskExecutionHub is
         for (uint256 i = 0; i < dstEids.length; i++) {
             uint32 dstEid = dstEids[i];
 
-            bytes memory options = _buildExecutorOptions(
-                defaultGas,
-                defaultValue
-            );
+            bytes memory options = _buildExecutorOptions(defaultGas, defaultValue);
 
-            try this._quoteFee(dstEid, payload, options) returns (
-                MessagingFee memory fee
-            ) {
-                uint256 feeWithBuffer = fee.nativeFee +
-                    (fee.nativeFee * 10) /
-                    100;
+            try this._quoteFee(dstEid, payload, options) returns (MessagingFee memory fee) {
+                uint256 feeWithBuffer = fee.nativeFee + (fee.nativeFee * 10) / 100;
 
                 if (initialValue < totalUsed + feeWithBuffer) {
                     emit MessageFailed(
-                        dstEid,
-                        bytes32(0),
-                        "Insufficient balance for broadcast (with 10% buffer)"
+                        dstEid, bytes32(0), "Insufficient balance for broadcast (with 10% buffer)"
                     );
                     continue;
                 }
@@ -373,33 +347,23 @@ contract TaskExecutionHub is
         uint8 WORKER_ID = 1;
         uint8 OPTION_TYPE_LZRECEIVE = 1;
 
-        bytes memory option = value == 0
-            ? abi.encodePacked(gas)
-            : abi.encodePacked(gas, value);
+        bytes memory option = value == 0 ? abi.encodePacked(gas) : abi.encodePacked(gas, value);
 
         uint16 optionLength = uint16(option.length + 1);
 
-        return
-            abi.encodePacked(
-                TYPE_3,
-                WORKER_ID,
-                optionLength,
-                OPTION_TYPE_LZRECEIVE,
-                option
-            );
+        return abi.encodePacked(TYPE_3, WORKER_ID, optionLength, OPTION_TYPE_LZRECEIVE, option);
     }
 
     function _payNative(
         uint256 _nativeFee
     ) internal view override returns (uint256 nativeFee) {
-        require(
-            address(this).balance >= _nativeFee,
-            "Insufficient contract balance"
-        );
+        require(address(this).balance >= _nativeFee, "Insufficient contract balance");
         return _nativeFee;
     }
 
-    function addSpokes(uint32[] calldata _dstEids) external onlyOwner {
+    function addSpokes(
+        uint32[] calldata _dstEids
+    ) external onlyOwner {
         for (uint256 i = 0; i < _dstEids.length; i++) {
             uint32 dstEid = _dstEids[i];
             if (dstEid != originEid) {
@@ -409,15 +373,16 @@ contract TaskExecutionHub is
         }
     }
 
-    function setJobRegistry(address _jobRegistryAddress) external onlyOwner {
+    function setJobRegistry(
+        address _jobRegistryAddress
+    ) external onlyOwner {
         jobRegistry = IJobRegistry(_jobRegistryAddress);
     }
 
-    function setTaskDispatcher(address _taskDispatcher) external onlyOwner {
-        require(
-            _taskDispatcher != address(0),
-            "Invalid taskDispatcher address"
-        );
+    function setTaskDispatcher(
+        address _taskDispatcher
+    ) external onlyOwner {
+        require(_taskDispatcher != address(0), "Invalid taskDispatcher address");
         address oldTaskDispatcher = taskDispatcher;
         taskDispatcher = _taskDispatcher;
         emit TaskDispatcherUpdated(oldTaskDispatcher, _taskDispatcher);
@@ -437,7 +402,10 @@ contract TaskExecutionHub is
         triggerGasRegistry = ITriggerGasRegistry(_triggerGasRegistryAddress);
     }
 
-    function setGasConfig(uint128 gas, uint128 value) external onlyOwner {
+    function setGasConfig(
+        uint128 gas,
+        uint128 value
+    ) external onlyOwner {
         defaultGas = gas;
         defaultValue = value;
         emit GasConfigUpdated(gas, value);
@@ -452,13 +420,17 @@ contract TaskExecutionHub is
         to.transfer(amount);
     }
 
-    function addKeeper(address keeper) external onlyOwner {
+    function addKeeper(
+        address keeper
+    ) external onlyOwner {
         isKeeper[keeper] = true;
         emit KeeperRegistered(keeper);
         _batchBroadcast(ActionType.REGISTER, keeper);
     }
 
-    function removeKeeper(address keeper) external onlyOwner {
+    function removeKeeper(
+        address keeper
+    ) external onlyOwner {
         isKeeper[keeper] = false;
         emit KeeperUnregistered(keeper);
         _batchBroadcast(ActionType.UNREGISTER, keeper);
@@ -474,5 +446,5 @@ contract TaskExecutionHub is
     ) internal override onlyOwner {}
 
     // Storage gap for future upgrades
-    uint256[50] private __gap;
+    uint256[48] private __gap;
 }

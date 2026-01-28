@@ -18,7 +18,9 @@ interface IGnosisSafe {
         uint8 operation
     ) external returns (bool success);
 
-    function isOwner(address owner) external view returns (bool);
+    function isOwner(
+        address owner
+    ) external view returns (bool);
 }
 
 /**
@@ -53,7 +55,9 @@ contract TriggerXSafeModule is ReentrancyGuard {
      * @notice Constructor
      * @param _taskExecutionHub The address of the TaskExecutionHub
      */
-    constructor(address _taskExecutionHub) {
+    constructor(
+        address _taskExecutionHub
+    ) {
         if (_taskExecutionHub == address(0)) {
             revert InvalidAddress();
         }
@@ -86,28 +90,22 @@ contract TriggerXSafeModule is ReentrancyGuard {
         }
 
         bool ok;
-        try
-            safe.execTransactionFromModule(
-                actionTarget,
-                actionValue,
-                actionData,
-                operation
-            )
-        returns (bool _success) {
+        try safe.execTransactionFromModule(
+            actionTarget, actionValue, actionData, operation
+        ) returns (
+            bool _success
+        ) {
             ok = _success;
         } catch {
             ok = false;
         }
 
         if (!ok) {
-            emit TaskExecutedFromModule(
-                jobOwner,
-                safeAddress,
-                tx.origin,
-                false
-            );
+            emit TaskExecutedFromModule(jobOwner, safeAddress, tx.origin, false);
             revert ExecFailed();
         }
+
+        emit TaskExecutedFromModule(jobOwner, safeAddress, tx.origin, true);
 
         return true;
     }

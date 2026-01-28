@@ -18,11 +18,16 @@ contract MockSafe is IGnosisSafe {
         owners[address(0xCAFE)] = true;
     }
 
-    function isOwner(address owner) external view override returns (bool) {
+    function isOwner(
+        address owner
+    ) external view override returns (bool) {
         return owners[owner];
     }
 
-    function setOwner(address owner, bool status) external {
+    function setOwner(
+        address owner,
+        bool status
+    ) external {
         owners[owner] = status;
     }
 
@@ -39,7 +44,7 @@ contract MockSafe is IGnosisSafe {
         lastOp = operation;
 
         // perform call
-        (bool ok, ) = to.call{value: value}(data);
+        (bool ok,) = to.call{value: value}(data);
         return ok;
     }
 
@@ -51,16 +56,16 @@ contract DummyTarget {
     event ActionCalled(address caller, uint256 value, bytes data);
     uint256 public x;
 
-    function doSomething(uint256 v) external payable {
+    function doSomething(
+        uint256 v
+    ) external payable {
         x = v;
         emit ActionCalled(msg.sender, msg.value, abi.encode(v));
     }
 }
 
 // Mock Hub - only to set as hub address and call module via test (we'll impersonate hub in test)
-contract MockHub {
-
-}
+contract MockHub {}
 
 contract TriggerXSafeModuleTest is Test {
     MockSafe safe;
@@ -85,10 +90,7 @@ contract TriggerXSafeModuleTest is Test {
 
     function testHappyPathExec() public {
         // prepare actionData
-        bytes memory actionData = abi.encodeWithSelector(
-            DummyTarget.doSomething.selector,
-            123
-        );
+        bytes memory actionData = abi.encodeWithSelector(DummyTarget.doSomething.selector, 123);
         uint8 op = 0;
 
         // impersonate hub and call execJobFromHub with jobOwner (last param)
@@ -107,10 +109,7 @@ contract TriggerXSafeModuleTest is Test {
     }
 
     function testSafeNotOwnedByJobOwner() public {
-        bytes memory actionData = abi.encodeWithSelector(
-            DummyTarget.doSomething.selector,
-            999
-        );
+        bytes memory actionData = abi.encodeWithSelector(DummyTarget.doSomething.selector, 999);
         uint8 op = 0;
 
         // Use a different jobOwner that doesn't own the Safe
@@ -119,9 +118,7 @@ contract TriggerXSafeModuleTest is Test {
         vm.prank(address(hub));
         vm.expectRevert(
             abi.encodeWithSelector(
-                TriggerXSafeModule.SafeNotOwnedByJobOwner.selector,
-                address(safe),
-                wrongJobOwner
+                TriggerXSafeModule.SafeNotOwnedByJobOwner.selector, address(safe), wrongJobOwner
             )
         );
         moduleContract.execJobFromHub(
@@ -137,32 +134,19 @@ contract TriggerXSafeModuleTest is Test {
     function testMultipleCallsAllowed() public {
         // The contract doesn't have replay protection - multiple identical calls are allowed
         // This is by design since the hub is trusted and manages replay protection at a higher level
-        bytes memory actionData = abi.encodeWithSelector(
-            DummyTarget.doSomething.selector,
-            5
-        );
+        bytes memory actionData = abi.encodeWithSelector(DummyTarget.doSomething.selector, 5);
         uint8 op = 0;
 
         vm.prank(address(hub));
         bool ok1 = moduleContract.execJobFromHub(
-            address(safe),
-            address(target),
-            uint256(0),
-            actionData,
-            op,
-            jobOwner
+            address(safe), address(target), uint256(0), actionData, op, jobOwner
         );
         assertTrue(ok1);
 
         // second call should also succeed (no replay protection in module)
         vm.prank(address(hub));
         bool ok2 = moduleContract.execJobFromHub(
-            address(safe),
-            address(target),
-            uint256(0),
-            actionData,
-            op,
-            jobOwner
+            address(safe), address(target), uint256(0), actionData, op, jobOwner
         );
         assertTrue(ok2);
 
@@ -171,21 +155,13 @@ contract TriggerXSafeModuleTest is Test {
     }
 
     function testOnlyHubCanCall() public {
-        bytes memory actionData = abi.encodeWithSelector(
-            DummyTarget.doSomething.selector,
-            123
-        );
+        bytes memory actionData = abi.encodeWithSelector(DummyTarget.doSomething.selector, 123);
 
         // Try calling from non-hub address
         vm.prank(address(0x1234));
         vm.expectRevert(TriggerXSafeModule.NotTaskExecutionHub.selector);
         moduleContract.execJobFromHub(
-            address(safe),
-            address(target),
-            uint256(0),
-            actionData,
-            0,
-            jobOwner
+            address(safe), address(target), uint256(0), actionData, 0, jobOwner
         );
     }
 }

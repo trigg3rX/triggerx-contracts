@@ -2,23 +2,28 @@
 pragma solidity ^0.8.26;
 
 import {Initializable} from "@openzeppelin-upgrades/contracts/proxy/utils/Initializable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import {
+    ReentrancyGuardUpgradeable
+} from "@openzeppelin-upgrades/contracts/utils/ReentrancyGuardUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin-upgrades/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {OApp, Origin} from "@layerzero-v2/oapp/contracts/oapp/OApp.sol";
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
-import {MessageHashUtils} from "@openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
+import {
+    MessageHashUtils
+} from "@openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IJobRegistry {
-    function getJobOwner(uint256 jobId) external view returns (address);
-
-    function unpackJobId(
+    function getJobOwner(
         uint256 jobId
-    ) external view returns (uint256 chainId, uint256 jobCounter);
+    ) external view returns (address);
 }
 
 interface ITriggerGasRegistry {
-    function deductETHBalance(address user, uint256 ethAmount) external;
+    function deductETHBalance(
+        address user,
+        uint256 ethAmount
+    ) external;
 }
 
 /**
@@ -26,12 +31,7 @@ interface ITriggerGasRegistry {
  * @notice A LayerZero-enabled contract that acts as a spoke in the keeper network
  * @dev This contract receives keeper registration updates from the hub and executes functions on the respective L2 chain
  */
-contract TaskExecutionSpoke is
-    Initializable,
-    OApp,
-    UUPSUpgradeable,
-    ReentrancyGuardUpgradeable
-{
+contract TaskExecutionSpoke is Initializable, OApp, UUPSUpgradeable, ReentrancyGuardUpgradeable {
     /// @notice Constructor only runs on the implementation contract. It passes minimal arguments to
     ///         the OApp constructor (so the byte-code is valid) and immediately disables further
     ///         initializers to protect the logic contract.
@@ -66,18 +66,15 @@ contract TaskExecutionSpoke is
 
     event KeeperUpdated(ActionType action, address keeper);
     event FunctionExecuted(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value
+        address indexed keeper, address indexed target, bytes data, uint256 value
     );
     event FunctionExecutionFailed(
-        address indexed keeper,
-        address indexed target,
-        bytes data,
-        uint256 value,
-        bytes result
+        address indexed keeper, address indexed target, bytes data, uint256 value, bytes result
     );
+    event TaskDispatcherUpdated(
+        address indexed oldTaskDispatcher, address indexed newTaskDispatcher
+    );
+    event TriggerXSafeModuleUpdated(address indexed oldModule, address indexed newModule);
 
     // Custom errors for gas optimization
     error SignatureExpired();
@@ -185,9 +182,7 @@ contract TaskExecutionSpoke is
         bytes calldata signature
     ) internal view {
         if (taskDispatcher == address(0)) revert TaskDispatcherNotSet();
-        bytes32 hash = keccak256(
-            abi.encode(jobId, target, deadline, msg.sender, block.chainid)
-        );
+        bytes32 hash = keccak256(abi.encode(jobId, target, deadline, msg.sender, block.chainid));
         bytes32 ethSignedHash = MessageHashUtils.toEthSignedMessageHash(hash);
         if (ECDSA.recover(ethSignedHash, signature) != taskDispatcher) {
             revert InvalidSignature();
@@ -223,25 +218,19 @@ contract TaskExecutionSpoke is
         address target,
         bytes memory callData
     ) internal returns (bytes memory) {
-        (bool success, bytes memory result) = target.call{value: msg.value}(
-            callData
-        );
+        (bool success, bytes memory result) = target.call{value: msg.value}(callData);
 
         if (success) {
             emit FunctionExecuted(msg.sender, target, callData, msg.value);
         } else {
-            emit FunctionExecutionFailed(
-                msg.sender,
-                target,
-                callData,
-                msg.value,
-                result
-            );
+            emit FunctionExecutionFailed(msg.sender, target, callData, msg.value, result);
         }
         return result;
     }
 
-    function setJobRegistry(address _jobRegistryAddress) external onlyOwner {
+    function setJobRegistry(
+        address _jobRegistryAddress
+    ) external onlyOwner {
         jobRegistry = IJobRegistry(_jobRegistryAddress);
     }
 
@@ -255,9 +244,13 @@ contract TaskExecutionSpoke is
      * @notice Set the taskDispatcher address for signature verification
      * @param _taskDispatcher The address of the authorized taskDispatcher
      */
-    function setTaskDispatcher(address _taskDispatcher) external onlyOwner {
+    function setTaskDispatcher(
+        address _taskDispatcher
+    ) external onlyOwner {
         require(_taskDispatcher != address(0), "Invalid dispatcher");
+        address oldTaskDispatcher = taskDispatcher;
         taskDispatcher = _taskDispatcher;
+        emit TaskDispatcherUpdated(oldTaskDispatcher, _taskDispatcher);
     }
 
     /**
@@ -267,7 +260,9 @@ contract TaskExecutionSpoke is
     function setTriggerXSafeModule(
         address _triggerXSafeModule
     ) external onlyOwner {
+        address oldModule = triggerXSafeModule;
         triggerXSafeModule = _triggerXSafeModule;
+        emit TriggerXSafeModuleUpdated(oldModule, _triggerXSafeModule);
     }
 
     // ---------------------------------------------------------------------
@@ -279,16 +274,16 @@ contract TaskExecutionSpoke is
      * @param message The message payload containing the action and keeper address
      */
     function _lzReceive(
-        Origin calldata /* _origin */,
-        bytes32 /* _guid */,
+        Origin calldata,
+        /* _origin */
+        bytes32,
+        /* _guid */
         bytes calldata message,
-        address /* _executor */,
+        address,
+        /* _executor */
         bytes calldata /* _extraData */
     ) internal override {
-        (ActionType action, address keeper) = abi.decode(
-            message,
-            (ActionType, address)
-        );
+        (ActionType action, address keeper) = abi.decode(message, (ActionType, address));
 
         if (action == ActionType.REGISTER) {
             isKeeper[keeper] = true;
@@ -311,5 +306,5 @@ contract TaskExecutionSpoke is
     ) internal override onlyOwner {}
 
     // Storage gap for future upgrades
-    uint256[50] private __gap;
+    uint256[48] private __gap;
 }
