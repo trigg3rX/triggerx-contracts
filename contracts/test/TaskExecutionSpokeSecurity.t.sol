@@ -54,8 +54,32 @@ contract TaskExecutionSpokeSecurityTest is Test {
     address public attacker = address(0x666);
     address public keeper1 = address(0x100);
     address public keeper2 = address(0x101);
+    address public taskDispatcher = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    uint256 public taskDispatcherPK =
+        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
     uint32 public constant HUB_EID = 10101;
+
+    // Helper to create signature params
+    function _dummySignatureParams(
+        uint256 jobId,
+        address target,
+        bytes memory data,
+        address keeper
+    ) internal view returns (uint256 deadline, bytes memory signature) {
+        deadline = block.timestamp + 1 hours;
+        bytes32 hash = keccak256(
+            abi.encode(jobId, target, deadline, keeper, block.chainid)
+        );
+        bytes32 ethSignedHash = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(
+            taskDispatcherPK,
+            ethSignedHash
+        );
+        signature = abi.encodePacked(r, s, v);
+    }
 
     function setUp() public {
         vm.startPrank(owner);
@@ -91,6 +115,9 @@ contract TaskExecutionSpokeSecurityTest is Test {
 
         taskExecutionSpoke = TaskExecutionSpoke(payable(address(proxy)));
 
+        // Set task dispatcher for signature verification
+        taskExecutionSpoke.setTaskDispatcher(taskDispatcher);
+
         vm.stopPrank();
 
         vm.deal(keeper1, 10 ether);
@@ -116,9 +143,22 @@ contract TaskExecutionSpokeSecurityTest is Test {
         mockJobRegistry.setJobOwner(jobId, address(0x300));
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
 
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            target,
+            data,
+            attacker
+        );
         vm.expectRevert("Spoke: Keeper not registered");
         vm.prank(attacker);
-        taskExecutionSpoke.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionSpoke.executeFunction(
+            jobId,
+            tgAmount,
+            target,
+            data,
+            deadline,
+            signature
+        );
     }
 
     function test_Security_InitialKeepersAreSetCorrectly() public view {
@@ -195,12 +235,20 @@ contract TaskExecutionSpokeSecurityTest is Test {
         );
 
         // Should NOT revert, but emit FunctionExecutionFailed
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(maliciousTarget),
+            data,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction(
             jobId,
             tgAmount,
             address(maliciousTarget),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted
@@ -228,12 +276,20 @@ contract TaskExecutionSpokeSecurityTest is Test {
         mockTriggerGasRegistry.setBalance(address(0x300), 1000);
 
         // This should fail gracefully (emit event)
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(taskExecutionSpoke),
+            data,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionSpoke.executeFunction(
             jobId,
             tgAmount,
             address(taskExecutionSpoke),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted

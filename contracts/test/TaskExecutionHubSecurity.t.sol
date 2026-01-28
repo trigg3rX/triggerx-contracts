@@ -27,18 +27,31 @@ contract MaliciousTarget {
         shouldReenter = _shouldReenter;
     }
 
+    bytes public reentrySignature;
+    uint256 public reentryDeadline;
+
+    function setReentrySignature(
+        bytes calldata _sig,
+        uint256 _deadline
+    ) external {
+        reentrySignature = _sig;
+        reentryDeadline = _deadline;
+    }
+
     function maliciousFunction() external payable {
         if (shouldRevert) {
             revert("Malicious revert");
         }
 
         if (shouldReenter) {
-            // Try to reenter
+            // Try to reenter - use provided valid signal
             hub.executeFunction{value: msg.value}(
                 0,
                 0,
                 address(this),
-                abi.encodeWithSelector(this.maliciousFunction.selector)
+                abi.encodeWithSelector(this.maliciousFunction.selector),
+                reentryDeadline,
+                reentrySignature
             );
         }
     }
@@ -92,10 +105,34 @@ contract TaskExecutionHubSecurityTest is Test {
     address public keeper1 = address(0x100);
     address public keeper2 = address(0x101);
     address public user = address(0x200);
+    address public taskDispatcher = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    uint256 public taskDispatcherPK =
+        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
     uint32 public constant SRC_EID = 10101;
     uint32 public constant THIS_CHAIN_EID = 20201;
     uint32 public constant DST_EID = 30301;
+
+    // Helper to create signature params
+    function _dummySignatureParams(
+        uint256 jobId,
+        address target,
+        bytes memory data,
+        address keeper
+    ) internal view returns (uint256 deadline, bytes memory signature) {
+        deadline = block.timestamp + 1 hours;
+        bytes32 hash = keccak256(
+            abi.encode(jobId, target, deadline, keeper, block.chainid)
+        );
+        bytes32 ethSignedHash = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(
+            taskDispatcherPK,
+            ethSignedHash
+        );
+        signature = abi.encodePacked(r, s, v);
+    }
 
     function setUp() public {
         vm.startPrank(owner);
@@ -131,6 +168,9 @@ contract TaskExecutionHubSecurityTest is Test {
         );
 
         taskExecutionHub = TaskExecutionHub(payable(address(proxy)));
+
+        // Set task dispatcher for signature verification
+        taskExecutionHub.setTaskDispatcher(taskDispatcher);
 
         // Add some destination chains
         uint32[] memory dstEids = new uint32[](1);
@@ -169,7 +209,14 @@ contract TaskExecutionHubSecurityTest is Test {
 
         vm.expectRevert("Not a keeper");
         vm.prank(attacker);
-        taskExecutionHub.executeFunction(jobId, tgAmount, target, data);
+        taskExecutionHub.executeFunction(
+            jobId,
+            tgAmount,
+            target,
+            data,
+            block.timestamp + 1 hours,
+            new bytes(65)
+        );
     }
 
     function test_Security_OnlyOwnerCanAddSpokes() public {
@@ -311,12 +358,20 @@ contract TaskExecutionHubSecurityTest is Test {
         // Should NOT revert, but emit FunctionExecutionFailed
         // We can't easily check the exact event here without defining it, but we can check it doesn't revert
         // and that the fee was deducted
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(maliciousTarget),
+            data,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(maliciousTarget),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted
@@ -373,15 +428,35 @@ contract TaskExecutionHubSecurityTest is Test {
             MaliciousTarget.maliciousFunction.selector
         );
 
+        // Prepare reentry signature
+        (
+            uint256 reentryDeadline,
+            bytes memory reentrySig
+        ) = _dummySignatureParams(
+                jobId,
+                address(maliciousTarget),
+                data,
+                address(maliciousTarget)
+            );
+        maliciousTarget.setReentrySignature(reentrySig, reentryDeadline);
+
         // The malicious contract is now a keeper and can execute functions
         // The malicious function will fail due to reentrancy when it tries to call back
         // But the main transaction should NOT revert, just emit failure
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(maliciousTarget),
+            data,
+            address(maliciousTarget)
+        );
         vm.prank(address(maliciousTarget)); // Now it's a keeper
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(maliciousTarget),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted (1000 - 100 = 900)
@@ -422,12 +497,20 @@ contract TaskExecutionHubSecurityTest is Test {
         // So withdraw will revert with "OwnableUnauthorizedAccount".
         // So executeFunction should catch that revert and emit FunctionExecutionFailed.
 
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(taskExecutionHub),
+            data,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(taskExecutionHub),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted
@@ -462,12 +545,20 @@ contract TaskExecutionHubSecurityTest is Test {
         // UNLESS the gas provided to the sub-call is all the gas, and it consumes it all.
         // But solidity passes 63/64 gas. So there is always some gas left for the caller.
 
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(griefingContract),
+            data,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(griefingContract),
-            data
+            data,
+            deadline,
+            signature
         );
 
         // Verify ETH balance was deducted
@@ -758,12 +849,20 @@ contract TaskExecutionHubSecurityTest is Test {
 
         // Should handle large payloads gracefully - calling this test contract with large data
         // The dummyFunction will succeed, showing the system handles large payloads
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(this),
+            largeData,
+            keeper1
+        );
         vm.prank(keeper1);
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(this),
-            abi.encodeWithSelector(this.dummyFunction.selector)
+            largeData,
+            deadline,
+            signature
         );
     }
 
@@ -829,12 +928,20 @@ contract TaskExecutionHubSecurityTest is Test {
         assertTrue(taskExecutionHub.isKeeper(testKeeper));
 
         // 3. Keeper can execute functions
+        (uint256 deadline, bytes memory signature) = _dummySignatureParams(
+            jobId,
+            address(this),
+            abi.encodeWithSelector(this.dummyFunction.selector),
+            testKeeper
+        );
         vm.prank(testKeeper);
         taskExecutionHub.executeFunction(
             jobId,
             tgAmount,
             address(this),
-            abi.encodeWithSelector(this.dummyFunction.selector)
+            abi.encodeWithSelector(this.dummyFunction.selector),
+            deadline,
+            signature
         );
 
         // 4. Unregister keeper
@@ -860,7 +967,9 @@ contract TaskExecutionHubSecurityTest is Test {
             jobId,
             tgAmount,
             address(this),
-            abi.encodeWithSelector(this.dummyFunction.selector)
+            abi.encodeWithSelector(this.dummyFunction.selector),
+            block.timestamp + 1 hours,
+            new bytes(65)
         );
     }
 
