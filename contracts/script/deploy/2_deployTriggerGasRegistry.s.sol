@@ -10,7 +10,7 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 contract DeployTriggerGasRegistry is Script {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(deployerPrivateKey);
-    address operator = 0x3509F38e10eB3cDcE7695743cB7e81446F4d8A33; // Task Execution Address
+    address operator = 0x0000000000000000000000000000000000000000; // Task Execution Address
 
     bytes32 SALT = keccak256(abi.encodePacked("put your salt here"));
     bytes32 IMPL_SALT = keccak256(abi.encodePacked("put your impl salt here"));
@@ -19,7 +19,7 @@ contract DeployTriggerGasRegistry is Script {
         // Create fork for this chain
         // vm.createSelectFork(vm.envString("BASE_RPC"));
         // vm.createSelectFork(vm.envString("OP_RPC"));
-        // vm.createSelectFork(vm.envString("ARB_RPC"));
+        vm.createSelectFork(vm.envString("ARB_RPC"));
 
         bytes memory implementation_code = type(TriggerGasRegistry).creationCode;
 
