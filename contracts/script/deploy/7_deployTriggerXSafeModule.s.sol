@@ -12,7 +12,7 @@ contract DeployTriggerXSafeModule is Script {
 
     function run() public {
         vm.startBroadcast(deployerPrivateKey);
-        bytes32 salt = "TriggerXSafeModuleV1";
+        bytes32 salt = "TriggerXSafeModulev1";
         TriggerXSafeModule module = new TriggerXSafeModule{salt: salt}(
             taskExecutionHub
         );

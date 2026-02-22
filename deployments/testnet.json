@@ -30,7 +30,7 @@
       "implementation": "0x275bb750A2430248c5b17faE4956762b4e0D0690"
     },
     "TriggerXSafeFactory": "0xdf76E2A796a206D877086c717979054544B1D9Bc",
-    "TriggerXSafeModule": "0xE4EF5835ceE541255B3B9BC3E82F11496145BB35"
+    "TriggerXSafeModule": "0xb0Bc497D220324ac8005031Bc55CbA5f9717fE77"
   },
   "84532": {
     "AttestationCenter": {
@@ -68,7 +68,7 @@
       "implementation": "0xfe754df6a0301b2d48696E3960b8A439Cb85Ebc2"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
-    "TriggerXSafeModule": "0xE4EF5835ceE541255B3B9BC3E82F11496145BB35"
+    "TriggerXSafeModule": "0xb0Bc497D220324ac8005031Bc55CbA5f9717fE77"
   },
   "11155420": {
     "JobRegistry": {
@@ -84,7 +84,7 @@
       "implementation": "0x31C937708Bb02bD02eB5AC6F5865e76f7EdB70A9"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
-    "TriggerXSafeModule": "0xE4EF5835ceE541255B3B9BC3E82F11496145BB35"
+    "TriggerXSafeModule": "0xb0Bc497D220324ac8005031Bc55CbA5f9717fE77"
   },
   "421614": {
     "JobRegistry": {
@@ -100,6 +100,6 @@
       "implementation": "0xDD8157dd23C38b594EfB21eadE73AEA76252069C"
     },
     "TriggerXSafeFactory": "0x04359eDC46Cd6C6BD7F6359512984222BE10F8Be",
-    "TriggerXSafeModule": "0xE4EF5835ceE541255B3B9BC3E82F11496145BB35"
+    "TriggerXSafeModule": "0xb0Bc497D220324ac8005031Bc55CbA5f9717fE77"
   }
 }

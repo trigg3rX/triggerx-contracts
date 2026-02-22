@@ -11,3 +11,14 @@ out/
 watchdog/
 
 .cursor/
+
+corpus/
+crytic-export/
+docs/
+script/security/
+security/
+slither.config.json
+test/echidna/
+test/formal/
+test/invariants/
+
