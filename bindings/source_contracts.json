@@ -1,0 +1,21 @@
+{
+  "othentic-core-contracts": {
+    "path": "../contracts/lib/othentic-core-contracts",
+    "contracts": [
+      "AttestationCenter",
+      "AvsGovernance"
+    ]
+  },
+  "triggerx-contracts": {
+    "path": "../contracts",
+    "contracts": [
+      "JobRegistry",
+      "TriggerGasRegistry",
+      "TaskExecutionHub",
+      "TaskExecutionSpoke",
+      "AvsGovernanceLogic",
+      "SafeWalletFactory",
+      "TriggerXSafeModule"
+    ]
+  }
+}

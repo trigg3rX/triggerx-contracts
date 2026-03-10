@@ -41,7 +41,7 @@ npm install -g @othentic/cli
 Deploying on Ethereum Sepolia and Base Sepolia with 0.1 ETH as initial deposit for L1 and L2 MessageHandler:
 
 ```bash
-otcli network deploy --name TriggerX --eth --l2-rewards --security-provider eigenlayer --l1-chain 11155111 --l2-chain 84532 --l1-initial-deposit 100000000000000000 --l2-initial-deposit 100000000000000000
+otcli network deploy --name TriggerX --eth --l2-rewards --security-provider eigenlayer --l1-chain sepolia:nightly --l2-chain base-sepolia:nightly --l1-initial-deposit 100000000000000000 --l2-initial-deposit 100000000000000000
 ```
 
 The CLI will prompt for registration details for the AVS to be sent to the EigenLayer.
@@ -50,14 +50,17 @@ The CLI will prompt for registration details for the AVS to be sent to the Eigen
 
 ```bash
 # Set Max Voting Power for Operators
-otcli network set-max-voting-power --l1-chain 11155111
+otcli network set-max-voting-power --l1-chain sepolia:nightly
 
 # Set Staking Contracts
-otcli network set-staking-contracts --l1-chain 11155111
+otcli network set-staking-contracts --l1-chain sepolia:nightly
 
 # Create Task Definition
-otcli network create-task-definition --l2-chain 84532
+otcli network create-task-definition --l2-chain base-sepolia:nightly
+otcli network edit-task-definition --l2-chain base-sepolia:nightly
 ```
+
+**Note:** The arguments to create a new task definition have been updated, and you need to provide the attester IDs valid for that task definition, so the tasks should be created after the attesters are registered on the AVS, and need to updated whenever a new attester is registered on the AVS.
 
 ### **Note: All commands below are meant to be executed from the `./contracts/` directory.**
 
@@ -68,15 +71,17 @@ otcli network create-task-definition --l2-chain 84532
 4. Deploy JobRegistry Contract:
 
 ```bash
-forge script script/deploy/1_deployJobRegistry.s.sol:DeployJobRegistry --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 84532 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
+forge script script/deploy/1_deployJobRegistry.s.sol:DeployJobRegistry --verify --verifier etherscan --chain-id 421614 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
+
+**Note:** Set the chain-id and fork url in the script to the same chain where you want to deploy the JobRegistry Contract.
 
 5. Deploy TriggerGasRegistry Contract:
 
 - The user needs to set the operator address (TaskExecutionAddress) to be used in the script.
 
 ```bash
-forge script script/deploy/2_deployTriggerGasRegistry.s.sol:DeployTriggerGasRegistry --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 84532 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
+forge script script/deploy/2_deployTriggerGasRegistry.s.sol:DeployTriggerGasRegistry --verify --verifier etherscan --chain-id 421614 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
 
 - If the contracts are being deployed from scratch, then the user won't have the operator address (TaskExecutionAddress) to be used in the script. In that case, the user needs to call the `SetOperatorOnGasRegistry` script after the deployment of the TaskExecution Contracts and set the TaskExecutionAddress in`.env`.
@@ -92,7 +97,7 @@ forge script script/deploy/2_deployTriggerGasRegistry.s.sol:SetOperatorOnGasRegi
 - 0.1 ETH is deposited to the TaskExecutionHub Contract.
 
 ```bash
-forge script script/deploy/3_deployTaskExecutionHub.s.sol:DeployTaskExecutionHub --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 84532 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
+forge script script/deploy/3_deployTaskExecutionHub.s.sol:DeployTaskExecutionHub --verify --verifier etherscan --chain-id 84532 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
 
 - If a new Spoke is deployed, then the user needs to call the `AddSokesToHub` script after the deployment of the TaskExecutionHub Contract, and set the `spokeEids` in the script function.
@@ -109,7 +114,6 @@ forge script script/deploy/3_deployTaskExecutionHub.s.sol:SetJobRegistryonHub --
 
 - If a new TriggerGasRegistry is deployed, then the user needs to call the `SetTriggerGasRegistryonHub` script after the deployment of the TaskExecutionHub Contract.
 
-
 ```bash
 forge script script/deploy/3_deployTaskExecutionHub.s.sol:SetTriggerGasRegistryonHub --broadcast 
 ```
@@ -117,13 +121,13 @@ forge script script/deploy/3_deployTaskExecutionHub.s.sol:SetTriggerGasRegistryo
 7. Deploy TaskExecutionSpoke Contract:
 
 ```bash
-forge script script/deploy/4_deployTaskExecutionSpoke.s.sol:DeployTaskExecutionSpoke --multi --chain 11155420 --broadcast
+forge script script/deploy/4_deployTaskExecutionSpoke.s.sol:DeployTaskExecutionSpoke --multi --chain 421614 --broadcast
 ```
 
 - To verify the TaskExecutionSpoke Contracts:
 
 ```bash
-forge verify-contract --watch --compiler-version 0.8.27 --verifier-url "https://api.etherscan.io/v2/api" --chain 421614 --constructor-args $(cast abi-encode "constructor(address,address)" "<LZ_ENDPOINT_ADDRESS>" "<DEPLOYER_ADDRESS>") --etherscan-api-key <ETHERSCAN_API_KEY> <IMPLEMENTATION_ADDRESS> src/lz/TaskExecutionSpoke.sol:TaskExecutionSpoke
+forge verify-contract --watch --compiler-version 0.8.27 --verifier etherscan --chain-id 421614 --constructor-args $(cast abi-encode "constructor(address,address)" "<LZ_ENDPOINT_ADDRESS>" "<DEPLOYER_ADDRESS>") --verifier-api-key <ETHERSCAN_API_KEY> <IMPLEMENTATION_ADDRESS> src/lz/TaskExecutionSpoke.sol:TaskExecutionSpoke
 ```
 
 8. Deploy AVS Governance Logic Contract:
@@ -133,7 +137,23 @@ forge verify-contract --watch --compiler-version 0.8.27 --verifier-url "https://
 - Sets the AvsGovernanceLogic Contract on the AvsGovernance Contract.
 
 ```bash
-forge script script/deploy/5_deployAvsGovernanceLogic.s.sol:DeployAvsGovernanceLogic --verify --verifier-url "https://api.etherscan.io/v2/api" --etherscan-api-version v2 --chain 11155111 --etherscan-api-key <ETHERSCAN_API_KEY> --broadcast 
+forge script script/deploy/5_deployAvsGovernanceLogic.s.sol:DeployAvsGovernanceLogic --verify --verifier etherscan --chain-id 11155111 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
+```
+
+9. Deploy TriggerXSafeFactory Contract:
+
+```bash
+forge script script/deploy/6_deployTriggerXSafeFactory.s.sol:DeployTriggerXSafeFactory --verify --verifier etherscan --chain-id 421614 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
+```
+
+**Note:** Set the appropriate fork URL in the script (BASE_RPC, OP_RPC, ARB_RPC) before deployment.
+
+10. Deploy TriggerXSafeModule Contract:
+
+- Set `TASK_EXECUTION_ADDRESS` in the `.env` file.
+
+```bash
+forge script script/deploy/7_deployTriggerXSafeModule.s.sol:DeployTriggerXSafeModule --verify --verifier etherscan --chain-id 421614 --verifier-api-key <ETHERSCAN_API_KEY> --broadcast 
 ```
 
 ## Deploying TriggerX on a new chain
@@ -149,3 +169,9 @@ forge script script/deploy/5_deployAvsGovernanceLogic.s.sol:DeployAvsGovernanceL
 - [ ] The TaskExecution address has the "operator" role on each chain's GasRegistry.
 - [ ] The AVSGovernanceLogic, TaskExecutionHub and the MessageHandlers (from Othentic stack) have deposits on them for LayerZero message passing.
 - [ ] The keepers have updated the configuration to execute actions on the new chain.
+
+## Generating Bindings
+
+```bash
+go run ./bindings/generate-bindings.go
+```

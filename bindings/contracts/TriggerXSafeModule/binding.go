@@ -31,12 +31,34 @@ var (
 
 // ContractTriggerXSafeModuleMetaData contains all meta data concerning the ContractTriggerXSafeModule contract.
 var ContractTriggerXSafeModuleMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_taskExecutionHub\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ExecFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotTaskExecutionHub\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"safeAddress\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"name\":\"TaskExecutedFromModule\",\"type\":\"event\"},{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"safeAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"actionTarget\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"actionValue\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"actionData\",\"type\":\"bytes\"},{\"internalType\":\"uint8\",\"name\":\"operation\",\"type\":\"uint8\"}],\"name\":\"execJobFromHub\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"taskExecutionHub\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]",
+	ABI: "[{\"type\":\"constructor\",\"inputs\":[{\"name\":\"_taskExecutionHub\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"execJobFromHub\",\"inputs\":[{\"name\":\"safeAddress\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"actionTarget\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"actionValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"actionData\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"operation\",\"type\":\"uint8\",\"internalType\":\"uint8\"}],\"outputs\":[{\"name\":\"success\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"taskExecutionHub\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"event\",\"name\":\"TaskExecutedFromModule\",\"inputs\":[{\"name\":\"safeAddress\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"executor\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"success\",\"type\":\"bool\",\"indexed\":false,\"internalType\":\"bool\"}],\"anonymous\":false},{\"type\":\"error\",\"name\":\"ExecFailed\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotTaskExecutionHub\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"ReentrancyGuardReentrantCall\",\"inputs\":[]}]",
+	Bin: "0x60a0346100aa57601f6103a338819003918201601f19168301916001600160401b038311848410176100ae578084926020946040528339810103126100aa57516001600160a01b0381168082036100aa5760015f551561007a576080526040516102e090816100c38239608051818181604701526101130152f35b60405162461bcd60e51b81526020600482015260086024820152673d32b93790343ab160c11b6044820152606490fd5b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe6080806040526004361015610012575f80fd5b5f3560e01c908163b36e85181461007a575063c54d346e14610032575f80fd5b34610076575f366003190112610076576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b5f80fd5b346100765760a0366003190112610076576004356001600160a01b0381169190829003610076576024356001600160a01b03811690819003610076576064359067ffffffffffffffff821161007657366023830112156100765781600401359167ffffffffffffffff8311610076573660248483010111610076576084359160ff83168093036100765760025f541461029b5760025f557f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316330361028c57838593602095602460a495879563468721a760e01b87526004870152604435828701526080604487015282608487015201858501375f8483850101526064830152601f801991011681010301815f865af15f9181610225575b5061022057505f5b156101e45760405190600182527f528c00f3d7da8e9429355ebfd96f7db55a1b2363c6cf6eba8f256710c6f03c0760203293a360015f55602060405160018152f35b604051905f82527f528c00f3d7da8e9429355ebfd96f7db55a1b2363c6cf6eba8f256710c6f03c0760203293a3637349437160e11b5f5260045ffd5b6101a2565b90915060203d602011610285575b601f8101601f1916820167ffffffffffffffff811183821017610271576020918391604052810103126100765751801515810361007657908361019a565b634e487b7160e01b5f52604160045260245ffd5b503d610233565b633a6f757960e11b5f5260045ffd5b633ee5aeb560e01b5f5260045ffdfea2646970667358221220ed4bcb1042e978fc3e08b03e92693178262354f7c150057b4f13b7a7f8ae2a7b64736f6c634300081b0033",
 }
 
 // ContractTriggerXSafeModuleABI is the input ABI used to generate the binding from.
 // Deprecated: Use ContractTriggerXSafeModuleMetaData.ABI instead.
 var ContractTriggerXSafeModuleABI = ContractTriggerXSafeModuleMetaData.ABI
+
+// ContractTriggerXSafeModuleBin is the compiled bytecode used for deploying new contracts.
+// Deprecated: Use ContractTriggerXSafeModuleMetaData.Bin instead.
+var ContractTriggerXSafeModuleBin = ContractTriggerXSafeModuleMetaData.Bin
+
+// DeployContractTriggerXSafeModule deploys a new Ethereum contract, binding an instance of ContractTriggerXSafeModule to it.
+func DeployContractTriggerXSafeModule(auth *bind.TransactOpts, backend bind.ContractBackend, _taskExecutionHub common.Address) (common.Address, *types.Transaction, *ContractTriggerXSafeModule, error) {
+	parsed, err := ContractTriggerXSafeModuleMetaData.GetAbi()
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	if parsed == nil {
+		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
+	}
+
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(ContractTriggerXSafeModuleBin), backend, _taskExecutionHub)
+	if err != nil {
+		return common.Address{}, nil, nil, err
+	}
+	return address, tx, &ContractTriggerXSafeModule{ContractTriggerXSafeModuleCaller: ContractTriggerXSafeModuleCaller{contract: contract}, ContractTriggerXSafeModuleTransactor: ContractTriggerXSafeModuleTransactor{contract: contract}, ContractTriggerXSafeModuleFilterer: ContractTriggerXSafeModuleFilterer{contract: contract}}, nil
+}
 
 // ContractTriggerXSafeModuleMethods is an auto generated interface around an Ethereum contract.
 type ContractTriggerXSafeModuleMethods interface {
@@ -266,48 +288,6 @@ func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleSession) ExecJobFro
 // Solidity: function execJobFromHub(address safeAddress, address actionTarget, uint256 actionValue, bytes actionData, uint8 operation) returns(bool success)
 func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleTransactorSession) ExecJobFromHub(safeAddress common.Address, actionTarget common.Address, actionValue *big.Int, actionData []byte, operation uint8) (*types.Transaction, error) {
 	return _ContractTriggerXSafeModule.Contract.ExecJobFromHub(&_ContractTriggerXSafeModule.TransactOpts, safeAddress, actionTarget, actionValue, actionData, operation)
-}
-
-// Fallback is a paid mutator transaction binding the contract fallback function.
-//
-// Solidity: fallback() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleTransactor) Fallback(opts *bind.TransactOpts, calldata []byte) (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.contract.RawTransact(opts, calldata)
-}
-
-// Fallback is a paid mutator transaction binding the contract fallback function.
-//
-// Solidity: fallback() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleSession) Fallback(calldata []byte) (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.Contract.Fallback(&_ContractTriggerXSafeModule.TransactOpts, calldata)
-}
-
-// Fallback is a paid mutator transaction binding the contract fallback function.
-//
-// Solidity: fallback() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleTransactorSession) Fallback(calldata []byte) (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.Contract.Fallback(&_ContractTriggerXSafeModule.TransactOpts, calldata)
-}
-
-// Receive is a paid mutator transaction binding the contract receive function.
-//
-// Solidity: receive() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleTransactor) Receive(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.contract.RawTransact(opts, nil) // calldata is disallowed for receive function
-}
-
-// Receive is a paid mutator transaction binding the contract receive function.
-//
-// Solidity: receive() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleSession) Receive() (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.Contract.Receive(&_ContractTriggerXSafeModule.TransactOpts)
-}
-
-// Receive is a paid mutator transaction binding the contract receive function.
-//
-// Solidity: receive() payable returns()
-func (_ContractTriggerXSafeModule *ContractTriggerXSafeModuleTransactorSession) Receive() (*types.Transaction, error) {
-	return _ContractTriggerXSafeModule.Contract.Receive(&_ContractTriggerXSafeModule.TransactOpts)
 }
 
 // ContractTriggerXSafeModuleTaskExecutedFromModuleIterator is returned from FilterTaskExecutedFromModule and is used to iterate over the raw logs and unpacked data for TaskExecutedFromModule events raised by the ContractTriggerXSafeModule contract.

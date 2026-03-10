@@ -84,6 +84,7 @@ contract DeployTaskExecutionSpoke is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy implementation
+        // spokeImpl = address(new TaskExecutionSpoke(vm.envAddress("LZ_ENDPOINT_OP"), deployer));
         spokeImpl = address(new TaskExecutionSpoke(vm.envAddress("LZ_ENDPOINT_ARB"), deployer));
         console.log("TaskExecutionSpoke implementation deployed at:", spokeImpl);
 
